@@ -15,8 +15,9 @@ const setupRoute = entry => ({
 export default function setupRouter() {
 	const router = createRouter({
 		routes: [
-			{ path: '/:pathMatch(.*)*', component: views.Page404 },
+			{ path: '/app/:pathMatch(.*)*', component: views.Page404 },
 			{ path: '/', component: views.Home },
+			{ path: '/app/login', component: views.Login },
 		],
 		history: createWebHistory(),
 		linkActiveClass: 'active',

@@ -21,8 +21,29 @@ mod schema;
 type DbPool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 /// simple index handler
-#[get("/home")]
+#[get("/")]
 async fn welcome(session: Session, req: HttpRequest) -> Result<HttpResponse> {
+    println!("{:?}", req);
+	println!("Lol");
+    // session
+    let mut counter = 1;
+    if let Some(count) = session.get::<i32>("counter")? {
+        println!("SESSION value: {}", count);
+        counter = count + 1;
+    }
+
+    // set counter to session
+    session.set("counter", counter)?;
+
+    // response
+    Ok(HttpResponse::build(StatusCode::OK)
+        .content_type("text/html; charset=utf-8")
+        .body(include_str!("../public/index.html")))
+}
+
+/// simple index handler
+#[get("/app/*")]
+async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
     println!("{:?}", req);
 	println!("Lol");
     // session
@@ -112,6 +133,7 @@ async fn main() -> std::io::Result<()> {
             .service(get_user)
             .service(add_user)
 			.service(welcome)
+			.service(allviews)
 			// static files
             .service(fs::Files::new("/public", "public").show_files_listing())
             // redirect
