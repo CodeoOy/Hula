@@ -6,6 +6,7 @@
 #[macro_use]
 extern crate diesel;
 
+use actix_files as fs;
 use actix_session::{CookieSession, Session};
 use actix_web::http::{header, Method, StatusCode};
 use actix_web::{get, middleware, post, web, App, Error, HttpRequest, HttpResponse, HttpServer, Result};
@@ -111,6 +112,15 @@ async fn main() -> std::io::Result<()> {
             .service(get_user)
             .service(add_user)
 			.service(welcome)
+			// static files
+            .service(fs::Files::new("/public", "public").show_files_listing())
+            // redirect
+            .service(web::resource("/").route(web::get().to(|req: HttpRequest| {
+                println!("{:?}", req);
+                HttpResponse::Found()
+                    .header(header::LOCATION, "public/index.html")
+                    .finish()
+            })))
     })
     .bind(&bind)?
     .run()
