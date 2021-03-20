@@ -15,6 +15,7 @@
 		"@vue/compiler-sfc": "^3.0.5",
 		"autoprefixer": "^9.8.6",
 		"concurrently": "^6.0.0",
+		"dotenv": "^8.2.0",
 		"nodemon": "^2.0.4",
 		"postcss": "^8.2.1",
 		"rollup-plugin-copy-assets": "^2.0.3",
