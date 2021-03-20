@@ -6,7 +6,9 @@
 #[macro_use]
 extern crate diesel;
 
-use actix_web::{get, middleware, post, web, App, Error, HttpResponse, HttpServer};
+use actix_session::{CookieSession, Session};
+use actix_web::http::{header, Method, StatusCode};
+use actix_web::{get, middleware, post, web, App, Error, HttpRequest, HttpResponse, HttpServer, Result};
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
 use uuid::Uuid;
@@ -16,6 +18,27 @@ mod models;
 mod schema;
 
 type DbPool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
+
+/// simple index handler
+#[get("/home")]
+async fn welcome(session: Session, req: HttpRequest) -> Result<HttpResponse> {
+    println!("{:?}", req);
+	println!("Lol");
+    // session
+    let mut counter = 1;
+    if let Some(count) = session.get::<i32>("counter")? {
+        println!("SESSION value: {}", count);
+        counter = count + 1;
+    }
+
+    // set counter to session
+    session.set("counter", counter)?;
+
+    // response
+    Ok(HttpResponse::build(StatusCode::OK)
+        .content_type("text/html; charset=utf-8")
+        .body(include_str!("../public/index.html")))
+}
 
 /// Finds user by UID.
 #[get("/user/{user_id}")]
@@ -87,6 +110,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .service(get_user)
             .service(add_user)
+			.service(welcome)
     })
     .bind(&bind)?
     .run()
