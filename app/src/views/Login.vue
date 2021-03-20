@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<a v-on:click="getUserData">{{ message }}</a>
+		<a href="#" v-on:click="getUserData">{{ message }}</a>
 		<p>{{ user.name }}</p>
 	</div>
 </template>

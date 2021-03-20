@@ -1,9 +1,11 @@
 import { createApp } from 'vue'
+import FlashMessage from '@smartweb/vue-flash-message';
 import setupRouter from './router.js'
 import App from './App.vue'
 
 const router = setupRouter()
 const app = createApp(App)
 	.use(router)
-
-app.mount('#app')
+	.use(FlashMessage)
+router.isReady()
+	.then(() => app.mount('#app'))
