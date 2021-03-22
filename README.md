@@ -1,7 +1,5 @@
 # poc-rust-vue
 
-Started by cloning the backend code from here: https://github.com/actix/examples/tree/master/database_interactions/diesel
-
 ## Deployment
 
 Instructions very much subject to change and might already be outdated!
@@ -14,3 +12,7 @@ Instructions very much subject to change and might already be outdated!
 6. Still in the app folder, run `npm run dev`
 7. Site SHOULD be up at 127.0.0.1:8084. It's a treefloof!
 8. Navigate to 127.0.0.1:8084/app/login to see some functionality.
+
+## Useful stuff
+
+Actix/Diesel example: https://github.com/actix/examples/tree/master/database_interactions/diesel
