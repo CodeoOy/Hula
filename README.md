@@ -2,7 +2,7 @@
 
 ## Deployment
 
-Instructions very much subject to change and might already be outdated!
+Instructions very much subject to change and might already be outdated! Rust+Cargo and NPM are supposed to be installed to begin with and who knows how this will behave on Windows.
 
 1. Clone this repo
 2. Create .env file to the root with `DATABASE_URL=test.db`
