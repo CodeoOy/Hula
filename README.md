@@ -11,7 +11,7 @@ Instructions very much subject to change and might already be outdated! Rust+Car
 5. From the root, run `cargo run`
 6. Go to App folder and run `npm install`
 7. Still in the app folder, run `npm run dev`
-8. Site SHOULD be up at 127.0.0.1:8084. It's a treefloof!
+8. App SHOULD be up at 127.0.0.1:8084. It's a treefloof!
 9. Navigate to 127.0.0.1:8084/app/login to see some functionality.
 
 ## Useful stuff
