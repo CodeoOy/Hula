@@ -62,6 +62,38 @@ async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
         .body(include_str!("../public/index.html")))
 }
 
+/// simple index handler
+#[get("/omnom")]
+async fn omnom(session: Session, req: HttpRequest) -> Result<HttpResponse> {
+    println!("{:?}", req);
+	println!("Lol");
+    // session
+    let mut counter = 1;
+    if let Some(count) = session.get::<i32>("counter")? {
+        println!("SESSION value: {}", count);
+        counter = count + 1;
+    }
+
+    // set counter to session
+    session.set("counter", counter)?;
+
+	/*
+	struct Omnom {
+		message: String,
+		number: i32
+	};
+
+	let mut res = Omnom {
+		message: "Omnom".to_string(),
+		number: 10
+	};
+	*/
+
+	let treefloof = "Henlo!".to_string();
+
+	Ok(HttpResponse::Ok().json(treefloof))
+}
+
 /// Finds user by UID.
 #[get("/user/{user_id}")]
 async fn get_user(
@@ -134,6 +166,7 @@ async fn main() -> std::io::Result<()> {
             .service(add_user)
 			.service(welcome)
 			.service(allviews)
+			.service(omnom)
 			// static files
             .service(fs::Files::new("/public", "public").show_files_listing())
             // redirect

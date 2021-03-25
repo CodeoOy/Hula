@@ -18,6 +18,7 @@ export default function setupRouter() {
 			{ path: '/app/:pathMatch(.*)*', component: views.Page404 },
 			{ path: '/', component: views.Home },
 			{ path: '/app/login', component: views.Login },
+			{ path: '/app/cheeseboi', component: views.Cheeseboi },
 		],
 		history: createWebHistory(),
 		linkActiveClass: 'active',
