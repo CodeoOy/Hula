@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<a href="#" v-on:click="getRustData">Get om noms</a>
-		{{ message }}
+		<p v-if="message.length">{{ message }}</p>
 	</div>
 </template>
 
@@ -10,12 +10,12 @@
 		name: 'Cheeseboi',
 		data() {
 			return {
-				message: ""
+				message: JSON
 			}
 		},
 		methods: {
-			getUserData: function() {
-				console.log("getUserData fired.");   
+			getRustData: function() {
+				console.log("getRustData fired.");  
 				fetch('/omnom', {method: 'GET'})
 				.then((response) => response.json())
 				.then(response => { 
@@ -26,7 +26,7 @@
 						title: 'Successfully fetched data',
 						time: 1000
 					});
-				})    
+				})
 				.catch((errors) => {    
 					console.log("Could not get data");
 					console.log(errors);

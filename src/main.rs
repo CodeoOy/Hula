@@ -66,32 +66,20 @@ async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
 #[get("/omnom")]
 async fn omnom(session: Session, req: HttpRequest) -> Result<HttpResponse> {
     println!("{:?}", req);
-	println!("Lol");
+	println!("Om noms");
     // session
     let mut counter = 1;
     if let Some(count) = session.get::<i32>("counter")? {
         println!("SESSION value: {}", count);
         counter = count + 1;
     }
-
     // set counter to session
     session.set("counter", counter)?;
 
-	/*
-	struct Omnom {
-		message: String,
-		number: i32
-	};
+	let treefloof = "Cheeseboi!".to_string();
 
-	let mut res = Omnom {
-		message: "Omnom".to_string(),
-		number: 10
-	};
-	*/
-
-	let treefloof = "Henlo!".to_string();
-
-	Ok(HttpResponse::Ok().json(treefloof))
+	Ok(HttpResponse::Ok()
+        .json(treefloof))
 }
 
 /// Finds user by UID.
