@@ -1,14 +1,20 @@
 <template>
-	<div class="container-sm">
-		<div class="row">
+	<div class="container-sm mt-4">
+		<div class="row gx-4">
 			<div class="col-sm">
-				<Login />
+				<div class="bg-light p-3">
+					<Login />
+				</div>
 			</div>
 			<div class="col-sm">
-				<List />
+				<div class="bg-light p-3">
+					<List />
+				</div>
 			</div>
 			<div class="col-sm">
-				Disco chikcen
+				<div class="bg-light p-3">
+					Disco chikcen
+				</div>
 			</div>
 		</div>
 	</div>

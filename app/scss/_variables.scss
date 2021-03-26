@@ -17,5 +17,8 @@ $dark:		#2a2335;
     font-weight: normal;
     font-style: normal;
 }
+@import url('https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@600&family=Overpass:ital,wght@0,100;0,400;0,900;1,100;1,400;1,900&display=swap');
 
-$font-heading: 'salomeitalic', sans-serif 
+$font-heading: 'salomeitalic', sans-serif;
+$font-family-sans-serif: 'Overpass', sans-serif;
+$font-family-monospace: 'Overpass mono', monospace; 
