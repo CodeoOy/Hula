@@ -2,8 +2,7 @@
 	<main>
 		<Header />
 		<FlashMessage position="right top" />
-		<h1>Rust Vue POC</h1>
-		<p class="routermessage"><router-view /></p>
+		<router-view />
 	</main>
 </template>
 

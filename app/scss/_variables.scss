@@ -1,0 +1,21 @@
+// Variables
+
+$primary: 	#ff9fdf;
+$secondary: #97ffcb;
+
+$success:	#75ecb1;
+$info:		#54d2e9;
+$warning:	#ffe434;
+$danger:	#f971a3;
+$light:		#f8f1e5;
+$dark:		#2a2335;
+
+@font-face {
+    font-family: 'salomeitalic';
+    src: url('../assets/salome_italic-webfont.woff2') format('woff2'),
+         url('../assets/salome_italic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+$font-heading: 'salomeitalic', sans-serif 

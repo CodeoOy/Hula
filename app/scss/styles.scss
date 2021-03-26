@@ -1,4 +1,5 @@
 
+@import 'variables';
 // Configuration
 @import '../node_modules/bootstrap/scss/functions';
 @import '../node_modules/bootstrap/scss/variables';
@@ -11,7 +12,7 @@
 @import '../node_modules/bootstrap/scss/reboot';
 @import '../node_modules/bootstrap/scss/type';
 // @import '../node_modules/bootstrap/scss/images';
-// @import '../node_modules/bootstrap/scss/containers';
+@import '../node_modules/bootstrap/scss/containers';
 @import '../node_modules/bootstrap/scss/grid';
 // @import '../node_modules/bootstrap/scss/tables';
 @import '../node_modules/bootstrap/scss/forms';
@@ -46,5 +47,18 @@
 // Custom styles
 
 body {
-	background: #000;
+	background-image: url('../assets/bg.jpg');
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+header {
+	opacity: 0.8;
+}
+
+.font-heading {
+	font-family: $font-heading;
+	&--large {
+		font-size: 2rem;
+	}
 }

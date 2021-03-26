@@ -7,7 +7,7 @@
 
 <script>
 	export default {
-		name: 'Login',
+		name: 'List',
 		data() {
 			return {
 				message: "Click here",
