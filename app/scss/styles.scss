@@ -64,3 +64,8 @@ header {
 		text-shadow: 0px 0px 10px $info;
 	}
 }
+
+.tropical-box {
+	box-shadow: 0px 10px 10px transparentize(darken($primary, 20%), 0.7);
+	background-color: transparentize($light, $amount: 0.1);
+}

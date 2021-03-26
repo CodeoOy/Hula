@@ -2,17 +2,17 @@
 	<div class="container-sm mt-4">
 		<div class="row gx-4">
 			<div class="col-sm">
-				<div class="bg-light p-3">
+				<div class="p-3 rounded-2 tropical-box">
 					<Login />
 				</div>
 			</div>
 			<div class="col-sm">
-				<div class="bg-light p-3">
+				<div class="p-3 rounded-2 tropical-box">
 					<List />
 				</div>
 			</div>
 			<div class="col-sm">
-				<div class="bg-light p-3">
+				<div class="p-3 rounded-2 tropical-box">
 					Disco turkey
 				</div>
 			</div>
