@@ -1,7 +1,13 @@
 <template>
-	<div>
-		<a href="#" v-on:click="getRustData">Get om noms</a>
-		<p v-if="message.length">{{ message }}</p>
+	<div class="container">
+		<div class="row mt-4">
+			<div class="col">
+				<div class="tropical-box rounded-2 p-3">
+					<a href="#" v-on:click="getRustData">Get om noms</a>
+					<p v-if="message.length">{{ message }}</p>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 
