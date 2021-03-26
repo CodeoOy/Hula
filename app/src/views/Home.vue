@@ -13,7 +13,7 @@
 			</div>
 			<div class="col-sm">
 				<div class="bg-light p-3">
-					Disco chikcen
+					Disco turkey
 				</div>
 			</div>
 		</div>
