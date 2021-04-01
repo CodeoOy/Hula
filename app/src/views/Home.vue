@@ -1,17 +1,17 @@
 <template>
 	<div class="container-sm mt-4">
 		<div class="row gx-4">
-			<div class="col-sm">
+			<div class="col-md">
 				<div class="p-3 rounded-2 tropical-box">
 					<Login />
 				</div>
 			</div>
-			<div class="col-sm">
+			<div class="col-md">
 				<div class="p-3 rounded-2 tropical-box">
 					<List />
 				</div>
 			</div>
-			<div class="col-sm">
+			<div class="col-md">
 				<div class="p-3 rounded-2 tropical-box">
 					Disco turkey
 				</div>
