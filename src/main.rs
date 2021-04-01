@@ -18,7 +18,7 @@ mod actions;
 mod models;
 mod schema;
 
-type DbPool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
+type DbPool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
 
 /// simple index handler
 #[get("/")]
@@ -135,12 +135,12 @@ async fn main() -> std::io::Result<()> {
 
     // set up database connection pool
     let connspec = std::env::var("DATABASE_URL").expect("DATABASE_URL");
-    let manager = ConnectionManager::<SqliteConnection>::new(connspec);
+    let manager = ConnectionManager::<MysqlConnection>::new(connspec);
     let pool = r2d2::Pool::builder()
         .build(manager)
         .expect("Failed to create pool.");
 
-    let bind = "127.0.0.1:8084";
+    let bind = "127.0.0.1:8082";
 
     println!("Starting server at: {}", &bind);
 
@@ -182,7 +182,7 @@ mod tests {
         dotenv::dotenv().ok();
 
         let connspec = std::env::var("DATABASE_URL").expect("DATABASE_URL");
-        let manager = ConnectionManager::<SqliteConnection>::new(connspec);
+        let manager = ConnectionManager::<MysqlConnection>::new(connspec);
         let pool = r2d2::Pool::builder()
             .build(manager)
             .expect("Failed to create pool.");

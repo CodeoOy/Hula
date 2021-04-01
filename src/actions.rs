@@ -6,7 +6,7 @@ use crate::models;
 /// Run query using Diesel to find user by uid and return it.
 pub fn find_user_by_uid(
     uid: Uuid,
-    conn: &SqliteConnection,
+    conn: &MysqlConnection,
 ) -> Result<Option<models::User>, diesel::result::Error> {
     use crate::schema::users::dsl::*;
 
@@ -22,7 +22,7 @@ pub fn find_user_by_uid(
 pub fn insert_new_user(
     // prevent collision with `name` column imported inside the function
     nm: &str,
-    conn: &SqliteConnection,
+    conn: &MysqlConnection,
 ) -> Result<models::User, diesel::result::Error> {
     // It is common when using Diesel with Actix web to import schema-related
     // modules inside a function's scope (rather than the normal module's scope)
