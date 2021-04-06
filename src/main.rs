@@ -1,228 +1,72 @@
-//! Actix web Diesel integration example
-//!
-//! Diesel does not support tokio, so we have to run it in separate threads using the web::block
-//! function which offloads blocking code (like Diesel's) in order to not block the server's thread.
-
 #[macro_use]
 extern crate diesel;
 
-use actix_files as fs;
-use actix_session::{CookieSession, Session};
-use actix_web::http::{header, Method, StatusCode};
-use actix_web::{get, middleware, post, web, App, Error, HttpRequest, HttpResponse, HttpServer, Result};
+use actix_identity::{CookieIdentityPolicy, IdentityService};
+use actix_web::{middleware, web, App, HttpServer};
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
-use uuid::Uuid;
 
-mod actions;
+mod auth_handler;
+mod email_service;
+mod errors;
+mod invitation_handler;
 mod models;
+mod register_handler;
 mod schema;
+mod utils;
 
-type DbPool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
-
-/// simple index handler
-#[get("/")]
-async fn welcome(session: Session, req: HttpRequest) -> Result<HttpResponse> {
-    println!("{:?}", req);
-	println!("Lol");
-    // session
-    let mut counter = 1;
-    if let Some(count) = session.get::<i32>("counter")? {
-        println!("SESSION value: {}", count);
-        counter = count + 1;
-    }
-
-    // set counter to session
-    session.set("counter", counter)?;
-
-    // response
-    Ok(HttpResponse::build(StatusCode::OK)
-        .content_type("text/html; charset=utf-8")
-        .body(include_str!("../public/index.html")))
-}
-
-/// simple index handler
-#[get("/app/*")]
-async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
-    println!("{:?}", req);
-	println!("Lol");
-    // session
-    let mut counter = 1;
-    if let Some(count) = session.get::<i32>("counter")? {
-        println!("SESSION value: {}", count);
-        counter = count + 1;
-    }
-
-    // set counter to session
-    session.set("counter", counter)?;
-
-    // response
-    Ok(HttpResponse::build(StatusCode::OK)
-        .content_type("text/html; charset=utf-8")
-        .body(include_str!("../public/index.html")))
-}
-
-/// simple index handler
-#[get("/omnom")]
-async fn omnom(session: Session, req: HttpRequest) -> Result<HttpResponse> {
-    println!("{:?}", req);
-	println!("Om noms");
-    // session
-    let mut counter = 1;
-    if let Some(count) = session.get::<i32>("counter")? {
-        println!("SESSION value: {}", count);
-        counter = count + 1;
-    }
-    // set counter to session
-    session.set("counter", counter)?;
-
-	let treefloof = "Cheeseboi!".to_string();
-
-	Ok(HttpResponse::Ok()
-        .json(treefloof))
-}
-
-/// Finds user by UID.
-#[get("/user/{user_id}")]
-async fn get_user(
-    pool: web::Data<DbPool>,
-    user_uid: web::Path<Uuid>,
-) -> Result<HttpResponse, Error> {
-    let user_uid = user_uid.into_inner();
-    let conn = pool.get().expect("couldn't get db connection from pool");
-
-    // use web::block to offload blocking Diesel code without blocking server thread
-    let user = web::block(move || actions::find_user_by_uid(user_uid, &conn))
-        .await
-        .map_err(|e| {
-            eprintln!("{}", e);
-            HttpResponse::InternalServerError().finish()
-        })?;
-
-    if let Some(user) = user {
-		println!("{:?}", user);
-        Ok(HttpResponse::Ok().json(user))
-    } else {
-		println!("No user");
-        let res = HttpResponse::NotFound()
-            .body(format!("No user found with uid: {}", user_uid));
-        Ok(res)
-    }
-}
-
-/// Inserts new user with name defined in form.
-#[post("/user")]
-async fn add_user(
-    pool: web::Data<DbPool>,
-    form: web::Json<models::NewUser>,
-) -> Result<HttpResponse, Error> {
-    let conn = pool.get().expect("couldn't get db connection from pool");
-
-    // use web::block to offload blocking Diesel code without blocking server thread
-    let user = web::block(move || actions::insert_new_user(&form.name, &conn))
-        .await
-        .map_err(|e| {
-            eprintln!("{}", e);
-            HttpResponse::InternalServerError().finish()
-        })?;
-
-    Ok(HttpResponse::Ok().json(user))
-}
-
-#[actix_web::main]
+#[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    std::env::set_var("RUST_LOG", "actix_web=info");
-    env_logger::init();
     dotenv::dotenv().ok();
+    std::env::set_var(
+        "RUST_LOG",
+        "simple-auth-server=debug,actix_web=info,actix_server=info",
+    );
+    env_logger::init();
+    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
-    // set up database connection pool
-    let connspec = std::env::var("DATABASE_URL").expect("DATABASE_URL");
-    let manager = ConnectionManager::<MysqlConnection>::new(connspec);
-    let pool = r2d2::Pool::builder()
+    // create db connection pool
+    let manager = ConnectionManager::<PgConnection>::new(database_url);
+    let pool: models::Pool = r2d2::Pool::builder()
         .build(manager)
         .expect("Failed to create pool.");
+    let domain: String = std::env::var("DOMAIN").unwrap_or_else(|_| "localhost".to_string());
 
-    let bind = "127.0.0.1:8082";
-
-    println!("Starting server at: {}", &bind);
-
-    // Start HTTP server
+    // Start http server
     HttpServer::new(move || {
         App::new()
-            // set up DB pool to be used with web::Data<Pool> extractor
             .data(pool.clone())
+            // enable logger
             .wrap(middleware::Logger::default())
-            .service(get_user)
-            .service(add_user)
-			.service(welcome)
-			.service(allviews)
-			.service(omnom)
-			// static files
-            .service(fs::Files::new("/public", "public").show_files_listing())
-            // redirect
-            .service(web::resource("/").route(web::get().to(|req: HttpRequest| {
-                println!("{:?}", req);
-                HttpResponse::Found()
-                    .header(header::LOCATION, "public/index.html")
-                    .finish()
-            })))
+            .wrap(IdentityService::new(
+                CookieIdentityPolicy::new(utils::SECRET_KEY.as_bytes())
+                    .name("auth")
+                    .path("/")
+                    .domain(domain.as_str())
+                    .max_age(86400) // one day in seconds
+                    .secure(false), // this can only be true if you have https
+            ))
+            .data(web::JsonConfig::default().limit(4096))
+            // everything under '/api/' route
+            .service(
+                web::scope("/api")
+                    .service(
+                        web::resource("/invitation")
+                            .route(web::post().to(invitation_handler::post_invitation)),
+                    )
+                    .service(
+                        web::resource("/register/{invitation_id}")
+                            .route(web::post().to(register_handler::register_user)),
+                    )
+                    .service(
+                        web::resource("/auth")
+                            .route(web::post().to(auth_handler::login))
+                            .route(web::delete().to(auth_handler::logout))
+                            .route(web::get().to(auth_handler::get_me)),
+                    ),
+            )
     })
-    .bind(&bind)?
+    .bind("127.0.0.1:3000")?
     .run()
     .await
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use actix_web::test;
-
-    #[actix_rt::test]
-    async fn user_routes() {
-        std::env::set_var("RUST_LOG", "actix_web=debug");
-        env_logger::init();
-        dotenv::dotenv().ok();
-
-        let connspec = std::env::var("DATABASE_URL").expect("DATABASE_URL");
-        let manager = ConnectionManager::<MysqlConnection>::new(connspec);
-        let pool = r2d2::Pool::builder()
-            .build(manager)
-            .expect("Failed to create pool.");
-
-        let mut app = test::init_service(
-            App::new()
-                .data(pool.clone())
-                .wrap(middleware::Logger::default())
-                .service(get_user)
-                .service(add_user),
-        )
-        .await;
-
-        // Insert a user
-        let req = test::TestRequest::post()
-            .uri("/user")
-            .set_json(&models::NewUser {
-                name: "Test user".to_owned(),
-            })
-            .to_request();
-
-        let resp: models::User = test::read_response_json(&mut app, req).await;
-
-        assert_eq!(resp.name, "Test user");
-
-        // Get a user
-        let req = test::TestRequest::get()
-            .uri(&format!("/user/{}", resp.id))
-            .to_request();
-
-        let resp: models::User = test::read_response_json(&mut app, req).await;
-
-        assert_eq!(resp.name, "Test user");
-
-        // Delete new user from table
-        use crate::schema::users::dsl::*;
-        diesel::delete(users.filter(id.eq(resp.id)))
-            .execute(&pool.get().expect("couldn't get db connection from pool"))
-            .expect("couldn't delete test user from table");
-    }
 }

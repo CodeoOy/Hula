@@ -1,19 +1,31 @@
-# poc-rust-vue
+# Auth Web Microservice with rust using Actix-Web 3.0
 
-## Deployment
+##### Flow of the event would look like this:
 
-Instructions very much subject to change and might already be outdated! Rust+Cargo and NPM are supposed to be installed to begin with and who knows how this will behave on Windows.
+- Registers with email address ➡ Receive an 📨 with a link to verify
+- Follow the link ➡ register with same email and a password
+- Login with email and password ➡ Get verified and receive auth cookie
 
-1. Clone this repo
-2. Create .env file to the root with `DATABASE_URL=test.db`
-3. If you haven't already, install Diesel as per instructions in the example below.
-4. From the root, `mkdir public`
-5. Go to App folder and run `npm install`
-6. Still in the app folder, run `npm run dev`
-7. From the root, run `cargo run`
-8. App SHOULD be up at 127.0.0.1:8084. It's a treefloof!
-9. Navigate to 127.0.0.1:8084/app/login to see some functionality.
+##### Crates Used
 
-## Useful stuff
+- [actix](https://crates.io/crates/actix) // Actix is a Rust actors framework.
+- [actix-web](https://crates.io/crates/actix-web) // Actix web is a simple, pragmatic and extremely fast web framework for Rust.
+- [actix-rt](https://docs.rs/actix-identity) // Request identity service for Actix applications.
+- [rust-argon](crates.io/crates/rust-argon2) // crate for hashing passwords using the cryptographically-secure Argon2 hashing algorithm.
+- [chrono](https://crates.io/crates/chrono) // Date and time library for Rust.
+- [diesel](https://crates.io/crates/diesel) // A safe, extensible ORM and Query Builder for PostgreSQL, SQLite, and MySQL.
+- [dotenv](https://crates.io/crates/dotenv) // A dotenv implementation for Rust.
+- [derive_more](https://crates.io/crates/derive_more) // Convenience macros to derive traits easily
+- [env_logger](https://crates.io/crates/env_logger) // A logging implementation for log which is configured via an environment variable.
+- [futures](https://crates.io/crates/futures) // An implementation of futures and streams featuring zero allocations, composability, and iterator-like interfaces.
+- [lazy_static](https://docs.rs/lazy_static) // A macro for declaring lazily evaluated statics.
+- [r2d2](https://crates.io/crates/r2d2) // A generic connection pool.
+- [serde](https://crates.io/crates/serde) // A generic serialization/deserialization framework.
+- [serde_json](https://crates.io/crates/serde_json) // A JSON serialization file format.
+- [serde_derive](https://crates.io/crates/serde_derive) // Macros 1.1 implementation of #[derive(Serialize, Deserialize)].
+- [sparkpost](https://crates.io/crates/sparkpost) // Rust bindings for sparkpost email api v1.
+- [uuid](https://crates.io/crates/uuid) // A library to generate and parse UUIDs.
 
-Actix/Diesel example: https://github.com/actix/examples/tree/master/database_interactions/diesel
+Read the full tutorial series on [gill.net.in](https://gill.net.in)
+
+- [Auth Web Microservice with rust using Actix-Web 3.0 - Complete Tutorial](https://gill.net.in/posts/auth-microservice-rust-actix-web1.0-diesel-complete-tutorial/)
