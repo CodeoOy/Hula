@@ -17,7 +17,7 @@
 		methods: {
 			getUserData: function() {
 				console.log("getUserData fired.");   
-				fetch('/user/cc7cd70e-bbe0-4a63-8bec-9c63f60a91c4', {method: 'GET'})
+				fetch('/user/f8e32338-b837-4632-99b8-33e9c93a44e6', {method: 'GET'})
 				.then((response) => response.json())
 				.then(response => { 
 					console.log(response);

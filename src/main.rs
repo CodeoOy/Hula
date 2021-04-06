@@ -100,8 +100,10 @@ async fn get_user(
         })?;
 
     if let Some(user) = user {
+		println!("{:?}", user);
         Ok(HttpResponse::Ok().json(user))
     } else {
+		println!("No user");
         let res = HttpResponse::NotFound()
             .body(format!("No user found with uid: {}", user_uid));
         Ok(res)
