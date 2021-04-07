@@ -1,8 +1,11 @@
 #[macro_use]
 extern crate diesel;
 
+use actix_files as fs;
+use actix_session::{CookieSession, Session};
 use actix_identity::{CookieIdentityPolicy, IdentityService};
-use actix_web::{middleware, web, App, HttpServer};
+use actix_web::http::{header, Method, StatusCode};
+use actix_web::{middleware, web, get, App, HttpServer, HttpResponse, HttpRequest, Result};
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
 
@@ -14,6 +17,26 @@ mod models;
 mod register_handler;
 mod schema;
 mod utils;
+
+#[get("/")]
+async fn home(session: Session, req: HttpRequest) -> Result<HttpResponse> {
+    println!("{:?}", req);
+	println!("Lol");
+    // session
+    let mut counter = 1;
+    if let Some(count) = session.get::<i32>("counter")? {
+        println!("SESSION value: {}", count);
+        counter = count + 1;
+    }
+
+    // set counter to session
+    session.set("counter", counter)?;
+
+    // response
+    Ok(HttpResponse::build(StatusCode::OK)
+        .content_type("text/html; charset=utf-8")
+        .body(include_str!("../public/index.html")))
+}
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
@@ -65,6 +88,14 @@ async fn main() -> std::io::Result<()> {
                             .route(web::get().to(auth_handler::get_me)),
                     ),
             )
+			.service(fs::Files::new("/public", "public").show_files_listing())
+			.service(home)
+			.service(web::resource("/").route(web::get().to(|req: HttpRequest| {
+                println!("{:?}", req);
+                HttpResponse::Found()
+                    .header(header::LOCATION, "index.html")
+                    .finish()
+			})))
     })
     .bind("127.0.0.1:3000")?
     .run()
