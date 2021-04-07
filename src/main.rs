@@ -38,6 +38,27 @@ async fn home(session: Session, req: HttpRequest) -> Result<HttpResponse> {
         .body(include_str!("../public/index.html")))
 }
 
+/// simple index handler
+#[get("/app/*")]
+async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
+    println!("{:?}", req);
+	println!("Lol");
+    // session
+    let mut counter = 1;
+    if let Some(count) = session.get::<i32>("counter")? {
+        println!("SESSION value: {}", count);
+        counter = count + 1;
+    }
+
+    // set counter to session
+    session.set("counter", counter)?;
+
+    // response
+    Ok(HttpResponse::build(StatusCode::OK)
+        .content_type("text/html; charset=utf-8")
+        .body(include_str!("../public/index.html")))
+}
+
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     dotenv::dotenv().ok();
@@ -90,6 +111,7 @@ async fn main() -> std::io::Result<()> {
             )
 			.service(fs::Files::new("/public", "public").show_files_listing())
 			.service(home)
+			.service(allviews)
 			.service(web::resource("/").route(web::get().to(|req: HttpRequest| {
                 println!("{:?}", req);
                 HttpResponse::Found()
@@ -97,7 +119,7 @@ async fn main() -> std::io::Result<()> {
                     .finish()
 			})))
     })
-    .bind("127.0.0.1:3000")?
+    .bind("127.0.0.1:8086")?
     .run()
     .await
 }
