@@ -3,7 +3,7 @@
 		<div class="row gx-4">
 			<div class="col-md">
 				<div class="p-3 rounded-2 tropical-box">
-					<Login />
+					<Register />
 				</div>
 			</div>
 			<div class="col-md">
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-	import Login from '../components/Login.vue'
+	import Register from '../components/Register.vue'
 	import List from '../components/List.vue'
 	export default {
 		name: 'Home',
@@ -32,7 +32,7 @@
 		},
 		components: {
 			'List': List,
-			'Login': Login
+			'Register': Register
   		}
 	}
 </script>

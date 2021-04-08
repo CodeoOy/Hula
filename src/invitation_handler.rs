@@ -6,9 +6,10 @@ use crate::email_service::send_invitation;
 use crate::errors::ServiceError;
 use crate::models::{Invitation, Pool};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct InvitationData {
     pub email: String,
+	pub password: String // Is this bad?
 }
 
 pub async fn post_invitation(
@@ -16,6 +17,8 @@ pub async fn post_invitation(
     pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
     // run diesel blocking code
+	println!("In post_invitation: \n");
+	println!("\n {:?} \n", invitation_data);
     let res = web::block(move || create_invitation(invitation_data.into_inner().email, pool)).await;
 
     match res {
