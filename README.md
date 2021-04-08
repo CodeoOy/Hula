@@ -1,31 +1,30 @@
-# Auth Web Microservice with rust using Actix-Web 3.0
+# Rust/Actix/Postgres/Vue Proof of Concept
 
-##### Flow of the event would look like this:
+This POC is made for a later Open Source project, I will link it here once it is launched. Idea is to have a web server that can manipulate a Postgres database and well, do whatever web servers do. Actix was chosen for the server and Vue for the frontend.
 
-- Registers with email address ➡ Receive an 📨 with a link to verify
-- Follow the link ➡ register with same email and a password
-- Login with email and password ➡ Get verified and receive auth cookie
+The web server part is essentially a direct clone of [Harry Gill's](https://gill.net.in) very good tutorial. It can be found [Here.](https://gill.net.in/posts/auth-microservice-rust-actix-web1.0-diesel-complete-tutorial/) At the time of writing 2021, Rust is a relatively young language so bear in mind that newer and better techniques might be around.
 
-##### Crates Used
+### Prerequisites
 
-- [actix](https://crates.io/crates/actix) // Actix is a Rust actors framework.
-- [actix-web](https://crates.io/crates/actix-web) // Actix web is a simple, pragmatic and extremely fast web framework for Rust.
-- [actix-rt](https://docs.rs/actix-identity) // Request identity service for Actix applications.
-- [rust-argon](crates.io/crates/rust-argon2) // crate for hashing passwords using the cryptographically-secure Argon2 hashing algorithm.
-- [chrono](https://crates.io/crates/chrono) // Date and time library for Rust.
-- [diesel](https://crates.io/crates/diesel) // A safe, extensible ORM and Query Builder for PostgreSQL, SQLite, and MySQL.
-- [dotenv](https://crates.io/crates/dotenv) // A dotenv implementation for Rust.
-- [derive_more](https://crates.io/crates/derive_more) // Convenience macros to derive traits easily
-- [env_logger](https://crates.io/crates/env_logger) // A logging implementation for log which is configured via an environment variable.
-- [futures](https://crates.io/crates/futures) // An implementation of futures and streams featuring zero allocations, composability, and iterator-like interfaces.
-- [lazy_static](https://docs.rs/lazy_static) // A macro for declaring lazily evaluated statics.
-- [r2d2](https://crates.io/crates/r2d2) // A generic connection pool.
-- [serde](https://crates.io/crates/serde) // A generic serialization/deserialization framework.
-- [serde_json](https://crates.io/crates/serde_json) // A JSON serialization file format.
-- [serde_derive](https://crates.io/crates/serde_derive) // Macros 1.1 implementation of #[derive(Serialize, Deserialize)].
-- [sparkpost](https://crates.io/crates/sparkpost) // Rust bindings for sparkpost email api v1.
-- [uuid](https://crates.io/crates/uuid) // A library to generate and parse UUIDs.
+- [Diesel_cli](http://diesel.rs/guides/getting-started/)
+- Postgres
+- Rust
+- Node.js
+- Email service API key, I used sparkpost account for this
 
-Read the full tutorial series on [gill.net.in](https://gill.net.in)
+### Deployment
 
-- [Auth Web Microservice with rust using Actix-Web 3.0 - Complete Tutorial](https://gill.net.in/posts/auth-microservice-rust-actix-web1.0-diesel-complete-tutorial/)
+1. Clone this repo
+2. Create .env file to the root:
+```
+DATABASE_URL=postgres://user:password@server/dbname
+SPARKPOST_API_KEY='xxxxx'
+SENDING_EMAIL_ADDRESS='your.sendingaddress@yourdomain.com'
+```
+3. From the root, `mkdir public`
+4. Go to App folder and run `npm install`
+5. Still in the app folder, run `npm run dev`
+6. From the root, setup diesel: `diesel migrations run` and then `diesel setup`
+7. From the root, run `cargo run`
+8. App SHOULD be up at 127.0.0.1:8086.
+9. Navigate to 127.0.0.1:8086/app/login to see some functionality. Not everything works, this is very much a WIP at this state.
