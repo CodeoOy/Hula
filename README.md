@@ -2,7 +2,7 @@
 
 This POC is made for an open source project which I will link here once it is launched. Idea is to have a web server that can manipulate a Postgres database and well, do whatever web servers do. Actix was chosen for the server and Vue for the frontend.
 
-The web server part is essentially a direct clone of [Harry Gill's](https://gill.net.in) very good tutorial. It can be found [Here.](https://gill.net.in/posts/auth-microservice-rust-actix-web1.0-diesel-complete-tutorial/) At the time of writing 2021, Rust is a relatively young language so bear in mind that newer and better techniques might be around.
+The web server part is essentially a direct clone of [Harry Gill's](https://gill.net.in) very good tutorial. It can be found [here.](https://gill.net.in/posts/auth-microservice-rust-actix-web1.0-diesel-complete-tutorial/) At the time of writing (2021), Rust is a relatively young language so bear in mind that newer and better techniques might be around.
 
 ### Prerequisites
 
@@ -27,4 +27,4 @@ SENDING_EMAIL_ADDRESS='your.sendingaddress@yourdomain.com'
 6. From the root, setup diesel: `diesel migrations run` and then `diesel setup`
 7. From the root, run `cargo run`
 8. App SHOULD be up at 127.0.0.1:8086.
-9. Navigate to 127.0.0.1:8086/app/login to see some functionality. Not everything works, this is very much a WIP at this state.
+9. Not everything works, this is very much a WIP at this state.
