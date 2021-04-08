@@ -17,6 +17,7 @@ pub async fn register_user(
     user_data: web::Json<UserData>,
     pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
+	println!("\n LOLOLOLO {:?} \n", &user_data);
     let res =
         web::block(move || query(invitation_id.into_inner(), user_data.into_inner(), pool)).await;
 
