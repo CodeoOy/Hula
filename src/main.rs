@@ -20,8 +20,8 @@ mod utils;
 
 #[get("/")]
 async fn home(session: Session, req: HttpRequest) -> Result<HttpResponse> {
-    println!("{:?}", req);
-	println!("Lol");
+    //println!("{:?}", req);
+	//println!("Lol");
     // session
     let mut counter = 1;
     if let Some(count) = session.get::<i32>("counter")? {
@@ -42,7 +42,7 @@ async fn home(session: Session, req: HttpRequest) -> Result<HttpResponse> {
 #[get("/app/*")]
 async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
     println!("{:?}", req);
-	println!("Lol");
+	//println!("Lol");
     // session
     let mut counter = 1;
     if let Some(count) = session.get::<i32>("counter")? {
@@ -113,7 +113,7 @@ async fn main() -> std::io::Result<()> {
 			.service(home)
 			.service(allviews)
 			.service(web::resource("/").route(web::get().to(|req: HttpRequest| {
-                println!("{:?}", req);
+                println!("HTTP REQ:\n{:?}\n", req);
                 HttpResponse::Found()
                     .header(header::LOCATION, "index.html")
                     .finish()

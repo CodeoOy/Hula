@@ -2,6 +2,7 @@ table! {
     invitations (id) {
         id -> Uuid,
         email -> Varchar,
+        password_plain -> Varchar,
         expires_at -> Timestamp,
     }
 }
