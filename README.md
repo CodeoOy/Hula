@@ -1,6 +1,6 @@
 # Rust/Actix/Postgres/Vue Proof of Concept
 
-This POC is made for a later Open Source project, I will link it here once it is launched. Idea is to have a web server that can manipulate a Postgres database and well, do whatever web servers do. Actix was chosen for the server and Vue for the frontend.
+This POC is made for an open source project which I will link it here once it is launched. Idea is to have a web server that can manipulate a Postgres database and well, do whatever web servers do. Actix was chosen for the server and Vue for the frontend.
 
 The web server part is essentially a direct clone of [Harry Gill's](https://gill.net.in) very good tutorial. It can be found [Here.](https://gill.net.in/posts/auth-microservice-rust-actix-web1.0-diesel-complete-tutorial/) At the time of writing 2021, Rust is a relatively young language so bear in mind that newer and better techniques might be around.
 
