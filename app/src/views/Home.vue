@@ -2,8 +2,13 @@
 	<div class="container-sm mt-4">
 		<div class="row gx-4">
 			<div class="col-md">
-				<div class="p-3 rounded-2 tropical-box">
+				<div v-if="show_signup == true" class="p-3 rounded-2 tropical-box">
+					<Login />
+					<a href="#" v-on:click="show_signup = false">Sign up here.</a>
+				</div>
+				<div v-else class="p-3 rounded-2 tropical-box">
 					<Register />
+					<a href="#" v-on:click="show_signup = true">Already a user? Log in here.</a>
 				</div>
 			</div>
 			<div class="col-md">
@@ -13,7 +18,7 @@
 			</div>
 			<div class="col-md">
 				<div class="p-3 rounded-2 tropical-box">
-					<Login />
+					Kylpynalle
 				</div>
 			</div>
 		</div>
@@ -28,7 +33,8 @@
 		name: 'Home',
 		data() {
 			return {
-				message: "Treeflooooof"
+				message: "Treeflooooof",
+				show_signup: false,
 			}
 		},
 		components: {

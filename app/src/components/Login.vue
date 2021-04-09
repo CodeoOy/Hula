@@ -1,18 +1,17 @@
 <template>
 	<form v-on:submit="login">
 		<div class="mb-3">
-			<label for="loginUser" class="form-label">email</label>
+			<label for="loginUser" class="form-label">Email</label>
 			<input type="text" class="form-control" id="loginUser" aria-describedby="emailHelp" name="email">
-			<div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
 		</div>
 		<div class="mb-3">
 			<label for="loginPassword" class="form-label">Password</label>
 			<input type="password" class="form-control" id="loginPassword" name="password">
 		</div>
-		<div class="mb-3 form-check">
+		<!--<div class="mb-3 form-check">
 			<input type="checkbox" class="form-check-input" id="exampleCheck">
 			<label class="form-check-label" for="exampleCheck" name="checkbox">I like pina coladas and getting caught in the rain.</label>
-		</div>
+		</div>-->
 		<button type="submit" class="btn btn-primary text-light">Login</button>
 	</form>
 </template>
@@ -23,7 +22,7 @@
 		data() {
 			return {
 				message: "Click here",
-				user: {}
+				user: {},
 			}
 		},
 		methods: {
@@ -62,6 +61,9 @@
 					})    
 				}    
 				getUserData()    
+			},
+			switchForm: function() {
+
 			}
 		}
 	}
