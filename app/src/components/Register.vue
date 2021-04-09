@@ -6,7 +6,7 @@
 			<div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
 		</div>
 		<div class="mb-3">
-			<label for="exampleInputPassword" class="form-label">Password_plain</label>
+			<label for="exampleInputPassword" class="form-label">Password</label>
 			<input type="password" class="form-control" id="exampleInputPassword" name="password_plain">
 		</div>
 		<button type="submit" class="btn btn-primary text-light">Register</button>
@@ -30,7 +30,7 @@
 				let password_plain = e.target.elements.password_plain.value 
 				let getUserData = () => {   
 					let data = {    
-						"email": email,    
+						"email": email,
 						"password_plain": password_plain
 					}
 					fetch('api/invitation', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})

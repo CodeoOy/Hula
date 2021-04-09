@@ -30,6 +30,7 @@ impl FromRequest for LoggedUser {
         if let Ok(identity) = Identity::from_request(req, pl).into_inner() {
             if let Some(user_json) = identity.identity() {
                 if let Ok(user) = serde_json::from_str(&user_json) {
+					println!("\nSuccessfully authenticated (from_request).\n");
                     return ok(user);
                 }
             }
@@ -54,6 +55,7 @@ pub async fn login(
         Ok(user) => {
             let user_string = serde_json::to_string(&user).unwrap();
             id.remember(user_string);
+			println!("\nSuccessfully authenticated (login).\n");
             Ok(HttpResponse::Ok().finish())
         }
         Err(err) => match err {
@@ -77,6 +79,7 @@ fn query(auth_data: AuthData, pool: web::Data<Pool>) -> Result<SlimUser, Service
     if let Some(user) = items.pop() {
         if let Ok(matching) = verify(&user.hash, &auth_data.password) {
             if matching {
+				println!("\nSuccessfully authenticated (query).\n");
                 return Ok(user.into());
             }
         }

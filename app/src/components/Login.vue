@@ -1,13 +1,13 @@
 <template>
 	<form v-on:submit="login">
 		<div class="mb-3">
-			<label for="exampleInputUser" class="form-label">Username</label>
-			<input type="text" class="form-control" id="exampleInputUser" aria-describedby="emailHelp" name="username">
+			<label for="loginUser" class="form-label">email</label>
+			<input type="text" class="form-control" id="loginUser" aria-describedby="emailHelp" name="email">
 			<div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
 		</div>
 		<div class="mb-3">
-			<label for="exampleInputPassword" class="form-label">Password</label>
-			<input type="password" class="form-control" id="exampleInputPassword" name="password">
+			<label for="loginPassword" class="form-label">Password</label>
+			<input type="password" class="form-control" id="loginPassword" name="password">
 		</div>
 		<div class="mb-3 form-check">
 			<input type="checkbox" class="form-check-input" id="exampleCheck">
@@ -29,15 +29,14 @@
 		methods: {
 			login: async function(e) { 
 				e.preventDefault()    
-				let username = e.target.elements.username.value
+				let email = e.target.elements.email.value
 				let password = e.target.elements.password.value 
 				let getUserData = () => {   
 					let data = {    
-						"username": username,    
-						"password": password,
-						"checkbox": checkbox
+						"email": email,    
+						"password": password
 					}
-					fetch('user/login', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
+					fetch('api/auth', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
 					.then((response) => response.json())
 					.then((response) => {    
 						console.log("Vue got Response");
@@ -52,7 +51,7 @@
 					})
 					.catch((errors) => {
 						//console.log("Vue got Error");
-						//console.log("Error data: " + errors);
+						console.log("Error data: " + errors);
 						this.$flashMessage.show({
 							type: 'error',
 							title: 'Incorrect credentials',

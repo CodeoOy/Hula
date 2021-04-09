@@ -13,7 +13,7 @@
 			</div>
 			<div class="col-md">
 				<div class="p-3 rounded-2 tropical-box">
-					Disco turkey
+					<Login />
 				</div>
 			</div>
 		</div>
@@ -22,6 +22,7 @@
 
 <script>
 	import Register from '../components/Register.vue'
+	import Login from '../components/Login.vue'
 	import List from '../components/List.vue'
 	export default {
 		name: 'Home',
@@ -32,7 +33,8 @@
 		},
 		components: {
 			'List': List,
-			'Register': Register
+			'Register': Register,
+			'Login': Login
   		}
 	}
 </script>
