@@ -3,10 +3,12 @@
 		<div class="row gx-4">
 			<div class="col-md">
 				<div v-if="show_signup == true" class="p-3 rounded-2 tropical-box">
+					<h2>Log in</h2>
 					<Login />
 					<a href="#" v-on:click="show_signup = false">Sign up here.</a>
 				</div>
 				<div v-else class="p-3 rounded-2 tropical-box">
+					<h2>Sign up</h2>
 					<Register />
 					<a href="#" v-on:click="show_signup = true">Already a user? Log in here.</a>
 				</div>
