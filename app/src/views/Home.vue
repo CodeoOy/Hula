@@ -2,7 +2,7 @@
 	<div class="container-sm mt-4">
 		<div class="row gx-4">
 			<div class="col-md">
-				<div v-if="show_signup == true" class="p-3 rounded-2 tropical-box">
+				<div v-if="show_signup == false" class="p-3 rounded-2 tropical-box">
 					<h2>Log in</h2>
 					<Login />
 					<a href="#" v-on:click="show_signup = false">Sign up here.</a>
@@ -20,7 +20,7 @@
 			</div>
 			<div class="col-md">
 				<div class="p-3 rounded-2 tropical-box">
-					Kylpynalle
+					{{ message }}
 				</div>
 			</div>
 		</div>
@@ -35,7 +35,7 @@
 		name: 'Home',
 		data() {
 			return {
-				message: "Treeflooooof",
+				message: "Kylpynalle",
 				show_signup: false,
 			}
 		},

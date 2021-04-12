@@ -13,6 +13,8 @@
 			<label class="form-check-label" for="exampleCheck" name="checkbox">I like pina coladas and getting caught in the rain.</label>
 		</div>-->
 		<button type="submit" class="btn btn-primary text-light">Login</button>
+		<p><a href="#" v-on:click="logoutUser">Log out test link</a></p>
+		<p>{{ message }}</p>
 	</form>
 </template>
 
@@ -21,56 +23,78 @@
 		name: 'Login',
 		data() {
 			return {
-				message: "Click here",
+				message: "Not logged in yet",
 				user: {},
 			}
 		},
 		methods: {
+			loginUser: function(email, password) {   
+				let data = {    
+					"email": email,    
+					"password": password
+				}
+				fetch('api/auth', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
+				//.then((response) => response.json())
+				.then((response) => {    
+					if (response.ok) {
+						console.log("Vue got Response");
+						console.log(response);
+						this.message = response;
+						//localStorage.setItem('user', JSON.stringify(response));
+						this.$flashMessage.show({
+							type: 'success',
+							title: 'Successfully logged in',
+							time: 1000
+						});
+						//this.$router.push({path: '/'});
+						return true;
+					} else {
+						//console.log("Vue got Error");
+						console.log("Error data: " + response);
+						this.$flashMessage.show({
+							type: 'error',
+							title: 'Incorrect credentials',
+							time: 1000
+						});
+						console.log("About to log out")
+						//this.$router.push({path: '/'});
+						return false;
+					}
+				})
+			},
+			getUser: function(email, password) {   
+				let data = {    
+					"email": email,    
+					"password": password
+				}
+				fetch('api/auth', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
+				.then((response) => {    
+					if (response.ok) {
+						console.log("Got user")
+					} else {
+						console.log("No user")
+					}
+				})
+			},
 			login: async function(e) { 
 				e.preventDefault()    
 				let email = e.target.elements.email.value
 				let password = e.target.elements.password.value 
+				this.loginUser(email, password);
+				/*
 				let getUser = () => {
 					console.log("Henlo user.")
 				}
-				let loginUser = () => {   
-					let data = {    
-						"email": email,    
-						"password": password
-					}
-					fetch('api/auth', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
-					//.then((response) => response.json())
-					.then((response) => {    
-						if (response.ok) {
-							console.log("Vue got Response");
-							console.log("Response data: " + response.status);
-							localStorage.setItem('user', JSON.stringify(response));
-							this.$flashMessage.show({
-								type: 'success',
-								title: 'Successfully logged in',
-								time: 1000
-							});
-							//this.$router.push({path: '/'});
-							return true;
-						} else {
-							//console.log("Vue got Error");
-							console.log("Error data: " + errors);
-							this.$flashMessage.show({
-								type: 'error',
-								title: 'Incorrect credentials',
-								time: 1000
-							});
-							console.log("About to log out")
-							//this.$router.push({path: '/'});
-							return false;
-						}
-					})
-				};
-				if (loginUser() == true) {
-					getUser()  
+				if (loginUser(email, password) == true) {
+					
 				} else {
 					console.log("Nope.")
 				}
+				*/
+			},
+			logoutUser: function() {
+				console.log("Trying to log out now.")
+				fetch('api/auth', {method: 'DELETE'})
 			}
 		}
 	}
