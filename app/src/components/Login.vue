@@ -30,40 +30,47 @@
 				e.preventDefault()    
 				let email = e.target.elements.email.value
 				let password = e.target.elements.password.value 
-				let getUserData = () => {   
+				let getUser = () => {
+					console.log("Henlo user.")
+				}
+				let loginUser = () => {   
 					let data = {    
 						"email": email,    
 						"password": password
 					}
 					fetch('api/auth', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
-					.then((response) => response.json())
+					//.then((response) => response.json())
 					.then((response) => {    
-						console.log("Vue got Response");
-						console.log("Response data: " + response);
-						localStorage.setItem('user', JSON.stringify(response));
-						this.$flashMessage.show({
-							type: 'success',
-							title: 'Successfully logged in',
-							time: 1000
-						});
-						this.$router.push({path: '/'});
+						if (response.ok) {
+							console.log("Vue got Response");
+							console.log("Response data: " + response.status);
+							localStorage.setItem('user', JSON.stringify(response));
+							this.$flashMessage.show({
+								type: 'success',
+								title: 'Successfully logged in',
+								time: 1000
+							});
+							//this.$router.push({path: '/'});
+							return true;
+						} else {
+							//console.log("Vue got Error");
+							console.log("Error data: " + errors);
+							this.$flashMessage.show({
+								type: 'error',
+								title: 'Incorrect credentials',
+								time: 1000
+							});
+							console.log("About to log out")
+							//this.$router.push({path: '/'});
+							return false;
+						}
 					})
-					.catch((errors) => {
-						//console.log("Vue got Error");
-						console.log("Error data: " + errors);
-						this.$flashMessage.show({
-							type: 'error',
-							title: 'Incorrect credentials',
-							time: 1000
-						});
-						console.log("About to log out")
-						this.$router.push({path: '/'});
-					})    
-				}    
-				getUserData()    
-			},
-			switchForm: function() {
-
+				};
+				if (loginUser() == true) {
+					getUser()  
+				} else {
+					console.log("Nope.")
+				}
 			}
 		}
 	}

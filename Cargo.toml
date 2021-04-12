@@ -1,8 +1,8 @@
 [package]
-name = "simple-auth-server"
-version = "0.3.0"
+name = "poc-rust-vue"
+version = "0.1.0"
 license="MPL-2.0+/LGPL-3.0+"
-authors = ["mygnu <tech@gill.net.in>"]
+authors = ["ninjapiraatti"]
 edition = "2018"
 
 [dependencies]
