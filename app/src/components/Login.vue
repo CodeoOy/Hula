@@ -33,8 +33,9 @@
 					"email": email,    
 					"password": password
 				}
-				fetch('api/auth', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
+				fetch('api/auth', {method: 'POST', headers: {"Content-Type": "application/json"}, credentials: 'include', body: JSON.stringify(data)})
 				//.then((response) => response.json())
+				//.then(response => {return response.json();})
 				.then((response) => {    
 					if (response.ok) {
 						console.log("Vue got Response");
