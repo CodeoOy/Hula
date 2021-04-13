@@ -36,7 +36,7 @@
 		data() {
 			return {
 				message: "Kylpynalle",
-				show_signup: true,
+				show_signup: false,
 			}
 		},
 		components: {

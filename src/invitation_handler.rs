@@ -37,14 +37,6 @@ fn create_invitation(
     let invitation = dbg!(query(invdata.email, invdata.password_plain, pool)?);
     send_invitation(&invitation)
 }
-/*fn create_invitation(
-	invdata: InvitationData,
-    pool: web::Data<Pool>,
-) -> Result<(), crate::errors::ServiceError> {
-    let password_plain: String = hash_password(&invdata.password)?;
-    let invitation = dbg!(query(invdata.email, password_plain, pool)?);
-    send_invitation(&invitation)
-}*/
 
 /// Diesel query
 fn query(eml: String, psw: String, pool: web::Data<Pool>) -> Result<Invitation, crate::errors::ServiceError> {
