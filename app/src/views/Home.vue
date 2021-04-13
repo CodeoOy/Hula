@@ -5,12 +5,12 @@
 				<div v-if="show_signup == false" class="p-3 rounded-2 tropical-box">
 					<h2>Log in</h2>
 					<Login />
-					<a href="#" v-on:click="show_signup = false">Sign up here.</a>
+					<a href="#" v-on:click="show_signup = true">Sign up here.</a>
 				</div>
 				<div v-else class="p-3 rounded-2 tropical-box">
 					<h2>Sign up</h2>
 					<Register />
-					<a href="#" v-on:click="show_signup = true">Already a user? Log in here.</a>
+					<a href="#" v-on:click="show_signup = false">Already a user? Log in here.</a>
 				</div>
 			</div>
 			<div class="col-md">
@@ -36,7 +36,7 @@
 		data() {
 			return {
 				message: "Kylpynalle",
-				show_signup: false,
+				show_signup: true,
 			}
 		},
 		components: {
