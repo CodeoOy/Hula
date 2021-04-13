@@ -15,7 +15,7 @@
 		},
 		methods: {
 			confirm_registration: function() {  
-				fetch(`http://127.0.0.1:8086/api/register/${this.registration_data.id}`, {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(this.registration_data)})
+				fetch(`http://localhost:8086/api/register/${this.registration_data.id}`, {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(this.registration_data)})
 				.then((response) => response.json())
 				.then((response) => {    
 					console.log("Vue got Response");
