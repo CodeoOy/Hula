@@ -5,6 +5,7 @@ use serde::Deserialize;
 use crate::email_service::send_invitation;
 use crate::errors::ServiceError;
 use crate::models::{Invitation, Pool};
+use crate::utils::hash_password;
 
 #[derive(Deserialize, Debug)]
 pub struct InvitationData {
@@ -29,7 +30,6 @@ pub async fn post_invitation(
         },
     }
 }
-
 fn create_invitation(
 	invdata: InvitationData,
     pool: web::Data<Pool>,
@@ -37,12 +37,21 @@ fn create_invitation(
     let invitation = dbg!(query(invdata.email, invdata.password_plain, pool)?);
     send_invitation(&invitation)
 }
+/*fn create_invitation(
+	invdata: InvitationData,
+    pool: web::Data<Pool>,
+) -> Result<(), crate::errors::ServiceError> {
+    let password_plain: String = hash_password(&invdata.password)?;
+    let invitation = dbg!(query(invdata.email, password_plain, pool)?);
+    send_invitation(&invitation)
+}*/
 
 /// Diesel query
 fn query(eml: String, psw: String, pool: web::Data<Pool>) -> Result<Invitation, crate::errors::ServiceError> {
     use crate::schema::invitations::dsl::invitations;
 
-    let new_invitation = Invitation::from_details(eml, psw);
+    let password: String = hash_password(&psw)?;
+    let new_invitation = Invitation::from_details(eml, password);
     let conn: &PgConnection = &pool.get().unwrap();
 
     let inserted_invitation = diesel::insert_into(invitations)
