@@ -33,13 +33,20 @@
 					"email": email,    
 					"password": password
 				}
+				//fetch('api/auth', {method: 'POST', headers: {"Content-Type": "application/json"}, credentials: 'include', body: JSON.stringify(data)})
 				fetch('api/auth', {method: 'POST', headers: {"Content-Type": "application/json"}, credentials: 'include', body: JSON.stringify(data)})
 				//.then((response) => response.json())
 				//.then(response => {return response.json();})
 				.then((response) => {    
 					if (response.ok) {
-						console.log("Vue got Response");
+						//console.log("Vue got Response");
 						console.log(response);
+						/*
+						fetch('api/auth', {method: 'GET', headers: {"Content-Type": "application/json", "Set-Cookie": response.headers}, credentials: 'same-origin'})
+						.then((r) => {
+							console.log(r)
+						});
+						*/
 						this.message = response;
 						//localStorage.setItem('user', JSON.stringify(response));
 						this.$flashMessage.show({

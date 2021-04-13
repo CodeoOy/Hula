@@ -119,7 +119,7 @@ async fn main() -> std::io::Result<()> {
                     .finish()
 			})))
     })
-    .bind("127.0.0.1:8086")?
+    .bind("localhost:8086")?
     .run()
     .await
 }

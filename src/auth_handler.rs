@@ -55,8 +55,10 @@ pub async fn login(
         Ok(user) => {
             let user_string = serde_json::to_string(&user).unwrap();
             id.remember(user_string);
+			let user_to_vue = id.identity();
 			println!("\nSuccessfully authenticated (login).\n");
-            Ok(HttpResponse::Ok().finish())
+            //Ok(HttpResponse::Ok().finish()) // Instead of empty response, do we need the cookie to body in order to call it from Vue?
+			Ok(HttpResponse::Ok().json(user_to_vue))
         }
         Err(err) => match err {
             BlockingError::Error(service_error) => Err(service_error),
@@ -79,7 +81,7 @@ fn query(auth_data: AuthData, pool: web::Data<Pool>) -> Result<SlimUser, Service
     if let Some(user) = items.pop() {
         if let Ok(matching) = verify(&user.hash, &auth_data.password) {
             if matching {
-				println!("\nSuccessfully authenticated (query).\n");
+				println!("\nSuccessfully authenticated (db query).\n");
                 return Ok(user.into());
             }
         }
