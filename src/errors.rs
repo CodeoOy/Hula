@@ -25,7 +25,7 @@ impl ResponseError for ServiceError {
 			}
 			ServiceError::BadRequest(ref message) => HttpResponse::BadRequest().json(message),
 			ServiceError::Unauthorized => {
-				HttpResponse::Unauthorized().json("Unauthorized (from Rust).")
+				HttpResponse::Unauthorized().finish()
 			}
 		}
 	}

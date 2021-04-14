@@ -51,7 +51,7 @@
 						fetch('api/auth', {method: 'DELETE'})
 						this.$flashMessage.show({
 							type: 'error',
-							title: 'Bad credentials',
+							title: 'Bad credentials. Cookies maybe deleted.',
 							time: 1000
 						});
 					}

@@ -24,8 +24,10 @@
   		},
 		methods: {
 			checkLogin: function() {
-				fetch('api/auth', {method: 'GET'})
+				fetch('http://localhost:8086/api/auth', {method: 'GET'})
+				//.then((response) => response.json())
 				.then((response) => {
+					//console.log(response)
 					if(response.ok) {
 						this.logged = "henlo";
 					} else {
