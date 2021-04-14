@@ -35,7 +35,12 @@
 			}
 		},
 		mounted() {
-			this.checkLogin();
+			this.checkLogin()
+			console.log("mounted")
+		},
+		updated() {
+			this.checkLogin()
+			console.log("updated")
 		}
 	}
 </script>
