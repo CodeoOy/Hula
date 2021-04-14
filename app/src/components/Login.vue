@@ -33,54 +33,27 @@
 					"email": email,    
 					"password": password
 				}
-				//fetch('api/auth', {method: 'POST', headers: {"Content-Type": "application/json"}, credentials: 'include', body: JSON.stringify(data)})
 				fetch('api/auth', {method: 'POST', headers: {"Content-Type": "application/json"}, credentials: 'include', body: JSON.stringify(data)})
-				//.then((response) => response.json())
-				//.then(response => {return response.json();})
-				.then((response) => {    
+				.then((response) => {
 					if (response.ok) {
-						//console.log("Vue got Response");
-						console.log(response);
-						/*
-						fetch('api/auth', {method: 'GET', headers: {"Content-Type": "application/json", "Set-Cookie": response.headers}, credentials: 'same-origin'})
-						.then((r) => {
-							console.log(r)
-						});
-						*/
-						this.message = response;
-						//localStorage.setItem('user', JSON.stringify(response));
-						this.$flashMessage.show({
-							type: 'success',
-							title: 'Successfully logged in',
-							time: 1000
-						});
-						//this.$router.push({path: '/'});
-						return true;
+						fetch('api/auth', {method: 'GET'})
+						.then((response) => response.json())
+						.then((response) => {
+							this.message = response;
+							//localStorage.setItem('user', JSON.stringify(response));
+							this.$flashMessage.show({
+								type: 'success',
+								title: 'Successfully logged in',
+								time: 1000
+							});
+						})
 					} else {
-						//console.log("Vue got Error");
-						console.log("Error data: " + response);
 						this.$flashMessage.show({
 							type: 'error',
-							title: 'Incorrect credentials',
+							title: 'Bad credentials',
 							time: 1000
 						});
-						console.log("About to log out")
-						//this.$router.push({path: '/'});
-						return false;
-					}
-				})
-			},
-			getUser: function(email, password) {   
-				let data = {    
-					"email": email,    
-					"password": password
-				}
-				fetch('api/auth', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
-				.then((response) => {    
-					if (response.ok) {
-						console.log("Got user")
-					} else {
-						console.log("No user")
+						//this.logoutUser();
 					}
 				})
 			},
@@ -89,16 +62,6 @@
 				let email = e.target.elements.email.value
 				let password = e.target.elements.password.value 
 				this.loginUser(email, password);
-				/*
-				let getUser = () => {
-					console.log("Henlo user.")
-				}
-				if (loginUser(email, password) == true) {
-					
-				} else {
-					console.log("Nope.")
-				}
-				*/
 			},
 			logoutUser: function() {
 				console.log("Trying to log out now.")

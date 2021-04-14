@@ -53,11 +53,11 @@ pub async fn login(
 	match res {
 		Ok(user) => {
 			let user_string = serde_json::to_string(&user).unwrap();
+			//let user_to_vue = user_string.clone();
 			id.remember(user_string);
-			let user_to_vue = id.identity();
 			println!("\nSuccessfully authenticated (login).\n");
-			//Ok(HttpResponse::Ok().finish()) // Instead of empty response, do we need the cookie to body in order to call it from Vue?
-			Ok(HttpResponse::Ok().json(user_to_vue))
+			Ok(HttpResponse::Ok().finish()) // Instead of empty response, do we need the cookie to body in order to call it from Vue?
+			//Ok(HttpResponse::Ok().json(user_to_vue))
 		}
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
