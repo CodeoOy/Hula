@@ -48,12 +48,12 @@
 							});
 						})
 					} else {
+						fetch('api/auth', {method: 'DELETE'})
 						this.$flashMessage.show({
 							type: 'error',
 							title: 'Bad credentials',
 							time: 1000
 						});
-						//this.logoutUser();
 					}
 				})
 			},
@@ -62,10 +62,6 @@
 				let email = e.target.elements.email.value
 				let password = e.target.elements.password.value 
 				this.loginUser(email, password);
-			},
-			logoutUser: function() {
-				console.log("Trying to log out now.")
-				fetch('api/auth', {method: 'DELETE'})
 			}
 		}
 	}
