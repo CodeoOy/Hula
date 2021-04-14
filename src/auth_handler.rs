@@ -30,7 +30,7 @@ impl FromRequest for LoggedUser {
         if let Ok(identity) = Identity::from_request(req, pl).into_inner() {
             if let Some(user_json) = identity.identity() {
                 if let Ok(user) = serde_json::from_str(&user_json) {
-					println!("\nSuccessfully authenticated (from_request).\n");
+                    println!("\nSuccessfully authenticated (from_request).\n");
                     return ok(user);
                 }
             }
@@ -49,16 +49,15 @@ pub async fn login(
     id: Identity,
     pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
-	println!("\nNopenope.\n");
     let res = web::block(move || query(auth_data.into_inner(), pool)).await;
     match res {
         Ok(user) => {
             let user_string = serde_json::to_string(&user).unwrap();
             id.remember(user_string);
-			//let user_to_vue = id.identity();
-			println!("\nSuccessfully authenticated (login).\n");
-            Ok(HttpResponse::Ok().finish()) // Instead of empty response, do we need the cookie to body in order to call it from Vue?
-			//Ok(HttpResponse::Ok().json(user_to_vue))
+            let user_to_vue = id.identity();
+            println!("\nSuccessfully authenticated (login).\n");
+            //Ok(HttpResponse::Ok().finish()) // Instead of empty response, do we need the cookie to body in order to call it from Vue?
+            Ok(HttpResponse::Ok().json(user_to_vue))
         }
         Err(err) => match err {
             BlockingError::Error(service_error) => Err(service_error),
@@ -79,10 +78,9 @@ fn query(auth_data: AuthData, pool: web::Data<Pool>) -> Result<SlimUser, Service
         .load::<User>(conn)?;
 
     if let Some(user) = items.pop() {
-		//println!("{:?} - {:?}", &user.hash, &auth_data.password);
         if let Ok(matching) = verify(&user.hash, &auth_data.password) {
             if matching {
-				println!("\nSuccessfully authenticated (db query).\n");
+                println!("\nSuccessfully authenticated (db query).\n");
                 return Ok(user.into());
             }
         }

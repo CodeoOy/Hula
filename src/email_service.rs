@@ -35,7 +35,7 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
          your Invitation expires on <strong>{}</strong>",
         invitation.id,
         invitation.email,
-		invitation.password_plain,
+        invitation.password_plain,
         invitation
             .expires_at
             .format("%I:%M %p %A, %-d %B, %C%y")
@@ -49,7 +49,6 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
         .subject("You have been invited to join Simple-Auth-Server Rust")
         .html(email_body);
 
-	println!("{:?}", email);
     let result = tm.send(&email);
 
     // Note that we only print out the error response from email api

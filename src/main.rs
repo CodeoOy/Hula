@@ -2,10 +2,10 @@
 extern crate diesel;
 
 use actix_files as fs;
-use actix_session::{CookieSession, Session};
 use actix_identity::{CookieIdentityPolicy, IdentityService};
+use actix_session::{CookieSession, Session};
 use actix_web::http::{header, Method, StatusCode};
-use actix_web::{middleware, web, get, App, HttpServer, HttpResponse, HttpRequest, Result};
+use actix_web::{get, middleware, web, App, HttpRequest, HttpResponse, HttpServer, Result};
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
 
@@ -21,7 +21,7 @@ mod utils;
 #[get("/")]
 async fn home(session: Session, req: HttpRequest) -> Result<HttpResponse> {
     //println!("{:?}", req);
-	//println!("Lol");
+    //println!("Lol");
     // session
     let mut counter = 1;
     if let Some(count) = session.get::<i32>("counter")? {
@@ -42,7 +42,7 @@ async fn home(session: Session, req: HttpRequest) -> Result<HttpResponse> {
 #[get("/app/*")]
 async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
     println!("{:?}", req);
-	//println!("Lol");
+    //println!("Lol");
     // session
     let mut counter = 1;
     if let Some(count) = session.get::<i32>("counter")? {
@@ -109,15 +109,15 @@ async fn main() -> std::io::Result<()> {
                             .route(web::get().to(auth_handler::get_me)),
                     ),
             )
-			.service(fs::Files::new("/public", "public").show_files_listing())
-			.service(home)
-			.service(allviews)
-			.service(web::resource("/").route(web::get().to(|req: HttpRequest| {
+            .service(fs::Files::new("/public", "public").show_files_listing())
+            .service(home)
+            .service(allviews)
+            .service(web::resource("/").route(web::get().to(|req: HttpRequest| {
                 println!("HTTP REQ:\n{:?}\n", req);
                 HttpResponse::Found()
                     .header(header::LOCATION, "index.html")
                     .finish()
-			})))
+            })))
     })
     .bind("localhost:8086")?
     .run()

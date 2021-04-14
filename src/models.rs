@@ -29,16 +29,16 @@ impl User {
 pub struct Invitation {
     pub id: uuid::Uuid,
     pub email: String,
-	pub password_plain: String,
+    pub password_plain: String,
     pub expires_at: chrono::NaiveDateTime,
 }
 
-impl Invitation{
+impl Invitation {
     pub fn from_details<S: Into<String>, T: Into<String>>(email: S, password_plain: T) -> Self {
         Invitation {
             id: uuid::Uuid::new_v4(),
             email: email.into(),
-			password_plain: password_plain.into(),
+            password_plain: password_plain.into(),
             expires_at: chrono::Local::now().naive_local() + chrono::Duration::hours(24),
         }
     }

@@ -10,7 +10,7 @@ use crate::utils::hash_password;
 #[derive(Deserialize, Debug)]
 pub struct InvitationData {
     pub email: String,
-	pub password_plain: String
+    pub password_plain: String,
 }
 
 pub async fn post_invitation(
@@ -18,8 +18,6 @@ pub async fn post_invitation(
     pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
     // run diesel blocking code
-	println!("In post_invitation: \n");
-	println!("\n {:?} \n", invitation_data);
     let res = web::block(move || create_invitation(invitation_data.into_inner(), pool)).await;
 
     match res {
@@ -31,7 +29,7 @@ pub async fn post_invitation(
     }
 }
 fn create_invitation(
-	invdata: InvitationData,
+    invdata: InvitationData,
     pool: web::Data<Pool>,
 ) -> Result<(), crate::errors::ServiceError> {
     let invitation = dbg!(query(invdata.email, invdata.password_plain, pool)?);
@@ -39,7 +37,11 @@ fn create_invitation(
 }
 
 /// Diesel query
-fn query(eml: String, psw: String, pool: web::Data<Pool>) -> Result<Invitation, crate::errors::ServiceError> {
+fn query(
+    eml: String,
+    psw: String,
+    pool: web::Data<Pool>,
+) -> Result<Invitation, crate::errors::ServiceError> {
     use crate::schema::invitations::dsl::invitations;
 
     let password: String = hash_password(&psw)?;
