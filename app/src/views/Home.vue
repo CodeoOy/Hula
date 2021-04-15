@@ -36,7 +36,7 @@
 					<transition name="fadeHeight">
 						<p v-if="show">hello</p>
 					</transition>
-					{{ message }}
+					<p>{{ message }}</p>
 				</div>
 			</div>
 		</div>
