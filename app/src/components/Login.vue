@@ -13,7 +13,6 @@
 			<label class="form-check-label" for="exampleCheck" name="checkbox">I like pina coladas and getting caught in the rain.</label>
 		</div>-->
 		<button type="submit" class="btn btn-primary text-light">Login</button>
-		<p><a href="#" v-on:click="logoutUser">Log out test link</a></p>
 		<p>{{ message }}</p>
 	</form>
 </template>
@@ -41,6 +40,7 @@
 						.then((response) => {
 							this.message = response;
 							//localStorage.setItem('user', JSON.stringify(response));
+							this.$emit('loggedin')
 							this.$flashMessage.show({
 								type: 'success',
 								title: 'Successfully logged in',
