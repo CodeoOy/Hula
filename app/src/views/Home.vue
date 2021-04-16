@@ -3,7 +3,7 @@
 		<div class="row gx-4">
 			<div class="col-md">
 				<transition name="fadeHeight" mode="out-in">
-					<div class="p-3 rounded-2 tropical-box">
+					<div class="p-3 rounded-2 content-box bg-dark text-light">
 						<div v-if="just_logged == false">
 							<div v-if="show_signup == false">
 								<h2>Log in</h2>
@@ -24,13 +24,13 @@
 				</transition>
 			</div>
 			<div class="col-md">
-				<div class="p-3 rounded-2 tropical-box">
+				<div class="p-3 rounded-2 content-box bg-dark text-light">
 					<List />
 				</div>
 			</div>
 			<div class="col-md">
-				<div class="p-3 rounded-2 tropical-box">
-					<button @click="show = !show">
+				<div class="p-3 rounded-2 content-box bg-dark text-light">
+					<button @click="show = !show" class="btn btn-primary text-white">
 						Toggle
 					</button>
 					<transition name="fadeHeight">

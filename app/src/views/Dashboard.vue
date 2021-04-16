@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="row mt-4">
 			<div class="col">
-				<div class="tropical-box rounded-2 p-3">
+				<div class="content-box rounded-2 p-3">
 					<p v-if="message.length">{{ message }}</p>
 				</div>
 			</div>

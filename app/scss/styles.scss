@@ -59,13 +59,27 @@
 }
 
 body {
-	background-image: url('../assets/bg.jpg');
+	background-image: url('../assets/bg2.jpg');
 	background-size: cover;
 	background-attachment: fixed;
 }
 
+a {
+	text-decoration: none;
+}
+
+.text-white {
+	color: #fff;
+}
+
 header {
 	opacity: 0.8;
+	box-shadow: 0px 10px 10px rgba(0,0,0,0.8);
+}
+
+.form-control {
+	background-color: #bea7c4;
+	border: 1px solid #000;
 }
 
 .font-heading {
@@ -74,12 +88,10 @@ header {
 	&--large {
 		font-size: 2.5rem;
 		color: #fff;
-		text-shadow: 0px 0px 10px $info;
 	}
 }
 
-.tropical-box {
-	box-shadow: 0px 10px 10px transparentize(darken($primary, 20%), 0.7);
-	background-color: transparentize($light, $amount: 0.1);
+.content-box {
+	box-shadow: 0px 10px 10px rgba(0,0,0,0.9);
 	transition: all 0.4s ease-in-out;
 }

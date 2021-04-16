@@ -12,7 +12,7 @@
 			<input type="checkbox" class="form-check-input" id="exampleCheck">
 			<label class="form-check-label" for="exampleCheck" name="checkbox">I like pina coladas and getting caught in the rain.</label>
 		</div>-->
-		<button type="submit" class="btn btn-primary text-light">Login</button>
+		<button type="submit" class="btn btn-primary text-white">Login</button>
 		<p>{{ message }}</p>
 	</form>
 </template>

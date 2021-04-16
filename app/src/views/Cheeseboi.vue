@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="row mt-4">
 			<div class="col">
-				<div class="tropical-box rounded-2 p-3">
+				<div class="content-box rounded-2 p-3">
 					<a href="#" v-on:click="getRustData">Test link. May produce a treefloof.</a>
 					<p v-if="message.length">{{ message }}</p>
 					<Confirm />

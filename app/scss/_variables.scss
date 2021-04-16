@@ -1,14 +1,15 @@
 // Variables
 
-$primary: 	#ff4d9d;
-$secondary: #97ffcb;
-
-$success:	#75ecb1;
-$info:		#54d2e9;
-$warning:	#ffe434;
-$danger:	#f971a3;
-$light:		#f8f1e5;
-$dark:		#2a2335;
+$primary: 		#e838b9;
+$secondary: 	#97ffcb;
+$success:		#75ecb1;
+$info:			#54d2e9;
+$warning:		#ffe434;
+$danger:		#f971a3;
+$light:			#c0b4c3;
+$dark:			#120806;
+$link-color:	#00c8a3;
+$link-hover-color: lighten($link-color, 25%);
 
 @font-face {
     font-family: 'salomeitalic';
