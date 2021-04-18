@@ -7,7 +7,7 @@ use crate::models::{Pool, User};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
-	pub uuid: String,
+	pub uid: String,
 }
 
 pub async fn get_by_uuid(
@@ -27,13 +27,19 @@ pub async fn get_by_uuid(
 }
 
 fn query(
+	// First parameter is the struct written at the start of this file.
 	uuid_data: QueryData,
+	// The second parameter is still a bit of a mystery, need to look into that
 	pool: web::Data<Pool>,
+	// First return value is the type of data we're fetching. These are found in models.rs but a generic
+	// or raw result should do to, we don't want to write a new struct for every single query return
 ) -> Result<User, crate::errors::ServiceError> {
-	use crate::schema::users::dsl::users;
-	//use crate::schema::users::dsl::{hash, users};
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data.uuid)?;
+	// Line below imports the schema
+	use crate::schema::users::dsl::{uid, users};
+	// Line below declares the connection
 	let conn: &PgConnection = &pool.get().unwrap();
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data.uid)?; // This might not be even close
+	// Declaration below does the actual search from db
 	let user_res = users
         .filter(uid.eq(uuid_query))
 		.load::<User>(conn)?;
