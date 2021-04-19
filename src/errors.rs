@@ -14,6 +14,9 @@ pub enum ServiceError {
 
 	#[display(fmt = "Unauthorized")]
 	Unauthorized,
+
+	#[display(fmt = "Empty result")]
+	Empty,
 }
 
 // impl ResponseError trait allows to convert our errors into http responses with appropriate data
@@ -26,6 +29,9 @@ impl ResponseError for ServiceError {
 			ServiceError::BadRequest(ref message) => HttpResponse::BadRequest().json(message),
 			ServiceError::Unauthorized => {
 				HttpResponse::Unauthorized().finish()
+			}
+			ServiceError::Empty => {
+				HttpResponse::NoContent().finish()
 			}
 		}
 	}

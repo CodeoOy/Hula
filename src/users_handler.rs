@@ -37,5 +37,5 @@ fn query(
 		println!("\nGot all users.\n");
 		return Ok(items);
 	}
-	Err(ServiceError::Unauthorized)
+	Err(ServiceError::Empty)
 }
