@@ -18,6 +18,7 @@ mod register_handler;
 mod schema;
 mod utils;
 mod queries;
+mod users_handler;
 
 #[get("/")]
 async fn home(session: Session, req: HttpRequest) -> Result<HttpResponse> {
@@ -102,6 +103,10 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/query")
 							.route(web::post().to(queries::get_by_uuid)),
+					)
+					.service(
+						web::resource("/users")
+							.route(web::post().to(users_handler::get_all)),
 					)
 					.service(
 						web::resource("/register/{invitation_id}")
