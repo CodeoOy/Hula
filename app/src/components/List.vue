@@ -1,9 +1,12 @@
 <template>
 	<div>
-		<p><a href="#" v-on:click="getUserData">{{ message }}</a></p>
 		<p><a href="#" v-on:click="getAllUsers">Get all users</a></p>
 		<p>{{ user.email }}</p>
-		<p>{{ users }}</p>
+		<ul>
+			<li v-for="user in users" :key="user.email">
+				<a href="#" v-on:click="getUserData">{{user.email}}</a>
+			</li>
+		</ul>
 	</div>
 </template>
 
@@ -31,7 +34,7 @@
 					this.user = response;
 					this.$flashMessage.show({
 						type: 'success',
-						title: 'Successfully fetched data',
+						title: 'Successfully fetched Tuomas',
 						time: 1000
 					});
 				})    
@@ -42,18 +45,14 @@
 				})
 			},
 			getAllUsers: function() {
-				fetch('api/users', {
-					method: 'POST',
-					headers: {"Content-Type": "application/json"},
-					body: JSON.stringify({"uid": "09c66d46-1dc3-405c-8511-10485fa30b3c"})
-				})
+				fetch('api/users', {method: 'GET'})
 				.then((response) => response.json())
 				.then(response => { 
 					console.log(response);
 					this.users = response;
 					this.$flashMessage.show({
 						type: 'success',
-						title: 'Successfully fetched data',
+						title: 'Successfully fetched users',
 						time: 1000
 					});
 				})    
