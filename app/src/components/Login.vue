@@ -32,7 +32,12 @@
 					"email": email,    
 					"password": password
 				}
-				fetch('api/auth', {method: 'POST', headers: {"Content-Type": "application/json"}, credentials: 'include', body: JSON.stringify(data)})
+				fetch('api/auth', {
+					method: 'POST',
+					headers: {"Content-Type": "application/json"},
+					credentials: 'include',
+					body: JSON.stringify(data)
+				})
 				.then((response) => {
 					if (response.ok) {
 						fetch('api/auth', {method: 'GET'})

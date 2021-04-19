@@ -7,7 +7,7 @@ use crate::models::{Pool, User};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
-	pub uid: String,
+	pub uid: String
 }
 
 pub async fn get_by_uuid(
@@ -19,7 +19,7 @@ pub async fn get_by_uuid(
 	let res = web::block(move || query(uuid_data.into_inner(), pool)).await;
 
 	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)), // Not user, something else?
+		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -39,12 +39,12 @@ fn query(
 	use crate::schema::users::dsl::{uid, users};
 	// Line below declares the connection
 	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data.uid)?; // This might not be even close
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data.uid)?;
 	// Declaration below does the actual search from db
 	let mut items = users
         .filter(uid.eq(uuid_query))
+		// This does the query but what's with the question mark?
 		.load::<User>(conn)?;
-        //.first::<User>(conn);
 	if let Some(user_res) = items.pop() {
 		println!("\nQuery successful.\n");
 		return Ok(user_res.into());

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<a href="#" v-on:click="getUserData">{{ message }}</a>
-		<p>{{ user.name }}</p>
+		<p>{{ user.email }}</p>
 	</div>
 </template>
 
@@ -10,14 +10,18 @@
 		name: 'List',
 		data() {
 			return {
-				message: "Click here",
+				message: "Get Tuomas",
 				user: {}
 			}
 		},
 		methods: {
 			getUserData: function() {
 				console.log("getUserData fired.");   
-				fetch('/user/f8e32338-b837-4632-99b8-33e9c93a44e6', {method: 'GET'})
+				fetch('api/query', {
+					method: 'POST',
+					headers: {"Content-Type": "application/json"},
+					body: JSON.stringify({"uid": "09c66d46-1dc3-405c-8511-10485fa30b3c"})
+				})
 				.then((response) => response.json())
 				.then(response => { 
 					console.log(response);

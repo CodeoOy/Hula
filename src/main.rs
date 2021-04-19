@@ -101,7 +101,7 @@ async fn main() -> std::io::Result<()> {
 					)
 					.service(
 						web::resource("/query")
-							.route(web::get().to(queries::get_by_uuid)),
+							.route(web::post().to(queries::get_by_uuid)),
 					)
 					.service(
 						web::resource("/register/{invitation_id}")

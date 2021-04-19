@@ -30,9 +30,11 @@
 			</div>
 			<div class="col-md">
 				<div class="p-3 rounded-2 content-box bg-dark text-light">
-					<button @click="show = !show" class="btn btn-primary text-white">
-						Toggle
-					</button>
+					<p>
+						<button @click="show = !show" class="btn btn-primary text-white">
+							Transition
+						</button>
+					</p>
 					<transition name="fadeHeight">
 						<p v-if="show">hello</p>
 					</transition>
@@ -73,7 +75,7 @@
 			logoutUser () {
 				fetch('api/auth', {method: 'DELETE'})
 				this.just_logged = false;
-			}
+			},
 		}
 	}
 </script>
