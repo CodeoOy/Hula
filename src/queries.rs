@@ -40,9 +40,13 @@ fn query(
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data.uid)?; // This might not be even close
 	// Declaration below does the actual search from db
-	let user_res = users
+	let mut items = users
         .filter(uid.eq(uuid_query))
 		.load::<User>(conn)?;
-        //.first::<QueryData>(conn)
-    Ok(user_res.into())
+        //.first::<User>(conn);
+	if let Some(user_res) = items.pop() {
+		println!("\nQuery successful.\n");
+		return Ok(user_res.into());
+	}
+	Err(ServiceError::Unauthorized)
 }
