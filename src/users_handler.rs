@@ -11,12 +11,11 @@ pub struct QueryData {
 }
 
 pub async fn get_all(
-	payload: web::Json<QueryData>,
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
 	// run diesel blocking code
 	println!("\nGetting all users");
-	let res = web::block(move || query(payload.into_inner(), pool)).await;
+	let res = web::block(move || query(pool)).await;
 
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
@@ -28,19 +27,15 @@ pub async fn get_all(
 }
 
 fn query(
-	payload: QueryData,
 	pool: web::Data<Pool>,
 ) -> Result<Vec<User>, crate::errors::ServiceError> {
 	use crate::schema::users::dsl::{users};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let mut items = users
+	let items = users
 		.load::<User>(conn)?;
-	/*
-	if let Some(query_res) = items.as_chunks() {
-		println!("\nQuery successful.\n");
-		return Ok(query_res.into());
+	if items.is_empty() == false {
+		println!("\nGot all users.\n");
+		return Ok(items);
 	}
-	*/
-	return Ok(items);
 	Err(ServiceError::Unauthorized)
 }

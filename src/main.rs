@@ -17,7 +17,7 @@ mod models;
 mod register_handler;
 mod schema;
 mod utils;
-mod queries;
+mod oneuser_handler;
 mod users_handler;
 
 #[get("/")]
@@ -102,7 +102,7 @@ async fn main() -> std::io::Result<()> {
 					)
 					.service(
 						web::resource("/query")
-							.route(web::post().to(queries::get_by_uuid)),
+							.route(web::post().to(oneuser_handler::get_by_uuid)),
 					)
 					.service(
 						web::resource("/users")
