@@ -15,6 +15,7 @@ pub async fn get_by_uuid(
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
 	// run diesel blocking code
+	println!("\nGetting user by uuid");
 	let res = web::block(move || query(uuid_data.into_inner(), pool)).await;
 
 	match res {
