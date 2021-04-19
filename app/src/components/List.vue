@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<p><a href="#" v-on:click="getAllUsers">Get all users</a></p>
-		<p>{{ user.email }}</p>
+		<p>{{ user.uid }}</p>
 		<ul>
 			<li v-for="user in users" :key="user.email">
-				<a href="#" v-on:click="getUserData">{{user.email}}</a>
+				<a href="#" v-on:click="getUserData(user.uid)">{{user.email}}</a>
 			</li>
 		</ul>
 	</div>
@@ -21,12 +21,12 @@
 			}
 		},
 		methods: {
-			getUserData: function() {
+			getUserData: function(uid) {
 				console.log("getUserData fired.");   
 				fetch('api/query', {
 					method: 'POST',
 					headers: {"Content-Type": "application/json"},
-					body: JSON.stringify({"uid": "09c66d46-1dc3-405c-8511-10485fa30b3c"})
+					body: JSON.stringify({"uid": uid})
 				})
 				.then((response) => response.json())
 				.then(response => { 
