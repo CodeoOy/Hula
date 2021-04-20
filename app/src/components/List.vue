@@ -15,14 +15,12 @@
 		name: 'List',
 		data() {
 			return {
-				message: "Get Tuomas",
 				user: {},
 				users: {}
 			}
 		},
 		methods: {
-			getUserData: function(uid) {
-				console.log("getUserData fired.");   
+			getUserData: function(uid) { 
 				fetch('api/query', {
 					method: 'POST',
 					headers: {"Content-Type": "application/json"},
@@ -32,17 +30,7 @@
 				.then(response => { 
 					console.log(response);
 					this.user = response;
-					this.$flashMessage.show({
-						type: 'success',
-						title: 'Successfully fetched Tuomas',
-						time: 1000
-					});
 				})    
-				.catch((errors) => {    
-					console.log("Could not get data");
-					console.log(errors);
-					//this.$router.push('/create'); 
-				})
 			},
 			getAllUsers: function() {
 				fetch('api/users', {method: 'GET'})
@@ -50,16 +38,10 @@
 				.then(response => { 
 					console.log(response);
 					this.users = response;
-					this.$flashMessage.show({
-						type: 'success',
-						title: 'Successfully fetched users',
-						time: 1000
-					});
 				})    
 				.catch((errors) => {    
 					console.log("Could not get data");
 					console.log(errors);
-					//this.$router.push('/create'); 
 				})
 			}
 		}

@@ -7,9 +7,20 @@ use serde::{Deserialize, Serialize};
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
 #[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
+#[table_name = "projects"]
+pub struct Project {
+	pub pid: uuid::Uuid,
+	pub available: bool,
+	pub name: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
 #[table_name = "users"]
 pub struct User {
 	pub uid: uuid::Uuid,
+	pub isadmin: bool,
+	pub ispro: bool,
+	pub available: bool,
 	pub email: String,
 	pub hash: String,
 	pub created_at: chrono::NaiveDateTime,
@@ -19,6 +30,9 @@ impl User {
 	pub fn from_details<S: Into<String>, T: Into<String>>(email: S, pwd: T) -> Self {
 		User {
 			uid: uuid::Uuid::new_v4(),
+			isadmin: false,
+			ispro: true,
+			available: true,
 			email: email.into(),
 			hash: pwd.into(),
 			created_at: chrono::Local::now().naive_local(),
