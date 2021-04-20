@@ -2,12 +2,12 @@
 	<div>
 		<p><a href="#" v-on:click="getList('users')">Get all users</a></p>
 		<p><a href="#" v-on:click="getList('projects')">Get all projects</a></p>
-		<p>{{ item[0] }}</p>
-		<ul>
+		<p>{{ user.email }}</p>
+		<ol>
 			<li v-for="item in items" :key="item.pid">
-				{{item.name}}
+				{{ item.name }}
 			</li>
-		</ul>
+		</ol>
 		<ul>
 			<li v-for="user in users" :key="user.email">
 				<a href="#" v-on:click="getUserData(user.uid)">{{user.email}}</a>
@@ -38,6 +38,7 @@
 				.then(response => { 
 					console.log(response);
 					this.user = response;
+					console.log("moro")
 				})    
 			},
 			/*
@@ -59,7 +60,11 @@
 				.then((response) => response.json())
 				.then(response => { 
 					console.log(response);
-					this.users = response;
+					if (table == 'users') {
+						this.users = response;
+					} else {
+						this.items = response;
+					}
 				})    
 				.catch((errors) => {    
 					console.log("Could not get data");
