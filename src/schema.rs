@@ -8,8 +8,19 @@ table! {
 }
 
 table! {
+    projects (pid) {
+        pid -> Uuid,
+        available -> Nullable<Bool>,
+        name -> Varchar,
+    }
+}
+
+table! {
     users (uid) {
         uid -> Uuid,
+        isadmin -> Nullable<Bool>,
+        ispro -> Nullable<Bool>,
+        available -> Nullable<Bool>,
         email -> Varchar,
         hash -> Varchar,
         created_at -> Timestamp,
@@ -18,5 +29,6 @@ table! {
 
 allow_tables_to_appear_in_same_query!(
     invitations,
+    projects,
     users,
 );
