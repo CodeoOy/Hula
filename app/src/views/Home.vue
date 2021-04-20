@@ -1,10 +1,10 @@
 <template>
 	<div class="container-sm mt-4">
 		<div class="row gx-4">
-			<div class="col-md">
-				<transition name="fadeHeight" mode="out-in">
-					<div class="p-3 rounded-2 content-box bg-dark text-light">
-						<div v-if="just_logged == false">
+			<div class="modal fade" v-bind:class="{ 'show db': !just_logged }">
+				<div class="modal-dialog">
+					<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
+						<div>
 							<div v-if="show_signup == false">
 								<h2>Log in</h2>
 								<Login v-on:loggedin="isLogged"/>
@@ -16,12 +16,8 @@
 								<a href="#" v-on:click="show_signup = false">Already a user? Log in here.</a>
 							</div>
 						</div>
-						<div v-else>
-							<p>Looks like you're logged in</p>
-							<p><a href="#" v-on:click="logoutUser">Log out test link</a></p>
-						</div>
 					</div>
-				</transition>
+				</div>
 			</div>
 			<div class="col-md">
 				<div class="p-3 rounded-2 content-box bg-dark text-light">
@@ -33,6 +29,11 @@
 					<p>
 						<button @click="show = !show" class="btn btn-primary text-white">
 							Transition
+						</button>
+					</p>
+					<p>
+						<button @click="logoutUser()" class="btn btn-primary text-white">
+							Log out
 						</button>
 					</p>
 					<transition name="fadeHeight">
