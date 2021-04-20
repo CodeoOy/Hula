@@ -10,7 +10,7 @@ table! {
 table! {
     projects (pid) {
         pid -> Uuid,
-        available -> Nullable<Bool>,
+        available -> Bool,
         name -> Varchar,
     }
 }
@@ -18,9 +18,9 @@ table! {
 table! {
     users (uid) {
         uid -> Uuid,
-        isadmin -> Nullable<Bool>,
-        ispro -> Nullable<Bool>,
-        available -> Nullable<Bool>,
+        isadmin -> Bool,
+        ispro -> Bool,
+        available -> Bool,
         email -> Varchar,
         hash -> Varchar,
         created_at -> Timestamp,
