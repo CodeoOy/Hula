@@ -6,7 +6,7 @@ The web server part is essentially a direct clone of [Harry Gill's](https://gill
 
 ### Prerequisites
 
-- [Diesel_cli](http://diesel.rs/guides/getting-started/)
+- [Diesel_cli](http://diesel.rs/guides/getting-started/).
 - Postgres
 - Rust
 - Node.js
@@ -24,8 +24,8 @@ SENDING_EMAIL_ADDRESS='your.sendingaddress@yourdomain.com'
 3. From the root, `mkdir public`
 4. Go to App folder and run `npm install`
 5. Because of reasons, Flashmessages won't install as expected. Run `npm i @smartweb/vue-flash-message@1.0.0-alpha.12`
-5. Still in the app folder, run `npm run dev`
-6. From the root, setup diesel: `diesel migrations run` and then `diesel setup`
-7. From the root, run `cargo run`
-8. App SHOULD be up at 127.0.0.1:8086.
-9. Not everything works, this is very much a WIP at this state.
+6. Still in the app folder, run `npm run dev`
+7. From the root, setup diesel: `diesel migrations run` and then `diesel setup`
+8. From the root, run `cargo run`
+9. App SHOULD be up at 127.0.0.1:8086.
+10. Not everything works, this is very much a WIP at this state.
