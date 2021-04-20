@@ -23,6 +23,7 @@ SENDING_EMAIL_ADDRESS='your.sendingaddress@yourdomain.com'
 ```
 3. From the root, `mkdir public`
 4. Go to App folder and run `npm install`
+5. Because of reasons, Flashmessages won't install as expected. Run `npm i @smartweb/vue-flash-message@1.0.0-alpha.12`
 5. Still in the app folder, run `npm run dev`
 6. From the root, setup diesel: `diesel migrations run` and then `diesel setup`
 7. From the root, run `cargo run`
