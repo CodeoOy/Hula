@@ -19,6 +19,7 @@ mod schema;
 mod utils;
 mod oneuser_handler;
 mod users_handler;
+mod projects_handler;
 
 #[get("/")]
 async fn home(session: Session, req: HttpRequest) -> Result<HttpResponse> {
@@ -107,6 +108,10 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/users")
 							.route(web::get().to(users_handler::get_all)),
+					)
+					.service(
+						web::resource("/projects")
+							.route(web::get().to(projects_handler::get_all_projects)),
 					)
 					.service(
 						web::resource("/register/{invitation_id}")

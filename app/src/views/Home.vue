@@ -1,7 +1,7 @@
 <template>
 	<div class="container-sm mt-4">
 		<div class="row gx-4">
-			<div class="modal fade" v-bind:class="{ 'show db': !just_logged }">
+			<div class="modal fade" v-bind:class="{ 'show db': !logged, '': logged }">
 				<div class="modal-dialog">
 					<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
 						<div>
@@ -56,7 +56,6 @@
 			return {
 				message: "Kylpynalle",
 				show_signup: false,
-				just_logged: false,
 				show: false
 			}
 		},
@@ -71,11 +70,11 @@
 		methods: {
 			isLogged () {
 				console.log("Emit caught")
-				this.just_logged = true;
+				this.$emit('loggedin')
 			},
 			logoutUser () {
 				fetch('api/auth', {method: 'DELETE'})
-				this.just_logged = false;
+				this.$emit('loggedin')
 			},
 		}
 	}

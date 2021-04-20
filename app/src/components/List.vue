@@ -1,7 +1,13 @@
 <template>
 	<div>
-		<p><a href="#" v-on:click="getAllUsers">Get all users</a></p>
-		<p>{{ user.uid }}</p>
+		<p><a href="#" v-on:click="getList('users')">Get all users</a></p>
+		<p><a href="#" v-on:click="getList('projects')">Get all projects</a></p>
+		<p>{{ item[0] }}</p>
+		<ul>
+			<li v-for="item in items" :key="item.pid">
+				{{item.name}}
+			</li>
+		</ul>
 		<ul>
 			<li v-for="user in users" :key="user.email">
 				<a href="#" v-on:click="getUserData(user.uid)">{{user.email}}</a>
@@ -16,7 +22,9 @@
 		data() {
 			return {
 				user: {},
-				users: {}
+				users: {},
+				item: {},
+				items: {}
 			}
 		},
 		methods: {
@@ -32,8 +40,22 @@
 					this.user = response;
 				})    
 			},
-			getAllUsers: function() {
-				fetch('api/users', {method: 'GET'})
+			/*
+			getItemData: function(uid) { 
+				fetch('api/query', {
+					method: 'POST',
+					headers: {"Content-Type": "application/json"},
+					body: JSON.stringify({"uid": uid})
+				})
+				.then((response) => response.json())
+				.then(response => { 
+					console.log(response);
+					this.user = response;
+				})    
+			},
+			*/
+			getList: function(table) {
+				fetch(`api/${table}`, {method: 'GET'})
 				.then((response) => response.json())
 				.then(response => { 
 					console.log(response);

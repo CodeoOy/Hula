@@ -2,7 +2,7 @@
 	<main>
 		<Header />
 		<FlashMessage position="right top" />
-		<router-view :logged='logged'/>
+		<router-view :logged='logged' v-on:loggedin="checkLogin"/>
 	</main>
 </template>
 
@@ -25,8 +25,10 @@
 				fetch('http://localhost:8086/api/auth', {method: 'GET'})
 				.then((response) => {
 					if(response.ok) {
+						console.log("logged")
 						this.logged = true;
 					} else {
+						console.log("NOT logged")
 						this.logged = false;
 					}
 				})
