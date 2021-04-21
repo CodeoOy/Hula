@@ -25,8 +25,8 @@ SENDING_EMAIL_ADDRESS='your.sendingaddress@yourdomain.com'
 4. Go to App folder and run `npm install`
 5. Because of reasons, Flashmessages won't install as expected. Run `npm i @smartweb/vue-flash-message@1.0.0-alpha.12`
 6. Bootstrap needs Popper bu doesn't include it. Still in app folder, run `npm i @popperjs/core`
-6. Still in the app folder, run `npm run dev`
-7. From the root, setup diesel: `diesel migrations run` and then `diesel setup`
-8. From the root, run `cargo run`
-9. App SHOULD be up at 127.0.0.1:8086.
-10. Not everything works, this is very much a WIP at this state.
+7. Still in the app folder, run `npm run dev`
+8. From the root, setup diesel: `diesel migrations run` and then `diesel setup`
+9. From the root, run `cargo run`
+10. App SHOULD be up at 127.0.0.1:8086.
+11. Not everything works, this is very much a WIP at this state.

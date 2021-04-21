@@ -19,7 +19,7 @@
 			</a>
 			<ul class="dropdown-menu" aria-labelledby="usermenu">
 				<li>
-					<a href="#" class="dropdown-item">Log out</a>
+					<a href="#" class="dropdown-item">Do not log out</a>
 				</li>
 			</ul>
 		</div>
