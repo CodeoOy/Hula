@@ -1,9 +1,9 @@
 <template>
 	<div class="p-3 rounded-2 content-box bg-dark text-light">
-		<h2>Pros</h2>
+		<h2>Pro search results</h2>
 		<ul>
 			<li v-for="user in users" :key="user.uid">
-				<a href="#" v-on:click="getuserData(user.uid)">{{user.email}}</a>
+				<a href="#" v-on:click="getUserData(user.uid)">{{user.email}}</a>
 			</li>
 		</ul>
 	</div>
@@ -14,13 +14,15 @@
 		name: 'ResultsPros',
 		data() {
 			return {
-				user: {},
-				users: {},
+				message: "moro",
 			}
 		},
+		props: {
+			users: {}
+		},
 		methods: {
-			getuserData: function(uid) { 
-				fetch('api/query', {
+			getUserData: function(uid) { 
+				fetch('api/user', {
 					method: 'POST',
 					headers: {"Content-Type": "application/json"},
 					body: JSON.stringify({"uid": uid})

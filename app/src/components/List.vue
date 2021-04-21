@@ -1,33 +1,27 @@
 <template>
-	<div class="row">
+	<div class="row gx-4">
 		<div class="col-md-4">
+			<ul class="nav nav-tabs nav-dark">
+				<li class="nav-item">
+					<a class="nav-link" v-bind:class="{ active: tabtoggle }" aria-current="page" href="#" v-on:click="tabtoggle = true">Find a pro</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" v-bind:class="{ active: !tabtoggle }" href="#" v-on:click="tabtoggle = false">Find a lead</a>
+				</li>
+			</ul>
 			<div class="p-3 rounded-2 content-box bg-dark text-light">
-				<ul class="nav nav-tabs">
-					<li class="nav-item">
-						<a class="nav-link active" aria-current="page" href="#" v-on:click="tabtoggle = true">Find a pro</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#" v-on:click="tabtoggle = false">Find a lead</a>
-					</li>
-				</ul>
-				<FindLead v-if="tabtoggle == false" />
-				<FindPro v-else />
+				<FindLead v-on:datafetched="passData" v-if="tabtoggle == false" />
+				<FindPro v-on:datafetched="passData" v-else />
 			</div>
 		</div>
 		<div class="col-md-8">
-			<ResultsLeads v-if="tabtoggle == false" />
-			<ResultsPros v-else />
+			<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+				<h2>Very good matches</h2>
+				<p>In this box we can show good matches that were not actively searched but found by algorithm.</p>
+			</div>
+			<ResultsLeads :leads='currentdata' v-if="tabtoggle == false" />
+			<ResultsPros :users='currentdata' v-else />
 		</div>
-		<ol>
-			<li v-for="item in items" :key="item.pid">
-				{{ item.name }}
-			</li>
-		</ol>
-		<ul>
-			<li v-for="user in users" :key="user.email">
-				<a href="#" v-on:click="getUserData(user.uid)">{{user.email}}</a>
-			</li>
-		</ul>
 	</div>
 </template>
 
@@ -46,12 +40,13 @@
 		},
 		data() {
 			return {
-				tabtoggle: true
+				tabtoggle: true,
+				currentdata: {}
 			}
 		},
 		methods: {
-			toggleTab () {
-
+			passData (value) {
+				this.currentdata = value
 			}
 		}
 	}

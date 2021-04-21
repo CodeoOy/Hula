@@ -19,6 +19,7 @@ mod schema;
 mod utils;
 mod oneuser_handler;
 mod users_handler;
+mod oneproject_handler;
 mod projects_handler;
 
 #[get("/")]
@@ -102,12 +103,16 @@ async fn main() -> std::io::Result<()> {
 							.route(web::post().to(invitation_handler::post_invitation)),
 					)
 					.service(
-						web::resource("/query")
+						web::resource("/user")
 							.route(web::post().to(oneuser_handler::get_by_uuid)),
 					)
 					.service(
 						web::resource("/users")
 							.route(web::get().to(users_handler::get_all)),
+					)
+					.service(
+						web::resource("/project")
+							.route(web::post().to(oneproject_handler::get_by_pid)),
 					)
 					.service(
 						web::resource("/projects")

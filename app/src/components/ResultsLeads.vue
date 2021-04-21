@@ -1,9 +1,9 @@
 <template>
 	<div class="p-3 rounded-2 content-box bg-dark text-light">
-		<h2>Projects</h2>
+		<h2>Project search results</h2>
 		<ul>
 			<li v-for="lead in leads" :key="lead.pid">
-				<a href="#" v-on:click="getleadData(lead.pid)">{{lead.email}}</a>
+				<a href="#" v-on:click="getleadData(lead.pid)">{{lead.name}}</a>
 			</li>
 		</ul>
 	</div>
@@ -14,13 +14,15 @@
 		name: 'ResultsLeads',
 		data() {
 			return {
-				lead: {},
-				leads: {},
+				message: "Heips"
 			}
+		},
+		props: {
+			leads: {}
 		},
 		methods: {
 			getleadData: function(pid) { 
-				fetch('api/query', {
+				fetch('api/project', {
 					method: 'POST',
 					headers: {"Content-Type": "application/json"},
 					body: JSON.stringify({"pid": pid})

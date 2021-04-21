@@ -1,7 +1,8 @@
 <template>
 	<div>
-		<p>First pick a project</p>
-		<button v-on:click="getList('users')" class="btn btn-primary text-white">Search for pros</button>
+		<a href="#" v-on:click="getProjectData('668ef6f0-fec1-4b0a-8fe2-cdbcd11ccf0b')">Get a project</a>
+		<p>{{ project.name }}</p>
+		<button v-on:click="getUsers('users')" class="btn btn-primary text-white">Search for pros</button>
 	</div>
 </template>
 
@@ -10,13 +11,26 @@
 		name: 'FindPro',
 		data() {
 			return {
+				project: {},
 				user: {},
 				users: {},
 			}
 		},
 		methods: {
+			getProjectData: function(pid) { 
+				fetch('api/project', {
+					method: 'POST',
+					headers: {"Content-Type": "application/json"},
+					body: JSON.stringify({"pid": pid})
+				})
+				.then((response) => response.json())
+				.then(response => { 
+					console.log(response);
+					this.project = response;
+				})    
+			},
 			getUserData: function(uid) { 
-				fetch('api/query', {
+				fetch('api/user', {
 					method: 'POST',
 					headers: {"Content-Type": "application/json"},
 					body: JSON.stringify({"uid": uid})
@@ -27,16 +41,13 @@
 					this.user = response;
 				})    
 			},
-			getList: function(table) {
-				fetch(`api/${table}`, {method: 'GET'})
+			getUsers: function(table) {
+				fetch('api/users', {method: 'GET'})
 				.then((response) => response.json())
 				.then(response => { 
 					console.log(response);
-					if (table == 'users') {
-						this.users = response;
-					} else {
-						this.items = response;
-					}
+					this.users = response;
+					this.$emit('datafetched', this.users)
 				})    
 				.catch((errors) => {    
 					console.log("Could not get data");

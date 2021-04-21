@@ -17,7 +17,7 @@ export default function setupRouter() {
 		routes: [
 			{ path: '/app/:pathMatch(.*)*', component: views.Page404 },
 			{ path: '/', component: views.Home },
-			{ path: '/app/cheeseboi', component: views.Cheeseboi },
+			{ path: '/app/confirm', component: views.Confirm },
 			{ path: '/app/dashboard', component: views.Dashboard },
 		],
 		history: createWebHistory(),

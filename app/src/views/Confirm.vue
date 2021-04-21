@@ -15,7 +15,7 @@
 <script>
 	import Confirm from '../components/Confirm.vue'
 	export default {
-		name: 'Cheeseboi',
+		name: 'Confirm',
 		data() {
 			return {
 				message: JSON,
