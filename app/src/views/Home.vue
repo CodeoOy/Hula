@@ -19,7 +19,7 @@
 			</div>
 		</div>
 		<List />
-		<div class="row gx-4">
+		<div class="row gx-4 mt-4">
 			<div class="col">
 				<div class="p-3 rounded-2 content-box bg-dark text-light">
 					<p>

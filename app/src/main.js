@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import FlashMessage from '@smartweb/vue-flash-message';
 import setupRouter from './router.js'
 import App from './App.vue'
+import 'bootstrap'
 
 const router = setupRouter()
 const app = createApp(App)
