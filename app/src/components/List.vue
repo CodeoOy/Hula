@@ -1,8 +1,23 @@
 <template>
-	<div>
-		<p><a href="#" v-on:click="getList('users')">Get all users</a></p>
-		<p><a href="#" v-on:click="getList('projects')">Get all projects</a></p>
-		<p>{{ user.email }}</p>
+	<div class="row">
+		<div class="col-md-4">
+			<div class="p-3 rounded-2 content-box bg-dark text-light">
+				<ul class="nav nav-tabs">
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="#" v-on:click="tabtoggle = true">Find a pro</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#" v-on:click="tabtoggle = false">Find a lead</a>
+					</li>
+				</ul>
+				<FindLead v-if="tabtoggle == false" />
+				<FindPro v-else />
+			</div>
+		</div>
+		<div class="col-md-8">
+			<ResultsLeads v-if="tabtoggle == false" />
+			<ResultsPros v-else />
+		</div>
 		<ol>
 			<li v-for="item in items" :key="item.pid">
 				{{ item.name }}
@@ -17,59 +32,26 @@
 </template>
 
 <script>
+	import FindLead from './FindLead.vue'
+	import FindPro from './FindPro.vue'
+	import ResultsLeads from './ResultsLeads.vue'
+	import ResultsPros from './ResultsPros.vue'  
 	export default {
 		name: 'List',
+		components: {
+			'FindPro': FindPro,
+			'FindLead': FindLead,
+			'ResultsLeads': ResultsLeads,
+			'ResultsPros': ResultsPros
+		},
 		data() {
 			return {
-				user: {},
-				users: {},
-				item: {},
-				items: {}
+				tabtoggle: true
 			}
 		},
 		methods: {
-			getUserData: function(uid) { 
-				fetch('api/query', {
-					method: 'POST',
-					headers: {"Content-Type": "application/json"},
-					body: JSON.stringify({"uid": uid})
-				})
-				.then((response) => response.json())
-				.then(response => { 
-					console.log(response);
-					this.user = response;
-					console.log("moro")
-				})    
-			},
-			/*
-			getItemData: function(uid) { 
-				fetch('api/query', {
-					method: 'POST',
-					headers: {"Content-Type": "application/json"},
-					body: JSON.stringify({"uid": uid})
-				})
-				.then((response) => response.json())
-				.then(response => { 
-					console.log(response);
-					this.user = response;
-				})    
-			},
-			*/
-			getList: function(table) {
-				fetch(`api/${table}`, {method: 'GET'})
-				.then((response) => response.json())
-				.then(response => { 
-					console.log(response);
-					if (table == 'users') {
-						this.users = response;
-					} else {
-						this.items = response;
-					}
-				})    
-				.catch((errors) => {    
-					console.log("Could not get data");
-					console.log(errors);
-				})
+			toggleTab () {
+
 			}
 		}
 	}

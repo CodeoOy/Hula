@@ -14,7 +14,7 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
 	let sending_email =
 		std::env::var("SENDING_EMAIL_ADDRESS").expect("SENDING_EMAIL_ADDRESS must be set");
 	// new email message with sender name and email
-	let mut email = Message::new(EmailAddress::new(sending_email, "Let's Organise"));
+	let mut email = Message::new(EmailAddress::new(sending_email, "Hula"));
 
 	let options = Options {
 		open_tracking: false,
@@ -31,7 +31,7 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
 	let email_body = format!(
 		"Please click on the link below to complete registration. <br/>
          <a href=\"http://localhost:8086/app/cheeseboi?id={}&email={}&password={}\">
-         Link</a> <br>
+         Click here</a> <br>
          your Invitation expires on <strong>{}</strong>",
 		invitation.id,
 		invitation.email,
@@ -46,7 +46,7 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
 	email
 		.add_recipient(recipient)
 		.options(options)
-		.subject("You have been invited to join Simple-Auth-Server Rust")
+		.subject("You have been invited to join Hula ERP.")
 		.html(email_body);
 
 	let result = tm.send(&email);

@@ -1,5 +1,5 @@
 <template>
-	<div class="container-sm mt-4">
+	<div class="container-fluid mt-4">
 		<div class="row gx-4">
 			<div class="modal fade" v-bind:class="{ 'show db': !logged, '': logged }">
 				<div class="modal-dialog">
@@ -19,28 +19,24 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md">
-				<div class="p-3 rounded-2 content-box bg-dark text-light">
-					<List />
-				</div>
-			</div>
-			<div class="col-md">
-				<div class="p-3 rounded-2 content-box bg-dark text-light">
-					<p>
-						<button @click="show = !show" class="btn btn-primary text-white">
-							Transition
-						</button>
-					</p>
-					<p>
-						<button @click="logoutUser()" class="btn btn-primary text-white">
-							Log out
-						</button>
-					</p>
-					<transition name="fadeHeight">
-						<p v-if="show">hello</p>
-					</transition>
-					<p>{{ message }}</p>
-				</div>
+			<List />
+		</div>
+		<div class="row">
+			<div class="p-3 rounded-2 content-box bg-dark text-light">
+				<p>
+					<button @click="show = !show" class="btn btn-primary text-white">
+						Transition
+					</button>
+				</p>
+				<p>
+					<button @click="logoutUser()" class="btn btn-primary text-white">
+						Log out
+					</button>
+				</p>
+				<transition name="fadeHeight">
+					<p v-if="show">hello</p>
+				</transition>
+				<p>{{ message }}</p>
 			</div>
 		</div>
 	</div>
