@@ -80,10 +80,11 @@ impl Invitation {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SlimUser {
 	pub email: String,
+	pub uid: uuid::Uuid
 }
 
 impl From<User> for SlimUser {
 	fn from(user: User) -> Self {
-		SlimUser { email: user.email }
+		SlimUser { email: user.email, uid: user.uid }
 	}
 }

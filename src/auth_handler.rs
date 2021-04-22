@@ -67,7 +67,7 @@ pub async fn login(
 }
 
 pub async fn get_me(logged_user: LoggedUser) -> HttpResponse {
-	HttpResponse::Ok().json(logged_user.email)
+	HttpResponse::Ok().json(logged_user.uid)
 }
 /// Diesel query
 fn query(auth_data: AuthData, pool: web::Data<Pool>) -> Result<SlimUser, ServiceError> {

@@ -19,6 +19,7 @@ export default function setupRouter() {
 			{ path: '/', component: views.Home },
 			{ path: '/app/confirm', component: views.Confirmview },
 			{ path: '/app/dashboard', component: views.Dashboard },
+			{ path: '/app/profile', component: views.Profile },
 		],
 		history: createWebHistory(),
 		linkActiveClass: 'active',

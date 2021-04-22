@@ -21,6 +21,9 @@
 				<li>
 					<a href="#" v-on:click="logOut()" class="dropdown-item">Log out</a>
 				</li>
+				<li>
+					<a href="app/profile" class="dropdown-item">Profile</a>
+				</li>
 			</ul>
 		</div>
 		</div>
@@ -34,7 +37,6 @@ export default {
 	methods: {
 		logOut () {
 			fetch('http://localhost:8086/api/auth', {method: 'DELETE'})
-			.then((response) => response.json())
 			.then((response) => {
 				this.message = response;
 				this.$flashMessage.show({
