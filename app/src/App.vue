@@ -33,12 +33,6 @@
 					}
 				})
 			},
-		},
-		mounted() {
-			this.checkLogin()
-		},
-		updated() {
-			this.checkLogin()
 		}
 	}
 </script>
