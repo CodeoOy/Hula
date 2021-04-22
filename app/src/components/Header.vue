@@ -19,7 +19,7 @@
 			</a>
 			<ul class="dropdown-menu" aria-labelledby="usermenu">
 				<li>
-					<a href="#" class="dropdown-item">Do not log out</a>
+					<a href="#" v-on:click="logOut()" class="dropdown-item">Log out</a>
 				</li>
 			</ul>
 		</div>
@@ -30,6 +30,12 @@
 
 <script>
 export default {
-	name: 'Header'
+	name: 'Header',
+	methods: {
+		logOut () {
+			fetch('http://localhost:8086/api/auth', {method: 'DELETE'})
+			this.logged = false;
+		}
+	}
 };
 </script>

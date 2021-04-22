@@ -32,7 +32,7 @@
 						this.logged = false;
 					}
 				})
-			}
+			},
 		},
 		mounted() {
 			this.checkLogin()
