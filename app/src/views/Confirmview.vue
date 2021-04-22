@@ -15,7 +15,7 @@
 <script>
 	import Confirm from '../components/Confirm.vue'
 	export default {
-		name: 'Confirm',
+		name: 'Confirmview',
 		data() {
 			return {
 				message: JSON,

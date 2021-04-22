@@ -34,7 +34,16 @@ export default {
 	methods: {
 		logOut () {
 			fetch('http://localhost:8086/api/auth', {method: 'DELETE'})
-			this.logged = false;
+			.then((response) => response.json())
+			.then((response) => {
+				this.message = response;
+				this.$flashMessage.show({
+					type: 'success',
+					title: 'Successfully logged out',
+					time: 1000
+				});
+			})
+			this.$emit('loggedout')
 		}
 	}
 };

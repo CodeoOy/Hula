@@ -1,6 +1,6 @@
 <template>
 	<main>
-		<Header />
+		<Header v-on:loggedout="checkLogin" />
 		<FlashMessage position="right top" />
 		<router-view :logged='logged' v-on:loggedin="checkLogin"/>
 	</main>
