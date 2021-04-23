@@ -48,20 +48,16 @@
 					this.user = response;
 				})    
 			},
-			updateUser: function(email, password) {   
-				let data = {    
-					"email": email,    
-					"password": password
-				}
-				fetch('http://localhost:8086/api/user', {
-					method: 'POST',
+			updateUser: function(payload) {   
+				fetch(`http://localhost:8086/api/user/${this.userid}`, {
+					method: 'PUT',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
-					body: JSON.stringify(data)
+					body: JSON.stringify(this.user)
 				})
 				.then((response) => {
 					if (response.ok) {
-						fetch('api/auth', {method: 'GET'})
+						fetch('http://localhost:8086/api/auth', {method: 'GET'})
 						.then((response) => response.json())
 						.then((response) => {
 							this.message = response;
@@ -75,7 +71,7 @@
 							});
 						})
 					} else {
-						fetch('api/auth', {method: 'DELETE'})
+						fetch('http://localhost:8086/api/auth', {method: 'DELETE'})
 						this.$flashMessage.show({
 							type: 'error',
 							title: 'Bad credentials. Cookies maybe deleted.',

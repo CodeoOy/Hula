@@ -16,7 +16,7 @@ pub async fn update_user(
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
 	// run diesel blocking code
-	println!("\nGetting project by uuid");
+	println!("\nUpdating user");
 	let res = web::block(move || query_update(uuid_data.into_inner(), payload, pool)).await;
 
 	match res {
@@ -67,12 +67,13 @@ fn query_update (
 	userdata: web::Json<QueryData>,
 	pool: web::Data<Pool>,
 ) -> Result<User, crate::errors::ServiceError> {
-	use crate::schema::users::dsl::{users, uid};
+	use crate::schema::users::dsl::{users, uid, firstname};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	//let uuid_query = uuid::Uuid::parse_str(&userdata.payload)?;
-	let mut items = users
+	let mut items = diesel::update(users)
 		.filter(uid.eq(uuid_query))
+		.set(firstname.eq("Pentti"))
 		.load::<User>(conn)?;
 	if let Some(user_res) = items.pop() {
 		println!("\nQuery successful.\n");

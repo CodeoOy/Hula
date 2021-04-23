@@ -30,7 +30,7 @@
 					"email": email,    
 					"password": password
 				}
-				fetch('api/auth', {
+				fetch('http://localhost:8086/api/auth', {
 					method: 'POST',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
@@ -38,7 +38,7 @@
 				})
 				.then((response) => {
 					if (response.ok) {
-						fetch('api/auth', {method: 'GET'})
+						fetch('http://localhost:8086/api/auth', {method: 'GET'})
 						.then((response) => response.json())
 						.then((response) => {
 							this.message = response;
@@ -52,7 +52,7 @@
 							});
 						})
 					} else {
-						fetch('api/auth', {method: 'DELETE'})
+						fetch('http://localhost:8086/api/auth', {method: 'DELETE'})
 						this.$flashMessage.show({
 							type: 'error',
 							title: 'Bad credentials. Cookies maybe deleted.',

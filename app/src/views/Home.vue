@@ -69,7 +69,7 @@
 				this.$emit('loggedin')
 			},
 			logoutUser () {
-				fetch('api/auth', {method: 'DELETE'})
+				fetch('http://localhost:8086/api/auth', {method: 'DELETE'})
 				this.$emit('loggedin')
 			},
 		}

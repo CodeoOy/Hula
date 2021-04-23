@@ -105,7 +105,7 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/user/{user_id}")
 							.route(web::get().to(oneuser_handler::get_by_uuid))
-							.route(web::post().to(oneuser_handler::update_user)),
+							.route(web::put().to(oneuser_handler::update_user)),
 					)
 					.service(
 						web::resource("/users")
