@@ -22,7 +22,7 @@
 					<a href="#" v-on:click="logOut()" class="dropdown-item">Log out</a>
 				</li>
 				<li>
-					<a href="app/profile" class="dropdown-item">Profile</a>
+					<a href="http://localhost:8086/app/profile" class="dropdown-item">Profile</a>
 				</li>
 			</ul>
 		</div>

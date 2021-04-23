@@ -6,6 +6,8 @@ CREATE TABLE users (
   ispro BOOLEAN NOT NULL,
   available BOOLEAN NOT NULL,
   email VARCHAR(100) NOT NULL,
+  firstname VARCHAR(100) NOT NULL,
+  lastname VARCHAR(100) NOT NULL,
   hash VARCHAR(122) NOT NULL, --argon hash
   created_at TIMESTAMP NOT NULL
 );

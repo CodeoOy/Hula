@@ -3,14 +3,16 @@
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					<h1>{{ userid }}</h1>
+					<h1>{{ user.firstname }} {{ user.lastname }}</h1>
+					<a href="#">Edit</a>
 					<img src="" alt="">
 				</div>
 			</div>
 			<div class="col-md-8">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h2>Professional profile</h2>
-					{{ user }}
+					<a href="#">Edit</a>
+					<p>Available: {{ user.available }}</p>
 				</div>
 			</div>
 		</div>

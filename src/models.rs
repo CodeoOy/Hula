@@ -22,6 +22,8 @@ pub struct User {
 	pub ispro: bool,
 	pub available: bool,
 	pub email: String,
+	pub firstname: String,
+	pub lastname: String,
 	pub hash: String,
 	pub created_at: chrono::NaiveDateTime,
 }
@@ -34,6 +36,8 @@ impl User {
 			ispro: true,
 			available: true,
 			email: email.into(),
+			firstname: String::from("Pihla"),
+			lastname: String::from("Placeholder"),
 			hash: pwd.into(),
 			created_at: chrono::Local::now().naive_local(),
 		}

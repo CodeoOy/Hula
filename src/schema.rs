@@ -22,6 +22,8 @@ table! {
         ispro -> Bool,
         available -> Bool,
         email -> Varchar,
+        firstname -> Varchar,
+        lastname -> Varchar,
         hash -> Varchar,
         created_at -> Timestamp,
     }
