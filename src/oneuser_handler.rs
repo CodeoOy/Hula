@@ -7,7 +7,9 @@ use crate::models::{Pool, User};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
-	pub payload: String
+	pub firstname: String,
+	pub lastname: String,
+	pub available: bool
 }
 
 pub async fn update_user(
@@ -67,16 +69,20 @@ fn query_update (
 	userdata: web::Json<QueryData>,
 	pool: web::Data<Pool>,
 ) -> Result<User, crate::errors::ServiceError> {
-	use crate::schema::users::dsl::{users, uid, firstname};
+	use crate::schema::users::dsl::{users, uid, firstname, lastname, available};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	//let uuid_query = uuid::Uuid::parse_str(&userdata.payload)?;
+	//let testdata = String::from(userdata.into_inner());
 	let mut items = diesel::update(users)
 		.filter(uid.eq(uuid_query))
-		.set(firstname.eq("Pentti"))
+		.set((
+			firstname.eq(userdata.firstname.clone()),
+			lastname.eq(userdata.lastname.clone()),
+			available.eq(userdata.available)
+		))
 		.load::<User>(conn)?;
 	if let Some(user_res) = items.pop() {
-		println!("\nQuery successful.\n");
+		println!("\nUpdate successful.\n");
 		return Ok(user_res.into());
 	}
 	Err(ServiceError::Unauthorized)

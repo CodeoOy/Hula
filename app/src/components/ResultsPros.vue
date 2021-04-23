@@ -3,7 +3,7 @@
 		<h2>Pro search results</h2>
 		<ul>
 			<li v-for="user in users" :key="user.uid">
-				<a href="#" v-on:click="getUserData(user.uid)">{{user.email}}</a>
+				<a href="#" v-on:click="getUserData(user.uid)">{{user.firstname}} {{ user.lastname }}</a>
 			</li>
 		</ul>
 	</div>

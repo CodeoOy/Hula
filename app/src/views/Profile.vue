@@ -12,7 +12,7 @@
 					<h2>Professional profile</h2>
 					<a href="#" v-on:click="editing = true">Edit your info</a>
 					<p>Available: {{ user.available }}</p>
-					<UserForm :user='user' v-if="editing == true" v-on:formsent="editing = false, updateUser(value)"/>
+					<UserForm :user='user' v-if="editing == true" v-on:formsent="editing = false, updateUser()"/>
 				</div>
 			</div>
 		</div>
@@ -37,7 +37,7 @@
 			getUserId: function () {
 				this.userid = JSON.parse(localStorage.getItem('user'))
 			},
-			getUserData: function(uid) { 
+			getUserData: function() { 
 				fetch(`http://localhost:8086/api/user/${this.userid}`, {
 					method: 'GET',
 					headers: {"Content-Type": "application/json"}
@@ -48,7 +48,7 @@
 					this.user = response;
 				})    
 			},
-			updateUser: function(payload) {   
+			updateUser: function() {   
 				fetch(`http://localhost:8086/api/user/${this.userid}`, {
 					method: 'PUT',
 					headers: {"Content-Type": "application/json"},
