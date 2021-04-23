@@ -29,18 +29,6 @@
 					this.user = response;
 				})    
 			},
-			getProjectData: function(uid) { 
-				fetch('api/user', {
-					method: 'POST',
-					headers: {"Content-Type": "application/json"},
-					body: JSON.stringify({"uid": uid})
-				})
-				.then((response) => response.json())
-				.then(response => { 
-					console.log(response);
-					this.project = response;
-				})    
-			},
 			getProjects: function() {
 				fetch('api/projects', {method: 'GET'})
 				.then((response) => response.json())
