@@ -7,11 +7,29 @@ use crate::models::{Pool, User};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
-	pub uid: String
+	pub payload: String
+}
+
+pub async fn update_user(
+	uuid_data: web::Path<String>,
+	payload: web::Json<QueryData>,
+	pool: web::Data<Pool>,
+) -> Result<HttpResponse, ServiceError> {
+	// run diesel blocking code
+	println!("\nGetting project by uuid");
+	let res = web::block(move || query_update(uuid_data.into_inner(), payload, pool)).await;
+
+	match res {
+		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
 }
 
 pub async fn get_by_uuid(
-	uuid_data: web::Json<QueryData>,
+	uuid_data: web::Path<String>,
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
 	// run diesel blocking code
@@ -28,14 +46,33 @@ pub async fn get_by_uuid(
 }
 
 fn query(
-	uuid_data: QueryData,
+	uuid_data: String,
 	pool: web::Data<Pool>,
 ) -> Result<User, crate::errors::ServiceError> {
 	use crate::schema::users::dsl::{uid, users};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data.uid)?;
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let mut items = users
         .filter(uid.eq(uuid_query))
+		.load::<User>(conn)?;
+	if let Some(user_res) = items.pop() {
+		println!("\nQuery successful.\n");
+		return Ok(user_res.into());
+	}
+	Err(ServiceError::Unauthorized)
+}
+
+fn query_update (
+	uuid_data: String,
+	userdata: web::Json<QueryData>,
+	pool: web::Data<Pool>,
+) -> Result<User, crate::errors::ServiceError> {
+	use crate::schema::users::dsl::{users, uid};
+	let conn: &PgConnection = &pool.get().unwrap();
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	//let uuid_query = uuid::Uuid::parse_str(&userdata.payload)?;
+	let mut items = users
+		.filter(uid.eq(uuid_query))
 		.load::<User>(conn)?;
 	if let Some(user_res) = items.pop() {
 		println!("\nQuery successful.\n");

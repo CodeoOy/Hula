@@ -1,14 +1,8 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::{prelude::*, PgConnection};
-use serde::Deserialize;
 
 use crate::errors::ServiceError;
 use crate::models::{Pool, Project};
-
-#[derive(Deserialize, Debug)]
-pub struct QueryData {
-	pub uid: String
-}
 
 pub async fn get_all_projects(
 	pool: web::Data<Pool>,
