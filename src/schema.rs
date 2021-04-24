@@ -21,17 +21,17 @@ table! {
         projectid -> Uuid,
         skillid -> Uuid,
         skillscopelevelid -> Nullable<Uuid>,
-        minyears -> Nullable<Numeric>,
-        maxyears -> Nullable<Numeric>,
-        countofusers -> Numeric,
+        minyears -> Nullable<Float4>,
+        maxyears -> Nullable<Float4>,
+        countofusers -> Integer,
         begin_time -> Timestamp,
-        end_time -> Nullable<Timestamp>,
-        percentage -> Nullable<Int2>,
+        end_time -> Timestamp,
+        percentage -> Integer,
         inserted_by -> Varchar,
         inserted_at -> Timestamp,
         updated_by -> Varchar,
         updated_at -> Timestamp,
-        updated_count -> Int2,
+        updated_count -> Integer,
     }
 }
 

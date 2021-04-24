@@ -190,3 +190,9 @@ CREATE TABLE userreservations (
 );
 
 SELECT hula_manage_table('userreservations');
+
+
+alter table projectskills alter column minyears type REAL;
+alter table projectskills alter column maxyears type REAL;
+alter table projectskills alter column countofusers type SMALLINT;
+
