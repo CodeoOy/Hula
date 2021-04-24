@@ -21,10 +21,11 @@ mod oneuser_handler;
 mod users_handler;
 mod oneproject_handler;
 mod projects_handler;
-#[path = "handlers/matches_handler.rs"]
-mod matches_handler;
+/*#[path = "handlers/matches_handler.rs"]
+mod matches_handler;*/
 
 mod modelsdb;
+mod handlers;
 
 #[get("/")]
 async fn home(session: Session, req: HttpRequest) -> Result<HttpResponse> {
@@ -129,7 +130,7 @@ async fn main() -> std::io::Result<()> {
 					)
 					.service(
 						web::resource("/matches")
-							.route(web::get().to(matches_handler::get_all_matches)),
+							.route(web::get().to(handlers::matches_handler::get_all_matches)),
 					)
 					.service(
 						web::resource("/auth")
