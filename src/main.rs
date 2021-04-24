@@ -21,9 +21,6 @@ mod oneuser_handler;
 mod users_handler;
 mod oneproject_handler;
 mod projects_handler;
-/*#[path = "handlers/matches_handler.rs"]
-mod matches_handler;*/
-
 mod modelsdb;
 mod handlers;
 
