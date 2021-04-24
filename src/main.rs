@@ -24,7 +24,7 @@ mod projects_handler;
 #[path = "handlers/matches_handler.rs"]
 mod matches_handler;
 
-mod models2;
+mod modelsdb;
 
 #[get("/")]
 async fn home(session: Session, req: HttpRequest) -> Result<HttpResponse> {

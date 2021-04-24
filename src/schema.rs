@@ -16,96 +16,6 @@ table! {
 }
 
 table! {
-    projectskills (id) {
-        id -> Uuid,
-        projectid -> Uuid,
-        skillid -> Uuid,
-        skillscopelevelid -> Nullable<Uuid>,
-        minyears -> Nullable<Float4>,
-        maxyears -> Nullable<Float4>,
-        countofusers -> Integer,
-        begin_time -> Timestamp,
-        end_time -> Timestamp,
-        percentage -> Integer,
-        inserted_by -> Varchar,
-        inserted_at -> Timestamp,
-        updated_by -> Varchar,
-        updated_at -> Timestamp,
-        updated_count -> Integer,
-    }
-}
-
-table! {
-    skillcategories (id) {
-        id -> Uuid,
-        label -> Varchar,
-        parentid -> Nullable<Uuid>,
-        inserted_by -> Varchar,
-        inserted_at -> Timestamp,
-        updated_by -> Varchar,
-        updated_at -> Timestamp,
-        updated_count -> Int2,
-    }
-}
-
-table! {
-    skills (id) {
-        id -> Uuid,
-        label -> Varchar,
-        skillcategoryid -> Uuid,
-        skillscopeid -> Uuid,
-        inserted_by -> Varchar,
-        inserted_at -> Timestamp,
-        updated_by -> Varchar,
-        updated_at -> Timestamp,
-        updated_count -> Int2,
-    }
-}
-
-table! {
-    skillscopelevels (id) {
-        id -> Uuid,
-        label -> Varchar,
-        skillscopeid -> Uuid,
-        index -> Int2,
-        percentage -> Nullable<Int2>,
-        inserted_by -> Varchar,
-        inserted_at -> Timestamp,
-        updated_by -> Varchar,
-        updated_at -> Timestamp,
-        updated_count -> Int2,
-    }
-}
-
-table! {
-    skillscopes (id) {
-        id -> Uuid,
-        label -> Varchar,
-        inserted_by -> Varchar,
-        inserted_at -> Timestamp,
-        updated_by -> Varchar,
-        updated_at -> Timestamp,
-        updated_count -> Int2,
-    }
-}
-
-table! {
-    userreservations (id) {
-        id -> Uuid,
-        userid -> Uuid,
-        description -> Varchar,
-        begin_time -> Nullable<Timestamp>,
-        end_time -> Nullable<Timestamp>,
-        percentage -> Nullable<Int2>,
-        inserted_by -> Varchar,
-        inserted_at -> Timestamp,
-        updated_by -> Varchar,
-        updated_at -> Timestamp,
-        updated_count -> Int2,
-    }
-}
-
-table! {
     users (uid) {
         uid -> Uuid,
         isadmin -> Bool,
@@ -120,17 +30,97 @@ table! {
 }
 
 table! {
+    projectskills (id) {
+        id -> Uuid,
+        projectid -> Uuid,
+        skillid -> Uuid,
+        skillscopelevelid -> Nullable<Uuid>,
+        minyears -> Nullable<Float4>,
+        maxyears -> Nullable<Float4>,
+        countofusers -> Integer,
+        begin_time -> Timestamp,
+        end_time -> Timestamp,
+        percentage -> Integer,
+        updated_by -> Varchar,
+    }
+}
+
+table! {
+    skillcategories (id) {
+        id -> Uuid,
+        label -> Varchar,
+        parentid -> Nullable<Uuid>,
+        updated_by -> Varchar,
+    }
+}
+
+table! {
+    skills (id) {
+        id -> Uuid,
+        label -> Varchar,
+        skillcategoryid -> Uuid,
+        skillscopeid -> Uuid,
+        updated_by -> Varchar,
+    }
+}
+
+table! {
+    skillscopelevels (id) {
+        id -> Uuid,
+        label -> Varchar,
+        skillscopeid -> Uuid,
+        index -> Int2,
+        percentage -> Nullable<Int2>,
+        updated_by -> Varchar,
+    }
+}
+
+table! {
+    skillscopes (id) {
+        id -> Uuid,
+        label -> Varchar,
+        updated_by -> Varchar,
+    }
+}
+
+table! {
+    userreservations (id) {
+        id -> Uuid,
+        userid -> Uuid,
+        description -> Varchar,
+        begin_time -> Nullable<Timestamp>,
+        end_time -> Nullable<Timestamp>,
+        percentage -> Nullable<Int2>,
+        updated_by -> Varchar,
+    }
+}
+
+table! {
     userskills (id) {
         id -> Uuid,
         userid -> Uuid,
         skillid -> Uuid,
         skillscopelevelid -> Nullable<Uuid>,
         years -> Nullable<Numeric>,
-        inserted_by -> Varchar,
-        inserted_at -> Timestamp,
         updated_by -> Varchar,
-        updated_at -> Timestamp,
-        updated_count -> Int2,
+    }
+}
+
+table! {
+    matchcandidates (projectskillid, userskillid) {
+        projectskillid -> Uuid,
+        userskillid -> Uuid,
+        projectname -> Varchar,
+        skillname -> Varchar,
+        required_level -> Varchar,
+        required_index -> Integer,
+        required_minyears -> Nullable<Float4>,
+        required_maxyears -> Nullable<Float4>,
+        firstname -> Varchar,
+        lastname -> Varchar,
+	    user_level -> Varchar,
+	    user_index -> Integer,
+	    user_years -> Nullable<Float4>,
     }
 }
 

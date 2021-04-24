@@ -1,12 +1,9 @@
-/* pub mod matches_handler; */
-
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::{prelude::*, PgConnection};
 
 use crate::errors::ServiceError;
-use crate::models::{Pool};
-
-use crate::models2::projectskill::{ProjectSkill};
+use crate::models::Pool;
+use crate::modelsdb::matchcandidate::MatchCandidate;
 
 pub async fn get_all_matches(
 	pool: web::Data<Pool>,
@@ -26,13 +23,18 @@ pub async fn get_all_matches(
 
 fn query(
 	pool: web::Data<Pool>,
-) -> Result<Vec<ProjectSkill>, crate::errors::ServiceError> {
-	use crate::schema::projectskills::dsl::{projectskills};
+) -> Result<Vec<MatchCandidate>, crate::errors::ServiceError> {
+	use crate::schema::matchcandidates::dsl::matchcandidates;
 	let conn: &PgConnection = &pool.get().unwrap();
-	let items = projectskills
-		.load::<ProjectSkill>(conn)?;
+	let mut items = matchcandidates
+		.load::<MatchCandidate>(conn)?;
+
+	items.retain(|x| x.required_index <= x.user_index);
+	items.retain(|x| x.required_minyears <= x.user_years);
+	items.retain(|x| x.required_maxyears >= x.user_years);
+
 	if items.is_empty() == false {
-		println!("\nGot all projectskills.\n");
+		println!("\nGot some matches.\n");
 		return Ok(items);
 	}
 	Err(ServiceError::Empty)

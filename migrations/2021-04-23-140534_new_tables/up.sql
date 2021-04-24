@@ -23,7 +23,7 @@ CREATE OR REPLACE FUNCTION hula_set_inserted() RETURNS trigger AS $$
 BEGIN
     NEW.inserted_at := current_timestamp;
     NEW.updated_at := NEW.inserted_at;
-    NEW.updated_by := NEW.inserted_by;
+    NEW.inserted_by := NEW.updated_by;
     NEW.updated_count := 0;
     RETURN NEW;
 END;
@@ -31,10 +31,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION hula_set_updated() RETURNS trigger AS $$
 BEGIN
-    IF (
-        NEW IS DISTINCT FROM OLD --AND
-        --NEW.updated_at IS NOT DISTINCT FROM OLD.updated_at
-    ) THEN
+    IF (NEW IS DISTINCT FROM OLD) THEN
         NEW.inserted_by := OLD.inserted_by;
         NEW.inserted_at := OLD.inserted_at;
         NEW.updated_at := current_timestamp;
@@ -78,8 +75,8 @@ CREATE TABLE skillscopelevels (
   id UUID NOT NULL PRIMARY KEY,
   label VARCHAR(100) NOT NULL,
   skillscopeid UUID NOT NULL,
-  index SMALLINT NOT NULL,
-  percentage SMALLINT NULL,
+  index INT NOT NULL,
+  percentage INT NULL,
   inserted_by VARCHAR(100) NOT NULL,
   inserted_at TIMESTAMP NOT NULL,
   updated_by VARCHAR(100) NOT NULL,
@@ -122,7 +119,7 @@ CREATE TABLE userskills (
   userid UUID NOT NULL,
   skillid UUID NOT NULL,
   skillscopelevelid UUID NULL,
-  years NUMERIC NULL,
+  years REAL NULL,
   inserted_by VARCHAR(100) NOT NULL,
   inserted_at TIMESTAMP NOT NULL,
   updated_by VARCHAR(100) NOT NULL,
@@ -148,12 +145,12 @@ CREATE TABLE projectskills (
   projectid UUID NOT NULL,
   skillid UUID NOT NULL,
   skillscopelevelid UUID NULL,
-  minyears NUMERIC NULL,
-  maxyears NUMERIC NULL,
-  countofusers NUMERIC NOT NULL,
+  minyears REAL NULL,
+  maxyears REAL NULL,
+  countofusers INT NOT NULL,
   begin_time TIMESTAMP NOT NULL,
   end_time TIMESTAMP NULL,
-  percentage SMALLINT NULL,
+  percentage INT NULL,
   inserted_by VARCHAR(100) NOT NULL,
   inserted_at TIMESTAMP NOT NULL,
   updated_by VARCHAR(100) NOT NULL,
@@ -178,7 +175,7 @@ CREATE TABLE userreservations (
   description VARCHAR(1000) NOT NULL,
   begin_time TIMESTAMP NULL,
   end_time TIMESTAMP NULL,
-  percentage SMALLINT NULL,
+  percentage INT NULL,
   inserted_by VARCHAR(100) NOT NULL,
   inserted_at TIMESTAMP NOT NULL,
   updated_by VARCHAR(100) NOT NULL,
@@ -192,7 +189,34 @@ CREATE TABLE userreservations (
 SELECT hula_manage_table('userreservations');
 
 
-alter table projectskills alter column minyears type REAL;
-alter table projectskills alter column maxyears type REAL;
-alter table projectskills alter column countofusers type SMALLINT;
+create view matchcandidates as
+select 
+	ps.id "projectskillid",
+	uk.id "userskillid",
+	p.name "projectname",
+	s.label "skillname",
+	lp.label "required_level",
+	lp.index "required_index",
+	ps.minyears "required_minyears",
+	ps.maxyears "required_maxyears",
+	u.firstname,
+	u.lastname,
+	up.label "user_level",
+	up.index "user_index",
+	uk.years "user_years"
+from 
+	projectskills ps, 
+	projects p, 
+	userskills uk, 
+	users u, 
+	skills s, 
+	skillscopelevels lp,
+	skillscopelevels up
+where ps.skillid = uk.skillid
+and ps.projectid = p.pid
+and ps.skillid = s.id
+and ps.skillscopelevelid = lp.id
+and uk.userid = u.uid
+and uk.skillscopelevelid = up.id;
+
 
