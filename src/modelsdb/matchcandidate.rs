@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
 #[table_name = "matchcandidates"]
 pub struct MatchCandidate {
-	pub projectskillid: uuid::Uuid,
+	pub projectneedskillid: uuid::Uuid,
 	pub userskillid: uuid::Uuid,
 	pub projectname: String,
 	pub skillname: String,

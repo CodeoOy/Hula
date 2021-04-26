@@ -107,8 +107,8 @@ table! {
 }
 
 table! {
-    matchcandidates (projectskillid, userskillid) {
-        projectskillid -> Uuid,
+    matchcandidates (projectneedskillid, userskillid) {
+        projectneedskillid -> Uuid,
         userskillid -> Uuid,
         projectname -> Varchar,
         skillname -> Varchar,
