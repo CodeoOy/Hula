@@ -78,12 +78,13 @@ a {
 
 .icon {
 	fill: $light;
-	transform: scale(2);
+	transform: scale(2); // Not exactly a nice way to scale the svg.
+	margin-right: 8px;
 }
 
 header {
 	opacity: 0.8;
-	box-shadow: 0px 10px 10px rgba(0,0,0,0.8);
+	box-shadow: 0px 6px 10px rgba(0,0,0,0.8);
 }
 
 .nav-tabs.nav-dark{
@@ -113,6 +114,6 @@ header {
 }
 
 .content-box {
-	box-shadow: 0px 10px 10px rgba(0,0,0,0.9);
+	box-shadow: 0px 6px 10px rgba(0,0,0,0.9);
 	transition: all 0.4s ease-in-out;
 }

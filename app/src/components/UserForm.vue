@@ -2,12 +2,19 @@
 	<div>
 		<form action="#" @submit.prevent="onSubmit" v-if="'lastname' in user">
 			<p v-if="errorsPresent" class="error">Please fill out all fields!</p>
-			<ul class="form-fields">
-				<li class="form-field"><input type="text" placeholder="Your Name" name="name" v-model="user.firstname" /></li>
-				<li class="form-field"><input type="text" placeholder="Your Name" name="name" v-model="user.lastname" /></li>
-				<li class="form-field"><input type="checkbox" name="available" v-model="user.available" /></li>
-				<li class="form-field"><input type="submit" class="button" value="Save" /></li>
-			</ul>
+			<div class="mb-2">
+				<label class="form-label">First name</label>
+				<input class="form-control" type="text" placeholder="Firstname" name="name" v-model="user.firstname" />
+			</div>
+			<div class="mb-2">
+				<label class="form-label">Last name</label>
+				<input class="form-control" type="text" placeholder="Lastname" name="name" v-model="user.lastname" />
+			</div>
+			<div class="mb-2 form-check">
+				<label class="form-label">Available for work</label>
+				<input type="checkbox" class="form-check-input" name="available" v-model="user.available" />
+			</div>
+			<button type="submit" class="btn btn-primary text-white">Save</button>
 		</form>    
 	</div>
 </template>
