@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<a href="#" v-on:click="getUserData('d428a3a4-7813-4550-a3f3-36e363aab899')">Get a user</a>
+		<a href="#" v-on:click="getUserData('996df290-ad97-4a93-b6d0-10e3c3f0aaea')">Get a user</a>
 		<p>{{ user.email }}</p>
 		<button v-on:click="getProjects()" class="btn btn-gradient ">Search for projects</button>
 	</div>
@@ -17,11 +17,10 @@
 			}
 		},
 		methods: {
-			getUserData: function(uid) { 
-				fetch('api/user', {
-					method: 'POST',
-					headers: {"Content-Type": "application/json"},
-					body: JSON.stringify({"uid": uid})
+			getUserData: function(userid) { 
+				fetch(`http://localhost:8086/api/user/${userid}`, {
+					method: 'GET',
+					headers: {"Content-Type": "application/json"}
 				})
 				.then((response) => response.json())
 				.then(response => { 
