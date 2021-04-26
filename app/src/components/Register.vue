@@ -9,7 +9,7 @@
 			<label for="exampleInputPassword" class="form-label">Password</label>
 			<input type="password" class="form-control" id="exampleInputPassword" name="password_plain">
 		</div>
-		<button type="submit" class="btn btn-primary text-light">Register</button>
+		<button type="submit" class="btn btn-gradient">Register</button>
 	</form>
 </template>
 

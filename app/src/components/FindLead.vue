@@ -2,7 +2,7 @@
 	<div>
 		<a href="#" v-on:click="getUserData('d428a3a4-7813-4550-a3f3-36e363aab899')">Get a user</a>
 		<p>{{ user.email }}</p>
-		<button v-on:click="getProjects()" class="btn btn-primary text-white">Search for projects</button>
+		<button v-on:click="getProjects()" class="btn btn-gradient ">Search for projects</button>
 	</div>
 </template>
 

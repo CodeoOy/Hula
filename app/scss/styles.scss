@@ -76,6 +76,11 @@ a {
 	color: #fff;
 }
 
+.btn-gradient {
+	background-image: linear-gradient(to bottom, $secondary 0%,rgb(14, 191, 135) 100%);
+	border: none;
+}
+
 .icon {
 	fill: $light;
 	transform: scale(2); // Not exactly a nice way to scale the svg.
@@ -91,10 +96,14 @@ header {
 	border-bottom: 1px solid #444;
 	.nav-link {
 		margin-bottom: -2px;
+		background-color: #330b41;
+		border: none;
 		&.active {
-			background-color: #666;
-			border: none;
-			color: $link-color;
+			background-color: #800da6;
+			color: lighten($link-color, 10%);
+		}
+		&:hover {
+			background-color: #800da6;
 		}
 	}
 }

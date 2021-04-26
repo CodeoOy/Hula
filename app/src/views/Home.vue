@@ -23,12 +23,12 @@
 			<div class="col">
 				<div class="p-3 rounded-2 content-box bg-dark text-light">
 					<p>
-						<button @click="show = !show" class="btn btn-primary text-white">
+						<button @click="show = !show" class="btn btn-gradient">
 							Transition
 						</button>
 					</p>
 					<p>
-						<button @click="logoutUser()" class="btn btn-primary text-white">
+						<button @click="logoutUser()" class="btn btn-gradient">
 							Log out
 						</button>
 					</p>

@@ -1,8 +1,11 @@
 <template>
 	<div>
-		<a href="#" v-on:click="getProjectData('668ef6f0-fec1-4b0a-8fe2-cdbcd11ccf0b')">Get a project</a>
-		<p>{{ project.name }}</p>
-		<button v-on:click="getUsers('users')" class="btn btn-primary text-white">Search for pros</button>
+		<form action=""></form>
+		<select class="form-select" aria-label="Default select example">
+		<option selected>Choose the project</option>
+			<option value="668ef6f0-fec1-4b0a-8fe2-cdbcd11ccf0b">Valtava IT-hanke</option>
+		</select>
+		<button v-on:click="getUsers('users')" class="btn btn-gradient">Search for pros</button>
 	</div>
 </template>
 

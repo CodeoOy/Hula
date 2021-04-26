@@ -14,7 +14,7 @@
 				<label class="form-label">Available for work</label>
 				<input type="checkbox" class="form-check-input" name="available" v-model="user.available" />
 			</div>
-			<button type="submit" class="btn btn-primary text-white">Save</button>
+			<button type="submit" class="btn btn-gradient ">Save</button>
 		</form>    
 	</div>
 </template>
