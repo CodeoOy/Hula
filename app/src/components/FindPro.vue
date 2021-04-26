@@ -1,10 +1,14 @@
 <template>
 	<div>
 		<form action=""></form>
-		<select class="form-select" aria-label="Default select example">
+		<select class="mb-2 form-select" aria-label="Choose project">
 		<option selected>Choose the project</option>
 			<option value="668ef6f0-fec1-4b0a-8fe2-cdbcd11ccf0b">Valtava IT-hanke</option>
 		</select>
+		<div class="mb-2 form-check">
+			<label class="form-label">Availability</label>
+			<input type="checkbox" class="form-check-input" name="available" />
+		</div>
 		<button v-on:click="getUsers('users')" class="btn btn-gradient">Search for pros</button>
 	</div>
 </template>

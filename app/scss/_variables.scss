@@ -1,15 +1,20 @@
 // Variables
 
-$primary: 		#e838b9;
-$secondary: 	#97ffcb;
-$success:		#75ecb1;
-$info:			#54d2e9;
-$warning:		#ffe434;
-$danger:		#f971a3;
-$light:			#c0b4c3;
-$dark:			#210e26;
-$link-color:	#00c8a3;
-$link-hover-color: lighten($link-color, 25%);
+$primary: 			#e838b9;
+$secondary: 		#97ffcb;
+$success:			#75ecb1;
+$info:				#54d2e9;
+$warning:			#ffe434;
+$danger:			#f971a3;
+//$light:				#c0b4c3;
+$light:				#b4c3c0;
+$dark:				#210e26;
+$link-color:		#00c8a3;
+$link-hover-color:	lighten($link-color, 25%);
+
+$input-bg:				#eee;
+$input-disabled-bg: 	#ccc;
+$table-striped-color:	$light;
 
 @font-face {
     font-family: 'salomeitalic';

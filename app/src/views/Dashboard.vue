@@ -2,8 +2,21 @@
 	<div class="container">
 		<div class="row mt-4">
 			<div class="col">
-				<div class="content-box rounded-2 p-3">
-					<p v-if="message.length">{{ message }}</p>
+				<div class="p-3 rounded-2 content-box bg-dark text-light">
+					<p>
+						<button @click="show = !show" class="btn btn-gradient">
+							Transition
+						</button>
+					</p>
+					<p>
+						<button @click="logoutUser()" class="btn btn-gradient">
+							Log out
+						</button>
+					</p>
+					<transition name="fadeHeight">
+						<p v-if="show">hello</p>
+					</transition>
+					<p>{{ message }}</p>
 				</div>
 			</div>
 		</div>
@@ -15,7 +28,8 @@
 		name: 'Dashboard',
 		data() {
 			return {
-				message: "Dashboard"
+				message: "Dashboard",
+				show: false
 			}
 		}
 	}

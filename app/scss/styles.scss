@@ -14,7 +14,7 @@
 // @import '../node_modules/bootstrap/scss/images';
 @import '../node_modules/bootstrap/scss/containers';
 @import '../node_modules/bootstrap/scss/grid';
-// @import '../node_modules/bootstrap/scss/tables';
+@import '../node_modules/bootstrap/scss/tables';
 @import '../node_modules/bootstrap/scss/forms';
 @import '../node_modules/bootstrap/scss/buttons';
 @import '../node_modules/bootstrap/scss/transitions';
@@ -77,7 +77,7 @@ a {
 }
 
 .btn-gradient {
-	background-image: linear-gradient(to bottom, $secondary 0%,rgb(14, 191, 135) 100%);
+	background-image: linear-gradient(to bottom, $secondary 0%,rgb(14, 191, 185) 100%);
 	border: none;
 }
 
@@ -93,9 +93,9 @@ header {
 }
 
 .nav-tabs.nav-dark{
-	border-bottom: 1px solid #444;
+	border-bottom: 1px solid #800da6;
 	.nav-link {
-		margin-bottom: -2px;
+		margin-bottom: 0px;
 		background-color: #330b41;
 		border: none;
 		&.active {
@@ -125,4 +125,11 @@ header {
 .content-box {
 	box-shadow: 0px 6px 10px rgba(0,0,0,0.9);
 	transition: all 0.4s ease-in-out;
+}
+
+.table-striped { // Not very pretty but changing the BS variable had no effect
+	> tbody > tr:nth-of-type(#{$table-striped-order}) {
+		--#{$variable-prefix}table-accent-bg: var(--#{$variable-prefix}table-striped-bg);
+		color: $light;
+	}
 }
