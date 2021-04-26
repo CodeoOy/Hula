@@ -18,6 +18,7 @@
 			<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 				<h2>Very good matches</h2>
 				<p>In this box we can show good matches that were not actively searched but found by algorithm.</p>
+				<FeatMatches />
 			</div>
 			<ResultsLeads :leads='currentdata' v-if="tabtoggle == false" />
 			<ResultsPros :users='currentdata' v-else />
@@ -29,14 +30,16 @@
 	import FindLead from './FindLead.vue'
 	import FindPro from './FindPro.vue'
 	import ResultsLeads from './ResultsLeads.vue'
-	import ResultsPros from './ResultsPros.vue'  
+	import ResultsPros from './ResultsPros.vue'
+	import FeatMatches from './FeatMatches.vue'
 	export default {
 		name: 'List',
 		components: {
 			'FindPro': FindPro,
 			'FindLead': FindLead,
 			'ResultsLeads': ResultsLeads,
-			'ResultsPros': ResultsPros
+			'ResultsPros': ResultsPros,
+			'FeatMatches': FeatMatches
 		},
 		data() {
 			return {
