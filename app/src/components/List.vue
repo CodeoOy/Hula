@@ -16,8 +16,7 @@
 		</div>
 		<div class="col-md-8">
 			<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-				<h2>Very good matches</h2>
-				<p>In this box we can show good matches that were not actively searched but found by algorithm.</p>
+				<h2>Matches from teh algorithm</h2>
 				<FeatMatches />
 			</div>
 			<ResultsLeads :leads='currentdata' v-if="tabtoggle == false" />
