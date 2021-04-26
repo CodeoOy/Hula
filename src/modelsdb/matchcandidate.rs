@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
 #[table_name = "matchcandidates"]
 pub struct MatchCandidate {
-	pub projectskillid: uuid::Uuid,
+	pub projectneedskillid: uuid::Uuid,
 	pub userskillid: uuid::Uuid,
 	pub projectname: String,
 	pub skillname: String,
@@ -15,6 +15,7 @@ pub struct MatchCandidate {
 	pub required_maxyears: Option<f32>,
 	pub firstname: String,
 	pub lastname: String,
+	pub available: bool,
 	pub user_level: String,
 	pub user_index: i32,
 	pub user_years: Option<f32>,
