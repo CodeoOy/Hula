@@ -118,6 +118,7 @@ table! {
         required_maxyears -> Nullable<Float4>,
         firstname -> Varchar,
         lastname -> Varchar,
+        available -> Bool,
 	    user_level -> Varchar,
 	    user_index -> Integer,
 	    user_years -> Nullable<Float4>,

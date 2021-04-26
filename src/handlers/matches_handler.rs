@@ -32,6 +32,7 @@ fn query(
 	items.retain(|x| x.required_index <= x.user_index);
 	items.retain(|x| x.required_minyears <= x.user_years);
 	items.retain(|x| x.required_maxyears >= x.user_years);
+	items.retain(|x| x.available == true);
 
 	if items.is_empty() == false {
 		println!("\nGot some matches.\n");

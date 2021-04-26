@@ -42,12 +42,12 @@ CREATE TABLE projectneedskills (
 );
 
 CREATE UNIQUE INDEX projectneedskills_skill ON projectneedskills (projectneedid, skillid);
- 
-drop index skills_index;
-CREATE UNIQUE INDEX skills_index ON skills (label);
 
 SELECT hula_manage_table('projectneeds');
 SELECT hula_manage_table('projectneedskills');
+ 
+drop index skills_index;
+CREATE UNIQUE INDEX skills_index ON skills (label);
 
 create view matchcandidates as
 select 
@@ -61,6 +61,7 @@ select
 	pns.maxyears "required_maxyears",
 	u.firstname,
 	u.lastname,
+	u.available,
 	up.label "user_level",
 	up.index "user_index",
 	uk.years "user_years"
