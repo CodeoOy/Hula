@@ -3,7 +3,7 @@
 		<form action=""></form>
 		<select class="mb-2 form-select" aria-label="Choose project">
 		<option selected>Choose the project</option>
-			<option value="668ef6f0-fec1-4b0a-8fe2-cdbcd11ccf0b">Valtava IT-hanke</option>
+			<option v-for="project in projects" :key="project.name" value="lol">{{ project.name }}</option>
 		</select>
 		<div class="mb-2 form-check">
 			<label class="form-label">Availability</label>
@@ -18,12 +18,25 @@
 		name: 'FindPro',
 		data() {
 			return {
-				project: {},
+				projects: {},
 				user: {},
 				users: {},
 			}
 		},
 		methods: {
+			getProjects: function() {
+				fetch('api/projects', {method: 'GET'})
+				.then((response) => response.json())
+				.then(response => { 
+					console.log(response);
+					this.projects = response;
+					this.$emit('datafetched', this.projects)
+				})    
+				.catch((errors) => {    
+					console.log("Could not get data");
+					console.log(errors);
+				})
+			},
 			getProjectData: function(pid) { 
 				fetch('api/project', {
 					method: 'POST',
@@ -48,7 +61,7 @@
 					this.user = response;
 				})    
 			},
-			getUsers: function(table) {
+			getUsers: function() {
 				fetch('api/users', {method: 'GET'})
 				.then((response) => response.json())
 				.then(response => { 
@@ -61,6 +74,9 @@
 					console.log(errors);
 				})
 			}
+		},
+		mounted() {
+			this.getProjects()
 		}
 	}
 </script>

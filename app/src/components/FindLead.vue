@@ -1,7 +1,9 @@
 <template>
 	<div>
-		<a href="#" v-on:click="getUserData('996df290-ad97-4a93-b6d0-10e3c3f0aaea')">Get a user</a>
-		<p>{{ user.email }}</p>
+		<select class="mb-2 form-select" aria-label="Choose project">
+		<option selected>Choose the pro</option>
+			<option v-for="user in users" :key="user.name" value="lol">{{ user.firstname }} {{ user.lastname }}</option>
+		</select>
 		<button v-on:click="getProjects()" class="btn btn-gradient ">Search for projects</button>
 	</div>
 </template>
@@ -11,7 +13,7 @@
 		name: 'FindLead',
 		data() {
 			return {
-				user: {},
+				users: {},
 				project: {},
 				projects: {},
 			}
@@ -28,6 +30,19 @@
 					this.user = response;
 				})    
 			},
+			getUsers: function() {
+				fetch('api/users', {method: 'GET'})
+				.then((response) => response.json())
+				.then(response => { 
+					console.log(response);
+					this.users = response;
+					this.$emit('datafetched', this.users)
+				})    
+				.catch((errors) => {    
+					console.log("Could not get data");
+					console.log(errors);
+				})
+			},
 			getProjects: function() {
 				fetch('api/projects', {method: 'GET'})
 				.then((response) => response.json())
@@ -41,6 +56,9 @@
 					console.log(errors);
 				})
 			}
+		},
+		mounted() {
+			this.getUsers()
 		}
 	}
 </script>
