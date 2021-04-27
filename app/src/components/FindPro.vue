@@ -68,7 +68,7 @@
 				.then(response => { 
 					console.log(response);
 					this.users = response;
-					this.$emit('datafetched', this.users)
+					this.$emit('usersfetched', this.users)
 				})    
 				.catch((errors) => {    
 					console.log("Could not get data");

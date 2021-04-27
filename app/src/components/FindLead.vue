@@ -50,7 +50,7 @@
 				.then(response => { 
 					console.log(response);
 					this.projects = response;
-					this.$emit('datafetched', this.projects)
+					this.$emit('leadsfetched', this.projects)
 				})    
 				.catch((errors) => {    
 					console.log("Could not get data");

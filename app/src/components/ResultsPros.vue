@@ -2,7 +2,7 @@
 	<div class="p-3 rounded-2 content-box bg-dark text-light">
 		<h2>Pro search results</h2>
 		<transition name="fadeHeight">
-			<table class="table table-dark table-striped text-light">
+			<table v-if="users.length" class="table table-dark table-striped text-light">
 				<thead>
 					<tr>
 						<th scope="col">#</th>

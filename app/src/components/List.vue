@@ -10,8 +10,8 @@
 				</li>
 			</ul>
 			<div class="p-3 rounded-2 content-box bg-dark text-light">
-				<FindLead v-on:datafetched="passData" v-if="tabtoggle == false" />
-				<FindPro v-on:datafetched="passData" v-else />
+				<FindLead v-on:leadsfetched="passLeads" v-if="tabtoggle == false" />
+				<FindPro v-on:usersfetched="passUsers" v-else />
 			</div>
 		</div>
 		<div class="col-md-8">
@@ -19,8 +19,8 @@
 				<h2>Matches from teh algorithm</h2>
 				<FeatMatches />
 			</div>
-			<ResultsLeads :leads='currentdata' v-if="tabtoggle == false" />
-			<ResultsPros :users='currentdata' v-else />
+			<ResultsLeads :leads='leaddata' v-if="tabtoggle == false" />
+			<ResultsPros :users='userdata' v-else />
 		</div>
 	</div>
 </template>
@@ -43,12 +43,16 @@
 		data() {
 			return {
 				tabtoggle: true,
-				currentdata: {}
+				userdata: {},
+				leaddata: {},
 			}
 		},
 		methods: {
-			passData (value) {
-				this.currentdata = value
+			passUsers (value) {
+				this.userdata = value
+			},
+			passLeads (value) {
+				this.leaddata = value
 			}
 		}
 	}

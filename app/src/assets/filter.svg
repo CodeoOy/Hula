@@ -8,7 +8,7 @@
 			<feFuncR type="table" tableValues="0.4 0.1"/>
 			<feFuncG type="table" tableValues="0.1 0.9"/>
 			<feFuncB type="table" tableValues="0.4 0.7"/>
-			<feFuncA type="table" tableValues="0 0.5"/>
+			<feFuncA type="table" tableValues="0 0.4"/>
 		</feComponentTransfer>
 		<feBlend mode="normal" in="componentTransfer" in2="SourceGraphic" result="blend"/>
 	</filter>
