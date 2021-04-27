@@ -4,6 +4,8 @@
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h1>{{ user.firstname }} {{ user.lastname }}</h1>
+					<p>{{ user.email }}</p>
+					<p>{{ user.telephone }}</p>
 					<img src="" alt="">
 				</div>
 			</div>
@@ -12,7 +14,9 @@
 					<h2>Professional profile</h2>
 					<a href="#" v-on:click="editing = true">Edit your info</a>
 					<p>Available: {{ user.available }}</p>
-					<UserForm :user='user' v-if="editing == true" v-on:formsent="editing = false, updateUser()"/>
+					<transition name="fadeHeight">
+						<UserForm :user='user' v-if="editing == true" v-on:formsent="editing = false, updateUser()"/>
+					</transition>
 				</div>
 			</div>
 		</div>
@@ -66,7 +70,7 @@
 							this.$emit('loggedin')
 							this.$flashMessage.show({
 								type: 'success',
-								title: 'Successfully logged in',
+								title: 'User info saved',
 								time: 1000
 							});
 						})

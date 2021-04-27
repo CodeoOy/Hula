@@ -1,7 +1,15 @@
 <template>
-	<ul>
-		<li v-for="match in matches" :key="match.id">
-			{{ match }}
+	<ul class="matches">
+		<li class="match" v-for="match in matches" :key="match.projectname">
+			<div class="match__bg"></div>
+			<div class="match__pro">
+				<img :src="'/public/assets/treefloof.jpg'">
+				<h4>{{ match.firstname }}</h4>
+			</div>
+			<div class="match__project">
+				<img :src="'/public/assets/treefloof.jpg'">
+				<h4>{{ match.projectname }}</h4>
+			</div>
 		</li>
 	</ul>
 </template>
