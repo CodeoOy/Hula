@@ -64,7 +64,29 @@ fn query(
 	Err(ServiceError::Unauthorized)
 }
 
-fn query_update (
+/*
+fn query(
+	uuid_data: String,
+	pool: web::Data<Pool>,
+) -> Result<User, crate::errors::ServiceError> {
+	use crate::schema::users::dsl::{uid, users};
+	use crate::schema::userskills::dsl::{id, userid, skillid, years, userskills};
+	let conn: &PgConnection = &pool.get().unwrap();
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	let mut items = users
+		.inner_join(userskills)
+        //.filter(uid.eq(uuid_query))
+		//.inner_join()
+		.load::<User>(conn)?;
+	if let Some(user_res) = items.pop() {
+		println!("\nQuery successful.\n");
+		return Ok(user_res.into());
+	}
+	Err(ServiceError::Unauthorized)
+}
+*/
+
+fn query_update(
 	uuid_data: String,
 	userdata: web::Json<QueryData>,
 	pool: web::Data<Pool>,

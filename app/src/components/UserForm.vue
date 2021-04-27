@@ -14,7 +14,7 @@
 				<label class="form-label">Available for work</label>
 				<input type="checkbox" class="form-check-input" name="available" v-model="user.available" />
 			</div>
-			<button type="submit" class="btn btn-gradient ">Save</button>
+			<button type="submit" class="btn btn-gradient">Save</button>
 		</form>    
 	</div>
 </template>
@@ -42,7 +42,10 @@ export default {
 			} else {
 				this.$emit('formsent', this.user);
 			}
-		}
+		},
+	},
+	mounted() {
+		getUserSkills()
 	}
 };
 </script>
