@@ -3,11 +3,11 @@
 		<li class="match" v-for="match in matches" :key="match.projectname">
 			<div class="match__bg"></div>
 			<div class="match__pro">
-				<img :src="'/public/assets/treefloof.jpg'">
+				<img :src="'/public/assets/' + match.firstname + '.jpg'">
 				<h4>{{ match.firstname }}</h4>
 			</div>
 			<div class="match__project">
-				<img :src="'/public/assets/treefloof.jpg'">
+				<img :src="'/public/assets/' + match.projectname + '.jpg'">
 				<h4>{{ match.projectname }}</h4>
 			</div>
 		</li>
