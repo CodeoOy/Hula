@@ -2,7 +2,7 @@
 	<div>
 		<form action=""></form>
 		<select class="mb-2 form-select" v-model="selected" aria-label="Choose project">
-		<option selected>Choose the project</option>
+			<option :value="{}" disabled>Choose the project</option>
 			<option v-for="project in projects" :key="project.name" v-bind:value="{ project }">{{ project.name }}</option>
 		</select>
 		<div class="mb-2 form-check">

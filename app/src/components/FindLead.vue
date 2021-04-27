@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<select class="mb-2 form-select" v-model="selected" aria-label="Choose project">
-		<option selected>Choose the pro</option>
+			<option :value="{}" disabled>Choose the pro</option>
 			<option v-for="user in users" :key="user.name" v-bind:value="{ user }">{{ user.firstname }} {{ user.lastname }}</option>
 		</select>
 		<button v-on:click="getProjects()" class="btn btn-gradient ">Search for projects</button>

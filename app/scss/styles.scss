@@ -88,7 +88,11 @@ a {
 .icon {
 	fill: $light;
 	transform: scale(2); // Not exactly a nice way to scale the svg.
+	transition: 0.2s fill ease-in-out;
 	margin-right: 8px;
+	&:hover {
+		fill: $link-color;
+	}
 }
 
 header {
