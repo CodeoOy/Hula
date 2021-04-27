@@ -27,7 +27,7 @@
 		</a>
 
 		<ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-			<li><a href="/app/dashboard" class="nav-link px-2">Dashboard</a></li>
+			<!--<li><a href="/app/dashboard" class="nav-link px-2">Dashboard</a></li>-->
 		</ul>
 
 		<div class="dropdown text-end">

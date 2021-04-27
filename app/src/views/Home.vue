@@ -7,7 +7,7 @@
 						<div v-if="show_signup == false">
 							<h2>Log in</h2>
 							<Login v-on:loggedin="isLogged"/>
-							<a href="#" v-on:click="show_signup = true">Sign up here.</a>
+							<a href="#" v-on:click="show_signup = true">Or sign up here.</a>
 						</div>
 						<div v-else>
 							<h2>Sign up</h2>

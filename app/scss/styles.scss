@@ -83,6 +83,9 @@ a {
 .btn-gradient {
 	background-image: linear-gradient(to bottom, $secondary 0%,rgb(14, 191, 185) 100%);
 	border: none;
+	&:hover {
+		background-image: linear-gradient(to bottom, lighten($secondary, 10%) 0%,rgb(14, 191, 185) 100%);
+	}
 }
 
 .icon {
@@ -124,6 +127,13 @@ header {
 		height: 150px;
 		margin-right: 10px;
 		display: inline-block;
+		animation: fadein 0.3s;
+		&:hover {
+			.match__pro,
+			.match__project {
+				transform: rotate(0deg);
+			}
+		}
 		&__bg {
 			border: 6px solid $secondary;
 			width: 110px;
@@ -140,6 +150,7 @@ header {
 			text-align: center;
 			top: 24px;
 			color: $white;
+			transition: 0.2s transform ease-in-out;
 			h4 {
 				font-size: 0.8rem;
 			}
@@ -201,4 +212,9 @@ header {
 		--#{$variable-prefix}table-accent-bg: var(--#{$variable-prefix}table-striped-bg);
 		color: $light;
 	}
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
