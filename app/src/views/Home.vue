@@ -36,6 +36,11 @@
 		props: {
 			logged: false
 		},
+		watch: {
+			logged: function() {
+				console.log(this.logged)
+			}
+		},
 		components: {
 			'List': List,
 			'Register': Register,

@@ -1,9 +1,9 @@
 <template>
 	<div>
 		<form action=""></form>
-		<select class="mb-2 form-select" aria-label="Choose project">
+		<select class="mb-2 form-select" v-model="selected" aria-label="Choose project">
 		<option selected>Choose the project</option>
-			<option v-for="project in projects" :key="project.name" value="lol">{{ project.name }}</option>
+			<option v-for="project in projects" :key="project.name" v-bind:value="{ project }">{{ project.name }}</option>
 		</select>
 		<div class="mb-2 form-check">
 			<label class="form-label">Availability</label>
@@ -21,6 +21,7 @@
 				projects: {},
 				user: {},
 				users: {},
+				selected: {},
 			}
 		},
 		methods: {

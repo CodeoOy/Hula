@@ -72,6 +72,10 @@ a {
 	display: block;
 }
 
+.modal.show {
+	background-color: rgba(15,0,15,0.9);
+}
+
 .text-white {
 	color: #fff;
 }
