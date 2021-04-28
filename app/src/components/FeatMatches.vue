@@ -4,9 +4,22 @@
 			<div class="modal-dialog">
 				<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
 					<h2>Match</h2>
-					<h4>{{ currentmatch.projectname }}</h4>
-					<h4>{{ currentmatch.firstname }} {{ currentmatch.lastname }}</h4>
-					{{ currentmatch}}
+					<table class="table table-dark table-striped text-light">
+						<thead>
+							<tr>
+								<th></th>
+								<th scope="col">{{ currentmatch.projectname }}</th>
+								<th scope="col">{{ currentmatch.firstname }} {{ currentmatch.lastname }}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>{{ currentmatch.skillname }}</td>
+								<td>{{ currentmatch.required_minyears }}</td>
+								<td>{{ currentmatch.user_years }}</td>
+							</tr>
+						</tbody>
+					</table>
 					<button class="btn btn-primary" v-on:click="show = false">Close</button>
 				</div>
 			</div>
