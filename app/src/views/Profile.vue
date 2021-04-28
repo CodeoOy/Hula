@@ -92,8 +92,10 @@
 			}
 		},
 		mounted() {
-			this.getUserId()
-			this.getUserData(this.userid)
+			console.log(this.$store.state.loggeduser)
+			this.user = this.$store.state.loggeduser
+			//this.getUserId()
+			//this.getUserData(this.userid)
 		}
 	}
 </script>

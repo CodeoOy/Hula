@@ -9,12 +9,19 @@ import 'bootstrap'
 const store = createStore({
 	state () {
 		return {
-			count: 0
+			loggeduser: {},
 		}
 	},
 	mutations: {
-		increment (state) {
-			state.count++
+		setUser (state, data) {
+			fetch(`http://localhost:8086/api/user/${data}`, {
+				method: 'GET',
+				headers: {"Content-Type": "application/json"}
+			})
+			.then((response) => response.json())
+			.then(response => { 
+				state.loggeduser = response;
+			})   
 		}
 	}
 })
