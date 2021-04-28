@@ -8,7 +8,7 @@ use futures::future::{err, ok, Ready};
 use serde::Deserialize;
 
 use crate::errors::ServiceError;
-use crate::models::matchcandidate::{Pool, SlimUser, User};
+use crate::models::tables::{Pool, SlimUser, User};
 use crate::utils::verify;
 
 #[derive(Debug, Deserialize)]

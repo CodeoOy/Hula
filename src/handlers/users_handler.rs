@@ -3,7 +3,7 @@ use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
 
 use crate::errors::ServiceError;
-use crate::models::matchcandidate::{Pool, User};
+use crate::models::tables::{Pool, User};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
