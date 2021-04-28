@@ -2,8 +2,8 @@ use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::{prelude::*, PgConnection};
 
 use crate::errors::ServiceError;
-use crate::models::Pool;
-use crate::modelsdb::matchcandidate::MatchCandidate;
+use crate::models::matchcandidate::Pool;
+use crate::models::matchcandidate::MatchCandidate;
 
 pub async fn get_all_matches(
 	pool: web::Data<Pool>,

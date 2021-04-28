@@ -1,24 +1,18 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::{prelude::*, PgConnection};
-use serde::Deserialize;
 
 use crate::errors::ServiceError;
-use crate::models::{Pool, User};
+use crate::models::matchcandidate::{Pool, Project};
 
-#[derive(Deserialize, Debug)]
-pub struct QueryData {
-	pub uid: String
-}
-
-pub async fn get_all(
+pub async fn get_all_projects(
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
 	// run diesel blocking code
-	println!("\nGetting all users");
+	println!("\nGetting all projects");
 	let res = web::block(move || query(pool)).await;
 
 	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -28,13 +22,13 @@ pub async fn get_all(
 
 fn query(
 	pool: web::Data<Pool>,
-) -> Result<Vec<User>, crate::errors::ServiceError> {
-	use crate::schema::users::dsl::{users};
+) -> Result<Vec<Project>, crate::errors::ServiceError> {
+	use crate::schema::projects::dsl::{projects};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let items = users
-		.load::<User>(conn)?;
+	let items = projects
+		.load::<Project>(conn)?;
 	if items.is_empty() == false {
-		println!("\nGot all users.\n");
+		println!("\nGot all projects.\n");
 		return Ok(items);
 	}
 	Err(ServiceError::Empty)
