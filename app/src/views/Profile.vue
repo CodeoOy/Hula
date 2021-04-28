@@ -48,7 +48,7 @@
 				})
 				.then((response) => response.json())
 				.then(response => { 
-					console.log(response);
+					//console.log(response);
 					this.user = response;
 				})    
 			},
@@ -66,7 +66,7 @@
 						.then((response) => {
 							this.message = response;
 							localStorage.setItem('user', JSON.stringify(response));
-							console.log(localStorage.getItem('user'))
+							//console.log(localStorage.getItem('user'))
 							this.$emit('loggedin')
 							this.$flashMessage.show({
 								type: 'success',

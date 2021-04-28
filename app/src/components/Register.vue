@@ -36,8 +36,8 @@
 					fetch('api/invitation', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
 					.then((response) => response.json())
 					.then((response) => {    
-						console.log("Vue got Response");
-						console.log("Response data: " + response);
+						//console.log("Vue got Response");
+						//console.log("Response data: " + response);
 						localStorage.setItem('user', JSON.stringify(response));
 						this.$flashMessage.show({
 							type: 'success',

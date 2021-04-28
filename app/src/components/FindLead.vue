@@ -27,7 +27,7 @@
 				})
 				.then((response) => response.json())
 				.then(response => { 
-					console.log(response);
+					//console.log(response);
 					this.user = response;
 				})    
 			},
@@ -35,25 +35,25 @@
 				fetch('api/users', {method: 'GET'})
 				.then((response) => response.json())
 				.then(response => { 
-					console.log(response);
+					//console.log(response);
 					this.users = response;
 					this.$emit('datafetched', this.users)
 				})    
 				.catch((errors) => {    
-					console.log("Could not get data");
-					console.log(errors);
+					//console.log("Could not get data");
+					//console.log(errors);
 				})
 			},
 			getProjects: function() {
 				fetch('api/projects', {method: 'GET'})
 				.then((response) => response.json())
 				.then(response => { 
-					console.log(response);
+					//console.log(response);
 					this.projects = response;
 					this.$emit('leadsfetched', this.projects)
 				})    
 				.catch((errors) => {    
-					console.log("Could not get data");
+					//console.log("Could not get data");
 					console.log(errors);
 				})
 			}
