@@ -43,9 +43,6 @@ export default {
 				this.$emit('formsent', this.user);
 			}
 		},
-	},
-	mounted() {
-		getUserSkills()
 	}
 };
 </script>

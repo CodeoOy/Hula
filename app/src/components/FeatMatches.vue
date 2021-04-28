@@ -4,12 +4,15 @@
 			<div class="modal-dialog">
 				<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
 					<h2>Match</h2>
+					<h4>{{ currentmatch.projectname }}</h4>
+					<h4>{{ currentmatch.firstname }} {{ currentmatch.lastname }}</h4>
+					{{ currentmatch}}
 					<button class="btn btn-primary" v-on:click="show = false">Close</button>
 				</div>
 			</div>
 		</div>
 		<ul class="matches">
-			<li v-on:click="show = true" class="match" v-for="match in matches" :key="match.projectname">
+			<li v-on:click="show = true, currentmatch = match" class="match" v-for="match in matches" :key="match.projectname">
 				<div class="match__bg"></div>
 				<div class="match__pro">
 					<img :src="'/public/assets/' + match.firstname + '.jpg'">
@@ -29,6 +32,7 @@
 		name: 'FeatMatches',
 		data() {
 			return {
+				currentmatch: {},
 				matches: {},
 				show: false,
 			}
