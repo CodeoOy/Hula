@@ -69,7 +69,7 @@ async fn main() -> std::io::Result<()> {
 
 	// create db connection pool
 	let manager = ConnectionManager::<PgConnection>::new(database_url);
-	let pool: models::tables::Pool = r2d2::Pool::builder()
+	let pool: models::users::Pool = r2d2::Pool::builder()
 		.build(manager)
 		.expect("Failed to create pool.");
 	let domain: String = std::env::var("DOMAIN").unwrap_or_else(|_| "localhost".to_string());

@@ -4,7 +4,7 @@ use serde::Deserialize;
 
 use crate::email_service::send_invitation;
 use crate::errors::ServiceError;
-use crate::models::tables::{Invitation, Pool};
+use crate::models::invitations::{Invitation, Pool};
 use crate::utils::hash_password;
 
 #[derive(Deserialize, Debug)]
