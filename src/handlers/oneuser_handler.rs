@@ -3,7 +3,7 @@ use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
 
 use crate::errors::ServiceError;
-use crate::models::users::{Pool, User};
+use crate::models::users::{Pool, User, UserExpanded, Skill};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
@@ -70,17 +70,16 @@ fn query(
 fn query(
 	uuid_data: String,
 	pool: web::Data<Pool>,
-) -> Result<i32, crate::errors::ServiceError> {
+) -> Result<UserExpanded, crate::errors::ServiceError> {
 	use crate::schema::users::dsl::{id, users};
-	use crate::schema::userskills::dsl::{id, userid, skillid, years, userskills};
+	use crate::schema::userskills::dsl::{id as name, userid, skillid, years, userskills};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let mut items = users
 		.inner_join(userskills)
         //.filter(id.eq(uuid_query))
 		//.inner_join()
-		//.load::<T>(conn)?;
-		.load(conn)?;
+		.load::<UserExpanded>(conn)?;
 	if let Some(user_res) = items.pop() {
 		println!("\nQuery successful.\n");
 		return Ok(user_res.into());

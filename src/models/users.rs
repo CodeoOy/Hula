@@ -20,7 +20,7 @@ pub struct User {
 	pub created_at: chrono::NaiveDateTime,
 }
 
-#[derive(Identifiable, Queryable, Associations, PartialEq, Debug)]
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug)]
 #[belongs_to(User, foreign_key = "userid")]
 #[table_name = "userskills"]
 pub struct Skill {
@@ -55,4 +55,9 @@ impl From<User> for SlimUser {
 	fn from(user: User) -> Self {
 		SlimUser { email: user.email, uid: user.id }
 	}
+}
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UserExpanded {
+	pub user: User,
+	pub skills: Vec<Skill>,
 }
