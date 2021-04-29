@@ -81,11 +81,12 @@ fn query(
     //  .filter(id.eq(uuid_query))
 	//	.get_result::<User>(conn)?;
 	let mut skills = Skill::belonging_to(&user)
+		//.select(id)
 		.load::<Skill>(conn)?
-		.grouped_by(&user);
+		//.grouped_by(&user);
 		//.first(conn)?;
-	let data = user.into_iter().zip(skills).collect::<Vec<_>>();
-	if let Some(data) = user.pop() {
+	let data = user.into().zip(skills).collect::<Vec<_>>();
+	if let Some(data) = data.pop() {
 		println!("\nQuery successful.\n");
 		return Ok(data.into());
 	}
