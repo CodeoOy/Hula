@@ -75,11 +75,11 @@ fn query(
 	use crate::schema::userskills::dsl::{id as name, userid, skillid, years, userskills};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	let mut items = users
-		.inner_join(userskills)
-        //.filter(id.eq(uuid_query))
-		//.inner_join()
-		.load::<UserExpanded>(conn)?;
+	let mut user = users
+        .filter(id.eq(uuid_query))
+		.get_result::<User>(conn)?;
+	let mut skills = Skill::belonging_to(&user)
+		.first(conn)?;
 	if let Some(user_res) = items.pop() {
 		println!("\nQuery successful.\n");
 		return Ok(user_res.into());
