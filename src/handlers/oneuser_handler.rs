@@ -47,6 +47,7 @@ pub async fn get_by_uuid(
 	}
 }
 
+/*
 fn query(
 	uuid_data: String,
 	pool: web::Data<Pool>,
@@ -63,12 +64,13 @@ fn query(
 	}
 	Err(ServiceError::Unauthorized)
 }
+*/
 
-/*
+
 fn query(
 	uuid_data: String,
 	pool: web::Data<Pool>,
-) -> Result<User, crate::errors::ServiceError> {
+) -> Result<i32, crate::errors::ServiceError> {
 	use crate::schema::users::dsl::{id, users};
 	use crate::schema::userskills::dsl::{id, userid, skillid, years, userskills};
 	let conn: &PgConnection = &pool.get().unwrap();
@@ -77,14 +79,14 @@ fn query(
 		.inner_join(userskills)
         //.filter(id.eq(uuid_query))
 		//.inner_join()
-		.load::<User>(conn)?;
+		//.load::<T>(conn)?;
+		.load(conn)?;
 	if let Some(user_res) = items.pop() {
 		println!("\nQuery successful.\n");
 		return Ok(user_res.into());
 	}
 	Err(ServiceError::Unauthorized)
 }
-*/
 
 fn query_update(
 	uuid_data: String,
