@@ -9,7 +9,7 @@ import 'bootstrap'
 const store = createStore({
 	state () {
 		return {
-			loggeduser: {},
+			loggeduser: JSON.parse(localStorage.getItem('user'))
 		}
 	},
 	mutations: {
@@ -20,6 +20,7 @@ const store = createStore({
 			})
 			.then((response) => response.json())
 			.then(response => { 
+				localStorage.setItem('user', JSON.stringify(response));
 				state.loggeduser = response;
 			})   
 		}

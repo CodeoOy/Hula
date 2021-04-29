@@ -53,7 +53,7 @@
 				})    
 			},
 			updateUser: function() {   
-				fetch(`http://localhost:8086/api/user/${this.userid}`, {
+				fetch(`http://localhost:8086/api/user/${this.user.uid}`, {
 					method: 'PUT',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
@@ -65,7 +65,7 @@
 						.then((response) => response.json())
 						.then((response) => {
 							this.message = response;
-							localStorage.setItem('user', JSON.stringify(response));
+							//localStorage.setItem('user', JSON.stringify(response));
 							//console.log(localStorage.getItem('user'))
 							this.$emit('loggedin')
 							this.$flashMessage.show({
