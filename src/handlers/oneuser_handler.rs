@@ -82,7 +82,7 @@ fn query(
 	//	.get_result::<User>(conn)?;
 	let mut skills = Skill::belonging_to(&user)
 		//.select(id)
-		.load::<Skill>(conn)?
+		.load::<Skill>(conn)?;
 		//.grouped_by(&user);
 		//.first(conn)?;
 	let data = user.into().zip(skills).collect::<Vec<_>>();
