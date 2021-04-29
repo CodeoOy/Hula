@@ -6,10 +6,10 @@ use serde::{Deserialize, Serialize};
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
-#[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
+#[derive(Identifiable, Debug, Serialize, Deserialize, Queryable, Insertable)]
 #[table_name = "users"]
 pub struct User {
-	pub uid: uuid::Uuid,
+	pub id: uuid::Uuid,
 	pub isadmin: bool,
 	pub ispro: bool,
 	pub available: bool,
@@ -20,10 +20,19 @@ pub struct User {
 	pub created_at: chrono::NaiveDateTime,
 }
 
+#[derive(Identifiable, Queryable, Associations, PartialEq, Debug)]
+#[belongs_to(User, foreign_key = "userid")]
+#[table_name = "userskills"]
+pub struct Skill {
+    id: uuid::Uuid,
+    userid: uuid::Uuid,
+    skillid: uuid::Uuid,
+}
+
 impl User {
 	pub fn from_details<S: Into<String>, T: Into<String>>(email: S, pwd: T) -> Self {
 		User {
-			uid: uuid::Uuid::new_v4(),
+			id: uuid::Uuid::new_v4(),
 			isadmin: false,
 			ispro: true,
 			available: true,
@@ -44,6 +53,6 @@ pub struct SlimUser {
 
 impl From<User> for SlimUser {
 	fn from(user: User) -> Self {
-		SlimUser { email: user.email, uid: user.uid }
+		SlimUser { email: user.email, uid: user.id }
 	}
 }

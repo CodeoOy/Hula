@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+	<div class="p-3 rounded-2 content-box bg-dark text-light">
 		{{ registration_data }}
 	</div>
 </template>

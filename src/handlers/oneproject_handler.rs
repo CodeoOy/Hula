@@ -7,7 +7,7 @@ use crate::models::projects::{Pool, Project};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
-	pub pid: String
+	pub id: String
 }
 
 pub async fn get_by_pid(
@@ -31,11 +31,11 @@ fn query(
 	uuid_data: QueryData,
 	pool: web::Data<Pool>,
 ) -> Result<Project, crate::errors::ServiceError> {
-	use crate::schema::projects::dsl::{pid, projects};
+	use crate::schema::projects::dsl::{id, projects};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data.pid)?;
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data.id)?;
 	let mut items = projects
-        .filter(pid.eq(uuid_query))
+        .filter(id.eq(uuid_query))
 		.load::<Project>(conn)?;
 	if let Some(project_res) = items.pop() {
 		println!("\nQuery successful.\n");

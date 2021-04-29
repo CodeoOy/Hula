@@ -51,11 +51,11 @@ fn query(
 	uuid_data: String,
 	pool: web::Data<Pool>,
 ) -> Result<User, crate::errors::ServiceError> {
-	use crate::schema::users::dsl::{uid, users};
+	use crate::schema::users::dsl::{id, users};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let mut items = users
-        .filter(uid.eq(uuid_query))
+        .filter(id.eq(uuid_query))
 		.load::<User>(conn)?;
 	if let Some(user_res) = items.pop() {
 		println!("\nQuery successful.\n");
@@ -69,13 +69,13 @@ fn query(
 	uuid_data: String,
 	pool: web::Data<Pool>,
 ) -> Result<User, crate::errors::ServiceError> {
-	use crate::schema::users::dsl::{uid, users};
+	use crate::schema::users::dsl::{id, users};
 	use crate::schema::userskills::dsl::{id, userid, skillid, years, userskills};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let mut items = users
 		.inner_join(userskills)
-        //.filter(uid.eq(uuid_query))
+        //.filter(id.eq(uuid_query))
 		//.inner_join()
 		.load::<User>(conn)?;
 	if let Some(user_res) = items.pop() {
@@ -91,12 +91,12 @@ fn query_update(
 	userdata: web::Json<QueryData>,
 	pool: web::Data<Pool>,
 ) -> Result<User, crate::errors::ServiceError> {
-	use crate::schema::users::dsl::{users, uid, firstname, lastname, available};
+	use crate::schema::users::dsl::{users, id, firstname, lastname, available};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	//let testdata = String::from(userdata.into_inner());
 	let mut items = diesel::update(users)
-		.filter(uid.eq(uuid_query))
+		.filter(id.eq(uuid_query))
 		.set((
 			firstname.eq(userdata.firstname.clone()),
 			lastname.eq(userdata.lastname.clone()),

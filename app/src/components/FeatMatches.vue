@@ -57,7 +57,7 @@
 					headers: {"Content-Type": "application/json"}
 				})
 				.then((response) => response.json())
-				.then(response => { 
+				.then(response => {
 					this.matches = response.slice(0,4);
 				})    
 			}

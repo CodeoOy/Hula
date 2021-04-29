@@ -8,16 +8,16 @@ table! {
 }
 
 table! {
-    projects (pid) {
-        pid -> Uuid,
+    projects (id) {
+        id -> Uuid,
         available -> Bool,
         name -> Varchar,
     }
 }
 
 table! {
-    users (uid) {
-        uid -> Uuid,
+    users (id) {
+        id -> Uuid,
         isadmin -> Bool,
         ispro -> Bool,
         available -> Bool,

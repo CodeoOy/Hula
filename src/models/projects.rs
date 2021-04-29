@@ -9,7 +9,7 @@ pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 #[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
 #[table_name = "projects"]
 pub struct Project {
-	pub pid: uuid::Uuid,
+	pub id: uuid::Uuid,
 	pub available: bool,
 	pub name: String,
 }

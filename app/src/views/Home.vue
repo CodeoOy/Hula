@@ -18,7 +18,7 @@
 				</div>
 			</div>
 		</div>
-		<List />
+		<List v-if="logged" />
 	</div>
 </template>
 

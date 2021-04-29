@@ -41,8 +41,6 @@
 		updated() {
 			this.checkLogin()
 			this.user = this.$store.state.loggeduser
-			console.log(this.$store.state.loggeduser)
-			console.log(this.user)
 		}
 	}
 </script>
