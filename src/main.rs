@@ -9,19 +9,11 @@ use actix_web::{get, middleware, web, App, HttpRequest, HttpResponse, HttpServer
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
 
-mod auth_handler;
 mod email_service;
 mod errors;
-mod invitation_handler;
-mod models;
-mod register_handler;
 mod schema;
 mod utils;
-mod oneuser_handler;
-mod users_handler;
-mod oneproject_handler;
-mod projects_handler;
-mod modelsdb;
+mod models;
 mod handlers;
 
 #[get("/")]
@@ -77,7 +69,7 @@ async fn main() -> std::io::Result<()> {
 
 	// create db connection pool
 	let manager = ConnectionManager::<PgConnection>::new(database_url);
-	let pool: models::Pool = r2d2::Pool::builder()
+	let pool: models::users::Pool = r2d2::Pool::builder()
 		.build(manager)
 		.expect("Failed to create pool.");
 	let domain: String = std::env::var("DOMAIN").unwrap_or_else(|_| "localhost".to_string());
@@ -102,28 +94,28 @@ async fn main() -> std::io::Result<()> {
 				web::scope("/api")
 					.service(
 						web::resource("/invitation")
-							.route(web::post().to(invitation_handler::post_invitation)),
+							.route(web::post().to(handlers::invitation_handler::post_invitation)),
 					)
 					.service(
 						web::resource("/user/{user_id}")
-							.route(web::get().to(oneuser_handler::get_by_uuid))
-							.route(web::put().to(oneuser_handler::update_user)),
+							.route(web::get().to(handlers::oneuser_handler::get_by_uuid))
+							.route(web::put().to(handlers::oneuser_handler::update_user)),
 					)
 					.service(
 						web::resource("/users")
-							.route(web::get().to(users_handler::get_all)),
+							.route(web::get().to(handlers::users_handler::get_all)),
 					)
 					.service(
 						web::resource("/project")
-							.route(web::post().to(oneproject_handler::get_by_pid)),
+							.route(web::post().to(handlers::oneproject_handler::get_by_pid)),
 					)
 					.service(
 						web::resource("/projects")
-							.route(web::get().to(projects_handler::get_all_projects)),
+							.route(web::get().to(handlers::projects_handler::get_all_projects)),
 					)
 					.service(
 						web::resource("/register/{invitation_id}")
-							.route(web::post().to(register_handler::register_user)),
+							.route(web::post().to(handlers::register_handler::register_user)),
 					)
 					.service(
 						web::resource("/matches")
@@ -131,9 +123,9 @@ async fn main() -> std::io::Result<()> {
 					)
 					.service(
 						web::resource("/auth")
-							.route(web::post().to(auth_handler::login))
-							.route(web::delete().to(auth_handler::logout))
-							.route(web::get().to(auth_handler::get_me)),
+							.route(web::post().to(handlers::auth_handler::login))
+							.route(web::delete().to(handlers::auth_handler::logout))
+							.route(web::get().to(handlers::auth_handler::get_me)),
 					),
 			)
 			.service(fs::Files::new("/public", "public").show_files_listing())

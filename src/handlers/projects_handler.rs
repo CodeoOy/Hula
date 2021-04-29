@@ -2,7 +2,7 @@ use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::{prelude::*, PgConnection};
 
 use crate::errors::ServiceError;
-use crate::models::{Pool, Project};
+use crate::models::projects::{Pool, Project};
 
 pub async fn get_all_projects(
 	pool: web::Data<Pool>,

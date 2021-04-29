@@ -3,7 +3,7 @@ use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
 
 use crate::errors::ServiceError;
-use crate::models::{Pool, User};
+use crate::models::users::{Pool, User};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
@@ -39,3 +39,6 @@ fn query(
 	}
 	Err(ServiceError::Empty)
 }
+
+
+

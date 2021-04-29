@@ -3,7 +3,8 @@ use diesel::prelude::*;
 use serde::Deserialize;
 
 use crate::errors::ServiceError;
-use crate::models::{Invitation, Pool, SlimUser, User};
+use crate::models::invitations::{Invitation, Pool};
+use crate::models::users::{SlimUser, User};
 use crate::utils::hash_password;
 // UserData is used to extract data from a post request by the client
 #[derive(Debug, Deserialize)]

@@ -1,6 +1,6 @@
 // email_service.rs
 use crate::errors::ServiceError;
-use crate::models::Invitation;
+use crate::models::invitations::Invitation;
 use sparkpost::transmission::{
 	EmailAddress, Message, Options, Recipient, Transmission, TransmissionResponse,
 };
