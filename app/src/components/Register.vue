@@ -36,25 +36,20 @@
 					fetch('api/invitation', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
 					.then((response) => response.json())
 					.then((response) => {    
-						//console.log("Vue got Response");
-						//console.log("Response data: " + response);
 						localStorage.setItem('user', JSON.stringify(response));
 						this.$flashMessage.show({
 							type: 'success',
-							title: 'Successfully logged in',
+							title: 'Invitation sent',
 							time: 1000
 						});
-						this.$router.push({path: '/'});
 					})
 					.catch((errors) => {
-						//console.log("Vue got Error");
 						console.log("Error data: " + errors);
 						this.$flashMessage.show({
 							type: 'error',
-							title: 'No good',
+							title: 'Invitation not sent',
 							time: 1000
 						});
-						this.$router.push({path: '/'});
 					})    
 				}    
 				getUserData()    

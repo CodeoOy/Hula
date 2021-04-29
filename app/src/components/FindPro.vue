@@ -29,13 +29,11 @@
 				fetch('api/projects', {method: 'GET'})
 				.then((response) => response.json())
 				.then(response => { 
-					//console.log(response);
 					this.projects = response;
 					this.$emit('datafetched', this.projects)
 				})    
-				.catch((errors) => {    
-					//console.log("Could not get data");
-					//console.log(errors);
+				.catch((errors) => {
+					console.log(errors);
 				})
 			},
 			getProjectData: function(pid) { 
@@ -45,8 +43,7 @@
 					body: JSON.stringify({"pid": pid})
 				})
 				.then((response) => response.json())
-				.then(response => { 
-					//console.log(response);
+				.then(response => {
 					this.project = response;
 				})    
 			},
@@ -58,7 +55,6 @@
 				})
 				.then((response) => response.json())
 				.then(response => { 
-					//console.log(response);
 					this.user = response;
 				})    
 			},
@@ -66,12 +62,10 @@
 				fetch('api/users', {method: 'GET'})
 				.then((response) => response.json())
 				.then(response => { 
-					//console.log(response);
 					this.users = response;
 					this.$emit('usersfetched', this.users)
 				})    
-				.catch((errors) => {    
-					//console.log("Could not get data");
+				.catch((errors) => {
 					console.log(errors);
 				})
 			}

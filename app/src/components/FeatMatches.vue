@@ -58,7 +58,6 @@
 				})
 				.then((response) => response.json())
 				.then(response => { 
-					//console.log(response);
 					this.matches = response.slice(0,4);
 				})    
 			}

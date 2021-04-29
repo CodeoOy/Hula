@@ -48,7 +48,6 @@
   		},
 		methods: {
 			isLogged () {
-				//console.log("Emit caught")
 				this.$emit('loggedin')
 			},
 			logoutUser () {

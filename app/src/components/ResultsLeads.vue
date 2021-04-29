@@ -32,20 +32,6 @@
 		},
 		props: {
 			leads: {}
-		},
-		methods: {
-			getleadData: function(pid) { 
-				fetch('api/project', {
-					method: 'POST',
-					headers: {"Content-Type": "application/json"},
-					body: JSON.stringify({"pid": pid})
-				})
-				.then((response) => response.json())
-				.then(response => { 
-					//console.log(response);
-					this.lead = response;
-				})    
-			}
 		}
 	}
 </script>

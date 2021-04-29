@@ -35,20 +35,6 @@
 		},
 		props: {
 			users: {}
-		},
-		methods: {
-			getUserData: function(uid) { 
-				fetch('api/user', {
-					method: 'POST',
-					headers: {"Content-Type": "application/json"},
-					body: JSON.stringify({"uid": uid})
-				})
-				.then((response) => response.json())
-				.then(response => { 
-					//console.log(response);
-					this.user = response;
-				})    
-			}
 		}
 	}
 </script>
