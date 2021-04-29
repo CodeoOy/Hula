@@ -38,22 +38,8 @@
 			'UserForm': UserForm
 		},
 		methods: {
-			getUserId: function () {
-				this.userid = JSON.parse(localStorage.getItem('user'))
-			},
-			getUserData: function() { 
-				fetch(`http://localhost:8086/api/user/${this.userid}`, {
-					method: 'GET',
-					headers: {"Content-Type": "application/json"}
-				})
-				.then((response) => response.json())
-				.then(response => { 
-					console.log(response);
-					this.user = response;
-				})    
-			},
 			updateUser: function() {   
-				fetch(`http://localhost:8086/api/user/${this.userid}`, {
+				fetch(`http://localhost:8086/api/user/${this.user.uid}`, {
 					method: 'PUT',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
@@ -65,8 +51,6 @@
 						.then((response) => response.json())
 						.then((response) => {
 							this.message = response;
-							localStorage.setItem('user', JSON.stringify(response));
-							console.log(localStorage.getItem('user'))
 							this.$emit('loggedin')
 							this.$flashMessage.show({
 								type: 'success',
@@ -92,8 +76,7 @@
 			}
 		},
 		mounted() {
-			this.getUserId()
-			this.getUserData(this.userid)
+			this.user = this.$store.state.loggeduser
 		}
 	}
 </script>

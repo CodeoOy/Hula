@@ -3,6 +3,8 @@
 		<Header v-on:loggedout="checkLogin" />
 		<FlashMessage position="right top" />
 		<router-view :logged='logged' v-on:loggedin="checkLogin" />
+		{{ user }}
+		{{ this.$store.state.loggeduser }}
 	</main>
 </template>
 
@@ -14,7 +16,8 @@
 		data() {
 			return {
 				currentpath: this.$router.currentRoute.value.path,
-				logged: false
+				logged: false,
+				user: {},
 			}
 		},
 		components: {
@@ -25,10 +28,8 @@
 				fetch('http://localhost:8086/api/auth', {method: 'GET'})
 				.then((response) => {
 					if(response.ok) {
-						console.log("logged")
 						this.logged = true;
 					} else {
-						console.log("NOT logged")
 						this.logged = false;
 					}
 				})
@@ -39,6 +40,9 @@
 		},
 		updated() {
 			this.checkLogin()
+			this.user = this.$store.state.loggeduser
+			console.log(this.$store.state.loggeduser)
+			console.log(this.user)
 		}
 	}
 </script>

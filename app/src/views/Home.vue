@@ -38,7 +38,7 @@
 		},
 		watch: {
 			logged: function() {
-				console.log(this.logged)
+				//console.log(this.logged)
 			}
 		},
 		components: {
@@ -48,7 +48,6 @@
   		},
 		methods: {
 			isLogged () {
-				console.log("Emit caught")
 				this.$emit('loggedin')
 			},
 			logoutUser () {

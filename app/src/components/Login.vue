@@ -41,9 +41,7 @@
 						fetch('http://localhost:8086/api/auth', {method: 'GET'})
 						.then((response) => response.json())
 						.then((response) => {
-							this.message = response;
-							localStorage.setItem('user', JSON.stringify(response));
-							console.log(localStorage.getItem('user'))
+							this.$store.commit('setUser', response)
 							this.$emit('loggedin')
 							this.$flashMessage.show({
 								type: 'success',
