@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
-#[derive(Identifiable, Debug, Serialize, Deserialize, Queryable, Insertable)]
+#[derive(Identifiable, Queryable, Serialize, Deserialize, PartialEq, Debug)]
 #[table_name = "users"]
 pub struct User {
 	pub id: uuid::Uuid,
@@ -55,9 +55,4 @@ impl From<User> for SlimUser {
 	fn from(user: User) -> Self {
 		SlimUser { email: user.email, uid: user.id }
 	}
-}
-#[derive(Debug, Serialize, Deserialize)]
-pub struct UserExpanded {
-	pub user: User,
-	pub skills: Vec<Skill>,
 }

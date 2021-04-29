@@ -3,7 +3,7 @@ use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
 
 use crate::errors::ServiceError;
-use crate::models::users::{Pool, User, UserExpanded, Skill};
+use crate::models::users::{Pool, User, Skill};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
@@ -70,19 +70,24 @@ fn query(
 fn query(
 	uuid_data: String,
 	pool: web::Data<Pool>,
-) -> Result<UserExpanded, crate::errors::ServiceError> {
+) -> Result<(User, Vec<Skill>), crate::errors::ServiceError> {
 	use crate::schema::users::dsl::{id, users};
 	use crate::schema::userskills::dsl::{id as name, userid, skillid, years, userskills};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	let mut user = users
-        .filter(id.eq(uuid_query))
-		.get_result::<User>(conn)?;
+	//let user = users::table.load::<User>(conn)?;
+	let user = users.filter(id.eq(uuid_query)).get_result::<User>(conn)?;
+	//let mut user = users
+    //  .filter(id.eq(uuid_query))
+	//	.get_result::<User>(conn)?;
 	let mut skills = Skill::belonging_to(&user)
-		.first(conn)?;
-	if let Some(user_res) = items.pop() {
+		.load::<Skill>(conn)?
+		.grouped_by(&user);
+		//.first(conn)?;
+	let data = user.into_iter().zip(skills).collect::<Vec<_>>();
+	if let Some(data) = user.pop() {
 		println!("\nQuery successful.\n");
-		return Ok(user_res.into());
+		return Ok(data.into());
 	}
 	Err(ServiceError::Unauthorized)
 }
