@@ -85,8 +85,8 @@ fn query(
 		.load::<Skill>(conn)?;
 		//.grouped_by(&user);
 		//.first(conn)?;
-	let data = user.into().zip(skills).collect::<Vec<_>>();
-	if let Some(data) = data.pop() {
+	let data = (user, skills);
+	if data.0.id.is_nil() == false {
 		println!("\nQuery successful.\n");
 		return Ok(data.into());
 	}

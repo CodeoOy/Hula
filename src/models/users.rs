@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
-#[derive(Identifiable, Queryable, Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Identifiable, Queryable, Serialize, Deserialize, PartialEq, Debug, Insertable)]
 #[table_name = "users"]
 pub struct User {
 	pub id: uuid::Uuid,
@@ -20,13 +20,16 @@ pub struct User {
 	pub created_at: chrono::NaiveDateTime,
 }
 
-#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug)]
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
 #[belongs_to(User, foreign_key = "userid")]
 #[table_name = "userskills"]
 pub struct Skill {
     id: uuid::Uuid,
     userid: uuid::Uuid,
     skillid: uuid::Uuid,
+	skillscopelevelid: uuid::Uuid,
+	years: Option<f32>,
+	updated_by: String,
 }
 
 impl User {

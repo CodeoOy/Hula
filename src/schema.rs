@@ -100,8 +100,8 @@ table! {
         id -> Uuid,
         userid -> Uuid,
         skillid -> Uuid,
-        skillscopelevelid -> Nullable<Uuid>,
-        years -> Nullable<Numeric>,
+        skillscopelevelid -> Uuid,
+        years -> Nullable<Float4>,
         updated_by -> Varchar,
     }
 }
