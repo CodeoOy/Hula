@@ -72,19 +72,11 @@ fn query(
 	pool: web::Data<Pool>,
 ) -> Result<(User, Vec<Skill>), crate::errors::ServiceError> {
 	use crate::schema::users::dsl::{id, users};
-	use crate::schema::userskills::dsl::{id as name, userid, skillid, years, userskills};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	//let user = users::table.load::<User>(conn)?;
 	let user = users.filter(id.eq(uuid_query)).get_result::<User>(conn)?;
-	//let mut user = users
-    //  .filter(id.eq(uuid_query))
-	//	.get_result::<User>(conn)?;
-	let mut skills = Skill::belonging_to(&user)
-		//.select(id)
+	let skills = Skill::belonging_to(&user)
 		.load::<Skill>(conn)?;
-		//.grouped_by(&user);
-		//.first(conn)?;
 	let data = (user, skills);
 	if data.0.id.is_nil() == false {
 		println!("\nQuery successful.\n");
