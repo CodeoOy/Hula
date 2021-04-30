@@ -18,16 +18,21 @@ pub struct User {
 	pub lastname: String,
 	pub hash: String,
 	pub created_at: chrono::NaiveDateTime,
+	pub updated_by: String,
+	pub updated_at: chrono::NaiveDateTime,
+	pub inserted_by: String,
+	pub inserted_at: chrono::NaiveDateTime,
+	pub updated_count: i16,
 }
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
-#[belongs_to(User, foreign_key = "userid")]
+#[belongs_to(User, foreign_key = "user_id")]
 #[table_name = "userskills"]
 pub struct Skill {
     id: uuid::Uuid,
-    userid: uuid::Uuid,
-    skillid: uuid::Uuid,
-	skillscopelevelid: uuid::Uuid,
+    user_id: uuid::Uuid,
+    skill_id: uuid::Uuid,
+	skillscopelevel_id: uuid::Uuid,
 	years: Option<f32>,
 	updated_by: String,
 }
@@ -44,6 +49,11 @@ impl User {
 			lastname: String::from("Placeholder"),
 			hash: pwd.into(),
 			created_at: chrono::Local::now().naive_local(),
+			updated_by: String::from("email"),
+			updated_at: chrono::Local::now().naive_local(),
+			inserted_by: String::from("Maija"),
+			inserted_at: chrono::Local::now().naive_local(),
+			updated_count: 0,
 		}
 	}
 }

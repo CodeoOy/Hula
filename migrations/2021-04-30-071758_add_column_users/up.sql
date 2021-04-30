@@ -1,0 +1,3 @@
+-- Your SQL goes here
+ALTER TABLE users
+ADD COLUMN updated_at TIMESTAMP NOT NULL DEFAULT NOW();

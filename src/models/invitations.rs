@@ -14,6 +14,11 @@ pub struct Invitation {
 	pub email: String,
 	pub password_plain: String,
 	pub expires_at: chrono::NaiveDateTime,
+	pub updated_by: String,
+	pub updated_at: chrono::NaiveDateTime,
+	pub inserted_by: String,
+	pub inserted_at: chrono::NaiveDateTime,
+	pub updated_count: i16,
 }
 
 impl Invitation {
@@ -23,6 +28,11 @@ impl Invitation {
 			email: email.into(),
 			password_plain: password_plain.into(),
 			expires_at: chrono::Local::now().naive_local() + chrono::Duration::hours(24),
+			updated_by: String::from("email"),
+			updated_at: chrono::Local::now().naive_local(),
+			inserted_by: String::from("Maija"),
+			inserted_at: chrono::Local::now().naive_local(),
+			updated_count: 0,
 		}
 	}
 }

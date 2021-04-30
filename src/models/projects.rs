@@ -12,4 +12,9 @@ pub struct Project {
 	pub id: uuid::Uuid,
 	pub available: bool,
 	pub name: String,
+	pub updated_by: String,
+	pub updated_at: chrono::NaiveDateTime,
+	pub inserted_by: String,
+	pub inserted_at: chrono::NaiveDateTime,
+	pub updated_count: i16,
 }
