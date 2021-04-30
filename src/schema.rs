@@ -4,6 +4,11 @@ table! {
         email -> Varchar,
         password_plain -> Varchar,
         expires_at -> Timestamp,
+        updated_by -> Varchar,
+        updated_at -> Timestamp,
+        inserted_by -> Varchar,
+        inserted_at -> Timestamp,
+        updated_count -> Int2,
     }
 }
 
@@ -12,6 +17,11 @@ table! {
         id -> Uuid,
         available -> Bool,
         name -> Varchar,
+        updated_by -> Varchar,
+        updated_at -> Timestamp,
+        inserted_by -> Varchar,
+        inserted_at -> Timestamp,
+        updated_count -> Int2,
     }
 }
 
@@ -26,17 +36,23 @@ table! {
         lastname -> Varchar,
         hash -> Varchar,
         created_at -> Timestamp,
+        updated_by -> Varchar,
+        updated_at -> Timestamp,
+        inserted_by -> Varchar,
+        inserted_at -> Timestamp,
+        updated_count -> Int2,
+        
     }
 }
 
 table! {
     projectskills (id) {
         id -> Uuid,
-        projectid -> Uuid,
-        skillid -> Uuid,
-        skillscopelevelid -> Nullable<Uuid>,
-        minyears -> Nullable<Float4>,
-        maxyears -> Nullable<Float4>,
+        project_id -> Uuid,
+        skill_id -> Uuid,
+        skillscopelevel_id -> Nullable<Uuid>,
+        min_years -> Nullable<Float4>,
+        max_years -> Nullable<Float4>,
         countofusers -> Integer,
         begin_time -> Timestamp,
         end_time -> Timestamp,
@@ -49,7 +65,7 @@ table! {
     skillcategories (id) {
         id -> Uuid,
         label -> Varchar,
-        parentid -> Nullable<Uuid>,
+        parent_id -> Nullable<Uuid>,
         updated_by -> Varchar,
     }
 }
@@ -58,8 +74,8 @@ table! {
     skills (id) {
         id -> Uuid,
         label -> Varchar,
-        skillcategoryid -> Uuid,
-        skillscopeid -> Uuid,
+        skillcategory_id -> Uuid,
+        skillscope_id -> Uuid,
         updated_by -> Varchar,
     }
 }
@@ -68,7 +84,7 @@ table! {
     skillscopelevels (id) {
         id -> Uuid,
         label -> Varchar,
-        skillscopeid -> Uuid,
+        skillscope_id -> Uuid,
         index -> Int2,
         percentage -> Nullable<Int2>,
         updated_by -> Varchar,
@@ -86,7 +102,7 @@ table! {
 table! {
     userreservations (id) {
         id -> Uuid,
-        userid -> Uuid,
+        user_id -> Uuid,
         description -> Varchar,
         begin_time -> Nullable<Timestamp>,
         end_time -> Nullable<Timestamp>,
@@ -98,18 +114,18 @@ table! {
 table! {
     userskills (id) {
         id -> Uuid,
-        userid -> Uuid,
-        skillid -> Uuid,
-        skillscopelevelid -> Uuid,
+        user_id -> Uuid,
+        skill_id -> Uuid,
+        skillscopelevel_id -> Uuid,
         years -> Nullable<Float4>,
         updated_by -> Varchar,
     }
 }
 
 table! {
-    matchcandidates (projectneedskillid, userskillid) {
-        projectneedskillid -> Uuid,
-        userskillid -> Uuid,
+    matchcandidates (projectneedskill_id, userskill_id) {
+        projectneedskill_id -> Uuid,
+        userskill_id -> Uuid,
         projectname -> Varchar,
         skillname -> Varchar,
         required_level -> Varchar,
@@ -125,12 +141,12 @@ table! {
     }
 }
 
-joinable!(projectskills -> projects (projectid));
-joinable!(skills -> skillcategories (skillcategoryid));
-joinable!(skills -> skillscopes (skillscopeid));
-joinable!(skillscopelevels -> skillscopes (skillscopeid));
-joinable!(userreservations -> users (userid));
-joinable!(userskills -> users (userid));
+joinable!(projectskills -> projects (project_id));
+joinable!(skills -> skillcategories (skillcategory_id));
+joinable!(skills -> skillscopes (skillscope_id));
+joinable!(skillscopelevels -> skillscopes (skillscope_id));
+joinable!(userreservations -> users (user_id));
+joinable!(userskills -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
     invitations,

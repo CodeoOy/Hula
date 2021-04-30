@@ -76,10 +76,10 @@ async fn main() -> std::io::Result<()> {
 
 	// Start http server
 	HttpServer::new(move || {
-		App::new()
+	App::new()
 			.data(pool.clone())
 			// enable logger
-			.wrap(middleware::Logger::default())
+				.wrap(middleware::Logger::default())
 			.wrap(IdentityService::new(
 				CookieIdentityPolicy::new(utils::SECRET_KEY.as_bytes())
 					.name("auth")

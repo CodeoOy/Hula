@@ -1,0 +1,7 @@
+-- Your SQL goes here
+ALTER TABLE invitations
+ADD COLUMN inserted_by VARCHAR(100) NOT NULL,
+ADD COLUMN inserted_at TIMESTAMP NOT NULL,
+ADD COLUMN updated_by VARCHAR(100) NOT NULL,
+ADD COLUMN updated_at TIMESTAMP NOT NULL,
+ADD COLUMN updated_count SMALLINT NOT NULL;
