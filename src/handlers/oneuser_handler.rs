@@ -74,7 +74,7 @@ fn query(
 	use crate::schema::users::dsl::{id, users};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	let user = users.filter(id.eq(uuid_query)).get_result::<User>(conn)?;
+	let user = users.filter(id.eq(uuid_query)).get_result::<User>(conn)?; // Make a prettier error check, this produces 500
 	let skills = Skill::belonging_to(&user)
 		.load::<Skill>(conn)?;
 	let data = (user, skills);
@@ -82,7 +82,7 @@ fn query(
 		println!("\nQuery successful.\n");
 		return Ok(data.into());
 	}
-	Err(ServiceError::Unauthorized)
+	Err(ServiceError::Empty)
 }
 
 fn query_update(
