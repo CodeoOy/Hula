@@ -38,15 +38,15 @@ pub struct Skill {
 }
 
 impl User {
-	pub fn from_details<S: Into<String>, T: Into<String>>(email: S, pwd: T) -> Self {
+	pub fn from_details<S: Into<String>, T: Into<String>, U: Into<String>, V: Into<String>>(email: S, pwd: T, first_name: U, last_name: V) -> Self {
 		User {
 			id: uuid::Uuid::new_v4(),
 			isadmin: false,
 			ispro: true,
 			available: true,
 			email: email.into(),
-			firstname: String::from("Pihla"),
-			lastname: String::from("Placeholder"),
+			firstname: first_name.into(),
+			lastname: last_name.into(),
 			hash: pwd.into(),
 			created_at: chrono::Local::now().naive_local(),
 			updated_by: String::from("email"),
