@@ -11,6 +11,8 @@ use crate::utils::hash_password;
 pub struct InvitationData {
 	pub email: String,
 	pub password_plain: String,
+	pub first_name: String,
+	pub last_name: String,
 }
 
 pub async fn post_invitation(
@@ -32,7 +34,7 @@ fn create_invitation(
 	invdata: InvitationData,
 	pool: web::Data<Pool>,
 ) -> Result<(), crate::errors::ServiceError> {
-	let invitation = dbg!(query(invdata.email, invdata.password_plain, pool)?);
+	let invitation = dbg!(query(invdata.email, invdata.password_plain, invdata.first_name, invdata.last_name, pool)?);
 	send_invitation(&invitation)
 }
 
@@ -40,12 +42,14 @@ fn create_invitation(
 fn query(
 	eml: String,
 	psw: String,
+	first_name: String,
+	last_name: String,
 	pool: web::Data<Pool>,
 ) -> Result<Invitation, crate::errors::ServiceError> {
 	use crate::schema::invitations::dsl::invitations;
 
 	let password: String = hash_password(&psw)?;
-	let new_invitation = Invitation::from_details(eml, password);
+	let new_invitation = Invitation::from_details(eml, password, first_name, last_name);
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let inserted_invitation = diesel::insert_into(invitations)

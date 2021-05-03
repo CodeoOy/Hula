@@ -13,6 +13,8 @@ pub struct Invitation {
 	pub id: uuid::Uuid,
 	pub email: String,
 	pub password_plain: String,
+	pub first_name: String,
+	pub last_name: String,
 	pub expires_at: chrono::NaiveDateTime,
 	pub updated_by: String,
 	pub updated_at: chrono::NaiveDateTime,
@@ -22,11 +24,13 @@ pub struct Invitation {
 }
 
 impl Invitation {
-	pub fn from_details<S: Into<String>, T: Into<String>>(email: S, password_plain: T) -> Self {
+	pub fn from_details<S: Into<String>, T: Into<String>, U: Into<String>, V: Into<String>>(email: S, password_plain: T, first_name: U, last_name: V) -> Self {
 		Invitation {
 			id: uuid::Uuid::new_v4(),
 			email: email.into(),
 			password_plain: password_plain.into(),
+			first_name: first_name.into(),
+			last_name: last_name.into(),
 			expires_at: chrono::Local::now().naive_local() + chrono::Duration::hours(24),
 			updated_by: String::from("email"),
 			updated_at: chrono::Local::now().naive_local(),

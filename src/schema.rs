@@ -3,6 +3,8 @@ table! {
         id -> Uuid,
         email -> Varchar,
         password_plain -> Varchar,
+		first_name -> Varchar,
+		last_name -> Varchar,
         expires_at -> Timestamp,
         updated_by -> Varchar,
         updated_at -> Timestamp,
