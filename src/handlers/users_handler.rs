@@ -1,6 +1,6 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::{prelude::*, PgConnection};
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 
 use crate::errors::ServiceError;
 use crate::models::users::{Pool, User, Skill};
@@ -11,6 +11,17 @@ pub struct QueryData {
 	pub firstname: String,
 	pub lastname: String,
 	pub available: bool
+}
+#[derive(Serialize, Debug)]
+pub struct UserDTO {
+	pub id: uuid::Uuid,
+	pub isadmin: bool,
+	pub ispro: bool,
+	pub available: bool,
+	pub email: String,
+	pub firstname: String,
+	pub lastname: String,
+	pub skills: Vec<Skill>,
 }
 
 pub async fn get_all(
@@ -102,15 +113,24 @@ fn query(
 fn query_one(
 	uuid_data: String,
 	pool: web::Data<Pool>,
-) -> Result<(User, Vec<Skill>), crate::errors::ServiceError> {
+) -> Result<UserDTO, crate::errors::ServiceError> {
 	use crate::schema::users::dsl::{id, users};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let user = users.filter(id.eq(uuid_query)).get_result::<User>(conn)?; // Make a prettier error check, this produces 500
 	let skills = Skill::belonging_to(&user)
 		.load::<Skill>(conn)?;
-	let data = (user, skills);
-	if data.0.id.is_nil() == false {
+	let data = UserDTO {
+		id: user.id,
+		isadmin: user.isadmin,
+		ispro: user.ispro,
+		available: user.available,
+		email: user.email,
+		firstname: user.firstname,
+		lastname: user.lastname,
+		skills: skills,
+	};
+	if data.id.is_nil() == false {
 		println!("\nQuery successful.\n");
 		return Ok(data.into());
 	}
