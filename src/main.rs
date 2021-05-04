@@ -98,8 +98,8 @@ async fn main() -> std::io::Result<()> {
 					)
 					.service(
 						web::resource("/user/{user_id}")
-							.route(web::get().to(handlers::oneuser_handler::get_by_uuid))
-							.route(web::put().to(handlers::oneuser_handler::update_user)),
+							.route(web::get().to(handlers::users_handler::get_by_uuid))
+							.route(web::put().to(handlers::users_handler::update_user)),
 					)
 					.service(
 						web::resource("/users")
@@ -107,7 +107,7 @@ async fn main() -> std::io::Result<()> {
 					)
 					.service(
 						web::resource("/project")
-							.route(web::post().to(handlers::oneproject_handler::get_by_pid)),
+							.route(web::post().to(handlers::projects_handler::get_by_pid)),
 					)
 					.service(
 						web::resource("/projects")
