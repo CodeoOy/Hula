@@ -7,7 +7,7 @@ use crate::models::users::{Pool, User, Skill};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
-	pub uid: String,
+	pub id: String,
 	pub firstname: String,
 	pub lastname: String,
 	pub available: bool
@@ -60,7 +60,6 @@ pub async fn update_user(
 	payload: web::Json<QueryData>,
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
-	// run diesel blocking code
 	println!("\nUpdating user");
 	let res = web::block(move || query_update(uuid_data.into_inner(), payload, pool)).await;
 
@@ -77,7 +76,6 @@ pub async fn get_by_uuid(
 	uuid_data: web::Path<String>,
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
-	// run diesel blocking code
 	println!("\nGetting user by uuid");
 	let res = web::block(move || query_one(uuid_data.into_inner(), pool)).await;
 
@@ -89,26 +87,6 @@ pub async fn get_by_uuid(
 		},
 	}
 }
-
-/*
-fn query(
-	uuid_data: String,
-	pool: web::Data<Pool>,
-) -> Result<User, crate::errors::ServiceError> {
-	use crate::schema::users::dsl::{id, users};
-	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	let mut items = users
-        .filter(id.eq(uuid_query))
-		.load::<User>(conn)?;
-	if let Some(user_res) = items.pop() {
-		println!("\nQuery successful.\n");
-		return Ok(user_res.into());
-	}
-	Err(ServiceError::Unauthorized)
-}
-*/
-
 
 fn query_one(
 	uuid_data: String,

@@ -6,6 +6,7 @@
 					<h1>{{ user.firstname }} {{ user.lastname }}</h1>
 					<p>{{ user.email }}</p>
 					<p>{{ user.telephone }}</p>
+					<p>{{ user.id }}</p>
 					<img src="" alt="">
 				</div>
 			</div>
@@ -29,9 +30,8 @@
 		name: 'Profile',
 		data() {
 			return {
-				userid: {},
 				user: {},
-				editing: false
+				editing: false,
 			}
 		},
 		components: {
@@ -39,7 +39,7 @@
 		},
 		methods: {
 			updateUser: function() {   
-				fetch(`http://localhost:8086/api/user/${this.user.uid}`, {
+				fetch(`http://localhost:8086/api/user/${this.user.id}`, {
 					method: 'PUT',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
@@ -67,12 +67,6 @@
 						});
 					}
 				})
-			},
-			login: async function(e) { 
-				e.preventDefault()    
-				let email = e.target.elements.email.value
-				let password = e.target.elements.password.value 
-				this.updateUser(email, password);
 			}
 		},
 		mounted() {
