@@ -107,6 +107,7 @@ fn query_one(
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let user = users.filter(id.eq(uuid_query)).get_result::<User>(conn)?; // Make a prettier error check, this produces 500
 	let allskills = skills.load::<SkillDetailed>(conn)?;
+	let mut allskills_iter = allskills.iter();
 	let mut skills_dto: Vec<SkillDTO> = Vec::new();
 	let user_skills = Skill::belonging_to(&user)
 		.load::<Skill>(conn)?;
@@ -117,7 +118,8 @@ fn query_one(
 			skill_id: user_skill.skill_id,
 			skillscopelevel_id: user_skill.skillscopelevel_id,
 			years: user_skill.years,
-			skill_label: allskills.first().unwrap().label.clone(),
+			//skill_label: allskills.first().unwrap().label.clone(),
+			skill_label: String::from(allskills_iter.find(|&x| x.id == user_skill.skill_id).unwrap().label.clone()),
 		};
 		skills_dto.push(skilldata);
 	}
