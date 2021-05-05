@@ -3,7 +3,7 @@ use diesel::{prelude::*, PgConnection};
 use serde::{Serialize, Deserialize};
 
 use crate::errors::ServiceError;
-use crate::models::users::{Pool, User, Skill};
+use crate::models::users::{Pool, User, Skill, SkillDetailed};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
@@ -102,20 +102,22 @@ fn query_one(
 	pool: web::Data<Pool>,
 ) -> Result<UserDTO, crate::errors::ServiceError> {
 	use crate::schema::users::dsl::{id, users};
+	use crate::schema::skills::dsl::{id as skillid, label, skills};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let user = users.filter(id.eq(uuid_query)).get_result::<User>(conn)?; // Make a prettier error check, this produces 500
+	let allskills = skills.load::<SkillDetailed>(conn)?;
 	let mut skills_dto: Vec<SkillDTO> = Vec::new();
-	let skills = Skill::belonging_to(&user)
+	let user_skills = Skill::belonging_to(&user)
 		.load::<Skill>(conn)?;
-	for skill in skills.iter() {
+	for user_skill in user_skills.iter() {
 		let skilldata = SkillDTO {
-			id: skill.id,
-			user_id: skill.user_id,
-			skill_id: skill.skill_id,
-			skillscopelevel_id: skill.skillscopelevel_id,
-			years: skill.years,
-			skill_label: String::from("Testlabel"),
+			id: user_skill.id,
+			user_id: user_skill.user_id,
+			skill_id: user_skill.skill_id,
+			skillscopelevel_id: user_skill.skillscopelevel_id,
+			years: user_skill.years,
+			skill_label: allskills.first().unwrap().label.clone(),
 		};
 		skills_dto.push(skilldata);
 	}

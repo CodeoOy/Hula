@@ -37,6 +37,17 @@ pub struct Skill {
 	pub updated_by: String,
 }
 
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
+#[belongs_to(Skill, foreign_key = "id")]
+#[table_name = "skills"]
+pub struct SkillDetailed {
+    pub id: uuid::Uuid,
+    pub label: String,
+    pub skillcategory_id: uuid::Uuid,
+    pub skillscope_id: uuid::Uuid,
+    pub updated_by: String,
+}
+
 impl User {
 	pub fn from_details<S: Into<String>, T: Into<String>, U: Into<String>, V: Into<String>>(email: S, pwd: T, first_name: U, last_name: V) -> Self {
 		User {
