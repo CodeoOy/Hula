@@ -21,7 +21,16 @@ pub struct UserDTO {
 	pub email: String,
 	pub firstname: String,
 	pub lastname: String,
-	pub skills: Vec<Skill>,
+	pub skills: Vec<SkillDTO>,
+}
+#[derive(Serialize, Debug)]
+pub struct SkillDTO {
+	pub id: uuid::Uuid,
+    pub user_id: uuid::Uuid,
+    pub skill_id: uuid::Uuid,
+	pub skillscopelevel_id: uuid::Uuid,
+	pub years: Option<f32>,
+	pub skill_label: String,
 }
 
 pub async fn get_all(
@@ -96,8 +105,20 @@ fn query_one(
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let user = users.filter(id.eq(uuid_query)).get_result::<User>(conn)?; // Make a prettier error check, this produces 500
+	let mut skills_dto: Vec<SkillDTO> = Vec::new();
 	let skills = Skill::belonging_to(&user)
 		.load::<Skill>(conn)?;
+	for skill in skills.iter() {
+		let skilldata = SkillDTO {
+			id: skill.id,
+			user_id: skill.user_id,
+			skill_id: skill.skill_id,
+			skillscopelevel_id: skill.skillscopelevel_id,
+			years: skill.years,
+			skill_label: String::from("Testlabel"),
+		};
+		skills_dto.push(skilldata);
+	}
 	let data = UserDTO {
 		id: user.id,
 		isadmin: user.isadmin,
@@ -106,7 +127,7 @@ fn query_one(
 		email: user.email,
 		firstname: user.firstname,
 		lastname: user.lastname,
-		skills: skills,
+		skills: skills_dto,
 	};
 	if data.id.is_nil() == false {
 		println!("\nQuery successful.\n");

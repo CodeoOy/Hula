@@ -29,12 +29,12 @@ pub struct User {
 #[belongs_to(User, foreign_key = "user_id")]
 #[table_name = "userskills"]
 pub struct Skill {
-    id: uuid::Uuid,
-    user_id: uuid::Uuid,
-    skill_id: uuid::Uuid,
-	skillscopelevel_id: uuid::Uuid,
-	years: Option<f32>,
-	updated_by: String,
+    pub id: uuid::Uuid,
+    pub user_id: uuid::Uuid,
+    pub skill_id: uuid::Uuid,
+	pub skillscopelevel_id: uuid::Uuid,
+	pub years: Option<f32>,
+	pub updated_by: String,
 }
 
 impl User {
