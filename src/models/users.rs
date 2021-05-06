@@ -28,7 +28,7 @@ pub struct User {
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
 #[belongs_to(User, foreign_key = "user_id")]
 #[table_name = "userskills"]
-pub struct Skill {
+pub struct UserSkill {
     pub id: uuid::Uuid,
     pub user_id: uuid::Uuid,
     pub skill_id: uuid::Uuid,
@@ -40,7 +40,7 @@ pub struct Skill {
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
 #[belongs_to(Skill, foreign_key = "id")]
 #[table_name = "skills"]
-pub struct SkillDetailed {
+pub struct Skill {
     pub id: uuid::Uuid,
     pub label: String,
     pub skillcategory_id: uuid::Uuid,
