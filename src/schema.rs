@@ -29,7 +29,7 @@ table! {
 		firstname -> Varchar,
 		lastname -> Varchar,
 		hash -> Varchar,
-		created_at -> Timestamp,
+		inserted_at -> Timestamp,
 		updated_by -> Varchar,
 
 	}

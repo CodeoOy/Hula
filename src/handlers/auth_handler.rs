@@ -50,6 +50,7 @@ pub async fn login(
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query(auth_data.into_inner(), pool)).await;
+	println!("\nAuthenticating....\n");
 	match res {
 		Ok(user) => {
 			let user_string = serde_json::to_string(&user).unwrap();
@@ -71,12 +72,11 @@ pub async fn get_me(logged_user: LoggedUser) -> HttpResponse {
 }
 /// Diesel query
 fn query(auth_data: AuthData, pool: web::Data<Pool>) -> Result<SlimUser, ServiceError> {
-	use crate::schema::users::dsl::{email, users};
+	use crate::schema::users::dsl::{users, email};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let mut items = users
 		.filter(email.eq(&auth_data.email))
 		.load::<User>(conn)?;
-
 	if let Some(user) = items.pop() {
 		if let Ok(matching) = verify(&user.hash, &auth_data.password) {
 			if matching {

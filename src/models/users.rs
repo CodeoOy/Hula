@@ -16,13 +16,11 @@ pub struct User {
 	pub firstname: String,
 	pub lastname: String,
 	pub hash: String,
-	pub created_at: chrono::NaiveDateTime,
+	pub inserted_at: chrono::NaiveDateTime,
 	pub updated_by: String,
 }
 
-#[derive(
-	Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable,
-)]
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable,)]
 #[belongs_to(User, foreign_key = "user_id")]
 #[table_name = "userskills"]
 pub struct UserSkill {
@@ -34,9 +32,7 @@ pub struct UserSkill {
 	pub updated_by: String,
 }
 
-#[derive(
-	Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable,
-)]
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable,)]
 #[belongs_to(Skill, foreign_key = "id")]
 #[table_name = "skills"]
 pub struct Skill {
@@ -54,18 +50,18 @@ impl User {
 		first_name: U,
 		last_name: V,
 	) -> Self {
-		let emailstr: String = email.into();
+		//let emailstr: String = email.into();
 		User {
 			id: uuid::Uuid::new_v4(),
 			isadmin: false,
 			ispro: true,
 			available: true,
-			email: String::from(&emailstr),
+			email: email.into(),
 			firstname: first_name.into(),
 			lastname: last_name.into(),
 			hash: pwd.into(),
-			created_at: chrono::Local::now().naive_local(),
-			updated_by: emailstr,
+			inserted_at: chrono::Local::now().naive_local(),
+			updated_by: String::from("anonymous"),
 		}
 	}
 }
