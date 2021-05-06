@@ -3,7 +3,6 @@ use diesel::{r2d2::ConnectionManager, PgConnection};
 use serde::{Deserialize, Serialize};
 //use crate::schema::invitations::password_plain;
 
-
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, PartialEq, Debug, Insertable)]
@@ -19,13 +18,11 @@ pub struct User {
 	pub hash: String,
 	pub created_at: chrono::NaiveDateTime,
 	pub updated_by: String,
-	pub updated_at: chrono::NaiveDateTime,
-	pub inserted_by: String,
-	pub inserted_at: chrono::NaiveDateTime,
-	pub updated_count: i16,
 }
 
-#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
+#[derive(
+	Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable,
+)]
 #[belongs_to(User, foreign_key = "user_id")]
 #[table_name = "userskills"]
 pub struct UserSkill {
@@ -37,7 +34,9 @@ pub struct UserSkill {
 	pub updated_by: String,
 }
 
-#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
+#[derive(
+	Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable,
+)]
 #[belongs_to(Skill, foreign_key = "id")]
 #[table_name = "skills"]
 pub struct Skill {
@@ -49,22 +48,24 @@ pub struct Skill {
 }
 
 impl User {
-	pub fn from_details<S: Into<String>, T: Into<String>, U: Into<String>, V: Into<String>>(email: S, pwd: T, first_name: U, last_name: V) -> Self {
+	pub fn from_details<S: Into<String>, T: Into<String>, U: Into<String>, V: Into<String>>(
+		email: S,
+		pwd: T,
+		first_name: U,
+		last_name: V,
+	) -> Self {
+		let emailstr: String = email.into();
 		User {
 			id: uuid::Uuid::new_v4(),
 			isadmin: false,
 			ispro: true,
 			available: true,
-			email: email.into(),
+			email: String::from(&emailstr),
 			firstname: first_name.into(),
 			lastname: last_name.into(),
 			hash: pwd.into(),
 			created_at: chrono::Local::now().naive_local(),
-			updated_by: String::from("email"),
-			updated_at: chrono::Local::now().naive_local(),
-			inserted_by: String::from("Maija"),
-			inserted_at: chrono::Local::now().naive_local(),
-			updated_count: 0,
+			updated_by: emailstr,
 		}
 	}
 }
@@ -72,11 +73,14 @@ impl User {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SlimUser {
 	pub email: String,
-	pub uid: uuid::Uuid
+	pub uid: uuid::Uuid,
 }
 
 impl From<User> for SlimUser {
 	fn from(user: User) -> Self {
-		SlimUser { email: user.email, uid: user.id }
+		SlimUser {
+			email: user.email,
+			uid: user.id,
+		}
 	}
 }
