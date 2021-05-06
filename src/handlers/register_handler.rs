@@ -54,7 +54,12 @@ fn query(
 				if invitation.expires_at > chrono::Local::now().naive_local() {
 					// try hashing the password, else return the error that will be converted to ServiceError
 					let password: String = user_data.password;
-					let user = User::from_details(invitation.email, password, invitation.first_name, invitation.last_name);
+					let user = User::from_details(
+						invitation.email,
+						password,
+						invitation.first_name,
+						invitation.last_name,
+					);
 					let inserted_user: User =
 						diesel::insert_into(users).values(&user).get_result(conn)?;
 					dbg!(&inserted_user);

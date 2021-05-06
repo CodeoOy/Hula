@@ -1,16 +1,16 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::{prelude::*, PgConnection};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::errors::ServiceError;
-use crate::models::users::{Pool, User, UserSkill, Skill};
+use crate::models::users::{Pool, Skill, User, UserSkill};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
 	pub id: String,
 	pub firstname: String,
 	pub lastname: String,
-	pub available: bool
+	pub available: bool,
 }
 #[derive(Serialize, Debug)]
 pub struct UserDTO {
@@ -26,16 +26,14 @@ pub struct UserDTO {
 #[derive(Serialize, Debug)]
 pub struct SkillDTO {
 	pub id: uuid::Uuid,
-    pub user_id: uuid::Uuid,
-    pub skill_id: uuid::Uuid,
+	pub user_id: uuid::Uuid,
+	pub skill_id: uuid::Uuid,
 	pub skillscopelevel_id: uuid::Uuid,
 	pub years: Option<f32>,
 	pub skill_label: String,
 }
 
-pub async fn get_all(
-	pool: web::Data<Pool>,
-) -> Result<HttpResponse, ServiceError> {
+pub async fn get_all(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
 	// run diesel blocking code
 	println!("\nGetting all users");
 	let res = web::block(move || query_all(pool)).await;
@@ -49,20 +47,16 @@ pub async fn get_all(
 	}
 }
 
-fn query_all(
-	pool: web::Data<Pool>,
-) -> Result<Vec<User>, crate::errors::ServiceError> {
-	use crate::schema::users::dsl::{users};
+fn query_all(pool: web::Data<Pool>) -> Result<Vec<User>, crate::errors::ServiceError> {
+	use crate::schema::users::dsl::users;
 	let conn: &PgConnection = &pool.get().unwrap();
-	let items = users
-		.load::<User>(conn)?;
+	let items = users.load::<User>(conn)?;
 	if items.is_empty() == false {
 		println!("\nGot all users.\n");
 		return Ok(items);
 	}
 	Err(ServiceError::Empty)
 }
-
 
 pub async fn update_user(
 	uuid_data: web::Path<String>,
@@ -116,16 +110,15 @@ fn query_one(
 	uuid_data: String,
 	pool: web::Data<Pool>,
 ) -> Result<UserDTO, crate::errors::ServiceError> {
+	use crate::schema::skills::dsl::skills;
 	use crate::schema::users::dsl::{id, users};
-	use crate::schema::skills::dsl::{skills};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let user = users.filter(id.eq(uuid_query)).get_result::<User>(conn)?; // Make a prettier error check, this produces 500
 	let allskills = skills.load::<Skill>(conn)?;
 	let mut allskills_iter = allskills.iter();
 	let mut skills_dto: Vec<SkillDTO> = Vec::new();
-	let user_skills = UserSkill::belonging_to(&user)
-		.load::<UserSkill>(conn)?;
+	let user_skills = UserSkill::belonging_to(&user).load::<UserSkill>(conn)?;
 	for user_skill in user_skills.iter() {
 		let skilldata = SkillDTO {
 			id: user_skill.id,
@@ -133,7 +126,13 @@ fn query_one(
 			skill_id: user_skill.skill_id,
 			skillscopelevel_id: user_skill.skillscopelevel_id,
 			years: user_skill.years,
-			skill_label: String::from(allskills_iter.find(|&x| x.id == user_skill.skill_id).unwrap().label.clone()),
+			skill_label: String::from(
+				allskills_iter
+					.find(|&x| x.id == user_skill.skill_id)
+					.unwrap()
+					.label
+					.clone(),
+			),
 		};
 		skills_dto.push(skilldata);
 	}
@@ -159,7 +158,7 @@ fn query_update(
 	userdata: web::Json<QueryData>,
 	pool: web::Data<Pool>,
 ) -> Result<User, crate::errors::ServiceError> {
-	use crate::schema::users::dsl::{users, id, firstname, lastname, available};
+	use crate::schema::users::dsl::{available, firstname, id, lastname, users};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let mut items = diesel::update(users)
@@ -167,7 +166,7 @@ fn query_update(
 		.set((
 			firstname.eq(userdata.firstname.clone()),
 			lastname.eq(userdata.lastname.clone()),
-			available.eq(userdata.available)
+			available.eq(userdata.available),
 		))
 		.load::<User>(conn)?;
 	if let Some(user_res) = items.pop() {
@@ -182,11 +181,11 @@ fn query_add_skill(
 	skill_data: web::Json<UserSkill>,
 	pool: web::Data<Pool>,
 ) -> Result<UserSkill, crate::errors::ServiceError> {
-	use crate::schema::userskills::dsl::{userskills};
+	use crate::schema::userskills::dsl::userskills;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	println!("Trying to actualy write to db");
-	let	new_user_skill = UserSkill {
+	let new_user_skill = UserSkill {
 		id: skill_data.id,
 		user_id: uuid_query,
 		skill_id: skill_data.skill_id,
@@ -196,7 +195,7 @@ fn query_add_skill(
 	};
 	let rows_inserted = diesel::insert_into(userskills)
 		.values(&new_user_skill)
-    	.get_result::<UserSkill>(conn);
+		.get_result::<UserSkill>(conn);
 	println!("{:?}", rows_inserted);
 	if rows_inserted.is_ok() {
 		println!("\nSkill added successfully.\n");

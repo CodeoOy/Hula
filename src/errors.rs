@@ -27,12 +27,8 @@ impl ResponseError for ServiceError {
 				HttpResponse::InternalServerError().json("Internal Server Error, Please try later")
 			}
 			ServiceError::BadRequest(ref message) => HttpResponse::BadRequest().json(message),
-			ServiceError::Unauthorized => {
-				HttpResponse::Unauthorized().finish()
-			}
-			ServiceError::Empty => {
-				HttpResponse::NoContent().finish()
-			}
+			ServiceError::Unauthorized => HttpResponse::Unauthorized().finish(),
+			ServiceError::Empty => HttpResponse::NoContent().finish(),
 		}
 	}
 }

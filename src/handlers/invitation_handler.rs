@@ -34,7 +34,13 @@ fn create_invitation(
 	invdata: InvitationData,
 	pool: web::Data<Pool>,
 ) -> Result<(), crate::errors::ServiceError> {
-	let invitation = dbg!(query(invdata.email, invdata.password_plain, invdata.first_name, invdata.last_name, pool)?);
+	let invitation = dbg!(query(
+		invdata.email,
+		invdata.password_plain,
+		invdata.first_name,
+		invdata.last_name,
+		pool
+	)?);
 	send_invitation(&invitation)
 }
 

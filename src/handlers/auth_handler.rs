@@ -57,7 +57,7 @@ pub async fn login(
 			id.remember(user_string);
 			println!("\nSuccessfully authenticated (login).\n");
 			Ok(HttpResponse::Ok().finish()) // Instead of empty response, do we need the cookie to body in order to call it from Vue?
-			//Ok(HttpResponse::Ok().json(user_to_vue))
+			                    //Ok(HttpResponse::Ok().json(user_to_vue))
 		}
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),

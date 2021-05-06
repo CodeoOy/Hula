@@ -11,10 +11,10 @@ use diesel::r2d2::{self, ConnectionManager};
 
 mod email_service;
 mod errors;
+mod handlers;
+mod models;
 mod schema;
 mod utils;
-mod models;
-mod handlers;
 
 #[get("/")]
 async fn home(session: Session, req: HttpRequest) -> Result<HttpResponse> {
@@ -76,7 +76,7 @@ async fn main() -> std::io::Result<()> {
 
 	// Start http server
 	HttpServer::new(move || {
-	App::new()
+		App::new()
 			.data(pool.clone())
 			// enable logger
 			.wrap(middleware::Logger::default())
