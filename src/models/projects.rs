@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
-
 #[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
 #[table_name = "projects"]
 pub struct Project {
@@ -13,8 +12,4 @@ pub struct Project {
 	pub available: bool,
 	pub name: String,
 	pub updated_by: String,
-	pub updated_at: chrono::NaiveDateTime,
-	pub inserted_by: String,
-	pub inserted_at: chrono::NaiveDateTime,
-	pub updated_count: i16,
 }
