@@ -18,6 +18,7 @@
 					<transition name="fadeHeight">
 						<UserForm :user='user' v-if="editing == true" v-on:formsent="editing = false, updateUser()"/>
 					</transition>
+					<a href="#" v-on:click="addExistingSkill">Add test skill</a>
 				</div>
 			</div>
 		</div>
@@ -32,12 +33,28 @@
 			return {
 				user: {},
 				editing: false,
+				testskill: {
+					id: "e9becc32-0238-4561-b341-106de1c26666",
+					user_id: "d757caa2-4128-4f5b-9638-bd433dc49444",
+					skill_id: "e9becc32-0238-4561-b341-106de1c26060",
+					skillscopelevel_id: "e9becc32-0238-4561-b341-106de1c26048",
+					years: 10.0,
+					updated_by: "psi"
+				}
 			}
 		},
 		components: {
 			'UserForm': UserForm
 		},
 		methods: {
+			addExistingSkill: function() {
+				fetch(`http://localhost:8086/api/userskill/${this.user.id}`, {
+					method: 'PUT',
+					headers: {"Content-Type": "application/json"},
+					credentials: 'include',
+					body: JSON.stringify(this.testskill)
+				})
+			},
 			updateUser: function() {   
 				fetch(`http://localhost:8086/api/user/${this.user.id}`, {
 					method: 'PUT',
