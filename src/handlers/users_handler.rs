@@ -88,7 +88,7 @@ pub async fn add_skill(
 	println!("Adding skill");
 	let res = web::block(move || query_add_skill(uuid_data.into_inner(), payload, pool)).await;
 	match res {
-		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
+		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -185,6 +185,7 @@ fn query_add_skill(
 	use crate::schema::userskills::dsl::{userskills};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	println!("Trying to actualy write to db");
 	let	new_user_skill = UserSkill {
 		id: skill_data.id,
 		user_id: uuid_query,
@@ -196,6 +197,7 @@ fn query_add_skill(
 	let rows_inserted = diesel::insert_into(userskills)
 		.values(&new_user_skill)
     	.get_result::<UserSkill>(conn);
+	println!("{:?}", rows_inserted);
 	if rows_inserted.is_ok() {
 		println!("\nSkill added successfully.\n");
 		return Ok(new_user_skill.into());
