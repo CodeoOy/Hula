@@ -1,5 +1,14 @@
 <template>
 	<div class="container mt-4">
+		<div class="modal fade" v-bind:class="{ 'show db': editing_skills, '': !editing_skills }">
+			<div class="modal-dialog">
+				<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
+					<div>
+						<a href="#" v-on:click="editing_skills = false" class="btn btn-gradient">Done</a>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
@@ -13,12 +22,14 @@
 			<div class="col-md-8">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h2>Professional profile</h2>
-					<a href="#" v-on:click="editing = true">Edit your info</a>
+					<h3>Basic info</h3>
+					<a href="#" v-on:click="editing_info = true">Edit your info</a>
 					<p>Available: {{ user.available }}</p>
 					<transition name="fadeHeight">
-						<UserForm :user='user' v-if="editing == true" v-on:formsent="editing = false, updateUser()"/>
+						<UserForm :user='user' v-if="editing_info == true" v-on:formsent="editing_info = false, updateUser()"/>
 					</transition>
-					<a href="#" v-on:click="addExistingSkill">Add test skill</a>
+					<h3>Skills</h3>
+					<a href="#" v-on:click="addExistingSkill, editing_skills = true">Add test skill</a>
 				</div>
 			</div>
 		</div>
@@ -32,7 +43,8 @@
 		data() {
 			return {
 				user: {},
-				editing: false,
+				editing_info: false,
+				editing_skills: false,
 				testskill: {
 					id: "e9becc32-0238-4561-b341-106de1c26666",
 					user_id: "d757caa2-4128-4f5b-9638-bd433dc49444",
