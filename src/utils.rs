@@ -20,11 +20,9 @@ pub fn hash_password(password: &str) -> Result<String, ServiceError> {
 }
 
 pub fn verify(hash: &str, password: &str) -> Result<bool, ServiceError> {
-	argon2::verify_encoded_ext(hash, password.as_bytes(), SECRET_KEY.as_bytes(), &[]).map_err(
-		|err| {
-			println!("{:?} - {:?}", hash, password);
-			dbg!(err);
-			ServiceError::Unauthorized
-		},
-	)
+	argon2::verify_encoded_ext(hash, password.as_bytes(), SECRET_KEY.as_bytes(), &[]).map_err(|err| {
+		println!("{:?} - {:?}", hash, password);
+		dbg!(err);
+		ServiceError::Unauthorized
+	})
 }

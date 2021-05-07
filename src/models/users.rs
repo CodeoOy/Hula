@@ -20,7 +20,7 @@ pub struct User {
 	pub updated_by: String,
 }
 
-#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable,)]
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
 #[belongs_to(User, foreign_key = "user_id")]
 #[table_name = "userskills"]
 pub struct UserSkill {
@@ -32,7 +32,7 @@ pub struct UserSkill {
 	pub updated_by: String,
 }
 
-#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable,)]
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
 #[belongs_to(Skill, foreign_key = "id")]
 #[table_name = "skills"]
 pub struct Skill {
