@@ -50,18 +50,18 @@ impl User {
 		first_name: U,
 		last_name: V,
 	) -> Self {
-		//let emailstr: String = email.into();
+		let emailstr: String = email.into();
 		User {
 			id: uuid::Uuid::new_v4(),
 			isadmin: false,
 			ispro: true,
 			available: true,
-			email: email.into(),
+			email: String::from(&emailstr),
 			firstname: first_name.into(),
 			lastname: last_name.into(),
 			hash: pwd.into(),
 			inserted_at: chrono::Local::now().naive_local(),
-			updated_by: String::from("anonymous"),
+			updated_by: emailstr,
 		}
 	}
 }

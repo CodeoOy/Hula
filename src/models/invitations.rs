@@ -24,15 +24,15 @@ impl Invitation {
 		first_name: U,
 		last_name: V,
 	) -> Self {
-		//let emailstr: String = email.into();
+		let emailstr: String = email.into();
 		Invitation {
 			id: uuid::Uuid::new_v4(),
-			email: email.into(),
+			email: String::from(&emailstr),
 			password_plain: password_plain.into(),
 			first_name: first_name.into(),
 			last_name: last_name.into(),
 			expires_at: chrono::Local::now().naive_local() + chrono::Duration::hours(24),
-			updated_by: String::from("anonymous"),
+			updated_by: emailstr,
 		}
 	}
 }
