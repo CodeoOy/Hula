@@ -3,6 +3,22 @@
 		<div class="modal fade" v-bind:class="{ 'show db': editing_skills, '': !editing_skills }">
 			<div class="modal-dialog">
 				<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
+					<table class="table table-dark table-striped text-light">
+						<thead>
+							<tr>
+								<th scope="col">Skill</th>
+								<th scope="col">Level</th>
+								<th scope="col">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="skill in user.skills" :key="skill.id">
+								<td>{{ skill.skill_label }}</td>
+								<td>{{ skill.years }}</td>
+								<td>Edit - Delete</td>
+							</tr>
+						</tbody>
+					</table>
 					<div>
 						<a href="#" v-on:click="editing_skills = false" class="btn btn-gradient">Done</a>
 					</div>
