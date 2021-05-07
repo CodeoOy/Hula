@@ -96,6 +96,7 @@
 						.then((response) => response.json())
 						.then((response) => {
 							this.message = response;
+							this.$store.commit('setUser', this.user.id)
 							this.$emit('loggedin')
 							this.$flashMessage.show({
 								type: 'success',
