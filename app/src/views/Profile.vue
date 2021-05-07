@@ -1,5 +1,25 @@
 <template>
 	<div class="container mt-4">
+		<div class="modal fade" v-bind:class="{ 'show db': editing_skills, '': !editing_skills }">
+			<div class="modal-dialog">
+				<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
+					<div>
+						<h2>Add a skill</h2>
+						<div class="input-group">
+							<select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon">
+								<option selected>Choose...</option>
+								<option value="1">One</option>
+								<option value="2">Two</option>
+								<option value="3">Three</option>
+							</select>
+							<input type="number" aria-label="Years" class="form-control">
+							<button class="btn btn-outline-secondary" type="button">Button</button>
+						</div>
+						<a href="#" v-on:click="editing_skills = false" class="btn btn-gradient">Done</a>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
@@ -13,12 +33,30 @@
 			<div class="col-md-8">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h2>Professional profile</h2>
-					<a href="#" v-on:click="editing = true">Edit your info</a>
+					<h3>Basic info</h3>
+					<a href="#" v-on:click="editing_info = true">Edit your info</a>
 					<p>Available: {{ user.available }}</p>
 					<transition name="fadeHeight">
-						<UserForm :user='user' v-if="editing == true" v-on:formsent="editing = false, updateUser()"/>
+						<UserForm :user='user' v-if="editing_info == true" v-on:formsent="editing_info = false, updateUser()"/>
 					</transition>
-					<a href="#" v-on:click="addExistingSkill">Add test skill</a>
+					<h3>Skills</h3>
+					<table class="table table-dark table-striped text-light">
+						<thead>
+							<tr>
+								<th scope="col">Skill</th>
+								<th scope="col">Level</th>
+								<th scope="col">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="skill in user.skills" :key="skill.id">
+								<td>{{ skill.skill_label }}</td>
+								<td>{{ skill.years }}</td>
+								<td>Edit - Delete</td>
+							</tr>
+						</tbody>
+					</table>
+					<a href="#" v-on:click="addExistingSkill, editing_skills = true">Add test skill</a>
 				</div>
 			</div>
 		</div>
@@ -32,7 +70,8 @@
 		data() {
 			return {
 				user: {},
-				editing: false,
+				editing_info: false,
+				editing_skills: false,
 				testskill: {
 					id: "e9becc32-0238-4561-b341-106de1c26666",
 					user_id: "d757caa2-4128-4f5b-9638-bd433dc49444",
@@ -40,7 +79,8 @@
 					skillscopelevel_id: "e9becc32-0238-4561-b341-106de1c26048",
 					years: 10.0,
 					updated_by: "psi"
-				}
+				},
+				available_skills: {},
 			}
 		},
 		components: {
@@ -68,6 +108,7 @@
 						.then((response) => response.json())
 						.then((response) => {
 							this.message = response;
+							this.$store.commit('setUser', this.user.id)
 							this.$emit('loggedin')
 							this.$flashMessage.show({
 								type: 'success',
