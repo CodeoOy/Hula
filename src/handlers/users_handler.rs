@@ -180,7 +180,6 @@ fn query_add_skill(
 	use crate::schema::userskills::dsl::userskills;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	println!("Trying to actualy write to db");
 	let new_user_skill = UserSkill {
 		id: skill_data.id,
 		user_id: uuid_query,
