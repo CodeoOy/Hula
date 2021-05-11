@@ -4,18 +4,19 @@
 			<div class="modal-dialog">
 				<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
 					<div>
-						<h2>Add a skill</h2>
-						<div class="input-group">
-							<select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon">
-								<option selected>Choose...</option>
-								<option value="1">One</option>
-								<option value="2">Two</option>
-								<option value="3">Three</option>
-							</select>
-							<input type="number" aria-label="Years" class="form-control">
-							<button class="btn btn-outline-secondary" type="button">Button</button>
-						</div>
-						<a href="#" v-on:click="editing_skills = false" class="btn btn-gradient">Done</a>
+						<h2>Create a skill</h2>
+						<form v-on:submit="createSkill">
+							<div class="input-group">
+								<input type="text" aria-label="Label" class="form-control">
+								<select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon">
+									<option selected>Choose...</option>
+									<option value="1">Years</option>
+									<option value="2">Levels</option>
+									<option value="3">Something else</option>
+								</select>
+							</div>
+							<button type="submit" class="btn btn-gradient mb-1">Submit</button>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -23,8 +24,8 @@
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					<h1>Welcome {{ user.firstname }}!</h1>
-					<a href="#" v-on:click="addExistingSkill, editing_skills = true">Add test skill</a>
+					<h1>Welcome {{ this.$store.state.loggeduser.firstname }}!</h1>
+					<a href="#" v-on:click="editing_skills = true">Add test skill</a>
 				</div>
 			</div>
 			<div class="col-md-8">
@@ -41,10 +42,21 @@
 		name: 'Admin',
 		data() {
 			return {
-				user: {},
-				editing_skills: false,
-				
+				editing_skills: false,				
 			}
+		},
+		methods: {
+			createSkill: function() {
+				fetch(`http://localhost:8086/api/userskill/${this.user.id}`, {
+					method: 'PUT',
+					headers: {"Content-Type": "application/json"},
+					credentials: 'include',
+					body: JSON.stringify(this.testskill)
+				})
+			},
+		},
+		mounted() {
+
 		}
 	}
 </script>

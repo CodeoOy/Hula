@@ -56,7 +56,7 @@
 							</tr>
 						</tbody>
 					</table>
-					<a href="#" v-on:click="addExistingSkill, editing_skills = true">Add test skill</a>
+					<a href="#" v-on:click="editing_skills = true">Add test skill</a>
 				</div>
 			</div>
 		</div>
@@ -78,7 +78,7 @@
 					skill_id: "e9becc32-0238-4561-b341-106de1c26060",
 					skillscopelevel_id: "e9becc32-0238-4561-b341-106de1c26048",
 					years: 10.0,
-					updated_by: "psi"
+					updated_by: "tlo"
 				},
 				available_skills: {},
 			}
