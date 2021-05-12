@@ -5,17 +5,18 @@
 				<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
 					<div>
 						<h2>Add a skill</h2>
-						<div class="input-group">
-							<select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon">
-								<option selected>Choose...</option>
-								<option value="1">One</option>
-								<option value="2">Two</option>
-								<option value="3">Three</option>
-							</select>
-							<input type="number" aria-label="Years" class="form-control">
-							<button class="btn btn-outline-secondary" type="button">Button</button>
-						</div>
-						<a href="#" v-on:click="editing_skills = false" class="btn btn-gradient">Done</a>
+						<form v-on:submit="addExistingSkill">
+							<div class="input-group">
+								<select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon" v-model="skilldata.skill_id">
+									<option v-for="skill in available_skills" :key="skill" :value="skill.skill_id">
+										{{ skill.label }}
+									</option>
+								</select>
+								<input type="number" aria-label="Years" class="form-control" v-model="skilldata.years">
+								<button class="btn btn-outline-secondary" type="button">Button</button>
+							</div>
+							<button type="submit" class="btn btn-gradient mb-1">Submit</button>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -72,12 +73,12 @@
 				user: {},
 				editing_info: false,
 				editing_skills: false,
-				testskill: {
-					id: "e9becc32-0238-4561-b341-106de1c26666",
+				skilldata: {
+					id: 'd757caa2-4128-4f5b-9638-bd433dc49999',
 					user_id: "d757caa2-4128-4f5b-9638-bd433dc49444",
-					skill_id: "e9becc32-0238-4561-b341-106de1c26060",
+					skill_id: '',
 					skillscopelevel_id: "e9becc32-0238-4561-b341-106de1c26048",
-					years: 10.0,
+					years: 0,
 					updated_by: "tlo"
 				},
 				available_skills: {},
@@ -89,10 +90,10 @@
 		methods: {
 			addExistingSkill: function() {
 				fetch(`http://localhost:8086/api/userskill/${this.user.id}`, {
-					method: 'PUT',
+					method: 'POST',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
-					body: JSON.stringify(this.testskill)
+					body: JSON.stringify(this.skilldata)
 				})
 			},
 			updateUser: function() {   
@@ -125,10 +126,21 @@
 						});
 					}
 				})
+			},
+			getAllSkills: function() {
+				fetch('http://localhost:8086/api/skills', {method: 'GET'})
+				.then((response) => response.json())
+				.then(response => { 
+					this.available_skills = response;
+				})    
+				.catch((errors) => {
+					console.log(errors);
+				})
 			}
 		},
 		mounted() {
 			this.user = this.$store.state.loggeduser
+			this.getAllSkills()
 		}
 	}
 </script>

@@ -12,11 +12,34 @@ pub struct SkillData {
 	pub category_id: uuid::Uuid, 
 }
 
+pub async fn get_all_skills(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+	let res = web::block(move || query_all_skills(pool)).await;
+
+	match res {
+		Ok(skills) => Ok(HttpResponse::Ok().json(&skills)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_all_skills(pool: web::Data<Pool>) -> Result<Vec<Skill>, crate::errors::ServiceError> {
+	use crate::schema::skills::dsl::skills;
+	let conn: &PgConnection = &pool.get().unwrap();
+	let items = skills.load::<Skill>(conn)?;
+	if items.is_empty() == false {
+		println!("\nGot all categories.\n");
+		return Ok(items);
+	}
+	Err(ServiceError::Empty)
+}
+
 pub async fn get_skill_categories(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_skill_categories(pool)).await;
 
 	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Ok(categories) => Ok(HttpResponse::Ok().json(&categories)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),

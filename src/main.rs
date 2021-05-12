@@ -97,13 +97,16 @@ async fn main() -> std::io::Result<()> {
 							.route(web::put().to(handlers::users_handler::update_user)),
 					)
 					.service(
-						web::resource("/userskill/{user_id}").route(web::put().to(handlers::users_handler::add_skill)),
+						web::resource("/userskill/{user_id}").route(web::post().to(handlers::users_handler::add_skill)),
 					)
 					.service(
 						web::resource("/skill").route(web::post().to(handlers::skills_handler::create_skill)),
 					)
 					.service(
 						web::resource("/skills/categories").route(web::get().to(handlers::skills_handler::get_skill_categories)),
+					)
+					.service(
+						web::resource("/skills").route(web::get().to(handlers::skills_handler::get_all_skills)),
 					)
 					.service(web::resource("/users").route(web::get().to(handlers::users_handler::get_all)))
 					.service(web::resource("/project").route(web::post().to(handlers::projects_handler::get_by_pid)))
