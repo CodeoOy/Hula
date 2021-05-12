@@ -5,7 +5,7 @@
 				<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
 					<div>
 						<h2>Add a skill</h2>
-						<form action="#" @submit.prevent="onSubmit" v-on:submit="addExistingSkill">
+						<form v-on:submit="addExistingSkill">
 							<div class="input-group">
 								<select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon" v-model="skilldata.skill_id">
 									<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
@@ -74,9 +74,9 @@
 				editing_info: false,
 				editing_skills: false,
 				skilldata: {
-					id: 'd757caa2-4128-4f5b-9638-bd433dc49444',
-					user_id: 'd757caa2-4128-4f5b-9638-bd433dc49444',
-					skill_id: '',
+					id: '00000000-0000-0000-0000-000000000000',
+					user_id: '00000000-0000-0000-0000-000000000000',
+					skill_id: '00000000-0000-0000-0000-000000000000',
 					skillscopelevel_id: "e9becc32-0238-4561-b341-106de1c26048",
 					years: 10.0,
 					updated_by: "tlo"

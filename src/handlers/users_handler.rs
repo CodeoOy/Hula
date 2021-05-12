@@ -181,7 +181,6 @@ fn query_add_skill(
 	use crate::schema::userskills::dsl::userskills;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	println!("{:?}", new_uuid);
 	let new_user_skill = UserSkill {
 		id: uuid::Uuid::new_v4(),
 		user_id: uuid_query,
