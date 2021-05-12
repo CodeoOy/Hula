@@ -1,9 +1,9 @@
-use actix_web::{error::BlockingError, web, HttpResponse};
-use diesel::{prelude::*, PgConnection};
-use serde::{Deserialize, Serialize};
-
 use crate::errors::ServiceError;
 use crate::models::users::{Pool, Skill, User, UserSkill};
+use actix_web::{error::BlockingError, web, HttpResponse};
+use diesel::result::Error;
+use diesel::{associations::HasTable, prelude::*, PgConnection};
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
@@ -34,7 +34,6 @@ pub struct SkillDTO {
 }
 
 pub async fn get_all(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
-	// run diesel blocking code
 	println!("\nGetting all users");
 	let res = web::block(move || query_all(pool)).await;
 
@@ -202,4 +201,41 @@ fn query_add_skill(
 		return Ok(new_user_skill.into());
 	}
 	Err(ServiceError::Unauthorized)
+}
+
+fn query_delete_user(
+	uuid_data: String,
+	pool: web::Data<Pool>,
+) -> Result<(), crate::errors::ServiceError> {
+	let conn: &PgConnection = &pool.get().unwrap();
+	use crate::schema::users::dsl::id;
+	use crate::schema::users::dsl::*;
+	use crate::schema::userskills::dsl::*;
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+
+	let delete_skills = diesel::delete(userskills.filter(user_id.eq(uuid_query)))
+		.execute(conn)
+		.optional()
+		.map_err(Error::from)?;
+	if let Some(delete_skills) = delete_skills {
+		diesel::delete(users.filter(id.eq(uuid_query))).execute(conn)?;
+		Ok(())
+	} else {
+		Err(ServiceError::Unauthorized)
+	}
+}
+
+pub async fn delete_user(
+	uuid_data: web::Path<String>,
+	pool: web::Data<Pool>,
+) -> Result<HttpResponse, ServiceError> {
+	let res = web::block(move || query_delete_user(uuid_data.into_inner(), pool)).await;
+	println!("\nUser deleted\n");
+	match res {
+		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
 }

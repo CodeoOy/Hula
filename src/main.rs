@@ -99,7 +99,8 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/user/{user_id}")
 							.route(web::get().to(handlers::users_handler::get_by_uuid))
-							.route(web::put().to(handlers::users_handler::update_user)),
+							.route(web::put().to(handlers::users_handler::update_user))
+							.route(web::delete().to(handlers::users_handler::delete_user)),
 					)
 					.service(
 						web::resource("/userskill/{user_id}")
