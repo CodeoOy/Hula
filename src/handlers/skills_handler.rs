@@ -9,6 +9,7 @@ use crate::models::skills::{Pool, Skill, SkillCategory};
 pub struct SkillData {
 	pub email: String,
 	pub label: String,
+	pub category_id: uuid::Uuid, 
 }
 
 pub async fn get_skill_categories(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
@@ -59,7 +60,7 @@ fn query_create(
 	let new_skill = Skill {
 		id: uuid::Uuid::new_v4(),
 		label: skilldata.label.clone(),
-		skillcategory_id: uuid::Uuid::parse_str("e9becc32-0238-4561-b341-106de1c26041")?, // Update to proper value
+		skillcategory_id: skilldata.category_id, // Update to proper value
 		skillscope_id: uuid::Uuid::parse_str("e9becc32-0238-4561-b341-106de1c26042")?, // Update to proper value
 		updated_by: skilldata.email.clone(),
 	};
