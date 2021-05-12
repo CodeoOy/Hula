@@ -37,7 +37,7 @@ fn query_create(
 		id: uuid::Uuid::new_v4(),
 		label: skilldata.label.clone(),
 		skillcategory_id: uuid::Uuid::parse_str("e9becc32-0238-4561-b341-106de1c26041")?, // Update to proper value
-		skillscope_id: uuid::Uuid::parse_str("e9becc32-0238-4561-b341-106de1c26043")?, // Update to proper value
+		skillscope_id: uuid::Uuid::parse_str("e9becc32-0238-4561-b341-106de1c26042")?, // Update to proper value
 		updated_by: skilldata.email.clone(),
 	};
 	println!("Inserting data");

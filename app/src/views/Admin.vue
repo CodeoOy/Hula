@@ -7,13 +7,13 @@
 						<h2>Create a skill</h2>
 						<form v-on:submit="createSkill">
 							<div class="input-group">
-								<input type="text" aria-label="Label" class="form-control">
-								<select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon">
+								<input type="text" aria-label="Label" class="form-control" v-model="skilldata.label" >
+								<!--<select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon">
 									<option selected>Choose...</option>
 									<option value="1">Years</option>
 									<option value="2">Levels</option>
 									<option value="3">Something else</option>
-								</select>
+								</select>-->
 							</div>
 							<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 						</form>
@@ -42,16 +42,20 @@
 		name: 'Admin',
 		data() {
 			return {
-				editing_skills: false,				
+				editing_skills: false,
+				skilldata: {
+					label: '',
+					email: this.$store.state.loggeduser.email,
+				}				
 			}
 		},
 		methods: {
 			createSkill: function() {
-				fetch(`http://localhost:8086/api/userskill/${this.user.id}`, {
-					method: 'PUT',
+				fetch('http://localhost:8086/api/skill', {
+					method: 'POST',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
-					body: JSON.stringify(this.testskill)
+					body: JSON.stringify(this.skilldata)
 				})
 			},
 		},
