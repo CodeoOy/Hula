@@ -1,5 +1,5 @@
 use super::super::schema::*;
-use diesel::{r2d2::ConnectionManager, PgConnection};
+use diesel::{PgConnection, dsl::Nullable, r2d2::ConnectionManager};
 use serde::{Deserialize, Serialize};
 //use crate::schema::invitations::password_plain;
 
@@ -15,19 +15,11 @@ pub struct Skill {
 	pub updated_by: String,
 }
 
-/*
-impl Skill {
-	pub fn from_details<S: Into<String>, T: Into<String>>(
-		email: S,
-		label: T,
-	) -> Self {
-		Skill {
-			id: uuid::Uuid::new_v4(),
-			label: label.into(),
-			skillcategory_id: uuid::Uuid::new_v4(),
-			skillscope_id: uuid::Uuid::new_v4(),
-			updated_by: email.into(),
-		}
-	}
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
+#[table_name = "skillcategories"]
+pub struct SkillCategory {
+	id: uuid::Uuid,
+	label: String,
+	parent_id: Option<uuid::Uuid>,
+	updated_by: String,
 }
-*/

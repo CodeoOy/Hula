@@ -3,12 +3,35 @@ use diesel::{prelude::*, PgConnection};
 use serde::{Deserialize, Serialize};
 
 use crate::errors::ServiceError;
-use crate::models::skills::{Pool, Skill};
+use crate::models::skills::{Pool, Skill, SkillCategory};
 
 #[derive(Deserialize, Debug)]
 pub struct SkillData {
 	pub email: String,
 	pub label: String,
+}
+
+pub async fn get_skill_categories(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+	let res = web::block(move || query_skill_categories(pool)).await;
+
+	match res {
+		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_skill_categories(pool: web::Data<Pool>) -> Result<Vec<SkillCategory>, crate::errors::ServiceError> {
+	use crate::schema::skillcategories::dsl::skillcategories;
+	let conn: &PgConnection = &pool.get().unwrap();
+	let items = skillcategories.load::<SkillCategory>(conn)?;
+	if items.is_empty() == false {
+		println!("\nGot all categories.\n");
+		return Ok(items);
+	}
+	Err(ServiceError::Empty)
 }
 
 pub async fn create_skill(
