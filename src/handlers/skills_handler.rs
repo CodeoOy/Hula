@@ -3,47 +3,20 @@ use diesel::{prelude::*, PgConnection};
 use serde::{Deserialize, Serialize};
 
 use crate::errors::ServiceError;
-use crate::models::skills::{Skill};
+use crate::models::skills::{Pool, Skill};
 
-fn create_skill(invdata: InvitationData, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
-	let invitation = dbg!(query(
-		invdata.email,
-		invdata.password_plain,
-		invdata.first_name,
-		invdata.last_name,
-		pool
-	)?);
-	send_invitation(&invitation)
+#[derive(Deserialize, Debug)]
+pub struct SkillData {
+	pub email: String,
+	pub label: String,
 }
 
-/// Diesel query
-fn query(
-	eml: String,
-	psw: String,
-	first_name: String,
-	last_name: String,
-	pool: web::Data<Pool>,
-) -> Result<Invitation, crate::errors::ServiceError> {
-	use crate::schema::invitations::dsl::invitations;
-
-	let password: String = hash_password(&psw)?;
-	let new_invitation = Invitation::from_details(eml, password, first_name, last_name);
-	let conn: &PgConnection = &pool.get().unwrap();
-
-	let inserted_invitation = diesel::insert_into(invitations)
-		.values(&new_invitation)
-		.get_result(conn)?;
-
-	Ok(inserted_invitation)
-}
-
-pub async fn add_skill(
-	uuid_data: web::Path<String>,
-	payload: web::Json<UserSkill>,
-	pool: web::Data<Pool>,
+pub async fn create_skill(
+	skilldata: web::Json<SkillData>,
+	pool: web::Data<Pool>
 ) -> Result<HttpResponse, ServiceError> {
 	println!("Adding skill");
-	let res = web::block(move || query_add_skill(uuid_data.into_inner(), payload, pool)).await;
+	let res = web::block(move || query_create(skilldata, pool)).await;
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
@@ -53,29 +26,26 @@ pub async fn add_skill(
 	}
 }
 
-fn query_add_skill(
-	uuid_data: String,
-	skill_data: web::Json<UserSkill>,
+fn query_create(
+	skilldata: web::Json<SkillData>,
 	pool: web::Data<Pool>,
-) -> Result<UserSkill, crate::errors::ServiceError> {
-	use crate::schema::userskills::dsl::userskills;
+) -> Result<Skill, crate::errors::ServiceError> {
+	use crate::schema::skills::dsl::skills;
 	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	let new_user_skill = UserSkill {
-		id: skill_data.id,
-		user_id: uuid_query,
-		skill_id: skill_data.skill_id,
-		skillscopelevel_id: skill_data.skillscopelevel_id,
-		years: skill_data.years,
-		updated_by: String::from("Kylpynalle"), // LoggedUser here
+	let new_skill = Skill {
+		id: uuid::Uuid::new_v4(),
+		label: skilldata.label.clone(),
+		skillcategory_id: uuid::Uuid::new_v4(),
+		skillscope_id: uuid::Uuid::new_v4(),
+		updated_by: skilldata.email.clone(),
 	};
-	let rows_inserted = diesel::insert_into(userskills)
-		.values(&new_user_skill)
-		.get_result::<UserSkill>(conn);
+	let rows_inserted = diesel::insert_into(skills)
+		.values(&new_skill)
+		.get_result::<Skill>(conn);
 	println!("{:?}", rows_inserted);
 	if rows_inserted.is_ok() {
 		println!("\nSkill added successfully.\n");
-		return Ok(new_user_skill.into());
+		return Ok(new_skill.into());
 	}
 	Err(ServiceError::Unauthorized)
 }

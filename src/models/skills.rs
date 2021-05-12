@@ -15,6 +15,7 @@ pub struct Skill {
 	pub updated_by: String,
 }
 
+/*
 impl Skill {
 	pub fn from_details<S: Into<String>, T: Into<String>>(
 		email: S,
@@ -29,3 +30,4 @@ impl Skill {
 		}
 	}
 }
+*/
