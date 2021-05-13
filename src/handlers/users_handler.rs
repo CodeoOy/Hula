@@ -179,8 +179,10 @@ fn query_add_skill(
 	pool: web::Data<Pool>,
 ) -> Result<UserSkill, crate::errors::ServiceError> {
 	use crate::schema::userskills::dsl::userskills;
+	use crate::schema::skillscopelevels::dsl::skillscopelevels;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	//let levels = skillscopelevels.load::<Skill>(conn)?;
 	let new_user_skill = UserSkill {
 		id: uuid::Uuid::new_v4(),
 		user_id: uuid_query,

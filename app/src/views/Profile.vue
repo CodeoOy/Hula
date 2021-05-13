@@ -5,14 +5,14 @@
 				<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
 					<div>
 						<h2>Add a skill</h2>
-						<form v-on:submit="addExistingSkill">
+						<form action="#" @submit.prevent="onSubmit" v-on:submit="addExistingSkill">
 							<div class="input-group">
 								<select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon" v-model="skilldata.skill_id">
 									<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
 										{{ avskill.label }}
 									</option>
 								</select>
-								<input type="number" aria-label="Years" class="form-control" v-model="skilldata.years">
+								<input type="number" aria-label="Years" class="form-control" v-model.number="skilldata.years">
 								<button class="btn btn-outline-secondary" type="button">Button</button>
 							</div>
 							<button type="submit" class="btn btn-gradient mb-1">Submit</button>
@@ -78,7 +78,7 @@
 					user_id: '00000000-0000-0000-0000-000000000000',
 					skill_id: '00000000-0000-0000-0000-000000000000',
 					skillscopelevel_id: "e9becc32-0238-4561-b341-106de1c26048",
-					years: 10.0,
+					years: Number,
 					updated_by: "tlo"
 				},
 				available_skills: {},
@@ -89,8 +89,7 @@
 		},
 		methods: {
 			addExistingSkill: function() {
-				console.log("henlo");
-				console.log(this.skilldata);
+				console.log(this.skilldata)
 				fetch(`http://localhost:8086/api/userskill/${this.user.id}`, {
 					method: 'POST',
 					headers: {"Content-Type": "application/json"},
