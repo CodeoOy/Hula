@@ -35,10 +35,7 @@ pub struct QueryData {
 	pub id: String,
 }
 
-pub async fn get_by_pid(
-	uuid_data: web::Json<QueryData>,
-	pool: web::Data<Pool>,
-) -> Result<HttpResponse, ServiceError> {
+pub async fn get_by_pid(uuid_data: web::Json<QueryData>, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
 	// run diesel blocking code
 	println!("\nGetting project by uuid");
 	let res = web::block(move || query_one(uuid_data.into_inner(), pool)).await;
@@ -52,10 +49,7 @@ pub async fn get_by_pid(
 	}
 }
 
-fn query_one(
-	uuid_data: QueryData,
-	pool: web::Data<Pool>,
-) -> Result<Project, crate::errors::ServiceError> {
+fn query_one(uuid_data: QueryData, pool: web::Data<Pool>) -> Result<Project, crate::errors::ServiceError> {
 	use crate::schema::projects::dsl::{id, projects};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data.id)?;

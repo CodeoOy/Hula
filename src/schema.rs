@@ -113,9 +113,9 @@ table! {
 }
 
 table! {
-	matchcandidates (projectneedskill_id, userskill_id) {
-		projectneedskill_id -> Uuid,
-		userskill_id -> Uuid,
+	matchcandidates (projectneedskillid, userskillid) {
+		projectneedskillid -> Uuid,
+		userskillid -> Uuid,
 		projectname -> Varchar,
 		skillname -> Varchar,
 		required_level -> Varchar,

@@ -4,3 +4,4 @@ pub mod matches_handler;
 pub mod projects_handler;
 pub mod register_handler;
 pub mod users_handler;
+pub mod skills_handler;

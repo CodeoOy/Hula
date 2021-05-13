@@ -60,18 +60,13 @@ async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
 	dotenv::dotenv().ok();
-	std::env::set_var(
-		"RUST_LOG",
-		"simple-auth-server=debug,actix_web=info,actix_server=info",
-	);
+	std::env::set_var("RUST_LOG", "simple-auth-server=debug,actix_web=info,actix_server=info");
 	env_logger::init();
 	let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
 	// create db connection pool
 	let manager = ConnectionManager::<PgConnection>::new(database_url);
-	let pool: models::users::Pool = r2d2::Pool::builder()
-		.build(manager)
-		.expect("Failed to create pool.");
+	let pool: models::users::Pool = r2d2::Pool::builder().build(manager).expect("Failed to create pool.");
 	let domain: String = std::env::var("DOMAIN").unwrap_or_else(|_| "localhost".to_string());
 
 	// Start http server
@@ -103,29 +98,27 @@ async fn main() -> std::io::Result<()> {
 							.route(web::delete().to(handlers::users_handler::delete_user)),
 					)
 					.service(
-						web::resource("/userskill/{user_id}")
-							.route(web::put().to(handlers::users_handler::add_skill)),
+						web::resource("/userskill/{user_id}").route(web::post().to(handlers::users_handler::add_skill)),
 					)
 					.service(
-						web::resource("/users")
-							.route(web::get().to(handlers::users_handler::get_all)),
+						web::resource("/skill").route(web::post().to(handlers::skills_handler::create_skill)),
 					)
 					.service(
-						web::resource("/project")
-							.route(web::post().to(handlers::projects_handler::get_by_pid)),
+						web::resource("/skills/categories").route(web::get().to(handlers::skills_handler::get_skill_categories)),
 					)
 					.service(
-						web::resource("/projects")
-							.route(web::get().to(handlers::projects_handler::get_all_projects)),
+						web::resource("/skills").route(web::get().to(handlers::skills_handler::get_all_skills)),
+					)
+					.service(web::resource("/users").route(web::get().to(handlers::users_handler::get_all)))
+					.service(web::resource("/project").route(web::post().to(handlers::projects_handler::get_by_pid)))
+					.service(
+						web::resource("/projects").route(web::get().to(handlers::projects_handler::get_all_projects)),
 					)
 					.service(
 						web::resource("/register/{invitation_id}")
 							.route(web::post().to(handlers::register_handler::register_user)),
 					)
-					.service(
-						web::resource("/matches")
-							.route(web::get().to(handlers::matches_handler::get_all_matches)),
-					)
+					.service(web::resource("/matches").route(web::get().to(handlers::matches_handler::get_all_matches)))
 					.service(
 						web::resource("/auth")
 							.route(web::post().to(handlers::auth_handler::login))
@@ -138,9 +131,7 @@ async fn main() -> std::io::Result<()> {
 			.service(allviews)
 			.service(web::resource("/").route(web::get().to(|req: HttpRequest| {
 				println!("HTTP REQ:\n{:?}\n", req);
-				HttpResponse::Found()
-					.header(header::LOCATION, "index.html")
-					.finish()
+				HttpResponse::Found().header(header::LOCATION, "index.html").finish()
 			})))
 	})
 	.bind("localhost:8086")?

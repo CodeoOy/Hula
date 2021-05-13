@@ -1,7 +1,5 @@
 use actix_identity::Identity;
-use actix_web::{
-	dev::Payload, error::BlockingError, web, Error, FromRequest, HttpRequest, HttpResponse,
-};
+use actix_web::{dev::Payload, error::BlockingError, web, Error, FromRequest, HttpRequest, HttpResponse};
 use diesel::prelude::*;
 use diesel::PgConnection;
 use futures::future::{err, ok, Ready};
@@ -72,11 +70,9 @@ pub async fn get_me(logged_user: LoggedUser) -> HttpResponse {
 }
 /// Diesel query
 fn query(auth_data: AuthData, pool: web::Data<Pool>) -> Result<SlimUser, ServiceError> {
-	use crate::schema::users::dsl::{users, email};
+	use crate::schema::users::dsl::{email, users};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let mut items = users
-		.filter(email.eq(&auth_data.email))
-		.load::<User>(conn)?;
+	let mut items = users.filter(email.eq(&auth_data.email)).load::<User>(conn)?;
 	if let Some(user) = items.pop() {
 		if let Ok(matching) = verify(&user.hash, &auth_data.password) {
 			if matching {

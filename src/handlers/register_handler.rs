@@ -33,10 +33,7 @@ pub async fn register_user(
 	}
 }
 
-fn query(
-	user_data: UserData,
-	pool: web::Data<Pool>,
-) -> Result<SlimUser, crate::errors::ServiceError> {
+fn query(user_data: UserData, pool: web::Data<Pool>) -> Result<SlimUser, crate::errors::ServiceError> {
 	// Do we want full user, not slim user?
 	use crate::schema::invitations::dsl::{email, id, invitations};
 	use crate::schema::users::dsl::users;
@@ -54,14 +51,9 @@ fn query(
 				if invitation.expires_at > chrono::Local::now().naive_local() {
 					// try hashing the password, else return the error that will be converted to ServiceError
 					let password: String = user_data.password;
-					let user = User::from_details(
-						invitation.email,
-						password,
-						invitation.first_name,
-						invitation.last_name,
-					);
-					let inserted_user: User =
-						diesel::insert_into(users).values(&user).get_result(conn)?;
+					let user =
+						User::from_details(invitation.email, password, invitation.first_name, invitation.last_name);
+					let inserted_user: User = diesel::insert_into(users).values(&user).get_result(conn)?;
 					dbg!(&inserted_user);
 					return Ok(inserted_user.into());
 				}

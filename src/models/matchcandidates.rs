@@ -8,8 +8,8 @@ pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 #[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
 #[table_name = "matchcandidates"]
 pub struct MatchCandidate {
-	pub projectneedskill_id: uuid::Uuid,
-	pub userskill_id: uuid::Uuid,
+	pub projectneedskillid: uuid::Uuid,
+	pub userskillid: uuid::Uuid,
 	pub projectname: String,
 	pub skillname: String,
 	pub required_level: String,

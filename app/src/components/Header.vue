@@ -37,11 +37,14 @@
 				</svg>
 			</a>
 			<ul class="dropdown-menu" aria-labelledby="usermenu">
-				<li>
-					<a href="#" v-on:click="logOut()" class="dropdown-item">Log out</a>
+				<li v-if="this.$store.state.loggeduser.isadmin === true">
+					<a href="http://localhost:8086/app/admin" class="dropdown-item">Admin</a>
 				</li>
 				<li>
 					<a href="http://localhost:8086/app/profile" class="dropdown-item">Profile</a>
+				</li>
+				<li>
+					<a href="#" v-on:click="logOut()" class="dropdown-item">Log out</a>
 				</li>
 			</ul>
 		</div>
