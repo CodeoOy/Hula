@@ -1,5 +1,4 @@
 use crate::errors::ServiceError;
-use crate::models::users::{Pool, Skill, User, UserSkill};
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::result::Error;
 use diesel::{associations::HasTable, prelude::*, PgConnection};

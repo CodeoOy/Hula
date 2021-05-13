@@ -115,6 +115,9 @@ async fn main() -> std::io::Result<()> {
 						web::resource("/projects").route(web::get().to(handlers::projects_handler::get_all_projects)),
 					)
 					.service(
+						web::resource("/matchedusers").route(web::post().to(handlers::matches_handler::get_matches_by_params)),
+					)
+					.service(
 						web::resource("/register/{invitation_id}")
 							.route(web::post().to(handlers::register_handler::register_user)),
 					)

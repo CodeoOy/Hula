@@ -1,15 +1,16 @@
 <template>
 	<div>
-		<form action=""></form>
-		<select class="mb-2 form-select" v-model="selected" aria-label="Choose project">
-			<option :value="{}" disabled>Choose the project</option>
-			<option v-for="project in projects" :key="project.name" v-bind:value="{ project }">{{ project.name }}</option>
-		</select>
-		<div class="mb-2 form-check">
-			<label class="form-label">Availability</label>
-			<input type="checkbox" class="form-check-input" name="available" />
-		</div>
-		<button v-on:click="getUsers('users')" class="btn btn-gradient">Search for pros</button>
+		<form action="#" @submit.prevent="onSubmit" v-on:submit="getMatchedUsers">
+			<select class="mb-2 form-select" v-model="querydata.projectname" aria-label="Choose project">
+				<option disabled>Choose the project</option>
+				<option v-for="project in projects" :key="project.name" :value="project.name">{{ project.name }}</option>
+			</select>
+			<!--<div class="mb-2 form-check">
+				<label class="form-label">Show only available candidates</label>
+				<input type="checkbox" class="form-check-input" name="available" v-model="user.available" />
+			</div>-->
+			<button type="submit" class="btn btn-gradient mb-1">Search</button>
+		</form>
 	</div>
 </template>
 
@@ -22,6 +23,9 @@
 				user: {},
 				users: {},
 				selected: {},
+				querydata: {
+					projectname: '',
+				},
 			}
 		},
 		methods: {
@@ -60,6 +64,22 @@
 			},
 			getUsers: function() {
 				fetch('api/users', {method: 'GET'})
+				.then((response) => response.json())
+				.then(response => { 
+					this.users = response;
+					this.$emit('usersfetched', this.users)
+				})    
+				.catch((errors) => {
+					console.log(errors);
+				})
+			},
+			getMatchedUsers: function() {
+				fetch('api/matchedusers', {
+					method: 'POST',
+					headers: {"Content-Type": "application/json"},
+					credentials: 'include',
+					body: JSON.stringify(this.querydata)
+				})
 				.then((response) => response.json())
 				.then(response => { 
 					this.users = response;
