@@ -41,8 +41,8 @@ table! {
 		project_id -> Uuid,
 		skill_id -> Uuid,
 		skillscopelevel_id -> Nullable<Uuid>,
-		min_years -> Nullable<Float4>,
-		max_years -> Nullable<Float4>,
+		min_years -> Nullable<Double>,
+		max_years -> Nullable<Double>,
 		countofusers -> Integer,
 		begin_time -> Timestamp,
 		end_time -> Timestamp,
@@ -75,8 +75,8 @@ table! {
 		id -> Uuid,
 		label -> Varchar,
 		skillscope_id -> Uuid,
-		index -> Int2,
-		percentage -> Nullable<Int2>,
+		index -> Integer,
+		percentage -> Nullable<Integer>,
 		updated_by -> Varchar,
 	}
 }
@@ -96,7 +96,7 @@ table! {
 		description -> Varchar,
 		begin_time -> Nullable<Timestamp>,
 		end_time -> Nullable<Timestamp>,
-		percentage -> Nullable<Int2>,
+		percentage -> Nullable<Integer>,
 		updated_by -> Varchar,
 	}
 }
@@ -107,7 +107,7 @@ table! {
 		user_id -> Uuid,
 		skill_id -> Uuid,
 		skillscopelevel_id -> Uuid,
-		years -> Nullable<Float4>,
+		years -> Nullable<Double>,
 		updated_by -> Varchar,
 	}
 }
@@ -120,14 +120,14 @@ table! {
 		skillname -> Varchar,
 		required_level -> Varchar,
 		required_index -> Integer,
-		required_minyears -> Nullable<Float4>,
-		required_maxyears -> Nullable<Float4>,
+		required_minyears -> Nullable<Double>,
+		required_maxyears -> Nullable<Double>,
 		firstname -> Varchar,
 		lastname -> Varchar,
 		available -> Bool,
 		user_level -> Varchar,
 		user_index -> Integer,
-		user_years -> Nullable<Float4>,
+		user_years -> Nullable<Double>,
 	}
 }
 
