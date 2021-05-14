@@ -31,7 +31,7 @@ pub struct SkillDTO {
 	pub user_id: uuid::Uuid,
 	pub skill_id: uuid::Uuid,
 	pub skillscopelevel_id: uuid::Uuid,
-	pub years: Option<f32>,
+	pub years: Option<f64>,
 	pub skill_label: String,
 }
 
