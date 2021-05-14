@@ -140,6 +140,7 @@
 			}
 		},
 		mounted() {
+			//this.$store.commit('updateUser')
 			this.user = this.$store.state.loggeduser
 			this.getAllSkills()
 		}
