@@ -215,7 +215,7 @@ fn query_delete_user(
 		.execute(conn)
 		.optional()
 		.map_err(Error::from)?;
-	if let Some(delete_skills) = delete_skills {
+	if let Some(_delete_skills) = delete_skills {
 		diesel::delete(users.filter(id.eq(uuid_query))).execute(conn)?;
 		Ok(())
 	} else {
