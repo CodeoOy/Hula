@@ -31,7 +31,7 @@ pub struct SkillDTO {
 	pub user_id: uuid::Uuid,
 	pub skill_id: uuid::Uuid,
 	pub skillscopelevel_id: uuid::Uuid,
-	pub years: Option<f32>,
+	pub years: Option<f64>,
 	pub skill_label: String,
 }
 
@@ -215,7 +215,7 @@ fn query_delete_user(
 		.execute(conn)
 		.optional()
 		.map_err(Error::from)?;
-	if let Some(delete_skills) = delete_skills {
+	if let Some(_delete_skills) = delete_skills {
 		diesel::delete(users.filter(id.eq(uuid_query))).execute(conn)?;
 		Ok(())
 	} else {
