@@ -25,11 +25,6 @@
 <script>
 	export default {
 		name: 'ResultsLeads',
-		data() {
-			return {
-				message: "Heips"
-			}
-		},
 		props: {
 			leads: {}
 		}

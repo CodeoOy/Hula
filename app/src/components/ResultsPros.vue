@@ -28,11 +28,6 @@
 <script>
 	export default {
 		name: 'ResultsPros',
-		data() {
-			return {
-				message: "moro",
-			}
-		},
 		props: {
 			users: {}
 		}

@@ -1,6 +1,7 @@
 <template>
 	<div class="p-3 rounded-2 content-box bg-dark text-light">
-		{{ registration_data }}
+		<h2>Raw registration data:</h2>
+		<pre>{{ registration_data }}</pre>
 	</div>
 </template>
 
@@ -15,9 +16,13 @@
 		},
 		methods: {
 			confirm_registration: function() {  
-				fetch(`http://localhost:8086/api/register/${this.registration_data.id}`, {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(this.registration_data)})
+				fetch(`http://localhost:8086/api/register/${this.registration_data.id}`, {
+					method: 'POST', 
+					headers: {"Content-Type": "application/json"}, 
+					body: JSON.stringify(this.registration_data)
+				})
 				.then((response) => response.json())
-				.then((response) => {    
+				.then(() => {    
 					this.$flashMessage.show({
 						type: 'success',
 						title: 'Account confirmed.',

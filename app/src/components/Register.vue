@@ -32,7 +32,6 @@
 		},
 		methods: {
 			register: async function(e) { 
-
 				e.preventDefault()    
 				let email = e.target.elements.email.value
 				let first_name = e.target.elements.first_name.value 

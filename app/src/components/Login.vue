@@ -8,10 +8,6 @@
 			<label for="loginPassword" class="form-label">Password</label>
 			<input type="password" class="form-control" id="loginPassword" name="password">
 		</div>
-		<!--<div class="mb-3 form-check">
-			<input type="checkbox" class="form-check-input" id="exampleCheck">
-			<label class="form-check-label" for="exampleCheck" name="checkbox">I like pina coladas and getting caught in the rain.</label>
-		</div>-->
 		<button type="submit" class="btn btn-gradient mb-1">Login</button>
 	</form>
 </template>

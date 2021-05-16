@@ -25,7 +25,6 @@
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h1>Welcome {{ this.$store.state.loggeduser.firstname }}!</h1>
 					<a href="#" v-on:click="editing_skills = true">Add test skill</a>
-					<p>{{ categories }}</p>
 				</div>
 			</div>
 			<div class="col-md-8">

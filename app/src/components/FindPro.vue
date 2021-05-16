@@ -51,7 +51,7 @@
 					this.project = response;
 				})    
 			},
-			getUserData: function(uid) { 
+			getUserData: function(uid) { // Currently not used but there should be a modal with this data
 				fetch('api/user', {
 					method: 'POST',
 					headers: {"Content-Type": "application/json"},
@@ -61,17 +61,6 @@
 				.then(response => { 
 					this.user = response;
 				})    
-			},
-			getUsers: function() {
-				fetch('api/users', {method: 'GET'})
-				.then((response) => response.json())
-				.then(response => { 
-					this.users = response;
-					this.$emit('usersfetched', this.users)
-				})    
-				.catch((errors) => {
-					console.log(errors);
-				})
 			},
 			getMatchedUsers: function() {
 				fetch('api/matchedusers', {
