@@ -3,8 +3,8 @@ extern crate diesel;
 
 use actix_files as fs;
 use actix_identity::{CookieIdentityPolicy, IdentityService};
-use actix_session::{CookieSession, Session};
-use actix_web::http::{header, Method, StatusCode};
+use actix_session::{Session};
+use actix_web::http::{header, StatusCode};
 use actix_web::{get, middleware, web, App, HttpRequest, HttpResponse, HttpServer, Result};
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
@@ -17,7 +17,7 @@ mod schema;
 mod utils;
 
 #[get("/")]
-async fn home(session: Session, req: HttpRequest) -> Result<HttpResponse> {
+async fn home(session: Session) -> Result<HttpResponse> {
 	//println!("{:?}", req);
 	//println!("Lol");
 	// session

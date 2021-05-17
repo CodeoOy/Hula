@@ -5,7 +5,6 @@ use serde::Deserialize;
 use crate::errors::ServiceError;
 use crate::models::invitations::{Invitation, Pool};
 use crate::models::users::{SlimUser, User};
-use crate::utils::hash_password;
 // UserData is used to extract data from a post request by the client
 #[derive(Debug, Deserialize)]
 pub struct UserData {

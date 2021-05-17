@@ -3,7 +3,7 @@ use crate::models::skills::Skill;
 use crate::models::users::{Pool, User, UserSkill};
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::result::Error;
-use diesel::{associations::HasTable, prelude::*, PgConnection};
+use diesel::{prelude::*, PgConnection};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug)]
@@ -177,7 +177,6 @@ fn query_add_skill(
 	skill_data: web::Json<UserSkill>,
 	pool: web::Data<Pool>,
 ) -> Result<UserSkill, crate::errors::ServiceError> {
-	use crate::schema::skillscopelevels::dsl::skillscopelevels;
 	use crate::schema::userskills::dsl::userskills;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
