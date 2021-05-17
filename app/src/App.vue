@@ -28,8 +28,19 @@
 				.then((response) => {
 					if(response.ok) {
 						this.logged = true;
+						this.$flashMessage.show({
+							type: 'success',
+							title: 'Some kind of success',
+							time: 1000
+						});
 					} else {
+						fetch('http://localhost:8086/api/auth', {method: 'DELETE'})
 						this.logged = false;
+						this.$flashMessage.show({
+							type: 'error',
+							title: 'Some kind of error or unauthorized',
+							time: 1000
+						});
 					}
 				})
 				this.user = this.$store.state.loggeduser

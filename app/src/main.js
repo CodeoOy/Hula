@@ -22,6 +22,8 @@ const store = createStore({
 			.then(response => { 
 				localStorage.setItem('user', JSON.stringify(response));
 				state.loggeduser = response;
+				console.log("setUser:")
+				console.log(state.loggeduser)
 			})   
 		}
 	}

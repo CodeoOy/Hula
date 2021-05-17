@@ -5,7 +5,7 @@
 				<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
 					<div>
 						<h2>Add a skill</h2>
-						<form action="#" @submit.prevent="onSubmit" v-on:submit="addExistingSkill">
+						<form v-on:submit="addExistingSkill">
 							<div class="input-group">
 								<select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon" v-model="skilldata.skill_id">
 									<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
@@ -96,6 +96,9 @@
 					credentials: 'include',
 					body: JSON.stringify(this.skilldata)
 				})
+				.then(() => {
+					this.$store.commit('setUser', this.user.id)
+				})
 			},
 			updateUser: function() {   
 				fetch(`http://localhost:8086/api/user/${this.user.id}`, {
@@ -104,28 +107,8 @@
 					credentials: 'include',
 					body: JSON.stringify(this.user)
 				})
-				.then((response) => {
-					if (response.ok) {
-						fetch('http://localhost:8086/api/auth', {method: 'GET'})
-						.then((response) => response.json())
-						.then((response) => {
-							this.message = response;
-							this.$store.commit('setUser', this.user.id)
-							this.$emit('checklogin')
-							this.$flashMessage.show({
-								type: 'success',
-								title: 'User info saved',
-								time: 1000
-							});
-						})
-					} else {
-						fetch('http://localhost:8086/api/auth', {method: 'DELETE'})
-						this.$flashMessage.show({
-							type: 'error',
-							title: 'Bad credentials. Cookies maybe deleted.',
-							time: 1000
-						});
-					}
+				.then(() => {
+					this.$store.commit('setUser', this.user.id)
 				})
 			},
 			getAllSkills: function() {

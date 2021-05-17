@@ -32,8 +32,27 @@
 					credentials: 'include',
 					body: JSON.stringify(data)
 				})
-				.then(() => {
-					this.$emit('checklogin')
+				.then((response) => {
+					if (response.ok) {
+						fetch('http://localhost:8086/api/auth', {method: 'GET'})
+						.then((response) => response.json())
+						.then((response) => {
+							this.$store.commit('setUser', response)
+							this.$emit('loggedin')
+							this.$flashMessage.show({
+								type: 'success',
+								title: 'Successfully logged in',
+								time: 1000
+							});
+						})
+					} else {
+						fetch('http://localhost:8086/api/auth', {method: 'DELETE'})
+						this.$flashMessage.show({
+							type: 'error',
+							title: 'Bad credentials. Cookies maybe deleted.',
+							time: 1000
+						});
+					}
 				})
 			},
 			login: async function(e) { 
