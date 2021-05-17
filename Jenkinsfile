@@ -5,7 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh "cd app"
-                sh "bpm run dev"
+                sh "npm run dev"
                 sh "cd .."
                 sh "cargo build"
             }
