@@ -18,8 +18,8 @@ pub struct User {
 	pub hash: String,
 	pub inserted_at: chrono::NaiveDateTime,
 	pub updated_by: String,
+	pub is_employee: bool,
 }
-
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
 #[belongs_to(User, foreign_key = "user_id")]
@@ -52,6 +52,7 @@ impl User {
 			hash: pwd.into(),
 			inserted_at: chrono::Local::now().naive_local(),
 			updated_by: emailstr,
+			is_employee: false,
 		}
 	}
 }

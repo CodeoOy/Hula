@@ -100,22 +100,20 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/userskill/{user_id}").route(web::post().to(handlers::users_handler::add_skill)),
 					)
+					.service(web::resource("/skill").route(web::post().to(handlers::skills_handler::create_skill)))
 					.service(
-						web::resource("/skill").route(web::post().to(handlers::skills_handler::create_skill)),
+						web::resource("/skills/categories")
+							.route(web::get().to(handlers::skills_handler::get_skill_categories)),
 					)
-					.service(
-						web::resource("/skills/categories").route(web::get().to(handlers::skills_handler::get_skill_categories)),
-					)
-					.service(
-						web::resource("/skills").route(web::get().to(handlers::skills_handler::get_all_skills)),
-					)
+					.service(web::resource("/skills").route(web::get().to(handlers::skills_handler::get_all_skills)))
 					.service(web::resource("/users").route(web::get().to(handlers::users_handler::get_all)))
 					.service(web::resource("/project").route(web::post().to(handlers::projects_handler::get_by_pid)))
 					.service(
 						web::resource("/projects").route(web::get().to(handlers::projects_handler::get_all_projects)),
 					)
 					.service(
-						web::resource("/matchedusers").route(web::post().to(handlers::matches_handler::get_matches_by_params)),
+						web::resource("/matchedusers")
+							.route(web::post().to(handlers::matches_handler::get_matches_by_params)),
 					)
 					.service(
 						web::resource("/register/{invitation_id}")

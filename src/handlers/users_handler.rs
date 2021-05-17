@@ -1,10 +1,10 @@
 use crate::errors::ServiceError;
+use crate::models::skills::Skill;
+use crate::models::users::{Pool, User, UserSkill};
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::result::Error;
 use diesel::{associations::HasTable, prelude::*, PgConnection};
 use serde::{Deserialize, Serialize};
-use crate::models::users::{Pool, User, UserSkill};
-use crate::models::skills::{Skill};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
@@ -177,8 +177,8 @@ fn query_add_skill(
 	skill_data: web::Json<UserSkill>,
 	pool: web::Data<Pool>,
 ) -> Result<UserSkill, crate::errors::ServiceError> {
-	use crate::schema::userskills::dsl::userskills;
 	use crate::schema::skillscopelevels::dsl::skillscopelevels;
+	use crate::schema::userskills::dsl::userskills;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	//let levels = skillscopelevels.load::<Skill>(conn)?;
@@ -201,10 +201,7 @@ fn query_add_skill(
 	Err(ServiceError::Unauthorized)
 }
 
-fn query_delete_user(
-	uuid_data: String,
-	pool: web::Data<Pool>,
-) -> Result<(), crate::errors::ServiceError> {
+fn query_delete_user(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::users::dsl::id;
 	use crate::schema::users::dsl::*;
@@ -223,10 +220,7 @@ fn query_delete_user(
 	}
 }
 
-pub async fn delete_user(
-	uuid_data: web::Path<String>,
-	pool: web::Data<Pool>,
-) -> Result<HttpResponse, ServiceError> {
+pub async fn delete_user(uuid_data: web::Path<String>, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_delete_user(uuid_data.into_inner(), pool)).await;
 	println!("\nUser deleted\n");
 	match res {

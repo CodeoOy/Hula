@@ -31,6 +31,7 @@ table! {
 		hash -> Varchar,
 		inserted_at -> Timestamp,
 		updated_by -> Varchar,
+		is_employee -> Bool,
 
 	}
 }
