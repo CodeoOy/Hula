@@ -4,6 +4,9 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                sh "cd app"
+                sh "bpm run dev"
+                sh "cd .."
                 sh "cargo build"
             }
         }
