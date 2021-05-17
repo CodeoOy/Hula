@@ -6,7 +6,7 @@
 					<div>
 						<div v-if="show_signup == false">
 							<h2>Log in</h2>
-							<Login v-on:loggedin="isLogged"/>
+							<Login v-on:checklogin="isLogged"/>
 							<a href="#" v-on:click="show_signup = true">Or sign up here.</a>
 						</div>
 						<div v-else>
@@ -43,12 +43,8 @@
   		},
 		methods: {
 			isLogged () {
-				this.$emit('loggedin')
-			},
-			logoutUser () {
-				fetch('http://localhost:8086/api/auth', {method: 'DELETE'})
-				this.$emit('loggedin')
-			},
+				this.$emit('checklogin')
+			}
 		}
 	}
 </script>

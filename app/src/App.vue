@@ -2,7 +2,7 @@
 	<main>
 		<Header v-on:loggedout="checkLogin" />
 		<FlashMessage position="right top" />
-		<router-view :logged='logged' v-on:loggedin="checkLogin" />
+		<router-view :logged='logged' v-on:checklogin="checkLogin" />
 		{{ this.$store.state.loggeduser }}
 	</main>
 </template>
@@ -32,6 +32,7 @@
 						this.logged = false;
 					}
 				})
+				this.user = this.$store.state.loggeduser
 			},
 		},
 		mounted() {
@@ -39,7 +40,6 @@
 		},
 		updated() {
 			this.checkLogin()
-			this.user = this.$store.state.loggeduser
 		}
 	}
 </script>

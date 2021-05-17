@@ -111,7 +111,7 @@
 						.then((response) => {
 							this.message = response;
 							this.$store.commit('setUser', this.user.id)
-							this.$emit('loggedin')
+							this.$emit('checklogin')
 							this.$flashMessage.show({
 								type: 'success',
 								title: 'User info saved',
