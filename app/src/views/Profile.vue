@@ -118,7 +118,7 @@
 					this.available_skills = response;
 				})    
 				.catch((errors) => {
-					console.log(errors);
+					console.log(errors); // This gives unexpected end of json
 				})
 			}
 		},

@@ -3,10 +3,17 @@ use diesel::{prelude::*, PgConnection};
 use serde::{Deserialize, Serialize};
 
 use crate::errors::ServiceError;
-use crate::models::skills::{Pool, Skill, SkillCategory};
+use crate::models::skills::{Pool, Skill, SkillCategory, SkillScope};
 
 #[derive(Deserialize, Debug)]
 pub struct SkillData {
+	pub email: String,
+	pub label: String,
+	pub category_id: uuid::Uuid, 
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ScopeData {
 	pub email: String,
 	pub label: String,
 	pub category_id: uuid::Uuid, 
@@ -63,7 +70,7 @@ pub async fn create_skill(
 	pool: web::Data<Pool>
 ) -> Result<HttpResponse, ServiceError> {
 	println!("Creating a skill");
-	let res = web::block(move || query_create(skilldata, pool)).await;
+	let res = web::block(move || query_create_skill(skilldata, pool)).await;
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
@@ -73,7 +80,7 @@ pub async fn create_skill(
 	}
 }
 
-fn query_create(
+fn query_create_skill(
 	skilldata: web::Json<SkillData>,
 	pool: web::Data<Pool>,
 ) -> Result<Skill, crate::errors::ServiceError> {
@@ -95,6 +102,45 @@ fn query_create(
 	if rows_inserted.is_ok() {
 		println!("\nSkill added successfully.\n");
 		return Ok(new_skill.into());
+	}
+	Err(ServiceError::Unauthorized)
+}
+
+pub async fn create_scope(
+	scopedata: web::Json<ScopeData>,
+	pool: web::Data<Pool>
+) -> Result<HttpResponse, ServiceError> {
+	println!("Creating a skill");
+	let res = web::block(move || query_create_skill_scope(scopedata, pool)).await;
+	match res {
+		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_create_skill_scope(
+	scopedata: web::Json<ScopeData>,
+	pool: web::Data<Pool>,
+) -> Result<SkillScope, crate::errors::ServiceError> {
+	use crate::schema::skillscopes::dsl::skillscopes;
+	let conn: &PgConnection = &pool.get().unwrap();
+	println!("Connected to db");
+	let new_scope = SkillScope {
+		id: uuid::Uuid::new_v4(),
+		label: scopedata.label.clone(),
+		updated_by: scopedata.email.clone(),
+	};
+	println!("Inserting data");
+	let rows_inserted = diesel::insert_into(skillscopes)
+		.values(&new_scope)
+		.get_result::<SkillScope>(conn);
+	println!("{:?}", rows_inserted);
+	if rows_inserted.is_ok() {
+		println!("\nSkill added successfully.\n");
+		return Ok(new_scope.into());
 	}
 	Err(ServiceError::Unauthorized)
 }

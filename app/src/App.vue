@@ -3,7 +3,8 @@
 		<Header v-on:loggedout="checkLogin" />
 		<FlashMessage position="right top" />
 		<router-view :logged='logged' v-on:checklogin="checkLogin" />
-		{{ this.$store.state.loggeduser }}
+		<p>{{ this.$store.state.loggeduser }}</p>
+		<p>{{ user }}</p>
 	</main>
 </template>
 
