@@ -10,6 +10,13 @@ pub struct SkillData {
 	pub email: String,
 	pub label: String,
 	pub category_id: uuid::Uuid, 
+	pub skillscope_id: uuid::Uuid, 
+}
+#[derive(Deserialize, Debug)]
+pub struct CategoryData {
+	pub email: String,
+	pub label: String,
+	pub parent_id: Option<uuid::Uuid>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -22,7 +29,6 @@ pub struct ScopeData {
 #[derive(Deserialize, Debug)]
 pub struct ScopeLevelData {
 	pub email: String,
-	pub id: String,
 	pub label: String,
 	pub skillscope_id: uuid::Uuid,
 	pub index: i32,
@@ -75,6 +81,46 @@ fn query_skill_categories(pool: web::Data<Pool>) -> Result<Vec<SkillCategory>, c
 	Err(ServiceError::Empty)
 }
 
+pub async fn create_skill_category(
+	categorydata: web::Json<CategoryData>,
+	pool: web::Data<Pool>
+) -> Result<HttpResponse, ServiceError> {
+	println!("Creating a skill category");
+	let res = web::block(move || query_create_skill_category(categorydata, pool)).await;
+	match res {
+		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_create_skill_category(
+	categorydata: web::Json<CategoryData>,
+	pool: web::Data<Pool>,
+) -> Result<SkillCategory, crate::errors::ServiceError> {
+	use crate::schema::skillcategories::dsl::skillcategories;
+	let conn: &PgConnection = &pool.get().unwrap();
+	println!("Connected to db");
+	let new_skill_category = SkillCategory {
+		id: uuid::Uuid::new_v4(),
+		label: categorydata.label.clone(),
+		parent_id: categorydata.parent_id,
+		updated_by: categorydata.email.clone(),
+	};
+	println!("Inserting data");
+	let rows_inserted = diesel::insert_into(skillcategories)
+		.values(&new_skill_category)
+		.get_result::<SkillCategory>(conn);
+	println!("{:?}", rows_inserted);
+	if rows_inserted.is_ok() {
+		println!("\nSkill added successfully.\n");
+		return Ok(new_skill_category.into());
+	}
+	Err(ServiceError::Unauthorized)
+}
+
 pub async fn create_skill(
 	skilldata: web::Json<SkillData>,
 	pool: web::Data<Pool>
@@ -101,7 +147,7 @@ fn query_create_skill(
 		id: uuid::Uuid::new_v4(),
 		label: skilldata.label.clone(),
 		skillcategory_id: skilldata.category_id, // Update to proper value
-		skillscope_id: uuid::Uuid::parse_str("e9becc32-0238-4561-b341-106de1c26042")?, // Update to proper value
+		skillscope_id: skilldata.skillscope_id, // Update to proper value
 		updated_by: skilldata.email.clone(),
 	};
 	println!("Inserting data");
@@ -120,10 +166,10 @@ pub async fn create_skill_scope(
 	scopedata: web::Json<ScopeData>,
 	pool: web::Data<Pool>
 ) -> Result<HttpResponse, ServiceError> {
-	println!("Creating a skill");
+	println!("Creating a skill scope");
 	let res = web::block(move || query_create_skill_scope(scopedata, pool)).await;
 	match res {
-		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
+		Ok(skill_scope) => Ok(HttpResponse::Ok().json(&skill_scope)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -149,20 +195,20 @@ fn query_create_skill_scope(
 		.get_result::<SkillScope>(conn);
 	println!("{:?}", rows_inserted);
 	if rows_inserted.is_ok() {
-		println!("\nSkill added successfully.\n");
+		println!("\nSkill scope added successfully.\n");
 		return Ok(new_scope.into());
 	}
 	Err(ServiceError::Unauthorized)
 }
 
 pub async fn create_skill_scope_level(
-	scopedata: web::Json<ScopeLevelData>,
+	scopeleveldata: web::Json<ScopeLevelData>,
 	pool: web::Data<Pool>
 ) -> Result<HttpResponse, ServiceError> {
-	println!("Creating a skill");
-	let res = web::block(move || query_create_skill_scope_level(scopedata, pool)).await;
+	println!("Creating a skill scope level");
+	let res = web::block(move || query_create_skill_scope_level(scopeleveldata, pool)).await;
 	match res {
-		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
+		Ok(skill_scope_level) => Ok(HttpResponse::Ok().json(&skill_scope_level)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -191,7 +237,7 @@ fn query_create_skill_scope_level(
 		.get_result::<SkillScopeLevel>(conn);
 	println!("{:?}", rows_inserted);
 	if rows_inserted.is_ok() {
-		println!("\nSkill added successfully.\n");
+		println!("\nSkill scope level added successfully.\n");
 		return Ok(new_scope_level.into());
 	}
 	Err(ServiceError::Unauthorized)

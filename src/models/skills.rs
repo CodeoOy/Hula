@@ -26,10 +26,10 @@ pub struct SkillScope {
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
 #[table_name = "skillcategories"]
 pub struct SkillCategory {
-	id: uuid::Uuid,
-	label: String,
-	parent_id: Option<uuid::Uuid>,
-	updated_by: String,
+	pub id: uuid::Uuid,
+	pub label: String,
+	pub parent_id: Option<uuid::Uuid>,
+	pub updated_by: String,
 }
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]

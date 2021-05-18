@@ -65,7 +65,7 @@
 </template>
 
 <script>
-	import UserForm from '../components/UserForm.vue'
+	import UserForm from '../forms/UserBasicInfo.vue'
 	export default {
 		name: 'Profile',
 		data() {
