@@ -3,7 +3,7 @@ use diesel::{prelude::*, PgConnection};
 use serde::{Deserialize, Serialize};
 
 use crate::errors::ServiceError;
-use crate::models::skills::{Pool, Skill, SkillCategory, SkillScope};
+use crate::models::skills::{Pool, Skill, SkillCategory, SkillScope, SkillScopeLevel};
 
 #[derive(Deserialize, Debug)]
 pub struct SkillData {
@@ -17,6 +17,16 @@ pub struct ScopeData {
 	pub email: String,
 	pub label: String,
 	pub category_id: uuid::Uuid, 
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ScopeLevelData {
+	pub email: String,
+	pub id: String,
+	pub label: String,
+	pub skillscope_id: uuid::Uuid,
+	pub index: i32,
+	pub percentage: Option<i32>,
 }
 
 pub async fn get_all_skills(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
@@ -106,7 +116,7 @@ fn query_create_skill(
 	Err(ServiceError::Unauthorized)
 }
 
-pub async fn create_scope(
+pub async fn create_skill_scope(
 	scopedata: web::Json<ScopeData>,
 	pool: web::Data<Pool>
 ) -> Result<HttpResponse, ServiceError> {
@@ -141,6 +151,48 @@ fn query_create_skill_scope(
 	if rows_inserted.is_ok() {
 		println!("\nSkill added successfully.\n");
 		return Ok(new_scope.into());
+	}
+	Err(ServiceError::Unauthorized)
+}
+
+pub async fn create_skill_scope_level(
+	scopedata: web::Json<ScopeLevelData>,
+	pool: web::Data<Pool>
+) -> Result<HttpResponse, ServiceError> {
+	println!("Creating a skill");
+	let res = web::block(move || query_create_skill_scope_level(scopedata, pool)).await;
+	match res {
+		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_create_skill_scope_level(
+	scopeleveldata: web::Json<ScopeLevelData>,
+	pool: web::Data<Pool>,
+) -> Result<SkillScopeLevel, crate::errors::ServiceError> {
+	use crate::schema::skillscopelevels::dsl::skillscopelevels;
+	let conn: &PgConnection = &pool.get().unwrap();
+	println!("Connected to db");
+	let new_scope_level = SkillScopeLevel {
+		id: uuid::Uuid::new_v4(),
+		label: scopeleveldata.label.clone(),
+		skillscope_id: scopeleveldata.skillscope_id,
+		index: scopeleveldata.index,
+		percentage: scopeleveldata.percentage,
+		updated_by: scopeleveldata.email.clone(),
+	};
+	println!("Inserting data");
+	let rows_inserted = diesel::insert_into(skillscopelevels)
+		.values(&new_scope_level)
+		.get_result::<SkillScopeLevel>(conn);
+	println!("{:?}", rows_inserted);
+	if rows_inserted.is_ok() {
+		println!("\nSkill added successfully.\n");
+		return Ok(new_scope_level.into());
 	}
 	Err(ServiceError::Unauthorized)
 }

@@ -31,3 +31,14 @@ pub struct SkillCategory {
 	parent_id: Option<uuid::Uuid>,
 	updated_by: String,
 }
+
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
+#[table_name = "skillscopelevels"]
+pub struct SkillScopeLevel {
+	pub id: uuid::Uuid,
+	pub label: String,
+	pub skillscope_id: uuid::Uuid,
+	pub index: i32,
+	pub percentage: Option<i32>,
+	pub updated_by: String,
+}
