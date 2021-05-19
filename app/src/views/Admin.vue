@@ -1,7 +1,10 @@
 <template>
 	<div class="container mt-4">
 		<Modal :showModal="showModal" :modalTitle="formTitle">
-			<Skill />
+			<Skill v-if="formTitle == 'New Skill'"/>
+			<SkillScope v-if="formTitle == 'New Scope'"/>
+			<SkillCategory v-if="formTitle == 'New Category'"/>
+			<SkillScopeLevel v-if="formTitle == 'New Level'"/>
 		</Modal>
 		<div class="row gx-4">
 			<div class="col-md-4">
@@ -19,6 +22,7 @@
 				</div>
 			</div>
 		</div>
+		{{ formTitle }}
 	</div>
 </template>
 
@@ -26,6 +30,8 @@
 	import Modal from '../components/Modal.vue'
 	import Skill from '../forms/Skill.vue'
 	import SkillScope from '../forms/SkillScope.vue'
+	import SkillCategory from '../forms/SkillCategory.vue'
+	import SkillScopeLevel from '../forms/SkillScopeLevel.vue'
 	export default {
 		name: 'Admin',
 		data() {
@@ -43,7 +49,9 @@
 		components: {
 			Modal,
 			Skill,
-			SkillScope
+			SkillScope,
+			SkillCategory,
+			SkillScopeLevel,
 		},
 	}
 </script>

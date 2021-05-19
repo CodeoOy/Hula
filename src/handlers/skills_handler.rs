@@ -52,7 +52,7 @@ fn query_all_skills(pool: web::Data<Pool>) -> Result<Vec<Skill>, crate::errors::
 	let conn: &PgConnection = &pool.get().unwrap();
 	let items = skills.load::<Skill>(conn)?;
 	if items.is_empty() == false {
-		println!("\nGot all categories.\n");
+		println!("\nGot all skills.\n");
 		return Ok(items);
 	}
 	Err(ServiceError::Empty)

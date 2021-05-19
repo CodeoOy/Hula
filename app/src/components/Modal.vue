@@ -13,7 +13,7 @@
 
 <script>
 export default {
-	name: 'SkillScope',
+	name: 'Modal',
 	props: {	
 		showModal: false,
 		modalTitle: '',

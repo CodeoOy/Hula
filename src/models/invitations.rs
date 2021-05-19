@@ -36,18 +36,3 @@ impl Invitation {
 		}
 	}
 }
-
-// any type that implements Into<String> can be used to create Invitation
-// impl<T> From<T> for Invitation
-// where
-//     T: Into<String>,
-// {
-//     fn from(email: T) -> Self {
-//         Invitation {
-//             id: uuid::Uuid::new_v4(),
-//             email: email.into(),
-// 			password_plain: password_plain.into(),
-//             expires_at: chrono::Local::now().naive_local() + chrono::Duration::hours(24),
-//         }
-//     }
-// }

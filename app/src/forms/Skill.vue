@@ -2,7 +2,7 @@
 	<form v-on:submit="createSkill">
 		<div class="input-group">
 			<input type="text" aria-label="Label" class="form-control" v-model="skilldata.label" >
-			<select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon" v-model="skilldata.category_id">
+			<select class="form-select" id="skillCategoryId" aria-label="Example select with button addon" v-model="skilldata.category_id">
 				<option v-for="category in categories" :key="category" :value="category.id">
 					{{ category.label }}
 				</option>
@@ -14,7 +14,7 @@
 
 <script>
 export default {
-	name: 'SkillScope',
+	name: 'Skill',
 	data() {
 		return {
 			skilldata: {
