@@ -91,6 +91,35 @@ pub async fn add_skill(
 	}
 }
 
+fn query_add_skill(
+	uuid_data: String,
+	skill_data: web::Json<UserSkill>,
+	pool: web::Data<Pool>,
+) -> Result<UserSkill, crate::errors::ServiceError> {
+	use crate::schema::skillscopelevels::dsl::skillscopelevels;
+	use crate::schema::userskills::dsl::userskills;
+	let conn: &PgConnection = &pool.get().unwrap();
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	//let levels = skillscopelevels.load::<Skill>(conn)?;
+	let new_user_skill = UserSkill {
+		id: uuid::Uuid::new_v4(),
+		user_id: uuid_query,
+		skill_id: skill_data.skill_id,
+		skillscopelevel_id: skill_data.skillscopelevel_id,
+		years: skill_data.years,
+		updated_by: String::from("Kylpynalle"), // LoggedUser here
+	};
+	let rows_inserted = diesel::insert_into(userskills)
+		.values(&new_user_skill)
+		.get_result::<UserSkill>(conn);
+	println!("{:?}", rows_inserted);
+	if rows_inserted.is_ok() {
+		println!("\nSkill added successfully.\n");
+		return Ok(new_user_skill.into());
+	}
+	Err(ServiceError::Unauthorized)
+}
+
 pub async fn get_by_uuid(uuid_data: web::Path<String>, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
 	println!("\nGetting user by uuid");
 	let res = web::block(move || query_one(uuid_data.into_inner(), pool)).await;
@@ -168,35 +197,6 @@ fn query_update(
 	if let Some(user_res) = items.pop() {
 		println!("\nUpdate successful.\n");
 		return Ok(user_res.into());
-	}
-	Err(ServiceError::Unauthorized)
-}
-
-fn query_add_skill(
-	uuid_data: String,
-	skill_data: web::Json<UserSkill>,
-	pool: web::Data<Pool>,
-) -> Result<UserSkill, crate::errors::ServiceError> {
-	use crate::schema::skillscopelevels::dsl::skillscopelevels;
-	use crate::schema::userskills::dsl::userskills;
-	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	//let levels = skillscopelevels.load::<Skill>(conn)?;
-	let new_user_skill = UserSkill {
-		id: uuid::Uuid::new_v4(),
-		user_id: uuid_query,
-		skill_id: skill_data.skill_id,
-		skillscopelevel_id: skill_data.skillscopelevel_id,
-		years: skill_data.years,
-		updated_by: String::from("Kylpynalle"), // LoggedUser here
-	};
-	let rows_inserted = diesel::insert_into(userskills)
-		.values(&new_user_skill)
-		.get_result::<UserSkill>(conn);
-	println!("{:?}", rows_inserted);
-	if rows_inserted.is_ok() {
-		println!("\nSkill added successfully.\n");
-		return Ok(new_user_skill.into());
 	}
 	Err(ServiceError::Unauthorized)
 }

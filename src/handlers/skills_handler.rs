@@ -58,6 +58,29 @@ fn query_all_skills(pool: web::Data<Pool>) -> Result<Vec<Skill>, crate::errors::
 	Err(ServiceError::Empty)
 }
 
+pub async fn get_skillscopes(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+	let res = web::block(move || query_skillscopes(pool)).await;
+
+	match res {
+		Ok(skillscopes) => Ok(HttpResponse::Ok().json(&skillscopes)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_skillscopes(pool: web::Data<Pool>) -> Result<Vec<SkillScope>, crate::errors::ServiceError> {
+	use crate::schema::skillscopes::dsl::skillscopes;
+	let conn: &PgConnection = &pool.get().unwrap();
+	let items = skillscopes.load::<SkillScope>(conn)?;
+	if items.is_empty() == false {
+		println!("\nGot all skillscopes.\n");
+		return Ok(items);
+	}
+	Err(ServiceError::Empty)
+}
+
 pub async fn get_skill_categories(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_skill_categories(pool)).await;
 
@@ -146,8 +169,8 @@ fn query_create_skill(
 	let new_skill = Skill {
 		id: uuid::Uuid::new_v4(),
 		label: skilldata.label.clone(),
-		skillcategory_id: skilldata.category_id, // Update to proper value
-		skillscope_id: skilldata.skillscope_id, // Update to proper value
+		skillcategory_id: skilldata.category_id,
+		skillscope_id: skilldata.skillscope_id,
 		updated_by: skilldata.email.clone(),
 	};
 	println!("Inserting data");
