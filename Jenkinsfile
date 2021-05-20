@@ -27,6 +27,11 @@ pipeline {
                 sh "cargo test"
             }
         }
+        stage('Deploy') {
+            steps {
+                sh "/home/ubuntu/deploy.sh"
+            }
+        }
     }
     post {
         success {
