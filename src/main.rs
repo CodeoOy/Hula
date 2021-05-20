@@ -8,6 +8,8 @@ use actix_web::http::{header, StatusCode};
 use actix_web::{get, middleware, web, App, HttpRequest, HttpResponse, HttpServer, Result};
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
+use diesel_migrations::connection::{MigrationConnection};
+use diesel_migrations::*;
 
 mod email_service;
 mod errors;
@@ -15,6 +17,8 @@ mod handlers;
 mod models;
 mod schema;
 mod utils;
+
+//embed_migrations!();
 
 #[get("/")]
 async fn home(session: Session) -> Result<HttpResponse> {
@@ -57,17 +61,38 @@ async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
 		.body(include_str!("../public/index.html")))
 }
 
+
+pub fn establish_connection(name: &str) -> PgConnection {
+    PgConnection::establish(&name)
+        .expect(&format!("Error connecting to {}", name))
+}
+
+fn initialize_db(name: &str) {
+	let connection = establish_connection(name);
+
+	diesel_migrations::run_pending_migrations(&connection);
+
+	// embedded_migrations::run(&connection);
+
+    // By default the output is thrown out. If you want to redirect it to stdout, you
+    // should call embedded_migrations::run_with_output.
+    // embedded_migrations::run_with_output(&connection, &mut std::io::stdout());
+}
+
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
 	dotenv::dotenv().ok();
 	std::env::set_var("RUST_LOG", "simple-auth-server=debug,actix_web=info,actix_server=info");
 	env_logger::init();
 	let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+	let database_url2 = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
 	// create db connection pool
 	let manager = ConnectionManager::<PgConnection>::new(database_url);
 	let pool: models::users::Pool = r2d2::Pool::builder().build(manager).expect("Failed to create pool.");
 	let domain: String = std::env::var("DOMAIN").unwrap_or_else(|_| "localhost".to_string());
+
+	initialize_db(&database_url2);
 
 	// Start http server
 	HttpServer::new(move || {
