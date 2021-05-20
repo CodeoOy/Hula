@@ -6,16 +6,19 @@
 					<div>
 						<h2>Add a skill</h2>
 						<form v-on:submit="addExistingSkill">
-							<div class="input-group">
-								<select class="form-select" id="inputGroupSelect04" aria-label="Example select with button addon" v-model="skilldata.skill_id">
-									<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
-										{{ avskill.label }}
-									</option>
-								</select>
-								<input type="number" aria-label="Years" class="form-control" v-model.number="skilldata.years">
-								<button class="btn btn-outline-secondary" type="button">Button</button>
-							</div>
-							<button type="submit" class="btn btn-gradient mb-1">Submit</button>
+							<select class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="skilldata.skill_id">
+								<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
+									{{ avskill.label }}
+								</option>
+							</select>
+							<select v-if="skilldata.skill_id" class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="skilldata.skillscopelevel_id">
+								<option v-for="level in skill_levels.filter(property => level.skillscope_id == skilldata.skillscope_id)" :key="level" :value="level.id">
+									{{ level.label }}
+								</option>
+							</select>
+							<input type="number" aria-label="Years" class="form-control" v-model.number="skilldata.years">
+							<button class="btn btn-outline-secondary" type="button">Button</button>
+						<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 						</form>
 					</div>
 				</div>
@@ -73,15 +76,17 @@
 				user: {},
 				editing_info: false,
 				editing_skills: false,
+				chosenskill: {},
 				skilldata: {
 					id: '00000000-0000-0000-0000-000000000000',
 					user_id: '00000000-0000-0000-0000-000000000000',
 					skill_id: '00000000-0000-0000-0000-000000000000',
-					skillscopelevel_id: "e9becc32-0238-4561-b341-106de1c26048",
+					skillscopelevel_id: "00000000-0000-0000-0000-000000000000",
 					years: Number,
 					updated_by: "tlo"
 				},
 				available_skills: {},
+				skill_levels: {},
 			}
 		},
 		components: {
@@ -120,12 +125,23 @@
 				.catch((errors) => {
 					console.log(errors); // This gives unexpected end of json
 				})
+			},
+			getAllLevels: function() {
+				fetch('http://localhost:8086/api/skills/levels', {method: 'GET'})
+				.then((response) => response.json())
+				.then(response => { 
+					this.skill_levels = response;
+				})    
+				.catch((errors) => {
+					console.log(errors); // This gives unexpected end of json
+				})
 			}
 		},
 		mounted() {
 			//this.$store.commit('updateUser')
 			this.user = this.$store.state.loggeduser
 			this.getAllSkills()
+			this.getAllLevels()
 		}
 	}
 </script>

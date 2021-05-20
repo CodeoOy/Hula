@@ -81,6 +81,29 @@ fn query_skillscopes(pool: web::Data<Pool>) -> Result<Vec<SkillScope>, crate::er
 	Err(ServiceError::Empty)
 }
 
+pub async fn get_skill_levels(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+	let res = web::block(move || query_skill_levels(pool)).await;
+
+	match res {
+		Ok(skill_levels) => Ok(HttpResponse::Ok().json(&skill_levels)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_skill_levels(pool: web::Data<Pool>) -> Result<Vec<SkillScopeLevel>, crate::errors::ServiceError> {
+	use crate::schema::skillscopelevels::dsl::skillscopelevels;
+	let conn: &PgConnection = &pool.get().unwrap();
+	let items = skillscopelevels.load::<SkillScopeLevel>(conn)?;
+	if items.is_empty() == false {
+		println!("\nGot all skillscopelevels.\n");
+		return Ok(items);
+	}
+	Err(ServiceError::Empty)
+}
+
 pub async fn get_skill_categories(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_skill_categories(pool)).await;
 
