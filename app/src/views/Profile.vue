@@ -65,7 +65,7 @@
 </template>
 
 <script>
-	import UserForm from '../components/UserForm.vue'
+	import UserForm from '../forms/UserBasicInfo.vue'
 	export default {
 		name: 'Profile',
 		data() {
@@ -118,7 +118,7 @@
 					this.available_skills = response;
 				})    
 				.catch((errors) => {
-					console.log(errors);
+					console.log(errors); // This gives unexpected end of json
 				})
 			}
 		},
