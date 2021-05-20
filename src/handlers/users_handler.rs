@@ -14,6 +14,13 @@ pub struct QueryData {
 	pub available: bool,
 	pub email: String,
 }
+
+#[derive(Deserialize, Debug)]
+pub struct UserSkillData {
+	pub years: Option<f64>,
+	pub email: String,
+}
+
 #[derive(Serialize, Debug)]
 pub struct UserDTO {
 	pub id: uuid::Uuid,
@@ -73,6 +80,30 @@ pub async fn update_user(
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
+}
+
+fn query_update(
+	uuid_data: String,
+	userdata: web::Json<QueryData>,
+	pool: web::Data<Pool>,
+) -> Result<User, crate::errors::ServiceError> {
+	use crate::schema::users::dsl::{available, firstname, id, lastname, updated_by, users};
+	let conn: &PgConnection = &pool.get().unwrap();
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	let mut items = diesel::update(users)
+		.filter(id.eq(uuid_query))
+		.set((
+			firstname.eq(userdata.firstname.clone()),
+			lastname.eq(userdata.lastname.clone()),
+			available.eq(userdata.available),
+			updated_by.eq(userdata.email.clone()),
+		))
+		.load::<User>(conn)?;
+	if let Some(user_res) = items.pop() {
+		println!("\nUpdate successful.\n");
+		return Ok(user_res.into());
+	}
+	Err(ServiceError::Unauthorized)
 }
 
 pub async fn add_skill(
@@ -177,30 +208,6 @@ fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, crate:
 	Err(ServiceError::Empty)
 }
 
-fn query_update(
-	uuid_data: String,
-	userdata: web::Json<QueryData>,
-	pool: web::Data<Pool>,
-) -> Result<User, crate::errors::ServiceError> {
-	use crate::schema::users::dsl::{available, firstname, id, lastname, updated_by, users};
-	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	let mut items = diesel::update(users)
-		.filter(id.eq(uuid_query))
-		.set((
-			firstname.eq(userdata.firstname.clone()),
-			lastname.eq(userdata.lastname.clone()),
-			available.eq(userdata.available),
-			updated_by.eq(userdata.email.clone()),
-		))
-		.load::<User>(conn)?;
-	if let Some(user_res) = items.pop() {
-		println!("\nUpdate successful.\n");
-		return Ok(user_res.into());
-	}
-	Err(ServiceError::Unauthorized)
-}
-
 fn query_delete_user(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::users::dsl::id;
@@ -225,6 +232,41 @@ pub async fn delete_user(uuid_data: web::Path<String>, pool: web::Data<Pool>) ->
 	println!("\nUser deleted\n");
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_update_year(
+	uuid_data: String,
+	userdata: web::Json<UserSkillData>,
+	pool: web::Data<Pool>,
+) -> Result<UserSkill, crate::errors::ServiceError> {
+	use crate::schema::userskills::dsl::*;
+	use crate::schema::userskills::dsl::{skill_id, updated_by, years};
+	let conn: &PgConnection = &pool.get().unwrap();
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	let mut items = diesel::update(userskills)
+		.filter(skill_id.eq(uuid_query))
+		.set((years.eq(userdata.years.clone()), updated_by.eq(userdata.email.clone())))
+		.load::<UserSkill>(conn)?;
+	if let Some(user_res) = items.pop() {
+		println!("\nUpdate successful.\n");
+		return Ok(user_res.into());
+	}
+	Err(ServiceError::Unauthorized)
+}
+pub async fn update_year(
+	uuid_data: web::Path<String>,
+	payload: web::Json<UserSkillData>,
+	pool: web::Data<Pool>,
+) -> Result<HttpResponse, ServiceError> {
+	println!("\nUpdating skill's year");
+	let res = web::block(move || query_update_year(uuid_data.into_inner(), payload, pool)).await;
+	match res {
+		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
