@@ -98,7 +98,9 @@ async fn main() -> std::io::Result<()> {
 							.route(web::delete().to(handlers::users_handler::delete_user)),
 					)
 					.service(
-						web::resource("/userskill/{user_id}").route(web::post().to(handlers::users_handler::add_skill)),
+						web::resource("/userskill/{user_id}")
+							.route(web::post().to(handlers::users_handler::add_skill))
+							.route(web::put().to(handlers::users_handler::update_year)),
 					)
 					.service(web::resource("/skill").route(web::post().to(handlers::skills_handler::create_skill)))
 					.service(
@@ -106,17 +108,25 @@ async fn main() -> std::io::Result<()> {
 							.route(web::get().to(handlers::skills_handler::get_skill_categories)),
 					)
 					.service(
-						web::resource("/skills/scopes")
-							.route(web::get().to(handlers::skills_handler::get_skillscopes)),
+						web::resource("/skills/scopes").route(web::get().to(handlers::skills_handler::get_skillscopes)),
 					)
 					.service(
 						web::resource("/skills/levels")
 							.route(web::get().to(handlers::skills_handler::get_skill_levels)),
 					)
 					.service(web::resource("/skills").route(web::get().to(handlers::skills_handler::get_all_skills)))
-					.service(web::resource("/skills/scope").route(web::post().to(handlers::skills_handler::create_skill_scope)))
-					.service(web::resource("/skills/level").route(web::post().to(handlers::skills_handler::create_skill_scope_level)))
-					.service(web::resource("/skills/category").route(web::post().to(handlers::skills_handler::create_skill_category)))
+					.service(
+						web::resource("/skills/scope")
+							.route(web::post().to(handlers::skills_handler::create_skill_scope)),
+					)
+					.service(
+						web::resource("/skills/level")
+							.route(web::post().to(handlers::skills_handler::create_skill_scope_level)),
+					)
+					.service(
+						web::resource("/skills/category")
+							.route(web::post().to(handlers::skills_handler::create_skill_category)),
+					)
 					.service(web::resource("/users").route(web::get().to(handlers::users_handler::get_all)))
 					.service(web::resource("/project").route(web::post().to(handlers::projects_handler::get_by_pid)))
 					.service(
