@@ -1,6 +1,6 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::{prelude::*, PgConnection};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 
 use crate::errors::ServiceError;
 use crate::models::skills::{Pool, Skill, SkillCategory, SkillScope, SkillScopeLevel};
