@@ -5,15 +5,16 @@
 				<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
 					<div>
 						<h2>Add a skill</h2>
+						{{ chosenskill.id }}
 						<form v-on:submit="addExistingSkill">
-							<select class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="skilldata.skill_id">
+							<select class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="skilldata.skill_id" v-on:input="getSkillScope(skilldata.skill_id)">
 								<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
 									{{ avskill.label }}
 								</option>
 							</select>
-							<select v-if="skilldata.skill_id" class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="skilldata.skillscopelevel_id">
-								<option v-for="level in skill_levels.filter(property => level.skillscope_id == skilldata.skillscope_id)" :key="level" :value="level.id">
-									{{ level.label }}
+							<select v-if="chosenskill.skillscope_id" class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="skilldata.skillscopelevel_id">
+								<option v-for="levelres in filterLevels" :key="levelres" :value="levelres.id">
+									{{ levelres.label }}
 								</option>
 							</select>
 							<input type="number" aria-label="Years" class="form-control" v-model.number="skilldata.years">
@@ -76,7 +77,10 @@
 				user: {},
 				editing_info: false,
 				editing_skills: false,
-				chosenskill: {},
+				chosenskill: {
+					id: '',
+					skillscope_id: '',
+				},
 				skilldata: {
 					id: '00000000-0000-0000-0000-000000000000',
 					user_id: '00000000-0000-0000-0000-000000000000',
@@ -86,7 +90,7 @@
 					updated_by: "tlo"
 				},
 				available_skills: {},
-				skill_levels: {},
+				skill_levels: [],
 			}
 		},
 		components: {
@@ -135,6 +139,19 @@
 				.catch((errors) => {
 					console.log(errors); // This gives unexpected end of json
 				})
+			},
+			getSkillScope: function(needle) {
+				//console.log(this.available_skills)
+				//console.log(needle)
+				var scope = this.available_skills.find(x => x.id == needle).skillscope_id;
+				//console.log(scope)
+				this.chosenskill.skillscope_id = scope;
+			}
+		},
+		computed: {
+			filterLevels: function() {
+				console.log(this.chosenskill.skillscope_id)
+				return this.skill_levels.filter(levelres => levelres.skillscope_id == this.chosenskill.skillscope_id)
 			}
 		},
 		mounted() {
