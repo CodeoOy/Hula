@@ -1,15 +1,22 @@
 <template>
-	<form action="#" @submit.prevent="createSkillLevel">
+	<form action="#" @submit.prevent="createSkillScopeLevel">
+		<p v-if="errorsPresent" class="error">Please fill out label!</p>
 		<div class="mb-2">
 			<label class="form-label">Level name</label>
-			<input class="form-control" type="text" placeholder="Languages" name="label" v-model="querydata.label" />
+			<input class="form-control" type="text" placeholder="Rookie" name="levelname" v-model="querydata.label" />
 		</div>
-		<select class="form-select mb-2" id="SkillLevel" aria-label="Example select with button addon" v-model="querydata.skillscope_id">
-			<option v-for="scope in scopes" :key="scope" :value="scope.id">
-				{{ scope.label }}
-			</option>
-		</select>
-		<input type="number" aria-label="Percentage" class="form-control" v-model.number="querydata.percentage">
+		<div class="mb-2">
+			<label class="form-label">Level scope</label>
+			<select class="form-select mb-2" id="SkillScope" aria-label="Select scope" v-model="querydata.skillscope_id">
+				<option v-for="scope in scopes" :key="scope" :value="scope.id">
+					{{ scope.label }}
+				</option>
+			</select>
+		</div>
+		<div class="mb-2">
+			<label class="form-label">Percentage</label>
+			<input type="number" aria-label="Percentage" class="form-control" v-model.number="querydata.percentage">
+		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 	</form> 
 </template>
@@ -17,9 +24,6 @@
 <script>
 export default {
 	name: 'SkillScopeLevel',
-	props: {	
-		user: {}
-	},
 	data() {
 		return {
 			errorsPresent: false,
@@ -27,14 +31,14 @@ export default {
 				email: this.$store.state.loggeduser.email,
 				label: "",
 				skillscope_id: null,
-				index: 2,
+				index: 5,
 				percentage: Number,
 			},
 			scopes: {}
 		};
 	},
 	methods: {
-		createSkillLevel: function() {
+		createSkillScopeLevel: function() {
 			fetch('http://localhost:8086/api/skills/level', {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},

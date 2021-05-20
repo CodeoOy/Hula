@@ -1,19 +1,26 @@
 <template>
 	<form v-on:submit="createSkill">
+		<p v-if="errorsPresent" class="error">Please fill out label!</p>
 		<div class="mb-2">
 			<label class="form-label">Skill name</label>
 			<input class="form-control" type="text" placeholder="Languages" name="label" v-model="skilldata.label" />
 		</div>
-		<select class="form-select mb-2" id="Skill" aria-label="Example select with button addon" v-model="skilldata.category_id">
-			<option v-for="category in categories" :key="category" :value="category.id">
-				{{ category.label }}
-			</option>
-		</select>
-		<select class="form-select mb-2" id="Skill" aria-label="Example select with button addon" v-model="skilldata.skillscope_id">
-			<option v-for="scope in scopes" :key="scope" :value="scope.id">
-				{{ scope.label }}
-			</option>
-		</select>
+		<div class="mb-2">
+			<label class="form-label">Skill category</label>
+			<select class="form-select mb-2" id="Skill" aria-label="Skill category" v-model="skilldata.category_id">
+				<option v-for="category in categories" :key="category" :value="category.id">
+					{{ category.label }}
+				</option>
+			</select>
+		</div>
+		<div class="mb-2">
+			<label class="form-label">Skill scope</label>
+			<select class="form-select mb-2" id="Skill" aria-label="Skill scope" v-model="skilldata.skillscope_id">
+				<option v-for="scope in scopes" :key="scope" :value="scope.id">
+					{{ scope.label }}
+				</option>
+			</select>
+		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 	</form> 
 </template>

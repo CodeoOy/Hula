@@ -5,7 +5,7 @@
 				<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
 					<div>
 						<h2>Add a skill</h2>
-						{{ chosenskill.id }}
+						{{ skilldata.skill_id }}
 						<form v-on:submit="addExistingSkill">
 							<select class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="skilldata.skill_id" v-on:input="getSkillScope(skilldata.skill_id)">
 								<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
@@ -82,12 +82,12 @@
 					skillscope_id: '',
 				},
 				skilldata: {
-					id: '00000000-0000-0000-0000-000000000000',
-					user_id: '00000000-0000-0000-0000-000000000000',
-					skill_id: '00000000-0000-0000-0000-000000000000',
-					skillscopelevel_id: "00000000-0000-0000-0000-000000000000",
+					id: '',
+					user_id: this.$store.state.loggeduser.id,
+					skill_id: '',
+					skillscopelevel_id: '',
 					years: Number,
-					updated_by: "tlo"
+					updated_by: this.$store.state.loggeduser.email,
 				},
 				available_skills: {},
 				skill_levels: [],

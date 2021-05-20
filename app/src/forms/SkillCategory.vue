@@ -1,12 +1,13 @@
 <template>
-	<form action="#" @submit.prevent="onSubmit">
+	<form action="#" @submit.prevent="createSkillCategory">
 		<p v-if="errorsPresent" class="error">Please fill out label!</p>
 		<div class="mb-2">
 			<label class="form-label">Category label</label>
-			<input class="form-control" type="text" placeholder="Languages" name="label" v-model="querydata.label" />
+			<input class="form-control" type="text" placeholder="Techs" name="categorylabel" v-model="querydata.label" />
 		</div>
 		<div class="mb-2">
-			<select class="form-select" id="SkillParent" aria-label="Example select with button addon" v-model="querydata.parent_id">
+			<label class="form-label">Category parent (optional)</label>
+			<select class="form-select" id="SkillParent" aria-label="Skill category parent" v-model="querydata.parent_id">
 				<option v-for="category in categories" :key="category" :value="category.id">
 					{{ category.label }}
 				</option>
@@ -19,9 +20,6 @@
 <script>
 export default {
 	name: 'SkillCategory',
-	props: {	
-		user: {}
-	},
 	data() {
 		return {
 			errorsPresent: false,
@@ -34,7 +32,7 @@ export default {
 		};
 	},
 	methods: {
-		onSubmit: function() {
+		createSkillCategory: function() {
 			if (this.querydata.label === '') {
 				this.errorsPresent = true;
 				this.$flashMessage.show({
@@ -43,7 +41,6 @@ export default {
 					time: 1000
 				});
 			} else {
-				//this.$emit('formsent', this.user);
 				fetch('http://localhost:8086/api/skills/category', {
 					method: 'POST',
 					headers: {"Content-Type": "application/json"},

@@ -1,14 +1,18 @@
 <template>
 	<form action="#" @submit.prevent="createSkillScope">
+		<p v-if="errorsPresent" class="error">Please fill out label!</p>
 		<div class="mb-2">
 			<label class="form-label">Scope name</label>
-			<input class="form-control" type="text" placeholder="Languages" name="label" v-model="querydata.label" />
+			<input class="form-control" type="text" placeholder="Language levels" name="scopename" v-model="querydata.label" />
 		</div>
-		<select class="form-select mb-2" id="Skill" aria-label="Example select with button addon" v-model="querydata.category_id">
-			<option v-for="category in categories" :key="category" :value="category.id">
-				{{ category.label }}
-			</option>
-		</select>
+		<div class="mb-2">
+			<label class="form-label">Scope category</label>
+			<select class="form-select mb-2" id="SkillScope" aria-label="Scope category" v-model="querydata.category_id">
+				<option v-for="category in categories" :key="category" :value="category.id">
+					{{ category.label }}
+				</option>
+			</select>
+		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 	</form>  
 </template>
