@@ -6,7 +6,7 @@
 					<div>
 						<h2>Add a skill</h2>
 						{{ skilldata.skill_id }}
-						<form v-on:submit="addExistingSkill">
+						<form action="#" @submit.prevent="addExistingSkill">
 							<select class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="skilldata.skill_id" v-on:input="getSkillScope(skilldata.skill_id)">
 								<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
 									{{ avskill.label }}
@@ -82,7 +82,7 @@
 					skillscope_id: '',
 				},
 				skilldata: {
-					id: '',
+					id: '83d7a553-2e53-47cc-8c16-a8a10c0cadd0', // TODO: This is here only to satisfy UserSkill struct. Remove somehow.
 					user_id: this.$store.state.loggeduser.id,
 					skill_id: '',
 					skillscopelevel_id: '',
@@ -109,7 +109,7 @@
 					this.$store.commit('setUser', this.user.id)
 				})
 			},
-			updateUser: function() {   
+			updateUser: function() { // This is not working. Make the user update happen in some other way.
 				fetch(`http://localhost:8086/api/user/${this.user.id}`, {
 					method: 'PUT',
 					headers: {"Content-Type": "application/json"},
@@ -141,10 +141,7 @@
 				})
 			},
 			getSkillScope: function(needle) {
-				//console.log(this.available_skills)
-				//console.log(needle)
 				var scope = this.available_skills.find(x => x.id == needle).skillscope_id;
-				//console.log(scope)
 				this.chosenskill.skillscope_id = scope;
 			}
 		},

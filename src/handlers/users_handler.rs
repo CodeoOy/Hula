@@ -174,6 +174,7 @@ fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, crate:
 	let mut skills_dto: Vec<SkillDTO> = Vec::new();
 	let user_skills = UserSkill::belonging_to(&user).load::<UserSkill>(conn)?;
 	for user_skill in user_skills.iter() {
+		println!("Got a skill");
 		let skilldata = SkillDTO {
 			id: user_skill.id,
 			user_id: user_skill.user_id,
