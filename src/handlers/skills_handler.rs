@@ -268,12 +268,15 @@ fn query_create_skill_scope_level(
 	use crate::schema::skillscopelevels::dsl::{skillscope_id, index, skillscopelevels};
 	let conn: &PgConnection = &pool.get().unwrap();
 	println!("Connected to db");
+	let mut currentindex = 0;
 	let latestlevel = skillscopelevels
 		.filter(skillscope_id.eq(scopeleveldata.skillscope_id))
 		.order_by(index.desc())
 		.limit(1)
 		.load::<SkillScopeLevel>(conn)?;
-	let currentindex = latestlevel[0].index;
+	if latestlevel.len() > 0 {
+		currentindex = latestlevel[0].index;
+	}
 	let new_scope_level = SkillScopeLevel {
 		id: uuid::Uuid::new_v4(),
 		label: scopeleveldata.label.clone(), // TODO: This is unique, sanitize field or handle error more gracefully
