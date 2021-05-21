@@ -172,11 +172,11 @@ fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, crate:
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let user = users.filter(id.eq(uuid_query)).get_result::<User>(conn)?; // Make a prettier error check, this produces 500
 	let allskills = skills.load::<Skill>(conn)?;
-	let mut allskills_iter = allskills.iter();
 	let mut skills_dto: Vec<SkillDTO> = Vec::new();
 	let user_skills = UserSkill::belonging_to(&user).load::<UserSkill>(conn)?;
 	for user_skill in user_skills.iter() {
 		println!("Got a skill");
+		let mut allskills_iter = allskills.iter(); // Iterator might cause problems when there are many skills
 		let skilldata = SkillDTO {
 			id: user_skill.id,
 			user_id: user_skill.user_id,

@@ -7,7 +7,7 @@
 						<h2>Add a skill</h2>
 						{{ skilldata.skill_id }}
 						<form action="#" @submit.prevent="addExistingSkill">
-							<select class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="skilldata.skill_id" v-on:input="getSkillScope(skilldata.skill_id)">
+							<select class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="skilldata.skill_id">
 								<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
 									{{ avskill.label }}
 								</option>
@@ -49,7 +49,7 @@
 						<thead>
 							<tr>
 								<th scope="col">Skill</th>
-								<th scope="col">Level</th>
+								<th scope="col">Years</th>
 								<th scope="col">Actions</th>
 							</tr>
 						</thead>
@@ -141,8 +141,16 @@
 				})
 			},
 			getSkillScope: function(needle) {
+				console.log("Input happened")
 				var scope = this.available_skills.find(x => x.id == needle).skillscope_id;
 				this.chosenskill.skillscope_id = scope;
+				console.log(this.skilldata.id)
+			}
+		},
+		watch: {
+			'skilldata.skill_id': function(newID, oldID) {
+				console.log("Title changed from " + oldID + " to " + newID)
+				this.getSkillScope(newID)
 			}
 		},
 		computed: {
