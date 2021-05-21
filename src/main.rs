@@ -68,9 +68,12 @@ pub fn establish_connection(name: &str) -> PgConnection {
 }
 
 fn initialize_db(name: &str) {
+	println!("Running database migrations...");
 	let connection = establish_connection(name);
 
 	diesel_migrations::run_pending_migrations(&connection);
+
+	println!("Migrations done!");
 
 	// embedded_migrations::run(&connection); //
 
