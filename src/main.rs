@@ -72,7 +72,7 @@ fn initialize_db(name: &str) {
 
 	diesel_migrations::run_pending_migrations(&connection);
 
-	// embedded_migrations::run(&connection);
+	// embedded_migrations::run(&connection); //
 
     // By default the output is thrown out. If you want to redirect it to stdout, you
     // should call embedded_migrations::run_with_output.
