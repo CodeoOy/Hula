@@ -71,9 +71,17 @@ fn initialize_db(name: &str) {
 	println!("Running database migrations...");
 	let connection = establish_connection(name);
 
-	diesel_migrations::run_pending_migrations(&connection);
+	let result = diesel_migrations::run_pending_migrations(&connection);
 
-	println!("Migrations done!");
+	match result {
+		Ok(res) => {
+			println!("Migrations done!");
+		},
+		Err(error) => {
+			println!("Database migration error: \n {:#?}", error);
+		}
+	}
+
 
 	// embedded_migrations::run(&connection); //
 
