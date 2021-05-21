@@ -3,7 +3,7 @@ use crate::models::skills::Skill;
 use crate::models::users::{Pool, User, UserSkill};
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::result::Error;
-use diesel::{prelude::*, PgConnection};
+use diesel::{associations::HasTable, prelude::*, PgConnection};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug)]
@@ -19,6 +19,7 @@ pub struct QueryData {
 pub struct UserSkillData {
 	pub years: Option<f64>,
 	pub email: String,
+	pub user_id: uuid::Uuid,
 }
 
 #[derive(Serialize, Debug)]
@@ -127,6 +128,7 @@ fn query_add_skill(
 	skill_data: web::Json<UserSkill>,
 	pool: web::Data<Pool>,
 ) -> Result<UserSkill, crate::errors::ServiceError> {
+	use crate::schema::skillscopelevels::dsl::skillscopelevels;
 	use crate::schema::userskills::dsl::userskills;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
@@ -245,11 +247,12 @@ fn query_update_year(
 	pool: web::Data<Pool>,
 ) -> Result<UserSkill, crate::errors::ServiceError> {
 	use crate::schema::userskills::dsl::*;
-	use crate::schema::userskills::dsl::{skill_id, updated_by, years};
+	use crate::schema::userskills::dsl::{skill_id, updated_by, user_id, years};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let mut items = diesel::update(userskills)
 		.filter(skill_id.eq(uuid_query))
+		.filter(user_id.eq(userdata.user_id))
 		.set((years.eq(userdata.years.clone()), updated_by.eq(userdata.email.clone())))
 		.load::<UserSkill>(conn)?;
 	if let Some(user_res) = items.pop() {
