@@ -5,6 +5,7 @@
 			<SkillScope v-if="formTitle == 'New Scope'"/>
 			<SkillCategory v-if="formTitle == 'New Category'"/>
 			<SkillScopeLevel v-if="formTitle == 'New Level'"/>
+			<UserDelete v-if="formTitle == 'Delete User'"/>
 		</Modal>
 		<div class="row gx-4">
 			<div class="col-md-4">
@@ -14,6 +15,7 @@
 					<p><a href="#" v-on:click="showModal = true, formTitle = 'New Scope'">Add scope</a></p>
 					<p><a href="#" v-on:click="showModal = true, formTitle = 'New Category'">Add category</a></p>
 					<p><a href="#" v-on:click="showModal = true, formTitle = 'New Level'">Add level</a></p>
+					<p><a href="#" v-on:click="showModal = true, formTitle = 'Delete User'">Delete user</a></p>
 				</div>
 			</div>
 			<div class="col-md-8">
@@ -32,6 +34,7 @@
 	import SkillScope from '../forms/SkillScope.vue'
 	import SkillCategory from '../forms/SkillCategory.vue'
 	import SkillScopeLevel from '../forms/SkillScopeLevel.vue'
+	import UserDelete from '../forms/UserDelete.vue'
 	export default {
 		name: 'Admin',
 		data() {
@@ -52,6 +55,7 @@
 			SkillScope,
 			SkillCategory,
 			SkillScopeLevel,
+			UserDelete,
 		},
 	}
 </script>
