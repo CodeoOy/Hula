@@ -31,7 +31,6 @@ pub struct ScopeLevelData {
 	pub email: String,
 	pub label: String,
 	pub skillscope_id: uuid::Uuid,
-	pub index: i32,
 	pub percentage: Option<i32>,
 }
 
@@ -275,10 +274,9 @@ fn query_create_skill_scope_level(
 		.limit(1)
 		.load::<SkillScopeLevel>(conn)?;
 	let currentindex = latestlevel[0].index;
-	println!("{:?}", currentindex);
 	let new_scope_level = SkillScopeLevel {
 		id: uuid::Uuid::new_v4(),
-		label: scopeleveldata.label.clone(), // This is unique, handle error somewhere
+		label: scopeleveldata.label.clone(), // TODO: This is unique, sanitize field or handle error more gracefully
 		skillscope_id: scopeleveldata.skillscope_id,
 		index: currentindex + 1,
 		percentage: scopeleveldata.percentage,
@@ -288,7 +286,6 @@ fn query_create_skill_scope_level(
 	let rows_inserted = diesel::insert_into(skillscopelevels)
 		.values(&new_scope_level)
 		.get_result::<SkillScopeLevel>(conn);
-	//println!("{:?}", rows_inserted);
 	if rows_inserted.is_ok() {
 		println!("\nSkill scope level added successfully.\n");
 		return Ok(new_scope_level.into());

@@ -31,7 +31,6 @@ export default {
 				email: this.$store.state.loggeduser.email,
 				label: "",
 				skillscope_id: null,
-				index: 5,
 				percentage: Number,
 			},
 			scopes: {}
