@@ -266,14 +266,21 @@ fn query_create_skill_scope_level(
 	scopeleveldata: web::Json<ScopeLevelData>,
 	pool: web::Data<Pool>,
 ) -> Result<SkillScopeLevel, crate::errors::ServiceError> {
-	use crate::schema::skillscopelevels::dsl::skillscopelevels;
+	use crate::schema::skillscopelevels::dsl::{skillscope_id, index, skillscopelevels};
 	let conn: &PgConnection = &pool.get().unwrap();
 	println!("Connected to db");
+	let latestlevel = skillscopelevels
+		.filter(skillscope_id.eq(scopeleveldata.skillscope_id))
+		.order_by(index.desc())
+		.limit(1)
+		.load::<SkillScopeLevel>(conn)?;
+	let currentindex = latestlevel[0].index;
+	println!("{:?}", currentindex);
 	let new_scope_level = SkillScopeLevel {
 		id: uuid::Uuid::new_v4(),
-		label: scopeleveldata.label.clone(),
+		label: scopeleveldata.label.clone(), // This is unique, handle error somewhere
 		skillscope_id: scopeleveldata.skillscope_id,
-		index: scopeleveldata.index,
+		index: currentindex + 1,
 		percentage: scopeleveldata.percentage,
 		updated_by: scopeleveldata.email.clone(),
 	};
@@ -281,7 +288,7 @@ fn query_create_skill_scope_level(
 	let rows_inserted = diesel::insert_into(skillscopelevels)
 		.values(&new_scope_level)
 		.get_result::<SkillScopeLevel>(conn);
-	println!("{:?}", rows_inserted);
+	//println!("{:?}", rows_inserted);
 	if rows_inserted.is_ok() {
 		println!("\nSkill scope level added successfully.\n");
 		return Ok(new_scope_level.into());
