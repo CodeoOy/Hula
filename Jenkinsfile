@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh "cargo test"
+                sh "/home/ubuntu/.cargo/bin/cargo test"
             }
         }
         stage('Deploy') {
