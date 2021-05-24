@@ -1,5 +1,5 @@
 <template>
-	<div class="modal fade" v-bind:class="{ 'show db': showModal, '': !showModal }">
+	<div class="modal fade" id="exampleModal" v-bind:class="{ 'show db': showModal, '': !showModal }">
 		<div class="modal-dialog">
 			<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
 				<div>
