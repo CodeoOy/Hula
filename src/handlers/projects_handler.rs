@@ -3,7 +3,7 @@ use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
 use actix_identity::{Identity, CookieIdentityPolicy, IdentityService};
 
-use crate::{errors::ServiceError, handlers::auth_handler};
+use crate::{errors::ServiceError, handlers::auth_handler, models::users::SlimUser};
 use crate::models::projects::{Pool, Project};
 
 #[derive(Deserialize, Debug)]
@@ -65,7 +65,7 @@ pub async fn create_project(
 fn query_create_project(
 	projectdata: web::Json<ProjectData>,
 	pool: web::Data<Pool>,
-	id: String,
+	id: String
 ) -> Result<Project, crate::errors::ServiceError> {
 	use crate::schema::projects::dsl::projects;
 	let conn: &PgConnection = &pool.get().unwrap();

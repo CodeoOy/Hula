@@ -17,6 +17,7 @@ pub struct AuthData {
 
 // we need the same data
 // simple aliasing makes the intentions clear and its more readable
+// Currently this is not used anywhere, probably should be?
 pub type LoggedUser = SlimUser;
 
 impl FromRequest for LoggedUser {
