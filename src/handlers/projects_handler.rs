@@ -5,6 +5,16 @@ use serde::Deserialize;
 use crate::errors::ServiceError;
 use crate::models::projects::{Pool, Project};
 
+#[derive(Deserialize, Debug)]
+pub struct QueryData {
+	pub id: String,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ProjectData {
+	pub name: String,
+}
+
 pub async fn get_all_projects(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
 	// run diesel blocking code
 	println!("\nGetting all projects");
@@ -30,9 +40,44 @@ fn query_all(pool: web::Data<Pool>) -> Result<Vec<Project>, crate::errors::Servi
 	Err(ServiceError::Empty)
 }
 
-#[derive(Deserialize, Debug)]
-pub struct QueryData {
-	pub id: String,
+pub async fn create_project(
+	projectdata: web::Json<ProjectData>,
+	pool: web::Data<Pool>
+) -> Result<HttpResponse, ServiceError> {
+	println!("Creating a project");
+	let res = web::block(move || query_create_project(projectdata, pool)).await;
+	match res {
+		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_create_project(
+	projectdata: web::Json<ProjectData>,
+	pool: web::Data<Pool>,
+) -> Result<Project, crate::errors::ServiceError> {
+	use crate::schema::projects::dsl::projects;
+	let conn: &PgConnection = &pool.get().unwrap();
+	println!("Connected to db");
+	let new_project = Project {
+		id: uuid::Uuid::new_v4(),
+		available: true,
+		name: projectdata.name.clone(),
+		updated_by: String::from("Kylpynalle"), // LoggedUser here
+	};
+	println!("Inserting data");
+	let rows_inserted = diesel::insert_into(projects)
+		.values(&new_project)
+		.get_result::<Project>(conn);
+	println!("{:?}", rows_inserted);
+	if rows_inserted.is_ok() {
+		println!("\nProject added successfully.\n");
+		return Ok(new_project.into());
+	}
+	Err(ServiceError::Unauthorized)
 }
 
 pub async fn get_by_pid(uuid_data: web::Json<QueryData>, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {

@@ -1,7 +1,7 @@
 <template>
 	<div class="container mt-4">
-		<Modal :showModal="showModal" :modalTitle="formTitle">
-			<UserSkill v-if="formTitle == 'Add Skill'"/>
+		<Modal :show_modal="show_modal" :modal_title="form_title">
+			<UserSkill v-if="form_title == 'Add Skill'"/>
 		</Modal>
 		<div class="row gx-4">
 			<div class="col-md-4">
@@ -39,7 +39,7 @@
 							</tr>
 						</tbody>
 					</table>
-					<p><a href="#" v-on:click="showModal = true, formTitle = 'Add Skill'" data-bs-toggle="modal" data-bs-target="#exampleModal">Add skill</a></p>
+					<p><a href="#" v-on:click="show_modal = true, form_title = 'Add Skill'" data-bs-toggle="modal" data-bs-target="#exampleModal">Add skill</a></p>
 				</div>
 			</div>
 		</div>
@@ -54,8 +54,8 @@
 		name: 'Profile',
 		data() {
 			return {
-				showModal: false,
-				formTitle: '',
+				show_modal: false,
+				form_title: '',
 				user: {},
 				editing_info: false,
 			}

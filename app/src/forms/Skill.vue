@@ -3,11 +3,11 @@
 		<p v-if="errorsPresent" class="error">Please fill out label!</p>
 		<div class="mb-2">
 			<label class="form-label">Skill name</label>
-			<input class="form-control" type="text" placeholder="Languages" name="label" v-model="skilldata.label" />
+			<input class="form-control" type="text" placeholder="Languages" name="label" v-model="querydata.label" />
 		</div>
 		<div class="mb-2">
 			<label class="form-label">Skill category</label>
-			<select class="form-select mb-2" id="Skill" aria-label="Skill category" v-model="skilldata.category_id">
+			<select class="form-select mb-2" id="Skill" aria-label="Skill category" v-model="querydata.category_id">
 				<option v-for="category in categories" :key="category" :value="category.id">
 					{{ category.label }}
 				</option>
@@ -15,7 +15,7 @@
 		</div>
 		<div class="mb-2">
 			<label class="form-label">Skill scope</label>
-			<select class="form-select mb-2" id="Skill" aria-label="Skill scope" v-model="skilldata.skillscope_id">
+			<select class="form-select mb-2" id="Skill" aria-label="Skill scope" v-model="querydata.skillscope_id">
 				<option v-for="scope in scopes" :key="scope" :value="scope.id">
 					{{ scope.label }}
 				</option>
@@ -30,7 +30,7 @@ export default {
 	name: 'Skill',
 	data() {
 		return {
-			skilldata: {
+			querydata: {
 				label: '',
 				category_id: null,
 				skillscope_id: null,
@@ -46,7 +46,7 @@ export default {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.skilldata)
+				body: JSON.stringify(this.querydata)
 			})
 		},
 		getSkillCategories: function() {
