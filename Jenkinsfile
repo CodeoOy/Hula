@@ -27,6 +27,11 @@ pipeline {
                 sh "cargo test"
             }
         }
+        stage('Deploy') {
+            steps {
+                sh "deploy.sh"
+            }
+        }
     }
     post {
         success {
