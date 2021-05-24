@@ -38,10 +38,10 @@
 			</a>
 			<ul v-if="this.$store.state.loggeduser" class="dropdown-menu" aria-labelledby="usermenu">
 				<li v-if="this.$store.state.loggeduser.isadmin === true">
-					<a href="http://localhost:8086/app/admin" class="dropdown-item">Admin</a>
+					<a href="/app/admin" class="dropdown-item">Admin</a>
 				</li>
 				<li>
-					<a href="http://localhost:8086/app/profile" class="dropdown-item">Profile</a>
+					<a href="/app/profile" class="dropdown-item">Profile</a>
 				</li>
 				<li>
 					<a href="#" v-on:click="logOut()" class="dropdown-item">Log out</a>
@@ -58,7 +58,7 @@ export default {
 	name: 'Header',
 	methods: {
 		logOut () {
-			fetch('http://localhost:8086/api/auth', {method: 'DELETE'})
+			fetch('/api/auth', {method: 'DELETE'})
 			.then((response) => {
 				this.message = response;
 				this.$flashMessage.show({

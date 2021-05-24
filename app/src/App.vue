@@ -25,7 +25,7 @@
   		},
 		methods: {
 			checkLogin: function() {
-				fetch('http://localhost:8086/api/auth', {method: 'GET'})
+				fetch('/api/auth', {method: 'GET'})
 				.then((response) => {
 					if(response.ok) {
 						this.logged = true;
@@ -35,7 +35,7 @@
 							time: 1000
 						});
 					} else {
-						fetch('http://localhost:8086/api/auth', {method: 'DELETE'})
+						fetch('/api/auth', {method: 'DELETE'})
 						this.logged = false;
 						this.$flashMessage.show({
 							type: 'error',
