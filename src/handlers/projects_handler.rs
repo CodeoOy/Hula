@@ -1,8 +1,9 @@
-use actix_web::{error::BlockingError, web, HttpResponse};
+use actix_web::{error::BlockingError, web, HttpResponse, HttpRequest};
 use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
+use actix_identity::{Identity, CookieIdentityPolicy, IdentityService};
 
-use crate::errors::ServiceError;
+use crate::{errors::ServiceError, handlers::auth_handler};
 use crate::models::projects::{Pool, Project};
 
 #[derive(Deserialize, Debug)]
@@ -42,22 +43,29 @@ fn query_all(pool: web::Data<Pool>) -> Result<Vec<Project>, crate::errors::Servi
 
 pub async fn create_project(
 	projectdata: web::Json<ProjectData>,
-	pool: web::Data<Pool>
+	pool: web::Data<Pool>,
+	id: Identity
 ) -> Result<HttpResponse, ServiceError> {
 	println!("Creating a project");
-	let res = web::block(move || query_create_project(projectdata, pool)).await;
-	match res {
-		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
-		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
-			BlockingError::Canceled => Err(ServiceError::InternalServerError),
-		},
-	}
+	if let Some(id) = id.identity() {
+        let res = web::block(move || query_create_project(projectdata, pool, id)).await;
+		match res {
+			Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
+			Err(err) => match err {
+				BlockingError::Error(service_error) => Err(service_error),
+				BlockingError::Canceled => Err(ServiceError::InternalServerError),
+			},
+		}
+    } else {
+        println!("\nNo identity\n");
+		Err(ServiceError::Unauthorized)
+    }
 }
 
 fn query_create_project(
 	projectdata: web::Json<ProjectData>,
 	pool: web::Data<Pool>,
+	id: String,
 ) -> Result<Project, crate::errors::ServiceError> {
 	use crate::schema::projects::dsl::projects;
 	let conn: &PgConnection = &pool.get().unwrap();
@@ -66,7 +74,8 @@ fn query_create_project(
 		id: uuid::Uuid::new_v4(),
 		available: true,
 		name: projectdata.name.clone(),
-		updated_by: String::from("Kylpynalle"), // LoggedUser here
+		//updated_by: Identity::identity(&self).
+		updated_by: id
 	};
 	println!("Inserting data");
 	let rows_inserted = diesel::insert_into(projects)

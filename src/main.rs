@@ -18,9 +18,6 @@ mod utils;
 
 #[get("/")]
 async fn home(session: Session) -> Result<HttpResponse> {
-	//println!("{:?}", req);
-	//println!("Lol");
-	// session
 	let mut counter = 1;
 	if let Some(count) = session.get::<i32>("counter")? {
 		println!("SESSION value: {}", count);
@@ -40,8 +37,6 @@ async fn home(session: Session) -> Result<HttpResponse> {
 #[get("/app/*")]
 async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
 	println!("{:?}", req);
-	//println!("Lol");
-	// session
 	let mut counter = 1;
 	if let Some(count) = session.get::<i32>("counter")? {
 		println!("SESSION value: {}", count);
@@ -130,7 +125,9 @@ async fn main() -> std::io::Result<()> {
 					.service(web::resource("/users").route(web::get().to(handlers::users_handler::get_all)))
 					.service(web::resource("/project").route(web::post().to(handlers::projects_handler::get_by_pid)))
 					.service(
-						web::resource("/projects").route(web::get().to(handlers::projects_handler::get_all_projects)),
+						web::resource("/projects")
+							.route(web::get().to(handlers::projects_handler::get_all_projects))
+							.route(web::post().to(handlers::projects_handler::create_project)),
 					)
 					.service(
 						web::resource("/matchedusers")
