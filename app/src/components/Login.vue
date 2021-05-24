@@ -26,7 +26,7 @@
 					"email": email,    
 					"password": password
 				}
-				fetch('http://localhost:8086/api/auth', {
+				fetch('/api/auth', {
 					method: 'POST',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
@@ -34,7 +34,7 @@
 				})
 				.then((response) => {
 					if (response.ok) {
-						fetch('http://localhost:8086/api/auth', {method: 'GET'})
+						fetch('/api/auth', {method: 'GET'})
 						.then((response) => response.json())
 						.then((response) => {
 							this.$store.commit('setUser', response)
@@ -46,7 +46,7 @@
 							});
 						})
 					} else {
-						fetch('http://localhost:8086/api/auth', {method: 'DELETE'})
+						fetch('/api/auth', {method: 'DELETE'})
 						this.$flashMessage.show({
 							type: 'error',
 							title: 'Bad credentials. Cookies maybe deleted.',

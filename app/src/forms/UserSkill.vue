@@ -42,7 +42,7 @@ export default {
 	methods: {
 		addExistingSkill: function() {
 			console.log(this.querydata)
-			fetch(`http://localhost:8086/api/userskill/${this.user.id}`, {
+			fetch(`/api/userskill/${this.user.id}`, {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
@@ -53,7 +53,7 @@ export default {
 			})
 		},
 		getAllSkills: function() {
-			fetch('http://localhost:8086/api/skills', {method: 'GET'})
+			fetch('/api/skills', {method: 'GET'})
 			.then((response) => response.json())
 			.then(response => { 
 				this.available_skills = response;
@@ -63,7 +63,7 @@ export default {
 			})
 		},
 		getAllLevels: function() {
-			fetch('http://localhost:8086/api/skills/levels', {method: 'GET'})
+			fetch('/api/skills/levels', {method: 'GET'})
 			.then((response) => response.json())
 			.then(response => { 
 				this.skill_levels = response;

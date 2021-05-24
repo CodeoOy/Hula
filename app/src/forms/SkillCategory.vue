@@ -41,7 +41,7 @@ export default {
 					time: 1000
 				});
 			} else {
-				fetch('http://localhost:8086/api/skills/category', {
+				fetch('/api/skills/category', {
 					method: 'POST',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
@@ -50,7 +50,7 @@ export default {
 			}
 		},
 		getSkillCategories: function() {
-			fetch('http://localhost:8086/api/skills/categories', {method: 'GET'})
+			fetch('/api/skills/categories', {method: 'GET'})
 			.then((response) => response.json())
 			.then(response => { 
 				this.categories = response;

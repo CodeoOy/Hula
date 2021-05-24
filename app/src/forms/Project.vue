@@ -21,7 +21,7 @@ export default {
 	},
 	methods: {
 		createProject: function() {
-			fetch('http://localhost:8086/api/project', {
+			fetch('/api/project', {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',

@@ -24,12 +24,12 @@ export default {
 	},
 	methods: {
 		deleteUser: function() {
-			fetch(`http://localhost:8086/api/user/${this.usertodelete}`, {
+			fetch(`/api/user/${this.usertodelete}`, {
 				method: 'DELETE', 
 			})
 		},
 		getAllUsers: function() {
-			fetch('http://localhost:8086/api/users', {method: 'GET'})
+			fetch('/api/users', {method: 'GET'})
 			.then((response) => response.json())
 			.then(response => { 
 				this.users = response;

@@ -67,7 +67,7 @@
 		},
 		methods: {
 			updateUser: function() { // This is not working. Make the user update happen in some other way.
-				fetch(`http://localhost:8086/api/user/${this.user.id}`, {
+				fetch(`/api/user/${this.user.id}`, {
 					method: 'PUT',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
