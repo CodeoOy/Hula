@@ -24,12 +24,12 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh "/home/ubuntu/.cargo/bin/cargo test"
+                sh "cargo test"
             }
         }
         stage('Deploy') {
             steps {
-                sh "/home/ubuntu/deploy.sh"
+                sh "deploy.sh"
             }
         }
     }
