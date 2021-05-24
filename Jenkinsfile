@@ -22,7 +22,7 @@ pipeline {
                 sh "/home/ubuntu/.cargo/bin/cargo build --release"
             }
         }
-        stage('Tests') {
+        stage('Test') {
             steps {
                 sh "/home/ubuntu/.cargo/bin/cargo test"
             }
