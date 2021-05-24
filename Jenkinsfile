@@ -19,7 +19,7 @@ pipeline {
                 sh "cd app && npm i @smartweb/vue-flash-message@1.0.0-alpha.12"
                 sh "cd app && npm i @popperjs/core"
                 sh "cd app && npm run dev & sleep 60s"
-                sh "/home/ubuntu/.cargo/bin/cargo build --release"
+                sh "cargo build --release"
             }
         }
         stage('Test') {
