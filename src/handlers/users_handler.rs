@@ -1,6 +1,6 @@
 use crate::errors::ServiceError;
 use crate::models::skills::Skill;
-use crate::models::users::{Pool, User, UserSkill, LoggedUser};
+use crate::models::users::{Pool, User, UserSkill, UserFavories, LoggedUser};
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::result::Error;
 use diesel::{associations::HasTable, prelude::*, PgConnection};
@@ -19,6 +19,13 @@ pub struct QueryData {
 pub struct UserSkillData {
 	pub years: Option<f64>,
 	pub email: String,
+	pub user_id: uuid::Uuid,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct Favorite {
+	pub email: String,
+	pub project_id: uuid::Uuid,
 	pub user_id: uuid::Uuid,
 }
 
@@ -238,19 +245,11 @@ fn query_delete_user(
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::users::dsl::id;
 	use crate::schema::users::dsl::*;
-	use crate::schema::userskills::dsl::*;
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 
-	let delete_skills = diesel::delete(userskills.filter(user_id.eq(uuid_query)))
-		.execute(conn)
-		.optional()
-		.map_err(Error::from)?;
-	if let Some(_delete_skills) = delete_skills {
-		diesel::delete(users.filter(id.eq(uuid_query))).execute(conn)?;
-		Ok(())
-	} else {
-		Err(ServiceError::Unauthorized)
-	}
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	diesel::delete(users.filter(id.eq(uuid_query))).execute(conn)?;
+	println!("\n!!\n");
+	Ok(())
 }
 
 pub async fn update_year(
@@ -276,7 +275,7 @@ fn query_update_year(
 	pool: web::Data<Pool>,
 ) -> Result<UserSkill, crate::errors::ServiceError> {
 	use crate::schema::userskills::dsl::*;
-	use crate::schema::userskills::dsl::{skill_id, updated_by, user_id, years};
+	use crate::schema::userskills::dsl::{skill_id, updated_by, years};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let mut items = diesel::update(userskills)
@@ -291,3 +290,82 @@ fn query_update_year(
 	Err(ServiceError::Unauthorized)
 }
 
+pub async fn update_year(
+	uuid_data: web::Path<String>,
+	payload: web::Json<UserSkillData>,
+	pool: web::Data<Pool>,
+) -> Result<HttpResponse, ServiceError> {
+	println!("\nUpdating skill's year");
+	let res = web::block(move || query_update_year(uuid_data.into_inner(), payload, pool)).await;
+	match res {
+		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+pub async fn add_favorite_project(
+	uuid_data: web::Path<String>,
+	payload: web::Json<Favorite>,
+	pool: web::Data<Pool>,
+) -> Result<HttpResponse, ServiceError> {
+	println!("Adding favorite project");
+	let res = web::block(move || query_add_favorite_project(uuid_data.into_inner(), payload, pool)).await;
+	match res {
+		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_add_favorite_project(
+	uuid_data: String,
+	favorite_data: web::Json<Favorite>,
+	pool: web::Data<Pool>,
+) -> Result<UserFavorites, crate::errors::ServiceError> {
+	use crate::schema::userfavorites::dsl::userfavorites;
+	let conn: &PgConnection = &pool.get().unwrap();
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	let new_favorite = UserFavorites {
+		id: uuid::Uuid::new_v4(),
+		user_id: uuid_query,
+		project_id: favorite_data.project_id,
+		updated_by: favorite_data.email.clone(),
+	};
+	let rows_inserted = diesel::insert_into(userfavorites)
+		.values(&new_favorite)
+		.get_result::<UserFavorites>(conn);
+	println!("{:?}", rows_inserted);
+	if rows_inserted.is_ok() {
+		println!("\nFavorite added successfully.\n");
+		return Ok(new_favorite.into());
+	}
+	Err(ServiceError::Unauthorized)
+}
+
+fn query_delete_favorite_project(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
+	let conn: &PgConnection = &pool.get().unwrap();
+	use crate::schema::userfavorites::dsl::*;
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	diesel::delete(userfavorites.filter(id.eq(uuid_query))).execute(conn)?;
+	Ok(())
+}
+
+pub async fn delete_favorite_project(
+	uuid_data: web::Path<String>,
+	pool: web::Data<Pool>,
+) -> Result<HttpResponse, ServiceError> {
+	let res = web::block(move || query_delete_favorite_project(uuid_data.into_inner(), pool)).await;
+	println!("\nProject removed from favorites\n");
+	match res {
+		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
