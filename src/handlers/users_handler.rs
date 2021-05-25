@@ -1,9 +1,8 @@
 use crate::errors::ServiceError;
 use crate::models::skills::Skill;
-use crate::models::users::{Pool, User, UserSkill, UserFavories, LoggedUser};
+use crate::models::users::{Pool, User, UserSkill, UserFavorites, LoggedUser};
 use actix_web::{error::BlockingError, web, HttpResponse};
-use diesel::result::Error;
-use diesel::{associations::HasTable, prelude::*, PgConnection};
+use diesel::{prelude::*, PgConnection};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug)]
@@ -288,22 +287,6 @@ fn query_update_year(
 		return Ok(user_res.into());
 	}
 	Err(ServiceError::Unauthorized)
-}
-
-pub async fn update_year(
-	uuid_data: web::Path<String>,
-	payload: web::Json<UserSkillData>,
-	pool: web::Data<Pool>,
-) -> Result<HttpResponse, ServiceError> {
-	println!("\nUpdating skill's year");
-	let res = web::block(move || query_update_year(uuid_data.into_inner(), payload, pool)).await;
-	match res {
-		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
-		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
-			BlockingError::Canceled => Err(ServiceError::InternalServerError),
-		},
-	}
 }
 
 pub async fn add_favorite_project(
