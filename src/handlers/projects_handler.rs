@@ -36,7 +36,7 @@ fn query_all(pool: web::Data<Pool>) -> Result<Vec<Project>, crate::errors::Servi
 	let conn: &PgConnection = &pool.get().unwrap();
 	let items = projects.load::<Project>(conn)?;
 	if items.is_empty() == false {
-		println!("\nGot all projects.\n");
+		println!("\nGot all projects maybe.\n");
 		return Ok(items);
 	}
 	Err(ServiceError::Empty)
@@ -70,7 +70,6 @@ fn query_create_project(
 		id: uuid::Uuid::new_v4(),
 		available: true,
 		name: projectdata.name.clone(),
-		//updated_by: Identity::identity(&self).
 		updated_by: email
 	};
 	println!("Inserting data");
