@@ -54,15 +54,14 @@ async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
 
 fn initialize_db(name: &str) {
 	println!("Running database migrations...");
-    let connection = PgConnection::establish(&name)
-        .expect(&format!("Error connecting to {}", name));
+	let connection = PgConnection::establish(&name).expect(&format!("Error connecting to {}", name));
 
 	let result = diesel_migrations::run_pending_migrations(&connection);
 
 	match result {
 		Ok(_res) => {
 			println!("Migrations done!");
-		},
+		}
 		Err(error) => {
 			println!("Database migration error: \n {:#?}", error);
 		}
@@ -101,11 +100,12 @@ async fn main() -> std::io::Result<()> {
 			.service(
 				web::scope("/api")
 					.service(
-						web::resource("/invitation")
+						web::resource("/invitations")
 							.route(web::post().to(handlers::invitation_handler::post_invitation)),
 					)
+					.service(web::resource("/users").route(web::get().to(handlers::users_handler::get_all)))
 					.service(
-						web::resource("/user/{user_id}")
+						web::resource("/users/{user_id}")
 							.route(web::get().to(handlers::users_handler::get_by_uuid))
 							.route(web::put().to(handlers::users_handler::update_user))
 							.route(web::delete().to(handlers::users_handler::delete_user)),
@@ -116,51 +116,48 @@ async fn main() -> std::io::Result<()> {
 							.route(web::delete().to(handlers::users_handler::delete_favorite_project)),
 					)
 					.service(
-						web::resource("/userskill/{user_id}")
+						web::resource("/userskills/{user_id}")
 							.route(web::post().to(handlers::users_handler::add_skill))
 							.route(web::put().to(handlers::users_handler::update_year)),
 					)
-					.service(web::resource("/skill").route(web::post().to(handlers::skills_handler::create_skill)))
+					.service(
+						web::resource("/skills")
+							.route(web::post().to(handlers::skills_handler::create_skill))
+							.route(web::get().to(handlers::skills_handler::get_all_skills)),
+					)
 					.service(
 						web::resource("/skills/categories")
 							.route(web::get().to(handlers::skills_handler::get_skill_categories)),
 					)
 					.service(
-						web::resource("/skills/scopes").route(web::get().to(handlers::skills_handler::get_skillscopes)),
-					)
-					.service(
-						web::resource("/skills/levels")
-							.route(web::get().to(handlers::skills_handler::get_skill_levels)),
-					)
-					.service(web::resource("/skills").route(web::get().to(handlers::skills_handler::get_all_skills)))
-					.service(
-						web::resource("/skills/scope")
+						web::resource("/skills/scopes")
+							.route(web::get().to(handlers::skills_handler::get_skillscopes))
 							.route(web::post().to(handlers::skills_handler::create_skill_scope)),
 					)
 					.service(
-						web::resource("/skills/level")
+						web::resource("/skills/levels")
+							.route(web::get().to(handlers::skills_handler::get_skill_levels))
 							.route(web::post().to(handlers::skills_handler::create_skill_scope_level)),
 					)
 					.service(
-						web::resource("/skills/category")
+						web::resource("/skills/categorys")
 							.route(web::post().to(handlers::skills_handler::create_skill_category)),
 					)
-					.service(web::resource("/users").route(web::get().to(handlers::users_handler::get_all)))
 					.service(web::resource("/project").route(web::post().to(handlers::projects_handler::get_by_pid)))
 					.service(
 						web::resource("/projects")
 							.route(web::get().to(handlers::projects_handler::get_all_projects))
 							.route(web::post().to(handlers::projects_handler::create_project)),
 					)
+					.service(web::resource("/matches").route(web::get().to(handlers::matches_handler::get_all_matches)))
 					.service(
 						web::resource("/matchedusers")
 							.route(web::post().to(handlers::matches_handler::get_matches_by_params)),
 					)
 					.service(
-						web::resource("/register/{invitation_id}")
+						web::resource("/registers/{invitation_id}")
 							.route(web::post().to(handlers::register_handler::register_user)),
 					)
-					.service(web::resource("/matches").route(web::get().to(handlers::matches_handler::get_all_matches)))
 					.service(
 						web::resource("/auth")
 							.route(web::post().to(handlers::auth_handler::login))
