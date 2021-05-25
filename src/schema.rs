@@ -114,6 +114,15 @@ table! {
 }
 
 table! {
+	userfavorites (id){
+		id -> Uuid,
+		user_id -> Uuid,
+		project_id -> Uuid,
+		updated_by -> Varchar,
+	}
+}
+
+table! {
 	matchcandidates (projectneedskillid, userskillid) {
 		projectneedskillid -> Uuid,
 		userskillid -> Uuid,

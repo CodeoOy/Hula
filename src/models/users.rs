@@ -33,6 +33,16 @@ pub struct UserSkill {
 	pub updated_by: String,
 }
 
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
+#[belongs_to(User, foreign_key = "user_id")]
+#[table_name = "userfavorites"]
+pub struct UserFavorites {
+	pub id: uuid::Uuid,
+	pub user_id: uuid::Uuid,
+	pub project_id: uuid::Uuid,
+	pub updated_by: String,
+}
+
 impl User {
 	pub fn from_details<S: Into<String>, T: Into<String>, U: Into<String>, V: Into<String>>(
 		email: S,

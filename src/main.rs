@@ -3,7 +3,7 @@ extern crate diesel;
 
 use actix_files as fs;
 use actix_identity::{CookieIdentityPolicy, IdentityService};
-use actix_session::{Session};
+use actix_session::Session;
 use actix_web::http::{header, StatusCode};
 use actix_web::{get, middleware, web, App, HttpRequest, HttpResponse, HttpServer, Result};
 use diesel::prelude::*;
@@ -96,6 +96,11 @@ async fn main() -> std::io::Result<()> {
 							.route(web::get().to(handlers::users_handler::get_by_uuid))
 							.route(web::put().to(handlers::users_handler::update_user))
 							.route(web::delete().to(handlers::users_handler::delete_user)),
+					)
+					.service(
+						web::resource("/userfavorites/{id}")
+							.route(web::post().to(handlers::users_handler::add_favorite_project))
+							.route(web::delete().to(handlers::users_handler::delete_favorite_project)),
 					)
 					.service(
 						web::resource("/userskill/{user_id}")
