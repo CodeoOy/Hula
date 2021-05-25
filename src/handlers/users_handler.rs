@@ -247,7 +247,6 @@ fn query_delete_user(
 
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	diesel::delete(users.filter(id.eq(uuid_query))).execute(conn)?;
-	println!("\n!!\n");
 	Ok(())
 }
 
