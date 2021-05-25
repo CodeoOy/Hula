@@ -36,7 +36,7 @@ fn query_all(pool: web::Data<Pool>) -> Result<Vec<Project>, crate::errors::Servi
 	let conn: &PgConnection = &pool.get().unwrap();
 	let items = projects.load::<Project>(conn)?;
 	if items.is_empty() == false {
-		println!("\nGot all projects maybe.\n");
+		println!("\nGot all projects.\n");
 		return Ok(items);
 	}
 	Err(ServiceError::Empty)
