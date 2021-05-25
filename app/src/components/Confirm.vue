@@ -16,7 +16,7 @@
 		},
 		methods: {
 			confirm_registration: function() {  
-				fetch(`http://localhost:8086/api/register/${this.registration_data.id}`, {
+				fetch(`/api/register/${this.registration_data.id}`, {
 					method: 'POST', 
 					headers: {"Content-Type": "application/json"}, 
 					body: JSON.stringify(this.registration_data)

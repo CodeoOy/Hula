@@ -18,9 +18,6 @@ mod utils;
 
 #[get("/")]
 async fn home(session: Session) -> Result<HttpResponse> {
-	//println!("{:?}", req);
-	//println!("Lol");
-	// session
 	let mut counter = 1;
 	if let Some(count) = session.get::<i32>("counter")? {
 		println!("SESSION value: {}", count);
@@ -40,8 +37,6 @@ async fn home(session: Session) -> Result<HttpResponse> {
 #[get("/app/*")]
 async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
 	println!("{:?}", req);
-	//println!("Lol");
-	// session
 	let mut counter = 1;
 	if let Some(count) = session.get::<i32>("counter")? {
 		println!("SESSION value: {}", count);
@@ -57,12 +52,30 @@ async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
 		.body(include_str!("../public/index.html")))
 }
 
+fn initialize_db(name: &str) {
+	println!("Running database migrations...");
+    let connection = PgConnection::establish(&name)
+        .expect(&format!("Error connecting to {}", name));
+
+	let result = diesel_migrations::run_pending_migrations(&connection);
+
+	match result {
+		Ok(_res) => {
+			println!("Migrations done!");
+		},
+		Err(error) => {
+			println!("Database migration error: \n {:#?}", error);
+		}
+	}
+}
+
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
 	dotenv::dotenv().ok();
 	std::env::set_var("RUST_LOG", "simple-auth-server=debug,actix_web=info,actix_server=info");
 	env_logger::init();
 	let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+	initialize_db(&database_url);
 
 	// create db connection pool
 	let manager = ConnectionManager::<PgConnection>::new(database_url);
@@ -135,7 +148,9 @@ async fn main() -> std::io::Result<()> {
 					.service(web::resource("/users").route(web::get().to(handlers::users_handler::get_all)))
 					.service(web::resource("/project").route(web::post().to(handlers::projects_handler::get_by_pid)))
 					.service(
-						web::resource("/projects").route(web::get().to(handlers::projects_handler::get_all_projects)),
+						web::resource("/projects")
+							.route(web::get().to(handlers::projects_handler::get_all_projects))
+							.route(web::post().to(handlers::projects_handler::create_project)),
 					)
 					.service(
 						web::resource("/matchedusers")

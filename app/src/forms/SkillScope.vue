@@ -33,7 +33,7 @@ export default {
 	},
 	methods: {
 		createSkillScope: function() {
-			fetch('http://localhost:8086/api/skills/scope', {
+			fetch('/api/skills/scope', {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
@@ -41,7 +41,7 @@ export default {
 			})
 		},
 		getSkillCategories: function() {
-			fetch('http://localhost:8086/api/skills/categories', {method: 'GET'})
+			fetch('/api/skills/categories', {method: 'GET'})
 			.then((response) => response.json())
 			.then(response => { 
 				this.categories = response;

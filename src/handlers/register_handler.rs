@@ -14,14 +14,10 @@ pub struct UserData {
 }
 
 pub async fn register_user(
-	//invitation_id: web::Path<String>, // Because of the changed structure this is no longer good
-	//invitation_id: web::Json<UserData>,
 	user_data: web::Json<UserData>,
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
-	let res =
-        //web::block(move || query(invitation_id.into_inner(), user_data.into_inner(), pool)).await;
-		web::block(move || query(user_data.into_inner(), pool)).await;
+	let res = web::block(move || query(user_data.into_inner(), pool)).await;
 
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
@@ -32,8 +28,10 @@ pub async fn register_user(
 	}
 }
 
-fn query(user_data: UserData, pool: web::Data<Pool>) -> Result<SlimUser, crate::errors::ServiceError> {
-	// Do we want full user, not slim user?
+fn query(
+	user_data: UserData,
+	pool: web::Data<Pool>
+) -> Result<SlimUser, crate::errors::ServiceError> {
 	use crate::schema::invitations::dsl::{email, id, invitations};
 	use crate::schema::users::dsl::users;
 	let invitation_id = uuid::Uuid::parse_str(&user_data.id)?;

@@ -2,6 +2,7 @@ use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::{prelude::*, PgConnection};
 use serde::{Deserialize};
 
+use crate::models::users::LoggedUser;
 use crate::errors::ServiceError;
 use crate::models::skills::{Pool, Skill, SkillCategory, SkillScope, SkillScopeLevel};
 
@@ -34,7 +35,10 @@ pub struct ScopeLevelData {
 	pub percentage: Option<i32>,
 }
 
-pub async fn get_all_skills(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+pub async fn get_all_skills(
+	pool: web::Data<Pool>,
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_all_skills(pool)).await;
 
 	match res {
@@ -57,7 +61,10 @@ fn query_all_skills(pool: web::Data<Pool>) -> Result<Vec<Skill>, crate::errors::
 	Err(ServiceError::Empty)
 }
 
-pub async fn get_skillscopes(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+pub async fn get_skillscopes(
+	pool: web::Data<Pool>,
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_skillscopes(pool)).await;
 
 	match res {
@@ -80,7 +87,10 @@ fn query_skillscopes(pool: web::Data<Pool>) -> Result<Vec<SkillScope>, crate::er
 	Err(ServiceError::Empty)
 }
 
-pub async fn get_skill_levels(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+pub async fn get_skill_levels(
+	pool: web::Data<Pool>,
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_skill_levels(pool)).await;
 
 	match res {
@@ -103,7 +113,10 @@ fn query_skill_levels(pool: web::Data<Pool>) -> Result<Vec<SkillScopeLevel>, cra
 	Err(ServiceError::Empty)
 }
 
-pub async fn get_skill_categories(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+pub async fn get_skill_categories(
+	pool: web::Data<Pool>,
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_skill_categories(pool)).await;
 
 	match res {
@@ -128,10 +141,11 @@ fn query_skill_categories(pool: web::Data<Pool>) -> Result<Vec<SkillCategory>, c
 
 pub async fn create_skill_category(
 	categorydata: web::Json<CategoryData>,
-	pool: web::Data<Pool>
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser
 ) -> Result<HttpResponse, ServiceError> {
 	println!("Creating a skill category");
-	let res = web::block(move || query_create_skill_category(categorydata, pool)).await;
+	let res = web::block(move || query_create_skill_category(categorydata, pool, logged_user.email)).await;
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
@@ -144,6 +158,7 @@ pub async fn create_skill_category(
 fn query_create_skill_category(
 	categorydata: web::Json<CategoryData>,
 	pool: web::Data<Pool>,
+	email: String
 ) -> Result<SkillCategory, crate::errors::ServiceError> {
 	use crate::schema::skillcategories::dsl::skillcategories;
 	let conn: &PgConnection = &pool.get().unwrap();
@@ -152,7 +167,7 @@ fn query_create_skill_category(
 		id: uuid::Uuid::new_v4(),
 		label: categorydata.label.clone(),
 		parent_id: categorydata.parent_id,
-		updated_by: categorydata.email.clone(),
+		updated_by: email
 	};
 	println!("Inserting data");
 	let rows_inserted = diesel::insert_into(skillcategories)
@@ -168,10 +183,11 @@ fn query_create_skill_category(
 
 pub async fn create_skill(
 	skilldata: web::Json<SkillData>,
-	pool: web::Data<Pool>
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser
 ) -> Result<HttpResponse, ServiceError> {
 	println!("Creating a skill");
-	let res = web::block(move || query_create_skill(skilldata, pool)).await;
+	let res = web::block(move || query_create_skill(skilldata, pool, logged_user.email)).await;
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
@@ -184,6 +200,7 @@ pub async fn create_skill(
 fn query_create_skill(
 	skilldata: web::Json<SkillData>,
 	pool: web::Data<Pool>,
+	email: String
 ) -> Result<Skill, crate::errors::ServiceError> {
 	use crate::schema::skills::dsl::skills;
 	let conn: &PgConnection = &pool.get().unwrap();
@@ -193,7 +210,7 @@ fn query_create_skill(
 		label: skilldata.label.clone(),
 		skillcategory_id: skilldata.category_id,
 		skillscope_id: skilldata.skillscope_id,
-		updated_by: skilldata.email.clone(),
+		updated_by: email
 	};
 	println!("Inserting data");
 	let rows_inserted = diesel::insert_into(skills)
@@ -209,10 +226,11 @@ fn query_create_skill(
 
 pub async fn create_skill_scope(
 	scopedata: web::Json<ScopeData>,
-	pool: web::Data<Pool>
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser
 ) -> Result<HttpResponse, ServiceError> {
 	println!("Creating a skill scope");
-	let res = web::block(move || query_create_skill_scope(scopedata, pool)).await;
+	let res = web::block(move || query_create_skill_scope(scopedata, pool, logged_user.email)).await;
 	match res {
 		Ok(skill_scope) => Ok(HttpResponse::Ok().json(&skill_scope)),
 		Err(err) => match err {
@@ -225,6 +243,7 @@ pub async fn create_skill_scope(
 fn query_create_skill_scope(
 	scopedata: web::Json<ScopeData>,
 	pool: web::Data<Pool>,
+	email: String
 ) -> Result<SkillScope, crate::errors::ServiceError> {
 	use crate::schema::skillscopes::dsl::skillscopes;
 	let conn: &PgConnection = &pool.get().unwrap();
@@ -232,7 +251,7 @@ fn query_create_skill_scope(
 	let new_scope = SkillScope {
 		id: uuid::Uuid::new_v4(),
 		label: scopedata.label.clone(),
-		updated_by: scopedata.email.clone(),
+		updated_by: email
 	};
 	println!("Inserting data");
 	let rows_inserted = diesel::insert_into(skillscopes)
@@ -248,10 +267,11 @@ fn query_create_skill_scope(
 
 pub async fn create_skill_scope_level(
 	scopeleveldata: web::Json<ScopeLevelData>,
-	pool: web::Data<Pool>
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser
 ) -> Result<HttpResponse, ServiceError> {
 	println!("Creating a skill scope level");
-	let res = web::block(move || query_create_skill_scope_level(scopeleveldata, pool)).await;
+	let res = web::block(move || query_create_skill_scope_level(scopeleveldata, pool, logged_user.email)).await;
 	match res {
 		Ok(skill_scope_level) => Ok(HttpResponse::Ok().json(&skill_scope_level)),
 		Err(err) => match err {
@@ -264,6 +284,7 @@ pub async fn create_skill_scope_level(
 fn query_create_skill_scope_level(
 	scopeleveldata: web::Json<ScopeLevelData>,
 	pool: web::Data<Pool>,
+	email: String
 ) -> Result<SkillScopeLevel, crate::errors::ServiceError> {
 	use crate::schema::skillscopelevels::dsl::{skillscope_id, index, skillscopelevels};
 	let conn: &PgConnection = &pool.get().unwrap();
@@ -283,7 +304,7 @@ fn query_create_skill_scope_level(
 		skillscope_id: scopeleveldata.skillscope_id,
 		index: currentindex + 1,
 		percentage: scopeleveldata.percentage,
-		updated_by: scopeleveldata.email.clone(),
+		updated_by: email
 	};
 	println!("Inserting data");
 	let rows_inserted = diesel::insert_into(skillscopelevels)

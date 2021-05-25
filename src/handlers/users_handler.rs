@@ -1,6 +1,6 @@
 use crate::errors::ServiceError;
 use crate::models::skills::Skill;
-use crate::models::users::{Pool, User, UserFavorites, UserSkill};
+use crate::models::users::{Pool, User, UserSkill, UserFavories, LoggedUser};
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::result::Error;
 use diesel::{associations::HasTable, prelude::*, PgConnection};
@@ -50,7 +50,10 @@ pub struct SkillDTO {
 	pub skill_label: String,
 }
 
-pub async fn get_all(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+pub async fn get_all(
+	pool: web::Data<Pool>,
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
 	println!("\nGetting all users");
 	let res = web::block(move || query_all(pool)).await;
 
@@ -135,11 +138,9 @@ fn query_add_skill(
 	skill_data: web::Json<UserSkill>,
 	pool: web::Data<Pool>,
 ) -> Result<UserSkill, crate::errors::ServiceError> {
-	use crate::schema::skillscopelevels::dsl::skillscopelevels;
 	use crate::schema::userskills::dsl::userskills;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	//let levels = skillscopelevels.load::<Skill>(conn)?;
 	let new_user_skill = UserSkill {
 		id: uuid::Uuid::new_v4(),
 		user_id: uuid_query,
@@ -159,7 +160,11 @@ fn query_add_skill(
 	Err(ServiceError::Unauthorized)
 }
 
-pub async fn get_by_uuid(uuid_data: web::Path<String>, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+pub async fn get_by_uuid(
+	uuid_data: web::Path<String>,
+	pool: web::Data<Pool>,
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
 	println!("\nGetting user by uuid");
 	let res = web::block(move || query_one(uuid_data.into_inner(), pool)).await;
 
@@ -179,11 +184,11 @@ fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, crate:
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let user = users.filter(id.eq(uuid_query)).get_result::<User>(conn)?; // Make a prettier error check, this produces 500
 	let allskills = skills.load::<Skill>(conn)?;
-	let mut allskills_iter = allskills.iter();
 	let mut skills_dto: Vec<SkillDTO> = Vec::new();
 	let user_skills = UserSkill::belonging_to(&user).load::<UserSkill>(conn)?;
 	for user_skill in user_skills.iter() {
 		println!("Got a skill");
+		let mut allskills_iter = allskills.iter(); // Iterator might cause problems when there are many skills
 		let skilldata = SkillDTO {
 			id: user_skill.id,
 			user_id: user_skill.user_id,
@@ -217,7 +222,26 @@ fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, crate:
 	Err(ServiceError::Empty)
 }
 
-fn query_delete_user(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
+pub async fn delete_user(
+	uuid_data: web::Path<String>,
+	pool: web::Data<Pool>,
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
+	let res = web::block(move || query_delete_user(uuid_data.into_inner(), pool)).await;
+	println!("\nUser deleted\n");
+	match res {
+		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_delete_user(
+	uuid_data: String,
+	pool: web::Data<Pool>,
+) -> Result<(), crate::errors::ServiceError> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::users::dsl::id;
 	use crate::schema::users::dsl::*;
@@ -228,11 +252,16 @@ fn query_delete_user(uuid_data: String, pool: web::Data<Pool>) -> Result<(), cra
 	Ok(())
 }
 
-pub async fn delete_user(uuid_data: web::Path<String>, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
-	let res = web::block(move || query_delete_user(uuid_data.into_inner(), pool)).await;
-	println!("\nUser deleted\n");
+pub async fn update_year(
+	uuid_data: web::Path<String>,
+	payload: web::Json<UserSkillData>,
+	pool: web::Data<Pool>,
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
+	println!("\nUpdating skill's year");
+	let res = web::block(move || query_update_year(uuid_data.into_inner(), payload, pool)).await;
 	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -260,6 +289,7 @@ fn query_update_year(
 	}
 	Err(ServiceError::Unauthorized)
 }
+
 pub async fn update_year(
 	uuid_data: web::Path<String>,
 	payload: web::Json<UserSkillData>,

@@ -14,7 +14,7 @@ const store = createStore({
 	},
 	mutations: {
 		setUser (state, data) {
-			fetch(`http://localhost:8086/api/user/${data}`, {
+			fetch(`/api/user/${data}`, {
 				method: 'GET',
 				headers: {"Content-Type": "application/json"}
 			})
