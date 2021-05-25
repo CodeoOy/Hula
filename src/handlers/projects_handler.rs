@@ -3,6 +3,7 @@ use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
 use actix_identity::{Identity, CookieIdentityPolicy, IdentityService};
 
+use crate::handlers::auth_handler::LoggedUser;
 use crate::{errors::ServiceError, handlers::auth_handler, models::users::SlimUser};
 use crate::models::projects::{Pool, Project};
 
@@ -44,28 +45,23 @@ fn query_all(pool: web::Data<Pool>) -> Result<Vec<Project>, crate::errors::Servi
 pub async fn create_project(
 	projectdata: web::Json<ProjectData>,
 	pool: web::Data<Pool>,
-	id: Identity
+	logged_user: LoggedUser
 ) -> Result<HttpResponse, ServiceError> {
 	println!("Creating a project");
-	if let Some(id) = id.identity() {
-        let res = web::block(move || query_create_project(projectdata, pool, id)).await;
-		match res {
-			Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
-			Err(err) => match err {
-				BlockingError::Error(service_error) => Err(service_error),
-				BlockingError::Canceled => Err(ServiceError::InternalServerError),
-			},
+	let res = web::block(move || query_create_project(projectdata, pool, logged_user.email)).await;
+	match res {
+		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		}
-    } else {
-        println!("\nNo identity\n");
-		Err(ServiceError::Unauthorized)
     }
 }
 
 fn query_create_project(
 	projectdata: web::Json<ProjectData>,
 	pool: web::Data<Pool>,
-	id: String
+	email: String
 ) -> Result<Project, crate::errors::ServiceError> {
 	use crate::schema::projects::dsl::projects;
 	let conn: &PgConnection = &pool.get().unwrap();
@@ -75,7 +71,7 @@ fn query_create_project(
 		available: true,
 		name: projectdata.name.clone(),
 		//updated_by: Identity::identity(&self).
-		updated_by: id
+		updated_by: email
 	};
 	println!("Inserting data");
 	let rows_inserted = diesel::insert_into(projects)
