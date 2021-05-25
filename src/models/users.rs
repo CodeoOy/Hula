@@ -1,7 +1,10 @@
 use super::super::schema::*;
 use diesel::{r2d2::ConnectionManager, PgConnection};
 use serde::{Deserialize, Serialize};
-//use crate::schema::invitations::password_plain;
+use actix_web::{dev::Payload, Error, FromRequest, HttpRequest};
+use futures::future::{err, ok, Ready};
+use crate::errors::ServiceError;
+use actix_identity::Identity;
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
@@ -69,5 +72,27 @@ impl From<User> for SlimUser {
 			email: user.email,
 			uid: user.id,
 		}
+	}
+}
+
+// we need the same data
+// simple aliasing makes the intentions clear and its more readable
+pub type LoggedUser = SlimUser;
+
+impl FromRequest for LoggedUser {
+	type Config = ();
+	type Error = Error;
+	type Future = Ready<Result<LoggedUser, Error>>;
+
+	fn from_request(req: &HttpRequest, pl: &mut Payload) -> Self::Future {
+		if let Ok(identity) = Identity::from_request(req, pl).into_inner() {
+			if let Some(user_json) = identity.identity() {
+				if let Ok(user) = serde_json::from_str(&user_json) {
+					println!("\nSuccessfully authenticated (from_request).\n");
+					return ok(user);
+				}
+			}
+		}
+		err(ServiceError::Unauthorized.into())
 	}
 }

@@ -1,41 +1,17 @@
 use actix_identity::Identity;
-use actix_web::{dev::Payload, error::BlockingError, web, Error, FromRequest, HttpRequest, HttpResponse};
+use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::prelude::*;
 use diesel::PgConnection;
-use futures::future::{err, ok, Ready};
 use serde::Deserialize;
 
 use crate::errors::ServiceError;
-use crate::models::users::{Pool, SlimUser, User};
+use crate::models::users::{Pool, SlimUser, User, LoggedUser};
 use crate::utils::verify;
 
 #[derive(Debug, Deserialize)]
 pub struct AuthData {
 	pub email: String,
 	pub password: String,
-}
-
-// we need the same data
-// simple aliasing makes the intentions clear and its more readable
-// Currently this is not used anywhere, probably should be?
-pub type LoggedUser = SlimUser;
-
-impl FromRequest for LoggedUser {
-	type Config = ();
-	type Error = Error;
-	type Future = Ready<Result<LoggedUser, Error>>;
-
-	fn from_request(req: &HttpRequest, pl: &mut Payload) -> Self::Future {
-		if let Ok(identity) = Identity::from_request(req, pl).into_inner() {
-			if let Some(user_json) = identity.identity() {
-				if let Ok(user) = serde_json::from_str(&user_json) {
-					println!("\nSuccessfully authenticated (from_request).\n");
-					return ok(user);
-				}
-			}
-		}
-		err(ServiceError::Unauthorized.into())
-	}
 }
 
 pub async fn logout(id: Identity) -> HttpResponse {

@@ -1,10 +1,9 @@
-use actix_web::{error::BlockingError, web, HttpResponse, HttpRequest};
+use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
-use actix_identity::{Identity, CookieIdentityPolicy, IdentityService};
 
-use crate::handlers::auth_handler::LoggedUser;
-use crate::{errors::ServiceError, handlers::auth_handler, models::users::SlimUser};
+use crate::models::users::LoggedUser;
+use crate::{errors::ServiceError};
 use crate::models::projects::{Pool, Project};
 
 #[derive(Deserialize, Debug)]
@@ -17,8 +16,10 @@ pub struct ProjectData {
 	pub name: String,
 }
 
-pub async fn get_all_projects(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
-	// run diesel blocking code
+pub async fn get_all_projects(
+	pool: web::Data<Pool>,
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
 	println!("\nGetting all projects");
 	let res = web::block(move || query_all(pool)).await;
 
@@ -84,8 +85,11 @@ fn query_create_project(
 	Err(ServiceError::Unauthorized)
 }
 
-pub async fn get_by_pid(uuid_data: web::Json<QueryData>, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
-	// run diesel blocking code
+pub async fn get_by_pid(
+	uuid_data: web::Json<QueryData>,
+	pool: web::Data<Pool>,
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
 	println!("\nGetting project by uuid");
 	let res = web::block(move || query_one(uuid_data.into_inner(), pool)).await;
 
