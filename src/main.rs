@@ -123,11 +123,16 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/skills")
 							.route(web::post().to(handlers::skills_handler::create_skill))
-							.route(web::get().to(handlers::skills_handler::get_all_skills)),
+							.route(web::get().to(handlers::skills_handler::get_all_skills))
+							.route(web::delete().to(handlers::skills_handler::delete_all_skills)),
+					)
+					.service(
+						web::resource("/skills/{id}").route(web::delete().to(handlers::skills_handler::delete_skill)),
 					)
 					.service(
 						web::resource("/skills/categories")
-							.route(web::get().to(handlers::skills_handler::get_skill_categories)),
+							.route(web::get().to(handlers::skills_handler::get_skill_categories))
+							.route(web::post().to(handlers::skills_handler::create_skill_category)),
 					)
 					.service(
 						web::resource("/skills/scopes")
@@ -138,10 +143,6 @@ async fn main() -> std::io::Result<()> {
 						web::resource("/skills/levels")
 							.route(web::get().to(handlers::skills_handler::get_skill_levels))
 							.route(web::post().to(handlers::skills_handler::create_skill_scope_level)),
-					)
-					.service(
-						web::resource("/skills/categorys")
-							.route(web::post().to(handlers::skills_handler::create_skill_category)),
 					)
 					.service(web::resource("/project").route(web::post().to(handlers::projects_handler::get_by_pid)))
 					.service(
