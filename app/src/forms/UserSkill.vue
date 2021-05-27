@@ -73,10 +73,8 @@ export default {
 			})
 		},
 		getSkillScope: function(needle) {
-			console.log("Input happened")
 			var scope = this.available_skills.find(x => x.id == needle).skillscope_id;
 			this.chosenskill.skillscope_id = scope;
-			console.log(this.querydata.id)
 		}
 	},
 	watch: {

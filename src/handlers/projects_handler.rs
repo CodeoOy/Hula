@@ -3,7 +3,7 @@ use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
 
 use crate::errors::ServiceError;
-use crate::models::projects::{Pool, Project};
+use crate::models::projects::{Pool, Project, ProjectSkill};
 use crate::models::users::LoggedUser;
 
 #[derive(Deserialize, Debug)]
@@ -18,7 +18,7 @@ pub struct ProjectData {
 
 pub async fn get_all_projects(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
 	println!("\nGetting all projects");
-	let res = web::block(move || query_all(pool)).await;
+	let res = web::block(move || query_all_projects(pool)).await;
 
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
@@ -29,13 +29,45 @@ pub async fn get_all_projects(pool: web::Data<Pool>, _logged_user: LoggedUser) -
 	}
 }
 
-fn query_all(pool: web::Data<Pool>) -> Result<Vec<Project>, crate::errors::ServiceError> {
+fn query_all_projects(pool: web::Data<Pool>) -> Result<Vec<Project>, crate::errors::ServiceError> {
 	use crate::schema::projects::dsl::projects;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let items = projects.load::<Project>(conn)?;
 	if items.is_empty() == false {
 		println!("\nGot all projects.\n");
 		return Ok(items);
+	}
+	Err(ServiceError::Empty)
+}
+
+pub async fn get_project_skills(
+	pool: web::Data<Pool>,
+	pid: web::Path<String>, 
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
+	println!("\nGetting all projects");
+	let res = web::block(move || query_project_skills(pool, pid.into_inner())).await;
+
+	match res {
+		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_project_skills(
+	pool: web::Data<Pool>,
+	pid_path: String 
+) -> Result<Vec<ProjectSkill>, crate::errors::ServiceError> {
+	use crate::schema::projectskills::dsl::{project_id, projectskills};
+	let conn: &PgConnection = &pool.get().unwrap();
+	let pid = uuid::Uuid::parse_str(&pid_path)?;
+	let items = projectskills.filter(project_id.eq(pid)).load::<ProjectSkill>(conn)?;
+	if items.is_empty() == false {
+		println!("\nGot all projects.\n");
+		return Ok(items.into());
 	}
 	Err(ServiceError::Empty)
 }
@@ -78,6 +110,55 @@ fn query_create_project(
 	if rows_inserted.is_ok() {
 		println!("\nProject added successfully.\n");
 		return Ok(new_project.into());
+	}
+	Err(ServiceError::Unauthorized)
+}
+
+pub async fn create_projectskill(
+	projectskilldata: web::Json<ProjectSkill>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	println!("Creating a project skill");
+	let res = web::block(move || query_create_projectskill(projectskilldata, pool, logged_user.email)).await;
+	match res {
+		Ok(projectskill) => Ok(HttpResponse::Ok().json(&projectskill)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_create_projectskill(
+	projectskilldata: web::Json<ProjectSkill>,
+	pool: web::Data<Pool>,
+	email: String,
+) -> Result<ProjectSkill, crate::errors::ServiceError> {
+	use crate::schema::projectskills::dsl::projectskills;
+	let conn: &PgConnection = &pool.get().unwrap();
+	println!("Connected to db");
+	let new_projectskill = ProjectSkill {
+		id: uuid::Uuid::new_v4(),
+		project_id: projectskilldata.project_id,
+		skill_id: projectskilldata.skill_id,
+		skillscopelevel_id: projectskilldata.skillscopelevel_id,
+		min_years: projectskilldata.min_years,
+		max_years: projectskilldata.max_years,
+		countofusers: projectskilldata.countofusers,
+		begin_time: chrono::Local::now().naive_local(),
+		end_time: chrono::Local::now().naive_local() + chrono::Duration::hours(240),
+		percentage: projectskilldata.percentage,
+		updated_by: email
+	};
+	println!("Inserting data");
+	let rows_inserted = diesel::insert_into(projectskills)
+		.values(&new_projectskill)
+		.get_result::<ProjectSkill>(conn);
+	println!("{:?}", rows_inserted);
+	if rows_inserted.is_ok() {
+		println!("\nProject skill added successfully.\n");
+		return Ok(new_projectskill.into());
 	}
 	Err(ServiceError::Unauthorized)
 }
