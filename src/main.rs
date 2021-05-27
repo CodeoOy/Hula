@@ -24,16 +24,13 @@ async fn home(session: Session) -> Result<HttpResponse> {
 		counter = count + 1;
 	}
 
-	// set counter to session
 	session.set("counter", counter)?;
 
-	// response
 	Ok(HttpResponse::build(StatusCode::OK)
 		.content_type("text/html; charset=utf-8")
 		.body(include_str!("../public/index.html")))
 }
 
-/// simple index handler
 #[get("/app/*")]
 async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
 	println!("{:?}", req);
@@ -43,10 +40,8 @@ async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
 		counter = count + 1;
 	}
 
-	// set counter to session
 	session.set("counter", counter)?;
 
-	// response
 	Ok(HttpResponse::build(StatusCode::OK)
 		.content_type("text/html; charset=utf-8")
 		.body(include_str!("../public/index.html")))
@@ -75,28 +70,24 @@ async fn main() -> std::io::Result<()> {
 	env_logger::init();
 	let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 	initialize_db(&database_url);
-
-	// create db connection pool
 	let manager = ConnectionManager::<PgConnection>::new(database_url);
 	let pool: models::users::Pool = r2d2::Pool::builder().build(manager).expect("Failed to create pool.");
 	let domain: String = std::env::var("DOMAIN").unwrap_or_else(|_| "localhost".to_string());
+	let server_url = std::env::var("SERVER_URL").unwrap_or_else(|_| "localhost:8086".to_string());
 
-	// Start http server
 	HttpServer::new(move || {
 		App::new()
 			.data(pool.clone())
-			// enable logger
 			.wrap(middleware::Logger::default())
 			.wrap(IdentityService::new(
 				CookieIdentityPolicy::new(utils::SECRET_KEY.as_bytes())
 					.name("auth")
 					.path("/")
 					.domain(domain.as_str())
-					.max_age(86400) // one day in seconds
-					.secure(false), // this can only be true if you have https
+					.max_age(86400)
+					.secure(false),
 			))
 			.data(web::JsonConfig::default().limit(4096))
-			// everything under '/api/' route
 			.service(
 				web::scope("/api")
 					.service(
@@ -179,7 +170,7 @@ async fn main() -> std::io::Result<()> {
 				HttpResponse::Found().header(header::LOCATION, "index.html").finish()
 			})))
 	})
-	.bind("localhost:8086")?
+	.bind(server_url)?
 	.run()
 	.await
 }
