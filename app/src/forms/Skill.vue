@@ -42,7 +42,7 @@ export default {
 	},
 	methods: {
 		createSkill: function() {
-			fetch('/api/skill', {
+			fetch('/api/skills', {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',

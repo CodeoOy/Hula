@@ -24,7 +24,7 @@ export default {
 	},
 	methods: {
 		deleteUser: function() {
-			fetch(`/api/user/${this.usertodelete}`, {
+			fetch(`/api/users/${this.usertodelete}`, {
 				method: 'DELETE', 
 			})
 		},

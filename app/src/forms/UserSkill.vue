@@ -42,7 +42,7 @@ export default {
 	methods: {
 		addExistingSkill: function() {
 			console.log(this.querydata)
-			fetch(`/api/userskill/${this.user.id}`, {
+			fetch(`/api/userskills/${this.user.id}`, {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',

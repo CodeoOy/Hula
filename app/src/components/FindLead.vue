@@ -21,7 +21,7 @@
 		},
 		methods: {
 			getUserData: function(userid) { 
-				fetch(`/api/user/${userid}`, {
+				fetch(`/api/users/${userid}`, {
 					method: 'GET',
 					headers: {"Content-Type": "application/json"}
 				})
