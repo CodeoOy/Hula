@@ -48,7 +48,7 @@ pub async fn create_project(
 	println!("Creating a project");
 	let res = web::block(move || query_create_project(projectdata, pool, logged_user.email)).await;
 	match res {
-		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
+		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
