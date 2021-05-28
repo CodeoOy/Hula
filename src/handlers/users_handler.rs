@@ -1,6 +1,6 @@
 use crate::errors::ServiceError;
 use crate::models::skills::Skill;
-use crate::models::users::{Pool, User, UserSkill, UserFavorites, LoggedUser};
+use crate::models::users::{LoggedUser, Pool, User, UserFavorites, UserSkill};
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::{prelude::*, PgConnection};
 use serde::{Deserialize, Serialize};
@@ -49,10 +49,7 @@ pub struct SkillDTO {
 	pub skill_label: String,
 }
 
-pub async fn get_all(
-	pool: web::Data<Pool>,
-	_logged_user: LoggedUser
-) -> Result<HttpResponse, ServiceError> {
+pub async fn get_all(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
 	println!("\nGetting all users");
 	let res = web::block(move || query_all(pool)).await;
 
@@ -162,7 +159,7 @@ fn query_add_skill(
 pub async fn get_by_uuid(
 	uuid_data: web::Path<String>,
 	pool: web::Data<Pool>,
-	_logged_user: LoggedUser
+	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	println!("\nGetting user by uuid");
 	let res = web::block(move || query_one(uuid_data.into_inner(), pool)).await;
@@ -224,7 +221,7 @@ fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, crate:
 pub async fn delete_user(
 	uuid_data: web::Path<String>,
 	pool: web::Data<Pool>,
-	_logged_user: LoggedUser
+	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_delete_user(uuid_data.into_inner(), pool)).await;
 	println!("\nUser deleted\n");
@@ -237,10 +234,7 @@ pub async fn delete_user(
 	}
 }
 
-fn query_delete_user(
-	uuid_data: String,
-	pool: web::Data<Pool>,
-) -> Result<(), crate::errors::ServiceError> {
+fn query_delete_user(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::users::dsl::id;
 	use crate::schema::users::dsl::*;
@@ -254,7 +248,7 @@ pub async fn update_year(
 	uuid_data: web::Path<String>,
 	payload: web::Json<UserSkillData>,
 	pool: web::Data<Pool>,
-	_logged_user: LoggedUser
+	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	println!("\nUpdating skill's year");
 	let res = web::block(move || query_update_year(uuid_data.into_inner(), payload, pool)).await;

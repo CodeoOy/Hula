@@ -42,8 +42,8 @@ fn query_all_projects(pool: web::Data<Pool>) -> Result<Vec<Project>, crate::erro
 
 pub async fn get_project_skills(
 	pool: web::Data<Pool>,
-	pid: web::Path<String>, 
-	_logged_user: LoggedUser
+	pid: web::Path<String>,
+	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	println!("\nGetting all projects");
 	let res = web::block(move || query_project_skills(pool, pid.into_inner())).await;
@@ -59,7 +59,7 @@ pub async fn get_project_skills(
 
 fn query_project_skills(
 	pool: web::Data<Pool>,
-	pid_path: String 
+	pid_path: String,
 ) -> Result<Vec<ProjectSkill>, crate::errors::ServiceError> {
 	use crate::schema::projectskills::dsl::{project_id, projectskills};
 	let conn: &PgConnection = &pool.get().unwrap();
@@ -149,7 +149,7 @@ fn query_create_projectskill(
 		begin_time: chrono::Local::now().naive_local(),
 		end_time: chrono::Local::now().naive_local() + chrono::Duration::hours(240),
 		percentage: projectskilldata.percentage,
-		updated_by: email
+		updated_by: email,
 	};
 	println!("Inserting data");
 	let rows_inserted = diesel::insert_into(projectskills)

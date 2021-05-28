@@ -28,10 +28,7 @@ pub async fn register_user(
 	}
 }
 
-fn query(
-	user_data: UserData,
-	pool: web::Data<Pool>
-) -> Result<SlimUser, crate::errors::ServiceError> {
+fn query(user_data: UserData, pool: web::Data<Pool>) -> Result<SlimUser, crate::errors::ServiceError> {
 	use crate::schema::invitations::dsl::{email, id, invitations};
 	use crate::schema::users::dsl::users;
 	let invitation_id = uuid::Uuid::parse_str(&user_data.id)?;

@@ -1,5 +1,5 @@
 use super::super::schema::*;
-use diesel::{PgConnection, r2d2::ConnectionManager};
+use diesel::{r2d2::ConnectionManager, PgConnection};
 use serde::{Deserialize, Serialize};
 //use crate::schema::invitations::password_plain;
 

@@ -5,7 +5,7 @@ use diesel::PgConnection;
 use serde::Deserialize;
 
 use crate::errors::ServiceError;
-use crate::models::users::{Pool, SlimUser, User, LoggedUser};
+use crate::models::users::{LoggedUser, Pool, SlimUser, User};
 use crate::utils::verify;
 
 #[derive(Debug, Deserialize)]
