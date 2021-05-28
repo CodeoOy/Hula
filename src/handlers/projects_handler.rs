@@ -3,7 +3,7 @@ use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
 
 use crate::errors::ServiceError;
-use crate::models::projects::{Pool, Project, ProjectSkill};
+use crate::models::projects::{Pool, Project, ProjectNeed, ProjectNeedSkill};
 use crate::models::users::LoggedUser;
 
 #[derive(Deserialize, Debug)]
@@ -40,13 +40,13 @@ fn query_all_projects(pool: web::Data<Pool>) -> Result<Vec<Project>, crate::erro
 	Err(ServiceError::Empty)
 }
 
-pub async fn get_project_skills(
+pub async fn get_project_needs(
 	pool: web::Data<Pool>,
 	pid: web::Path<String>,
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	println!("\nGetting all projects");
-	let res = web::block(move || query_project_skills(pool, pid.into_inner())).await;
+	let res = web::block(move || query_project_needs(pool, pid.into_inner())).await;
 
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
@@ -57,19 +57,19 @@ pub async fn get_project_skills(
 	}
 }
 
-fn query_project_skills(
+fn query_project_needs(
 	pool: web::Data<Pool>,
 	pid_path: String,
-) -> Result<Vec<ProjectSkill>, crate::errors::ServiceError> {
-	use crate::schema::projectneedskills::dsl::{projectneed_id, projectneedskills};
+) -> Result<Vec<ProjectNeed>, crate::errors::ServiceError> {
+	use crate::schema::projectneeds::dsl::{project_id, projectneeds};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let pid = uuid::Uuid::parse_str(&pid_path)?;
-	let items = projectneedskills.filter(projectneed_id.eq(pid)).load::<ProjectSkill>(conn)?;
+	let items = projectneeds.filter(project_id.eq(pid)).load::<ProjectNeed>(conn)?;
 	if items.is_empty() == false {
-		println!("\nGot all project skills.\n");
+		println!("\nGot all project needs.\n");
 		return Ok(items.into());
 	}
-	println!("\nNo skills in project.\n");
+	println!("\nNo needs in project.\n");
 	Err(ServiceError::Empty)
 }
 
@@ -115,15 +115,15 @@ fn query_create_project(
 	Err(ServiceError::Unauthorized)
 }
 
-pub async fn create_projectskill(
-	projectskilldata: web::Json<ProjectSkill>,
+pub async fn create_projectneed(
+	projectneeddata: web::Json<ProjectNeed>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	println!("Creating a project skill");
-	let res = web::block(move || query_create_projectskill(projectskilldata, pool, logged_user.email)).await;
+	let res = web::block(move || query_create_projectneed(projectneeddata, pool, logged_user.email)).await;
 	match res {
-		Ok(projectskill) => Ok(HttpResponse::Ok().json(&projectskill)),
+		Ok(projectneed) => Ok(HttpResponse::Ok().json(&projectneed)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -131,31 +131,31 @@ pub async fn create_projectskill(
 	}
 }
 
-fn query_create_projectskill(
-	projectskilldata: web::Json<ProjectSkill>,
+fn query_create_projectneed(
+	projectneeddata: web::Json<ProjectNeed>,
 	pool: web::Data<Pool>,
 	email: String,
-) -> Result<ProjectSkill, crate::errors::ServiceError> {
-	use crate::schema::projectneedskills::dsl::projectneedskills;
+) -> Result<ProjectNeed, crate::errors::ServiceError> {
+	use crate::schema::projectneeds::dsl::projectneeds;
 	let conn: &PgConnection = &pool.get().unwrap();
 	println!("Connected to db");
-	let new_projectskill = ProjectSkill {
+	let new_projectneed = ProjectNeed {
 		id: uuid::Uuid::new_v4(),
-		projectneed_id: projectskilldata.projectneed_id,
-		skill_id: projectskilldata.skill_id,
-		skillscopelevel_id: projectskilldata.skillscopelevel_id,
-		min_years: projectskilldata.min_years,
-		max_years: projectskilldata.max_years,
+		project_id: projectneeddata.project_id,
+		count_of_users: projectneeddata.count_of_users,
+		percentage: projectneeddata.percentage,
+		begin_time: projectneeddata.begin_time,
+		end_time: projectneeddata.end_time,
 		updated_by: email,
 	};
 	println!("Inserting data");
-	let rows_inserted = diesel::insert_into(projectneedskills)
-		.values(&new_projectskill)
-		.get_result::<ProjectSkill>(conn);
+	let rows_inserted = diesel::insert_into(projectneeds)
+		.values(&new_projectneed)
+		.get_result::<ProjectNeed>(conn);
 	println!("{:?}", rows_inserted);
 	if rows_inserted.is_ok() {
 		println!("\nProject skill added successfully.\n");
-		return Ok(new_projectskill.into());
+		return Ok(new_projectneed.into());
 	}
 	Err(ServiceError::Unauthorized)
 }

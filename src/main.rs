@@ -147,12 +147,12 @@ async fn main() -> std::io::Result<()> {
 							.route(web::delete().to(handlers::projects_handler::delete_project)),
 					)
 					.service(
-						web::resource("/projectskills")
-							.route(web::post().to(handlers::projects_handler::create_projectskill)),
+						web::resource("/projectneeds")
+							.route(web::post().to(handlers::projects_handler::create_projectneed)),
 					)
 					.service(
 						web::resource("/projectskills/{id}")
-							.route(web::get().to(handlers::projects_handler::get_project_skills)),
+							.route(web::get().to(handlers::projects_handler::get_project_needs)),
 					)
 					.service(web::resource("/matches").route(web::get().to(handlers::matches_handler::get_all_matches)))
 					.service(
