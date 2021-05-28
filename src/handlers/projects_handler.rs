@@ -154,8 +154,53 @@ fn query_create_projectneed(
 		.get_result::<ProjectNeed>(conn);
 	println!("{:?}", rows_inserted);
 	if rows_inserted.is_ok() {
-		println!("\nProject skill added successfully.\n");
+		println!("\nProject need added successfully.\n");
 		return Ok(new_projectneed.into());
+	}
+	Err(ServiceError::Unauthorized)
+}
+
+pub async fn create_projectneedskill(
+	projectneedskilldata: web::Json<ProjectNeedSkill>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	println!("Creating a project skill");
+	let res = web::block(move || query_create_projectneedskill(projectneedskilldata, pool, logged_user.email)).await;
+	match res {
+		Ok(projectneedskill) => Ok(HttpResponse::Ok().json(&projectneedskill)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_create_projectneedskill(
+	projectneedskilldata: web::Json<ProjectNeedSkill>,
+	pool: web::Data<Pool>,
+	email: String,
+) -> Result<ProjectNeedSkill, crate::errors::ServiceError> {
+	use crate::schema::projectneedskills::dsl::projectneedskills;
+	let conn: &PgConnection = &pool.get().unwrap();
+	println!("Connected to db");
+	let new_projectneedskill = ProjectNeedSkill {
+		id: uuid::Uuid::new_v4(),
+		projectneed_id: projectneedskilldata.projectneed_id,
+		skill_id: projectneedskilldata.skill_id,
+		skillscopelevel_id: projectneedskilldata.skillscopelevel_id,
+		min_years: projectneedskilldata.min_years,
+		max_years: projectneedskilldata.max_years,
+		updated_by: email,
+	};
+	println!("Inserting data");
+	let rows_inserted = diesel::insert_into(projectneedskills)
+		.values(&new_projectneedskill)
+		.get_result::<ProjectNeedSkill>(conn);
+	println!("{:?}", rows_inserted);
+	if rows_inserted.is_ok() {
+		println!("\nProject need added successfully.\n");
+		return Ok(new_projectneedskill.into());
 	}
 	Err(ServiceError::Unauthorized)
 }
