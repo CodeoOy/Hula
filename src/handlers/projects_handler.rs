@@ -66,9 +66,10 @@ fn query_project_skills(
 	let pid = uuid::Uuid::parse_str(&pid_path)?;
 	let items = projectskills.filter(project_id.eq(pid)).load::<ProjectSkill>(conn)?;
 	if items.is_empty() == false {
-		println!("\nGot all projects.\n");
+		println!("\nGot all project skills.\n");
 		return Ok(items.into());
 	}
+	println!("\nNo skills in project.\n");
 	Err(ServiceError::Empty)
 }
 

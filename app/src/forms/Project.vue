@@ -40,7 +40,7 @@
 						{{ levelres.label }}
 					</option>
 				</select>
-				<button v-on:click="createProject" class="btn btn-gradient" type="button">Add</button>
+				<button v-on:click="createProjectSkill" class="btn btn-gradient" type="button">Add</button>
 			</div>
 			<div>
 
@@ -65,10 +65,10 @@ export default {
 				skillscopelevel_id: '',
 				min_years: 1,
 				max_years: 10,
-				countofusers: Number,
-				begin_time: Date,
-				end_time: Date,
-				percentage: Number,
+				countofusers: 1,
+				begin_time: Date.now(),
+				end_time: Date.now(),
+				percentage: 10,
 			},
 			chosenskill: {
 				id: '',
@@ -91,6 +91,7 @@ export default {
 			.then((response) => {
 				console.log(response)
 				this.querydata_project.id = response.id
+				this.querydata_skill.project_id = response.id
 			})
 		},
 		createProjectSkill: function() {
@@ -100,7 +101,7 @@ export default {
 				credentials: 'include',
 				body: JSON.stringify(this.querydata_skill)
 			})
-			getProjectSkills()
+			this.getProjectSkills()
 		},
 		getAllSkills: function() {
 			fetch('/api/skills', {method: 'GET'})
@@ -113,15 +114,14 @@ export default {
 			})
 		},
 		getProjectSkills: function() {
-			fetch('/api/projectskills', {
-				method: 'POST',
+			fetch(`/api/projectskills/${this.querydata_project.id}`, {
+				method: 'GET',
 				headers: {"Content-Type": "application/json"},
-				credentials: 'include',
-				body: JSON.stringify(this.querydata_skill)
+				credentials: 'include'
 			})
 			.then((response) => response.json())
 			.then((response) => {
-				//console.log(response)
+				console.log(response)
 				this.projectskills = response
 			})
 		},
