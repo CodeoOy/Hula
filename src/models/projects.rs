@@ -17,14 +17,10 @@ pub struct Project {
 #[table_name = "projectneedskills"]
 pub struct ProjectSkill {
 	pub id: uuid::Uuid,
-	pub project_id: uuid::Uuid,
+	pub projectneed_id: uuid::Uuid,
 	pub skill_id: uuid::Uuid,
 	pub skillscopelevel_id: Option<uuid::Uuid>,
 	pub min_years: Option<f64>,
 	pub max_years: Option<f64>,
-	pub countofusers: i32,
-	pub begin_time: chrono::NaiveDateTime,
-	pub end_time: chrono::NaiveDateTime,
-	pub percentage: i32,
 	pub updated_by: String,
 }

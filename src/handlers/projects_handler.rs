@@ -61,10 +61,10 @@ fn query_project_skills(
 	pool: web::Data<Pool>,
 	pid_path: String,
 ) -> Result<Vec<ProjectSkill>, crate::errors::ServiceError> {
-	use crate::schema::projectneedskills::dsl::{project_id, projectneedskills};
+	use crate::schema::projectneedskills::dsl::{projectneed_id, projectneedskills};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let pid = uuid::Uuid::parse_str(&pid_path)?;
-	let items = projectneedskills.filter(project_id.eq(pid)).load::<ProjectSkill>(conn)?;
+	let items = projectneedskills.filter(projectneed_id.eq(pid)).load::<ProjectSkill>(conn)?;
 	if items.is_empty() == false {
 		println!("\nGot all project skills.\n");
 		return Ok(items.into());
@@ -141,15 +141,11 @@ fn query_create_projectskill(
 	println!("Connected to db");
 	let new_projectskill = ProjectSkill {
 		id: uuid::Uuid::new_v4(),
-		project_id: projectskilldata.project_id,
+		projectneed_id: projectskilldata.projectneed_id,
 		skill_id: projectskilldata.skill_id,
 		skillscopelevel_id: projectskilldata.skillscopelevel_id,
 		min_years: projectskilldata.min_years,
 		max_years: projectskilldata.max_years,
-		countofusers: projectskilldata.countofusers,
-		begin_time: chrono::Local::now().naive_local(),
-		end_time: chrono::Local::now().naive_local() + chrono::Duration::hours(240),
-		percentage: projectskilldata.percentage,
 		updated_by: email,
 	};
 	println!("Inserting data");
