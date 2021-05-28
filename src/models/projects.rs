@@ -14,7 +14,7 @@ pub struct Project {
 	pub updated_by: String,
 }
 #[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
-#[table_name = "projectskills"]
+#[table_name = "projectneedskills"]
 pub struct ProjectSkill {
 	pub id: uuid::Uuid,
 	pub project_id: uuid::Uuid,

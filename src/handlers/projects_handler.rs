@@ -61,10 +61,10 @@ fn query_project_skills(
 	pool: web::Data<Pool>,
 	pid_path: String,
 ) -> Result<Vec<ProjectSkill>, crate::errors::ServiceError> {
-	use crate::schema::projectskills::dsl::{project_id, projectskills};
+	use crate::schema::projectneedskills::dsl::{project_id, projectneedskills};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let pid = uuid::Uuid::parse_str(&pid_path)?;
-	let items = projectskills.filter(project_id.eq(pid)).load::<ProjectSkill>(conn)?;
+	let items = projectneedskills.filter(project_id.eq(pid)).load::<ProjectSkill>(conn)?;
 	if items.is_empty() == false {
 		println!("\nGot all project skills.\n");
 		return Ok(items.into());
@@ -136,7 +136,7 @@ fn query_create_projectskill(
 	pool: web::Data<Pool>,
 	email: String,
 ) -> Result<ProjectSkill, crate::errors::ServiceError> {
-	use crate::schema::projectskills::dsl::projectskills;
+	use crate::schema::projectneedskills::dsl::projectneedskills;
 	let conn: &PgConnection = &pool.get().unwrap();
 	println!("Connected to db");
 	let new_projectskill = ProjectSkill {
@@ -153,7 +153,7 @@ fn query_create_projectskill(
 		updated_by: email,
 	};
 	println!("Inserting data");
-	let rows_inserted = diesel::insert_into(projectskills)
+	let rows_inserted = diesel::insert_into(projectneedskills)
 		.values(&new_projectskill)
 		.get_result::<ProjectSkill>(conn);
 	println!("{:?}", rows_inserted);

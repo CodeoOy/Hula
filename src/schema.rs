@@ -37,7 +37,7 @@ table! {
 }
 
 table! {
-	projectskills (id) {
+	projectneedskills (id) {
 		id -> Uuid,
 		project_id -> Uuid,
 		skill_id -> Uuid,
@@ -141,7 +141,7 @@ table! {
 	}
 }
 
-joinable!(projectskills -> projects (project_id));
+joinable!(projectneedskills -> projects (project_id));
 joinable!(skills -> skillcategories (skillcategory_id));
 joinable!(skills -> skillscopes (skillscope_id));
 joinable!(skillscopelevels -> skillscopes (skillscope_id));
@@ -151,7 +151,7 @@ joinable!(userskills -> users (user_id));
 allow_tables_to_appear_in_same_query!(
 	invitations,
 	projects,
-	projectskills,
+	projectneedskills,
 	skillcategories,
 	skills,
 	skillscopelevels,

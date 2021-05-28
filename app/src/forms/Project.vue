@@ -60,15 +60,17 @@ export default {
 				name: ''
 			},
 			querydata_skill: {
+				id: '06ba4809-f20b-4687-945b-e033a6751fca',
 				project_id: '',
 				skill_id: '',
 				skillscopelevel_id: '',
 				min_years: 1,
 				max_years: 10,
 				countofusers: 1,
-				begin_time: Date.now(),
-				end_time: Date.now(),
+				begin_time: "2012-01-01T00:00:00",
+				end_time: "2012-01-01T00:00:00",
 				percentage: 10,
+				updated_by: this.$store.state.loggeduser.id
 			},
 			chosenskill: {
 				id: '',
