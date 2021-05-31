@@ -1,6 +1,7 @@
 use crate::errors::ServiceError;
 use crate::models::invitations::Invitation;
 use sparkpost::transmission::{EmailAddress, Message, Options, Recipient, Transmission, TransmissionResponse};
+use url::{Url};
 
 lazy_static::lazy_static! {
 static ref API_KEY: String = std::env::var("SPARKPOST_API_KEY").expect("SPARKPOST_API_KEY must be set");
@@ -26,15 +27,19 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
 	// recipient from the invitation email
 	let recipient: Recipient = invitation.email.as_str().into();
 
+	let base = format!("{}/app/confirm", public_url);
+
+	let url = Url::parse_with_params(&base, &[
+									("id", invitation.id.to_string()), 
+									("email", invitation.email.clone()),
+									("password", invitation.password_plain.clone())]).expect("failed to construct URL. Check your PUBLIC_URL parameter.");
+
 	let email_body = format!(
 		"Please click on the link below to complete registration. <br/>
-         <a href=\"{}/app/confirm?id={}&email={}&password={}\">
-         Click here</a> <br>
-         your Invitation expires on <strong>{}</strong>",
-		public_url,
-		invitation.id,
-		invitation.email,
-		invitation.password_plain,
+			<a href=\"{}\">
+			Click here</a> <br>
+			your Invitation expires on <strong>{}</strong>",
+		url.as_str(),
 		invitation.expires_at.format("%I:%M %p %A, %-d %B, %C%y").to_string()
 	);
 
