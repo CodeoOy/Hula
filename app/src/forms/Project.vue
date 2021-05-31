@@ -10,7 +10,7 @@
 				<button v-on:click="createProject" class="btn btn-gradient" type="button">Save</button>
 			</div>
 			{{ querydata_project.name }}
-			<div v-if="projectskills.length">
+			<div v-if="projectneeds.length">
 				<h3>Skills</h3>
 				<table class="table table-dark table-striped text-light">
 					<thead>
@@ -40,7 +40,7 @@
 						{{ levelres.label }}
 					</option>
 				</select>
-				<button v-on:click="createProjectSkill" class="btn btn-gradient" type="button">Add</button>
+				<button v-on:click="createProjectNeed" class="btn btn-gradient" type="button">Add</button>
 			</div>
 			<div>
 
@@ -102,14 +102,14 @@ export default {
 				this.querydata_skill.project_id = response.id
 			})
 		},
-		createProjectSkill: function() {
-			fetch('/api/projectskills', {
+		createProjectNeed: function() {
+			fetch('/api/projectneeds', {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
 				body: JSON.stringify(this.querydata_skill)
 			})
-			this.getProjectSkills()
+			this.getProjectNeeds()
 		},
 		getAllSkills: function() {
 			fetch('/api/skills', {method: 'GET'})
@@ -121,8 +121,8 @@ export default {
 				console.log(errors); // This gives unexpected end of json
 			})
 		},
-		getProjectSkills: function() {
-			fetch(`/api/projectskills/${this.querydata_project.id}`, {
+		getProjectNeeds: function() {
+			fetch(`/api/projectneeds/${this.querydata_project.id}`, {
 				method: 'GET',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include'
@@ -130,7 +130,7 @@ export default {
 			.then((response) => response.json())
 			.then((response) => {
 				console.log(response)
-				this.projectskills = response
+				this.projectneeds = response
 			})
 		},
 		getAllLevels: function() {
@@ -161,7 +161,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.getProjectSkills()
+		this.getProjectNeeds()
 		this.getAllSkills()
 		this.getAllLevels()
 	}
