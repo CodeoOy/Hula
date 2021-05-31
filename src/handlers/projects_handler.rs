@@ -40,6 +40,37 @@ fn query_all_projects(pool: web::Data<Pool>) -> Result<Vec<Project>, crate::erro
 	Err(ServiceError::Empty)
 }
 
+pub async fn get_projectneedskills(
+	pool: web::Data<Pool>, 
+	pid: web::Path<String>,
+	_logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	println!("\nGetting all project need skills");
+	let res = web::block(move || query_projectneedskills(pool, pid.into_inner())).await;
+
+	match res {
+		Ok(projectneedskill) => Ok(HttpResponse::Ok().json(&projectneedskill)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_projectneedskills(
+	pool: web::Data<Pool>,
+	pid: String
+) -> Result<Vec<ProjectNeedSkill>, crate::errors::ServiceError> {
+	use crate::schema::projectneedskills::dsl::projectneedskills;
+	let conn: &PgConnection = &pool.get().unwrap();
+	let items = projectneedskills.load::<ProjectNeedSkill>(conn)?;
+	if items.is_empty() == false {
+		println!("\nGot all project need skills.\n");
+		return Ok(items);
+	}
+	Err(ServiceError::Empty)
+}
+
 pub async fn get_project_needs(
 	pool: web::Data<Pool>,
 	pid: web::Path<String>,
