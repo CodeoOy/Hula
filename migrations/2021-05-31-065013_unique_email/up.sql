@@ -1,0 +1,2 @@
+ALTER TABLE USERS
+ADD UNIQUE (email);
