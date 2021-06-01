@@ -10,9 +10,8 @@
 				</div>
 				<button v-on:click="createProject" class="btn btn-gradient" type="button">Save</button>
 			</div>
-			{{ querydata_project.name }}
 			<!--<div v-if="projectneeds.some(projectneeds => projectneeds.id.length)">-->
-			<div>
+			<div v-if="querydata_project.id.length">
 				<h3>Project needs</h3>
 				<div v-for="need in projectneeds" :key="need.id">
 					{{ need.count_of_users}} from {{ need.begin_time }} to {{ need.end_time }} at percentage:
@@ -40,32 +39,32 @@
 			</div>
 			<div v-if="querydata_project.id.length && !chosenneed.id.length">
 				<label class="form-label">How many pros for this need?</label>
-				<input type="number" aria-label="Number of pros" class="form-control" v-model.number="querydata_need.count_of_users">
+				<input type="number" aria-label="Number of pros" class="form-control mb-2" v-model.number="querydata_need.count_of_users">
 				<label class="form-label">When does this need start?</label>
-				<input type="date" aria-label="Date start" class="form-control" v-model="querydata_need.begin_time">
+				<input type="date" aria-label="Date start" class="form-control mb-2" v-model="querydata_need.begin_time">
 				{{ querydata_need.begin_time }}
 				<label class="form-label">When does this need end?</label>
-				<input type="date" aria-label="Date end" class="form-control" v-model="querydata_need.end_time">
-				<button v-on:click="createProjectNeed" class="btn btn-gradient" type="button">Save need</button>
+				<input type="date" aria-label="Date end" class="form-control mb-2" v-model="querydata_need.end_time">
 				<label class="form-label">At what percentage?</label>
-				<input type="number" aria-label="Percentage" class="form-control" v-model.number="querydata_need.percentage">
+				<input type="number" aria-label="Percentage" class="form-control mb-2" v-model.number="querydata_need.percentage">
+				<button v-on:click="createProjectNeed" class="btn btn-gradient" type="button">Save need</button>
 			</div>
 			<div v-if="chosenneed.id.length">
 				<label class="form-label">Skill</label>
-				<select class="form-select" id="AddExistingSkill" aria-label="Which skill" v-model="querydata_needskill.skill_id">
+				<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which skill" v-model="querydata_needskill.skill_id">
 					<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
 						{{ avskill.label }}
 					</option>
 				</select>
 				<label class="form-label">Minimum level</label>
-				<select class="form-select" id="AddExistingSkill" aria-label="Which level" v-model="querydata_needskill.skillscopelevel_id">
+				<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which level" v-model="querydata_needskill.skillscopelevel_id">
 					<option v-for="levelres in filterLevels" :key="levelres" :value="levelres.id">
 						{{ levelres.label }}
 					</option>
 				</select>
 				<button v-on:click="createProjectNeedSkill" class="btn btn-gradient" type="button">Save skill to need</button>
 			</div>
-			<button type="submit" class="btn btn-gradient mb-1">Save</button>
+			<!--<button type="submit" class="btn btn-gradient mb-1">Save</button>-->
 		</form> 
 	</div>
 </template>
