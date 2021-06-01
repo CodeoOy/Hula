@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<form>
+			{{ querydata_project.id }}
 			<div v-if="!querydata_project.id.length" class="mb-2">
 				<p v-if="errorsPresent" class="error">Please fill out label!</p>
 				<div class="mb-2">
@@ -10,8 +11,10 @@
 				<button v-on:click="createProject" class="btn btn-gradient" type="button">Save</button>
 			</div>
 			{{ querydata_project.name }}
-			<div v-if="projectneeds.length">
+			<!--<div v-if="projectneeds.some(projectneeds => projectneeds.id.length)">-->
+			<div>
 				<h3>Skills</h3>
+				{{ projectneeds }}
 				<table class="table table-dark table-striped text-light">
 					<thead>
 						<tr>
@@ -21,21 +24,21 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="skill in chosenskills" :key="skill.id">
-							<td>{{ skill.skill_label }}</td>
-							<td>{{ skill.years }}</td>
+						<tr v-for="need in projectneeds" :key="need.id">
+							<td>{{ need.need_label }}</td>
+							<td>{{ need.years }}</td>
 							<td>Edit - Delete</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 			<div v-if="querydata_project.id.length">
-				<select class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="querydata_skill.skill_id">
+				<select class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="querydata_needskill.skill_id">
 					<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
 						{{ avskill.label }}
 					</option>
 				</select>
-				<select class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="querydata_skill.skillscopelevel_id">
+				<select class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="querydata_needskill.skillscopelevel_id">
 					<option v-for="levelres in filterLevels" :key="levelres" :value="levelres.id">
 						{{ levelres.label }}
 					</option>
@@ -62,7 +65,7 @@ export default {
 			querydata_need: {
 				id: '06ba4809-f20b-4687-945b-e033a6751fca',
 				project_id: '',
-				countofusers: 1,
+				count_of_users: 1,
 				begin_time: "2012-01-01T00:00:00",
 				end_time: "2012-01-01T00:00:00",
 				percentage: 10,
@@ -99,7 +102,7 @@ export default {
 			.then((response) => {
 				console.log(response)
 				this.querydata_project.id = response.id
-				this.querydata_skill.project_id = response.id
+				this.querydata_need.project_id = response.id
 			})
 		},
 		createProjectNeed: function() {
@@ -107,9 +110,13 @@ export default {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.querydata_skill)
+				body: JSON.stringify(this.querydata_need)
 			})
-			this.getProjectNeeds()
+			.then((response) => response.json())
+			.then(response => { 
+				this.querydata_needskill = response.id;
+				this.getProjectNeeds()
+			}) 
 		},
 		getAllSkills: function() {
 			fetch('/api/skills', {method: 'GET'})
@@ -118,10 +125,11 @@ export default {
 				this.available_skills = response;
 			})    
 			.catch((errors) => {
-				console.log(errors); // This gives unexpected end of json
+				//console.log(errors); // This gives unexpected end of json
 			})
 		},
 		getProjectNeeds: function() {
+			console.log("Fetching needs")
 			fetch(`/api/projectneeds/${this.querydata_project.id}`, {
 				method: 'GET',
 				headers: {"Content-Type": "application/json"},
@@ -131,10 +139,25 @@ export default {
 			.then((response) => {
 				console.log(response)
 				this.projectneeds = response
+				console.log(this.projectneeds)
 			})
 		},
 		getAllLevels: function() {
 			fetch('/api/skills/levels', {method: 'GET'})
+			.then((response) => response.json())
+			.then(response => { 
+				this.skill_levels = response;
+			})    
+			.catch((errors) => {
+				//console.log(errors); // This gives unexpected end of json
+			})
+		},
+		getProjectNeedSkills: function() {
+			fetch(`/api/projectskills/${this.querydata_project.id}`, {
+				method: 'GET',
+				headers: {"Content-Type": "application/json"},
+				credentials: 'include'
+			})
 			.then((response) => response.json())
 			.then(response => { 
 				this.skill_levels = response;
@@ -149,9 +172,13 @@ export default {
 		}
 	},
 	watch: {
-		'querydata_skill.skill_id': function(newID, oldID) {
+		'querydata_needskill.skill_id': function(newID, oldID) {
 			console.log("Title changed from " + oldID + " to " + newID)
 			this.getSkillScope(newID)
+		},
+		'querydata_project.id': function(newID, oldID) {
+			console.log("Title changed from " + oldID + " to " + newID)
+			this.getProjectNeeds()
 		}
 	},
 	computed: {
@@ -161,7 +188,6 @@ export default {
 		}
 	},
 	mounted() {
-		this.getProjectNeeds()
 		this.getAllSkills()
 		this.getAllLevels()
 	}
