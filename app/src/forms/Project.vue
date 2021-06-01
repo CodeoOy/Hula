@@ -15,7 +15,7 @@
 			<div>
 				<h3>Project needs</h3>
 				<div v-for="need in projectneeds" :key="need.id">
-					{{ need.count_of_users}} from x to y at percentage:
+					{{ need.count_of_users}} from {{ need.begin_time }} to {{ need.end_time }} at percentage:
 					<table class="table table-dark table-striped text-light">
 						<thead>
 							<tr>
@@ -38,22 +38,32 @@
 					</table>
 				</div>
 			</div>
-			<div v-if="querydata_project.id.length">
-				<input type="number" aria-label="Percentage" class="form-control" v-model.number="querydata_need.count_of_users">
-				<button v-on:click="createProjectNeed" class="btn btn-gradient" type="button">Add</button>
+			<div v-if="querydata_project.id.length && !chosenneed.id.length">
+				<label class="form-label">How many pros for this need?</label>
+				<input type="number" aria-label="Number of pros" class="form-control" v-model.number="querydata_need.count_of_users">
+				<label class="form-label">When does this need start?</label>
+				<input type="date" aria-label="Date start" class="form-control" v-model="querydata_need.begin_time">
+				{{ querydata_need.begin_time }}
+				<label class="form-label">When does this need end?</label>
+				<input type="date" aria-label="Date end" class="form-control" v-model="querydata_need.end_time">
+				<button v-on:click="createProjectNeed" class="btn btn-gradient" type="button">Save need</button>
+				<label class="form-label">At what percentage?</label>
+				<input type="number" aria-label="Percentage" class="form-control" v-model.number="querydata_need.percentage">
 			</div>
-			<div v-if="querydata_need.project_id.length">
+			<div v-if="chosenneed.id.length">
+				<label class="form-label">Skill</label>
 				<select class="form-select" id="AddExistingSkill" aria-label="Which skill" v-model="querydata_needskill.skill_id">
 					<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
 						{{ avskill.label }}
 					</option>
 				</select>
+				<label class="form-label">Minimum level</label>
 				<select class="form-select" id="AddExistingSkill" aria-label="Which level" v-model="querydata_needskill.skillscopelevel_id">
 					<option v-for="levelres in filterLevels" :key="levelres" :value="levelres.id">
 						{{ levelres.label }}
 					</option>
 				</select>
-				<button v-on:click="createProjectNeedSkill" class="btn btn-gradient" type="button">Add</button>
+				<button v-on:click="createProjectNeedSkill" class="btn btn-gradient" type="button">Save skill to need</button>
 			</div>
 			<button type="submit" class="btn btn-gradient mb-1">Save</button>
 		</form> 
@@ -73,9 +83,9 @@ export default {
 				id: '06ba4809-f20b-4687-945b-e033a6751fca',
 				project_id: '',
 				count_of_users: Number,
-				begin_time: "2012-01-01T00:00:00",
-				end_time: "2012-01-01T00:00:00",
-				percentage: 10,
+				begin_time: "",
+				end_time: "",
+				percentage: Number,
 				updated_by: this.$store.state.loggeduser.email
 			},
 			querydata_needskill: {
@@ -115,6 +125,8 @@ export default {
 			})
 		},
 		createProjectNeed: function() {
+			this.querydata_need.begin_time = `${this.querydata_need.begin_time}T00:00:00`
+			this.querydata_need.end_time = `${this.querydata_need.end_time}T00:00:00`
 			fetch('/api/projectneeds', {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
@@ -125,6 +137,7 @@ export default {
 			.then(response => { 
 				this.querydata_need = response;
 				this.querydata_needskill.projectneed_id = response.id
+				this.chosenneed.id = response.id
 				this.getProjectNeeds()
 			}) 
 		},

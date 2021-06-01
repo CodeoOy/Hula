@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use super::super::schema::*;
 use diesel::{r2d2::ConnectionManager, PgConnection};
 use serde::{Deserialize, Serialize};
