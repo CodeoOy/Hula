@@ -41,9 +41,7 @@ fn query(user_data: UserData, pool: web::Data<Pool>) -> Result<SlimUser, crate::
 		.map_err(|_db_error| ServiceError::BadRequest("Invalid Invitation".into()))
 		.and_then(|mut result| {
 			if let Some(invitation) = result.pop() {
-				// if invitation is not expired
 				if invitation.expires_at > chrono::Local::now().naive_local() {
-					// try hashing the password, else return the error that will be converted to ServiceError
 					let password: String = user_data.password;
 					let user =
 						User::from_details(invitation.email, password, invitation.first_name, invitation.last_name);

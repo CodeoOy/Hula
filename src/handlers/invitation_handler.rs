@@ -5,6 +5,7 @@ use serde::Deserialize;
 use crate::email_service::send_invitation;
 use crate::errors::ServiceError;
 use crate::models::invitations::{Invitation, Pool};
+use crate::models::users::User;
 use crate::utils::hash_password;
 
 #[derive(Deserialize, Debug)]
@@ -41,7 +42,6 @@ fn create_invitation(invdata: InvitationData, pool: web::Data<Pool>) -> Result<(
 	send_invitation(&invitation)
 }
 
-/// Diesel query
 fn query(
 	eml: String,
 	psw: String,
@@ -50,14 +50,17 @@ fn query(
 	pool: web::Data<Pool>,
 ) -> Result<Invitation, crate::errors::ServiceError> {
 	use crate::schema::invitations::dsl::invitations;
-
-	let password: String = hash_password(&psw)?;
-	let new_invitation = Invitation::from_details(eml, password, first_name, last_name);
+	use crate::schema::users::dsl::*;
 	let conn: &PgConnection = &pool.get().unwrap();
-
-	let inserted_invitation = diesel::insert_into(invitations)
-		.values(&new_invitation)
-		.get_result(conn)?;
-
-	Ok(inserted_invitation)
+	let items = users.filter(email.eq(eml.clone())).load::<User>(conn)?;
+	let password: String = hash_password(&psw)?;
+	if items.is_empty() {
+		let new_invitation = Invitation::from_details(eml, password, first_name, last_name);
+		let inserted_invitation = diesel::insert_into(invitations)
+			.values(&new_invitation)
+			.get_result(conn)?;
+		Ok(inserted_invitation)
+	} else {
+		Err(ServiceError::Unauthorized)
+	}
 }
