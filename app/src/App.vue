@@ -18,6 +18,7 @@
 				currentpath: this.$router.currentRoute.value.path,
 				logged: false,
 				user: {},
+				projects: {}
 			}
 		},
 		components: {
@@ -46,9 +47,49 @@
 				})
 				this.user = this.$store.state.loggeduser
 			},
+			getProjectNeeds: function(id) {
+				fetch(`/api/projectneeds/${id}`, {
+					method: 'GET',
+					headers: {"Content-Type": "application/json"},
+					credentials: 'include'
+				})
+				.then((response) => response.json())
+				.then((response) => {
+					console.log(response)
+					//return response
+					return "vaaranuudele";
+				})
+			},
+			getProjects: function() {
+				fetch('/api/projects', {
+					method: 'GET',
+					headers: {"Content-Type": "application/json"}
+				})
+				.then((response) => response.json())
+				.then(response => {
+					let self = this
+					this.projects = response
+					this.projects.forEach(function (project) {
+						//project.needs = self.getProjectNeeds(project.id)
+						project.needs = self.returnVaaraNuudele()
+						//project.needs = "kylpynalle"
+						// console.log(tempneeds)
+						// if (tempneeds != null) {
+						// 	project.needs = tempneeds
+						// 	console.log("not null")
+						// }
+					});
+					self.$store.commit('setProjects', self.projects)
+					console.log(self.$store.state.projects)
+				})
+			},
+			returnVaaraNuudele() {
+				return "vaaranuudele"
+			}
 		},
 		mounted() {
 			this.checkLogin()
+			this.getProjects()
 		},
 		updated() {
 			this.checkLogin()

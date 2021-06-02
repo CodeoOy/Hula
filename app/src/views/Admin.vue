@@ -23,17 +23,19 @@
 			<div class="col-md-8">
 				<ul class="nav nav-tabs nav-dark">
 					<li class="nav-item">
-						<a class="nav-link">Projects</a>
+						<a class="nav-link" v-bind:class="{ 'active': tab == 1, '': tab != 1 }" @click="tab = 1" href="#">Projects</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link">Users</a>
+						<a class="nav-link" v-bind:class="{ 'active': tab == 2, '': tab != 2 }" @click="tab = 2" href="#">Users</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link">Skills</a>
+						<a class="nav-link" v-bind:class="{ 'active': tab == 3, '': tab != 3 }" @click="tab = 3" href="#">Skills</a>
 					</li>
 				</ul>
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					
+					<AdminListProjects :leads='projectsdata' v-if="tab == 1" />
+					<AdminListUsers :users='usersdata' v-if="tab == 2"  />
+					<AdminListSkills :users='skillsdata' v-if="tab == 3"  />
 				</div>
 			</div>
 		</div>
@@ -49,12 +51,14 @@
 	import SkillCategory from '../forms/SkillCategory.vue'
 	import SkillScopeLevel from '../forms/SkillScopeLevel.vue'
 	import UserDelete from '../forms/UserDelete.vue'
+	import AdminListProjects from '../components/AdminListProjects.vue'
 	export default {
 		name: 'Admin',
 		data() {
 			return {
 				show_modal: false,
-				form_title: '',			
+				form_title: '',	
+				tab: 1,		
 			}
 		},
 		components: {
@@ -65,6 +69,7 @@
 			SkillCategory,
 			SkillScopeLevel,
 			UserDelete,
+			AdminListProjects,
 		},
 	}
 </script>
