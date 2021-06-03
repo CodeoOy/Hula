@@ -2,11 +2,12 @@
 	<div>
 		<form>
 			{{ querydata_project.id }}
+			{{ chosenproject.id }}
 			<div v-if="!querydata_project.id.length" class="mb-2">
 				<p v-if="errorsPresent" class="error">Please fill out label!</p>
 				<div class="mb-2">
 					<label class="form-label">Project name</label>
-					<input class="form-control" type="text" placeholder="Languages" name="label" v-model="querydata_project.name" />
+					<input class="form-control" type="text" placeholder="Project name" name="label" v-model="querydata_project.name" />
 				</div>
 				<button v-on:click="createProject" class="btn btn-gradient" type="button">Save</button>
 			</div>
@@ -108,6 +109,9 @@ export default {
 			available_skills: {},
 			skill_levels: {},
 		}
+	},
+	props: {
+		chosenproject: ''
 	},
 	methods: {
 		createProject: function() {
@@ -223,6 +227,11 @@ export default {
 	mounted() {
 		this.getAllSkills()
 		this.getAllLevels()
+		/*
+		if (this.chosenproject.length) {
+			querydata_project.id = chosenproject
+		}
+		*/
 	}
 };
 </script>

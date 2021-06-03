@@ -1,6 +1,7 @@
 <template>
 	<div class="container mt-4">
-		<Modal :show_modal="show_modal" :modal_title="form_title">
+		{{ form_title }}
+		<Modal :modal_title="form_title">
 			<Project v-if="form_title == 'New Project'"/>
 			<Skill v-if="form_title == 'New Skill'"/>
 			<SkillScope v-if="form_title == 'New Scope'"/>
@@ -12,12 +13,12 @@
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h1>Welcome {{ this.$store.state.loggeduser.firstname }}!</h1>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="show_modal = true, form_title = 'New Project'">Add project</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="show_modal = true, form_title = 'New Skill'">Add skill</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="show_modal = true, form_title = 'New Scope'">Add scope</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="show_modal = true, form_title = 'New Category'">Add category</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="show_modal = true, form_title = 'New Level'">Add level</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="show_modal = true, form_title = 'Delete User'">Delete user</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New Project'">Add project</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New Skill'">Add skill</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New Scope'">Add scope</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New Category'">Add category</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New Level'">Add level</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'Delete User'">Delete user</a></p>
 				</div>
 			</div>
 			<div class="col-md-8">
@@ -39,7 +40,6 @@
 				</div>
 			</div>
 		</div>
-		{{ form_title }}
 	</div>
 </template>
 

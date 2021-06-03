@@ -1,5 +1,8 @@
 <template>
 	<div>
+		<Modal :show_modal="show_modal" :modal_title="chosenproject.name">
+			<Project :chosenproject="chosenproject.id"/>
+		</Modal>
 		<h2>Projects</h2>
 		<transition name="fadeHeight">
 			<table class="table table-dark table-striped text-light">
@@ -20,7 +23,10 @@
 						<td>
 							<p v-for="need in project.needs" :key="need.id">{{ need.id }}</p>
 						</td>
-						<td>Edit - Delete</td>
+						<td>
+							<a href="#" :data-project-id="project.id" :data-project-name="project.name" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click.prevent="linkToEdit($event)">Edit</a>
+							- Delete
+						</td>
 					</tr>
 				</tbody>
 			</table>
@@ -29,11 +35,30 @@
 </template>
 
 <script>
+	import Modal from '../components/Modal.vue'
+	import Project from '../forms/Project.vue'
 	export default {
 		name: 'AdminListProjects',
 		data() {
 			return {
-				projects: this.$store.state.projects
+				projects: this.$store.state.projects,
+				chosenproject: {
+					id: '',
+					name: '',
+				},
+				show_modal: false
+			}
+		},
+		components: {
+			Modal,
+			Project
+		},
+		methods: {
+			linkToEdit(event) {
+				let element = event.currentTarget		
+				this.chosenproject.id = element.getAttribute('data-project-id');
+				this.chosenproject.name = element.getAttribute('data-project-name');
+				this.show_modal = true
 			}
 		}
 	}

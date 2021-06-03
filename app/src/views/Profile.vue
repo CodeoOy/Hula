@@ -1,6 +1,6 @@
 <template>
 	<div class="container mt-4">
-		<Modal :show_modal="show_modal" :modal_title="form_title">
+		<Modal :modal_title="form_title">
 			<UserSkill v-if="form_title == 'Add Skill'"/>
 		</Modal>
 		<div class="row gx-4">
@@ -39,7 +39,7 @@
 							</tr>
 						</tbody>
 					</table>
-					<p><a href="#" v-on:click="show_modal = true, form_title = 'Add Skill'" data-bs-toggle="modal" data-bs-target="#exampleModal">Add skill</a></p>
+					<p><a href="#" v-on:click="form_title = 'Add Skill'" data-bs-toggle="modal" data-bs-target="#hulaModal">Add skill</a></p>
 				</div>
 			</div>
 		</div>
