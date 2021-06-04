@@ -33,7 +33,7 @@ export default {
 	},
 	methods: {
 		createSkillScope: function() {
-			fetch('/api/skills/scope', {
+			fetch('/api/skills/scopes', {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',

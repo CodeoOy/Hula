@@ -38,7 +38,7 @@ export default {
 	},
 	methods: {
 		createSkillScopeLevel: function() {
-			fetch('/api/skills/level', {
+			fetch('/api/skills/levels', {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',

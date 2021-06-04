@@ -41,7 +41,7 @@ export default {
 					time: 1000
 				});
 			} else {
-				fetch('/api/skills/category', {
+				fetch('/api/skills/categories', {
 					method: 'POST',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
