@@ -1,5 +1,5 @@
 <template>
-	<form action="#" @submit.prevent="addExistingSkill">
+	<form v-on:submit="addExistingSkill">
 		<select class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="querydata.skill_id">
 			<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
 				{{ avskill.label }}

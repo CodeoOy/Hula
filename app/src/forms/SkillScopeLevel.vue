@@ -1,5 +1,5 @@
 <template>
-	<form action="#" @submit.prevent="createSkillScopeLevel">
+	<form v-on:submit="createSkillScopeLevel">
 		<p v-if="errorsPresent" class="error">Please fill out label!</p>
 		<div class="mb-2">
 			<label class="form-label">Level name</label>

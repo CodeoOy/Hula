@@ -1,5 +1,5 @@
 <template>
-	<form action="#" @submit.prevent="createSkillScope">
+	<form v-on:submit="createSkillScope">
 		<p v-if="errorsPresent" class="error">Please fill out label!</p>
 		<div class="mb-2">
 			<label class="form-label">Scope name</label>

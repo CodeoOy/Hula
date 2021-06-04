@@ -1,5 +1,5 @@
 <template>
-	<form action="#" @submit.prevent="createSkillCategory">
+	<form v-on:submit="createSkillCategory">
 		<p v-if="errorsPresent" class="error">Please fill out label!</p>
 		<div class="mb-2">
 			<label class="form-label">Category label</label>
