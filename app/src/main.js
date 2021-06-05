@@ -7,19 +7,6 @@ import 'bootstrap'
 
 // Create a new store instance.
 
-function getProjectNeeds(id) {
-	console.log("Fetching needs")
-	fetch(`/api/projectneeds/${id}`, {
-		method: 'GET',
-		headers: {"Content-Type": "application/json"},
-		credentials: 'include'
-	})
-	.then((response) => response.json())
-	.then((response) => {
-		return response
-	})
-}
-
 const store = createStore({
 	state () {
 		return {

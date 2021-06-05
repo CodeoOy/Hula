@@ -6,12 +6,12 @@
 					<div>
 						<div v-if="show_signup == false">
 							<h2>Log in</h2>
-							<UserLogin v-on:checklogin="isLogged"/>
+							<FormLogin v-on:checklogin="isLogged"/>
 							<a href="#" v-on:click="show_signup = true">Or sign up here.</a>
 						</div>
 						<div v-else>
 							<h2>Sign up</h2>
-							<Register />
+							<FormRegister />
 							<a href="#" v-on:click="show_signup = false">Already a user? Log in here.</a>
 						</div>
 					</div>

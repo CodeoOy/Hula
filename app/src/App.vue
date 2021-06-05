@@ -66,10 +66,8 @@
 						.then((response) => {
 							project.needs = response
 						})
-						//self.$store.commit('setProjects', self.projects)
 					});
 					self.$store.commit('setProjects', self.projects)
-					//console.log(self.$store.state.projects)
 				})
 			},
 		},

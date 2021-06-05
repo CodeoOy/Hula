@@ -41,7 +41,6 @@ export default {
 	},
 	methods: {
 		addExistingSkill: function() {
-			console.log(this.querydata)
 			fetch(`/api/userskills/${this.user.id}`, {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
@@ -79,13 +78,11 @@ export default {
 	},
 	watch: {
 		'querydata.skill_id': function(newID, oldID) {
-			console.log("Title changed from " + oldID + " to " + newID)
 			this.getSkillScope(newID)
 		}
 	},
 	computed: {
 		filterLevels: function() {
-			console.log(this.chosenskill.skillscope_id)
 			return this.skill_levels.filter(levelres => levelres.skillscope_id == this.chosenskill.skillscope_id)
 		}
 	},

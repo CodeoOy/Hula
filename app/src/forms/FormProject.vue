@@ -167,7 +167,6 @@ export default {
 			})
 		},
 		getProjectNeeds: function() {
-			console.log("Fetching needs")
 			fetch(`/api/projectneeds/${this.querydata_project.id}`, {
 				method: 'GET',
 				headers: {"Content-Type": "application/json"},
@@ -219,18 +218,12 @@ export default {
 	},
 	computed: {
 		filterLevels: function() {
-			console.log(this.chosenskill.skillscope_id)
 			return this.skill_levels.filter(levelres => levelres.skillscope_id == this.chosenskill.skillscope_id)
 		}
 	},
 	mounted() {
 		this.getAllSkills()
 		this.getAllLevels()
-		/*
-		if (this.chosenproject.length) {
-			querydata_project.id = chosenproject
-		}
-		*/
 	}
 };
 </script>
