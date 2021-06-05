@@ -144,7 +144,8 @@ async fn main() -> std::io::Result<()> {
 					)
 					.service(
 						web::resource("/projects/{id}")
-							.route(web::delete().to(handlers::projects_handler::delete_project)),
+						.route(web::put().to(handlers::projects_handler::update_project))
+						.route(web::delete().to(handlers::projects_handler::delete_project)),
 					)
 					.service(
 						web::resource("/projectneeds")
