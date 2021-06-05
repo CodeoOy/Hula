@@ -71,7 +71,7 @@
 
 <script>
 export default {
-	name: 'Project',
+	name: 'FormProject',
 	data() {
 		return {
 			querydata_project: {

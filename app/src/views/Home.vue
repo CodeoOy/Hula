@@ -6,7 +6,7 @@
 					<div>
 						<div v-if="show_signup == false">
 							<h2>Log in</h2>
-							<Login v-on:checklogin="isLogged"/>
+							<UserLogin v-on:checklogin="isLogged"/>
 							<a href="#" v-on:click="show_signup = true">Or sign up here.</a>
 						</div>
 						<div v-else>
@@ -18,14 +18,14 @@
 				</div>
 			</div>
 		</div>
-		<List v-if="logged" />
+		<AdminList v-if="logged" />
 	</div>
 </template>
 
 <script>
-	import Register from '../components/Register.vue'
-	import Login from '../components/Login.vue'
-	import List from '../components/List.vue'
+	import FormRegister from '../forms/FormRegister.vue'
+	import FormLogin from '../forms/FormLogin.vue'
+	import AdminList from '../components/AdminList.vue'
 	export default {
 		name: 'Home',
 		data() {
@@ -37,9 +37,9 @@
 			logged: false
 		},
 		components: {
-			'List': List,
-			'Register': Register,
-			'Login': Login
+			FormRegister,
+			FormLogin,
+			AdminList
   		},
 		methods: {
 			isLogged () {

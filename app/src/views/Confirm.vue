@@ -2,18 +2,18 @@
 	<div class="container">
 		<div class="row mt-4">
 			<div class="col">
-				<Confirm />
+				<ConfirmUser />
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-	import Confirm from '../components/Confirm.vue'
+	import ConfirmUser from '../components/ConfirmUser.vue'
 	export default {
-		name: 'Confirmview',
+		name: 'ConfirmUserview',
 		components: {
-			Confirm: Confirm
+			ConfirmUser: ConfirmUser
 		}
 	}
 </script>

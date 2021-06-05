@@ -32,7 +32,7 @@
 	import ResultsPros from './ResultsPros.vue'
 	import FeatMatches from './FeatMatches.vue'
 	export default {
-		name: 'List',
+		name: 'AdminList',
 		components: {
 			'FindPro': FindPro,
 			'FindLead': FindLead,

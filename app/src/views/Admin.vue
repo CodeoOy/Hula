@@ -44,13 +44,13 @@
 </template>
 
 <script>
-	import Modal from '../components/Modal.vue'
-	import Project from '../forms/Project.vue'
-	import Skill from '../forms/Skill.vue'
-	import SkillScope from '../forms/SkillScope.vue'
-	import SkillCategory from '../forms/SkillCategory.vue'
-	import SkillScopeLevel from '../forms/SkillScopeLevel.vue'
-	import UserDelete from '../forms/UserDelete.vue'
+	import GeneralModal from '../components/GeneralModal.vue'
+	import FormProject from '../forms/FormProject.vue'
+	import FormCreateSkill from '../forms/FormCreateSkill.vue'
+	import FormSkillScope from '../forms/FormSkillScope.vue'
+	import FormSkillCategory from '../forms/FormSkillCategory.vue'
+	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
+	import FormUserDelete from '../forms/FormUserDelete.vue'
 	import AdminListProjects from '../components/AdminListProjects.vue'
 	export default {
 		name: 'Admin',
@@ -62,13 +62,13 @@
 			}
 		},
 		components: {
-			Modal,
-			Project,
-			Skill,
-			SkillScope,
-			SkillCategory,
-			SkillScopeLevel,
-			UserDelete,
+			GeneralModal,
+			FormProject,
+			FormCreateSkill,
+			FormSkillScope,
+			FormSkillCategory,
+			FormSkillScopeLevel,
+			FormUserDelete,
 			AdminListProjects,
 		},
 	}

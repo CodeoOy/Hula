@@ -17,7 +17,7 @@ export default function setupRouter() {
 		routes: [
 			{ path: '/app/:pathMatch(.*)*', component: views.Page404 },
 			{ path: '/', component: views.Home },
-			{ path: '/app/confirm', component: views.Confirmview },
+			{ path: '/app/confirm', component: views.Confirm },
 			{ path: '/app/dashboard', component: views.Dashboard },
 			{ path: '/app/profile', component: views.Profile },
 			{ path: '/app/admin', component: views.Admin },

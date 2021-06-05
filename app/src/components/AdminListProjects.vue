@@ -1,9 +1,11 @@
 <template>
 	<div>
-		<Modal :show_modal="show_modal" :modal_title="chosenproject.name">
-			<Project :chosenproject="chosenproject.id"/>
+		<Modal :show_modal="show_modal" modal_title="Edit project">
+			<!--<Project :chosenproject="chosenproject.id"/>-->
+			<Project />
 		</Modal>
 		<h2>Projects</h2>
+		{{ chosenproject }}
 		<transition name="fadeHeight">
 			<table class="table table-dark table-striped text-light">
 				<thead>
@@ -24,7 +26,7 @@
 							<p v-for="need in project.needs" :key="need.id">{{ need.id }}</p>
 						</td>
 						<td>
-							<a href="#" :data-project-id="project.id" :data-project-name="project.name" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click.prevent="linkToEdit($event)">Edit</a>
+							<a href="#" :data-project-id="project.id" :data-project-name="project.name" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click.prevent="this.$store.commit('setChosenProject', project)">Edit</a>
 							- Delete
 						</td>
 					</tr>
@@ -35,31 +37,19 @@
 </template>
 
 <script>
-	import Modal from '../components/Modal.vue'
-	import Project from '../forms/Project.vue'
+	import GeneralModal from './GeneralModal.vue'
+	import FormProject from '../forms/FormProject.vue'
 	export default {
 		name: 'AdminListProjects',
 		data() {
 			return {
 				projects: this.$store.state.projects,
-				chosenproject: {
-					id: '',
-					name: '',
-				},
-				show_modal: false
+				chosenproject: this.$store.state.chosenproject,
 			}
 		},
 		components: {
-			Modal,
-			Project
-		},
-		methods: {
-			linkToEdit(event) {
-				let element = event.currentTarget		
-				this.chosenproject.id = element.getAttribute('data-project-id');
-				this.chosenproject.name = element.getAttribute('data-project-name');
-				this.show_modal = true
-			}
+			GeneralModal,
+			FormProject
 		}
 	}
 </script>

@@ -8,7 +8,7 @@
 <script>
 	import { useRoute } from 'vue-router'
 	export default {
-		name: 'Confirm',
+		name: 'ConfirmUser',
 		data: function() {
 			return {
 				registration_data: {},

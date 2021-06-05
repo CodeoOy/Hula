@@ -47,9 +47,9 @@
 </template>
 
 <script>
-	import Modal from '../components/Modal.vue'
-	import UserSkill from '../forms/UserSkill.vue'
-	import UserBasicInfo from '../forms/UserBasicInfo.vue'
+	import GeneralModal from '../components/GeneralModal.vue'
+	import FormAddSkill from '../forms/FormAddSkill.vue'
+	import FormUserBasicInfo from '../forms/FormUserBasicInfo.vue'
 	export default {
 		name: 'Profile',
 		data() {
@@ -61,9 +61,9 @@
 			}
 		},
 		components: {
-			UserBasicInfo,
-			UserSkill,
-			Modal,
+			FormUserBasicInfo,
+			FormAddSkill,
+			GeneralModal,
 		},
 		methods: {
 			updateUser: function() { // This is not working. Make the user update happen in some other way.

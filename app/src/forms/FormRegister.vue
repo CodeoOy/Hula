@@ -23,7 +23,7 @@
 
 <script>
 	export default {
-		name: 'Register',
+		name: 'FormRegister',
 		data() {
 			return {
 				message: "Click here",
