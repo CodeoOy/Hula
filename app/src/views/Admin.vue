@@ -1,14 +1,14 @@
 <template>
 	<div class="container mt-4">
 		{{ form_title }}
-		<Modal :modal_title="form_title">
-			<Project v-if="form_title == 'New Project'"/>
-			<Skill v-if="form_title == 'New Skill'"/>
-			<SkillScope v-if="form_title == 'New Scope'"/>
-			<SkillCategory v-if="form_title == 'New Category'"/>
-			<SkillScopeLevel v-if="form_title == 'New Level'"/>
-			<UserDelete v-if="form_title == 'Delete User'"/>
-		</Modal>
+		<VModal :modal_title="form_title">
+			<FormProject v-if="form_title == 'New Project'"/>
+			<FormSkill v-if="form_title == 'New Skill'"/>
+			<FormSkillScope v-if="form_title == 'New Scope'"/>
+			<FormSkillCategory v-if="form_title == 'New Category'"/>
+			<FormSkillScopeLevel v-if="form_title == 'New Level'"/>
+			<FormUserDelete v-if="form_title == 'Delete User'"/>
+		</VModal>
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">

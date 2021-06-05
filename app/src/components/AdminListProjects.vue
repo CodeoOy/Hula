@@ -1,9 +1,9 @@
 <template>
 	<div>
-		<Modal :show_modal="show_modal" modal_title="Edit project">
+		<VModal :show_modal="show_modal" modal_title="Edit project">
 			<!--<Project :chosenproject="chosenproject.id"/>-->
-			<Project />
-		</Modal>
+			<FormProject />
+		</VModal>
 		<h2>Projects</h2>
 		{{ chosenproject }}
 		<transition name="fadeHeight">
