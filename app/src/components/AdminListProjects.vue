@@ -37,7 +37,7 @@
 </template>
 
 <script>
-	import GeneralModal from './GeneralModal.vue'
+	import VModal from './VModal.vue'
 	import FormProject from '../forms/FormProject.vue'
 	export default {
 		name: 'AdminListProjects',
@@ -48,7 +48,7 @@
 			}
 		},
 		components: {
-			GeneralModal,
+			VModal,
 			FormProject
 		}
 	}

@@ -1,6 +1,6 @@
 <template>
 	<main>
-		<NavigationBar v-on:loggedout="checkLogin" />
+		<TheHeader v-on:loggedout="checkLogin" />
 		<FlashMessage position="right top" />
 		<router-view :logged='logged' v-on:checklogin="checkLogin" />
 		<p>{{ this.$store.state.loggeduser }}</p>
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-	import NavigationBar from './components/NavigationBar.vue' 
+	import TheHeader from './components/TheHeader.vue' 
 	export default {
 		name: 'App',
 
@@ -22,7 +22,7 @@
 			}
 		},
 		components: {
-			'NavigationBar': NavigationBar,
+			'TheHeader': TheHeader,
   		},
 		methods: {
 			checkLogin: function() {

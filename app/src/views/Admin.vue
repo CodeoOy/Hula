@@ -44,7 +44,7 @@
 </template>
 
 <script>
-	import GeneralModal from '../components/GeneralModal.vue'
+	import VModal from '../components/VModal.vue'
 	import FormProject from '../forms/FormProject.vue'
 	import FormCreateSkill from '../forms/FormCreateSkill.vue'
 	import FormSkillScope from '../forms/FormSkillScope.vue'
@@ -62,7 +62,7 @@
 			}
 		},
 		components: {
-			GeneralModal,
+			VModal,
 			FormProject,
 			FormCreateSkill,
 			FormSkillScope,

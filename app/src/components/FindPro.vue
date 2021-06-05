@@ -5,10 +5,6 @@
 				<option disabled>Choose the project</option>
 				<option v-for="project in projects" :key="project.name" :value="project.name">{{ project.name }}</option>
 			</select>
-			<!--<div class="mb-2 form-check">
-				<label class="form-label">Show only available candidates</label>
-				<input type="checkbox" class="form-check-input" name="available" v-model="user.available" />
-			</div>-->
 			<button type="submit" class="btn btn-gradient mb-1">Search</button>
 		</form>
 	</div>

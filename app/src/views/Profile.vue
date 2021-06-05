@@ -47,7 +47,7 @@
 </template>
 
 <script>
-	import GeneralModal from '../components/GeneralModal.vue'
+	import VModal from '../components/VModal.vue'
 	import FormAddSkill from '../forms/FormAddSkill.vue'
 	import FormUserBasicInfo from '../forms/FormUserBasicInfo.vue'
 	export default {
@@ -63,7 +63,7 @@
 		components: {
 			FormUserBasicInfo,
 			FormAddSkill,
-			GeneralModal,
+			VModal,
 		},
 		methods: {
 			updateUser: function() { // This is not working. Make the user update happen in some other way.

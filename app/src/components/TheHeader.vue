@@ -55,7 +55,7 @@
 
 <script>
 export default {
-	name: 'NavigationBar',
+	name: 'TheHeader',
 	methods: {
 		logOut () {
 			fetch('/api/auth', {method: 'DELETE'})

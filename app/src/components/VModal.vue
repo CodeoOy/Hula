@@ -16,14 +16,7 @@
 export default {
 	name: 'Modal',
 	props: {	
-		show_modal: false,
-		modal_title: '',
-		modal_content: '',
-	},
-	data() {
-		return {
-			errorsPresent: false
-		};
+		modal_title: String,
 	}
 };
 </script>
