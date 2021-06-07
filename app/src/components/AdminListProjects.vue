@@ -32,7 +32,7 @@
 								:data-project-name="project.name" 
 								data-bs-toggle="modal" 
 								data-bs-target="#hulaModal" 
-								v-on:click.prevent="chosenproject = project"
+								v-on:click.prevent="this.setProject(project)"
 							>Edit</a>
 							- Delete
 						</td>
@@ -58,8 +58,9 @@
 			VModal,
 			FormProject
 		},
-		computed: {
-			setChosenProject() {
+		methods: {
+			setProject(project) {
+				this.chosenproject = project
 				console.log("setChosenProject fired")
 				this.$store.commit('setChosenProject', this.chosenproject)
 				this.$emit('projectChosen', this.chosenproject)

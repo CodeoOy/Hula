@@ -75,6 +75,7 @@
 		computed: {
 			updateProject (value) {
 				console.log("updateProject fired")
+				console.log(value)
 				this.chosenproject = value
 			}
 		}
