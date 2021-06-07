@@ -1,4 +1,6 @@
 <template>
+<div>
+	<h2>Register</h2>
 	<form v-on:submit="register">
 		<div class="mb-3">
 			<label for="inputEmail" class="form-label">Email</label>
@@ -19,6 +21,7 @@
 		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Register</button>
 	</form>
+</div>
 </template>
 
 <script>

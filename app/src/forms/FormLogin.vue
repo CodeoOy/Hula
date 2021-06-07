@@ -1,15 +1,18 @@
 <template>
-	<form v-on:submit="login">
-		<div class="mb-3">
-			<label for="loginUser" class="form-label">Email</label>
-			<input type="text" class="form-control" id="loginUser" aria-describedby="emailHelp" name="email">
-		</div>
-		<div class="mb-3">
-			<label for="loginPassword" class="form-label">Password</label>
-			<input type="password" class="form-control" id="loginPassword" name="password">
-		</div>
-		<button type="submit" class="btn btn-gradient mb-1">Login</button>
-	</form>
+	<div>
+		<h2>Log in</h2>
+		<form v-on:submit="login">
+			<div class="mb-3">
+				<label for="loginUser" class="form-label">Email</label>
+				<input type="text" class="form-control" id="loginUser" aria-describedby="emailHelp" name="email">
+			</div>
+			<div class="mb-3">
+				<label for="loginPassword" class="form-label">Password</label>
+				<input type="password" class="form-control" id="loginPassword" name="password">
+			</div>
+			<button type="submit" class="btn btn-gradient mb-1">Login</button>
+		</form>
+	</div>
 </template>
 
 <script>

@@ -1,8 +1,8 @@
 <template>
 	<div class="container mt-4">
 		<VModal :modal_title="form_title">
-			<FormProject @projectChosen="updateProject"/>
-			<FormSkill v-if="form_title == 'New Skill'"/>
+			<FormProject v-on:project-chosen="updateProject" :chosenproject="chosenproject"/>
+			<FormCreateSkill v-if="form_title == 'New Skill'"/>
 			<FormSkillScope v-if="form_title == 'New Scope'"/>
 			<FormSkillCategory v-if="form_title == 'New Category'"/>
 			<FormSkillScopeLevel v-if="form_title == 'New Level'"/>
@@ -13,7 +13,7 @@
 				{{ chosenproject.name }}
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h1>Welcome {{ this.$store.state.loggeduser.firstname }}!</h1>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New Project'">Add project</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New project'">Add project</a></p>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New Skill'">Add skill</a></p>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New Scope'">Add scope</a></p>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New Category'">Add category</a></p>
@@ -56,7 +56,6 @@
 		name: 'Admin',
 		data() {
 			return {
-				show_modal: false,
 				form_title: '',	
 				tab: 1,
 				chosenproject: {}
@@ -72,11 +71,12 @@
 			FormUserDelete,
 			AdminListProjects,
 		},
-		computed: {
+		methods: {
 			updateProject (value) {
 				console.log("updateProject fired")
 				console.log(value)
 				this.chosenproject = value
+				this.form_title = value.name
 			}
 		}
 	}

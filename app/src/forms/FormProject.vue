@@ -1,9 +1,8 @@
 <template>
 	<div>
 		<form>
-			{{ querydata_project.id }}
-			{{ chosenproject }}
-			<div v-if="!querydata_project.id.length" class="mb-2">
+			{{ chosenproject.id }}
+			<div v-if="!('id' in chosenproject)" class="mb-2">
 				<p v-if="errorsPresent" class="error">Please fill out label!</p>
 				<div class="mb-2">
 					<label class="form-label">Project name</label>
@@ -12,7 +11,7 @@
 				<button v-on:click="createProject" class="btn btn-gradient" type="button">Save</button>
 			</div>
 			<!--<div v-if="projectneeds.some(projectneeds => projectneeds.id.length)">-->
-			<div v-if="querydata_project.id.length">
+			<div v-if="'id' in chosenproject">
 				<h3>Project needs</h3>
 				<div v-for="need in projectneeds" :key="need.id">
 					{{ need.count_of_users}} from {{ need.begin_time }} to {{ need.end_time }} at percentage:
@@ -111,7 +110,12 @@ export default {
 		}
 	},
 	props: {
-		chosenproject: {}
+		chosenproject: {
+			type: Object,
+			default() {
+				return { id: '' }
+			}
+		},
 	},
 	methods: {
 		createProject: function() {

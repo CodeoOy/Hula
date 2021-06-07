@@ -1,9 +1,5 @@
 <template>
 	<div>
-		<VModal :modal_title="chosenproject.name">
-			<!--<Project :chosenproject="chosenproject.id"/>-->
-			<FormProject :chosenproject="chosenproject" />
-		</VModal>
 		<h2>Projects</h2>
 		{{ chosenproject.name }}<br />
 		{{ this.$store.state.chosenproject.name }}
@@ -44,8 +40,6 @@
 </template>
 
 <script>
-	import VModal from './VModal.vue'
-	import FormProject from '../forms/FormProject.vue'
 	export default {
 		name: 'AdminListProjects',
 		data() {
@@ -54,16 +48,12 @@
 				chosenproject: {},
 			}
 		},
-		components: {
-			VModal,
-			FormProject
-		},
 		methods: {
 			setProject(project) {
 				this.chosenproject = project
 				console.log("setChosenProject fired")
+				this.$emit('project-chosen', this.chosenproject)
 				this.$store.commit('setChosenProject', this.chosenproject)
-				this.$emit('projectChosen', this.chosenproject)
 			}
 		}
 	}

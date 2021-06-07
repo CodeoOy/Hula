@@ -12,7 +12,7 @@
 		</select>
 		<input type="number" aria-label="Years" class="form-control" v-model.number="querydata.years">
 		<button class="btn btn-outline-secondary" type="button">Button</button>
-	<button type="submit" class="btn btn-gradient mb-1">Submit</button>
+		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 	</form>
 </template>
 

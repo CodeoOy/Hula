@@ -14,7 +14,7 @@
 
 <script>
 export default {
-	name: 'Modal',
+	name: 'VModal',
 	props: {	
 		modal_title: String,
 	}

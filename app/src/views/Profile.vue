@@ -1,7 +1,7 @@
 <template>
 	<div class="container mt-4">
 		<Modal :modal_title="form_title">
-			<UserSkill v-if="form_title == 'Add Skill'"/>
+			<FormAddSkill v-if="form_title == 'Add Skill'"/>
 		</Modal>
 		<div class="row gx-4">
 			<div class="col-md-4">
@@ -20,7 +20,7 @@
 					<a href="#" v-on:click="editing_info = true">Edit your info</a>
 					<p>Available: {{ user.available }}</p>
 					<transition name="fadeHeight">
-						<UserBasicInfo :user='user' v-if="editing_info == true" v-on:formsent="editing_info = false, updateUser()"/>
+						<FormUserBasicInfo :user='user' v-if="editing_info == true" v-on:formsent="editing_info = false, updateUser()"/>
 					</transition>
 					<h3>Skills</h3>
 					<table class="table table-dark table-striped text-light">
