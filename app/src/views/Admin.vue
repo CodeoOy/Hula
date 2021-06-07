@@ -1,8 +1,7 @@
 <template>
 	<div class="container mt-4">
-		{{ form_title }}
 		<VModal :modal_title="form_title">
-			<FormProject v-if="form_title == 'New Project'"/>
+			<FormProject @projectChosen="updateProject"/>
 			<FormSkill v-if="form_title == 'New Skill'"/>
 			<FormSkillScope v-if="form_title == 'New Scope'"/>
 			<FormSkillCategory v-if="form_title == 'New Category'"/>
@@ -11,8 +10,9 @@
 		</VModal>
 		<div class="row gx-4">
 			<div class="col-md-4">
+				{{ chosenproject.name }}
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					<h1>Welcomeee {{ this.$store.state.loggeduser.firstname }}!</h1>
+					<h1>Welcome {{ this.$store.state.loggeduser.firstname }}!</h1>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New Project'">Add project</a></p>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New Skill'">Add skill</a></p>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New Scope'">Add scope</a></p>
@@ -58,7 +58,8 @@
 			return {
 				show_modal: false,
 				form_title: '',	
-				tab: 1,		
+				tab: 1,
+				chosenproject: {}
 			}
 		},
 		components: {
@@ -71,5 +72,11 @@
 			FormUserDelete,
 			AdminListProjects,
 		},
+		computed: {
+			updateProject (value) {
+				console.log("updateProject fired")
+				this.chosenproject = value
+			}
+		}
 	}
 </script>

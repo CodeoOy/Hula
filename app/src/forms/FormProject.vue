@@ -2,6 +2,7 @@
 	<div>
 		<form>
 			{{ querydata_project.id }}
+			{{ chosenproject }}
 			<div v-if="!querydata_project.id.length" class="mb-2">
 				<p v-if="errorsPresent" class="error">Please fill out label!</p>
 				<div class="mb-2">
@@ -110,7 +111,7 @@ export default {
 		}
 	},
 	props: {
-		chosenproject: ''
+		chosenproject: {}
 	},
 	methods: {
 		createProject: function() {

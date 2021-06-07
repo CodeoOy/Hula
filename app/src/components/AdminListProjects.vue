@@ -1,11 +1,12 @@
 <template>
 	<div>
-		<VModal :show_modal="show_modal" modal_title="Edit project">
+		<VModal :modal_title="chosenproject.name">
 			<!--<Project :chosenproject="chosenproject.id"/>-->
-			<FormProject />
+			<FormProject :chosenproject="chosenproject" />
 		</VModal>
 		<h2>Projects</h2>
-		{{ chosenproject }}
+		{{ chosenproject.name }}<br />
+		{{ this.$store.state.chosenproject.name }}
 		<transition name="fadeHeight">
 			<table class="table table-dark table-striped text-light">
 				<thead>
@@ -26,7 +27,13 @@
 							<p v-for="need in project.needs" :key="need.id">{{ need.id }}</p>
 						</td>
 						<td>
-							<a href="#" :data-project-id="project.id" :data-project-name="project.name" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click.prevent="this.$store.commit('setChosenProject', project)">Edit</a>
+							<a href="#" 
+								:data-project-id="project.id" 
+								:data-project-name="project.name" 
+								data-bs-toggle="modal" 
+								data-bs-target="#hulaModal" 
+								v-on:click.prevent="chosenproject = project"
+							>Edit</a>
 							- Delete
 						</td>
 					</tr>
@@ -44,12 +51,19 @@
 		data() {
 			return {
 				projects: this.$store.state.projects,
-				chosenproject: this.$store.state.chosenproject,
+				chosenproject: {},
 			}
 		},
 		components: {
 			VModal,
 			FormProject
+		},
+		computed: {
+			setChosenProject() {
+				console.log("setChosenProject fired")
+				this.$store.commit('setChosenProject', this.chosenproject)
+				this.$emit('projectChosen', this.chosenproject)
+			}
 		}
 	}
 </script>
