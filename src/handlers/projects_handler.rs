@@ -265,6 +265,49 @@ fn query_one(uuid_data: QueryData, pool: web::Data<Pool>) -> Result<Project, cra
 	Err(ServiceError::Unauthorized)
 }
 
+pub async fn update_project(
+	uuid_data: web::Path<String>, 
+	projectdata: web::Json<ProjectData>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	let res = web::block(move || query_update_project(uuid_data.into_inner(), projectdata, pool, logged_user.email)).await;
+	println!("\nProject updated\n");
+	match res {
+		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_update_project(
+	uuid_data: String, 
+	projectdata: web::Json<ProjectData>,
+	pool: web::Data<Pool>,
+	email: String,
+) -> Result<(), crate::errors::ServiceError> {
+	let conn: &PgConnection = &pool.get().unwrap();
+	use crate::schema::projects::dsl::id;
+	use crate::schema::projects::dsl::*;
+
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	let mut items = diesel::update(projects)
+		.filter(id.eq(uuid_query))
+		.set((
+			name.eq(projectdata.name.clone()),
+			updated_by.eq(email.clone()),
+		))
+		.load::<Project>(conn)?;
+	if let Some(_project_res) = items.pop() {
+		println!("\nUpdate successful.\n");
+		return Ok(());
+	}
+
+	Ok(())
+}
+
 pub async fn delete_project(uuid_data: web::Path<String>, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_delete_project(uuid_data.into_inner(), pool)).await;
 	println!("\nProject deleted\n");
