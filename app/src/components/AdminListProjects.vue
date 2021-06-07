@@ -52,7 +52,7 @@
 			setProject(project) {
 				this.chosenproject = project
 				console.log("setChosenProject fired")
-				this.$emit('project-chosen', this.chosenproject)
+				this.$emit('projectChosen', this.chosenproject)
 				this.$store.commit('setChosenProject', this.chosenproject)
 			}
 		}

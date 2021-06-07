@@ -1,7 +1,6 @@
 <template>
 	<div>
 		<form>
-			{{ chosenproject.id }}
 			<div v-if="!('id' in chosenproject)" class="mb-2">
 				<p v-if="errorsPresent" class="error">Please fill out label!</p>
 				<div class="mb-2">
@@ -12,7 +11,7 @@
 			</div>
 			<!--<div v-if="projectneeds.some(projectneeds => projectneeds.id.length)">-->
 			<div v-if="'id' in chosenproject">
-				<h3>Project needs</h3>
+				<h3>{{ chosenproject.name }} needs</h3>
 				<div v-for="need in projectneeds" :key="need.id">
 					{{ need.count_of_users}} from {{ need.begin_time }} to {{ need.end_time }} at percentage:
 					<table class="table table-dark table-striped text-light">
