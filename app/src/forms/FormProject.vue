@@ -5,7 +5,7 @@
 				<p v-if="errorsPresent" class="error">Please fill out label!</p>
 				<div class="mb-2">
 					<label class="form-label">Project name</label>
-					<input class="form-control" type="text" placeholder="Project name" name="label" v-model="querydata_project.name" />
+					<input class="form-control" type="text" placeholder="Project name" name="label" v-model="chosenproject.name" />
 				</div>
 				<button v-if="!('id' in chosenproject)" v-on:click="createProject" class="btn btn-gradient" type="button">Save</button>
 			</div>
@@ -35,7 +35,7 @@
 					</table>
 				</div>
 			</div>
-			<div v-if="querydata_project.id.length && !chosenneed.id.length">
+			<div v-if="chosenproject.id.length && !chosenneed.id.length">
 				<label class="form-label">How many pros for this need?</label>
 				<input type="number" aria-label="Number of pros" class="form-control mb-2" v-model.number="querydata_need.count_of_users">
 				<label class="form-label">When does this need start?</label>
@@ -72,10 +72,6 @@ export default {
 	name: 'FormProject',
 	data() {
 		return {
-			querydata_project: {
-				id: '',
-				name: ''
-			},
 			querydata_need: {
 				id: '06ba4809-f20b-4687-945b-e033a6751fca',
 				project_id: '',
@@ -121,11 +117,11 @@ export default {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.querydata_project)
+				body: JSON.stringify(this.chosenproject)
 			})
 			.then((response) => response.json())
 			.then((response) => {
-				this.querydata_project.id = response.id
+				this.chosenproject.id = response.id
 				this.querydata_need.project_id = response.id
 			})
 		},
@@ -170,7 +166,7 @@ export default {
 			})
 		},
 		getProjectNeeds: function() {
-			fetch(`/api/projectneeds/${this.querydata_project.id}`, {
+			fetch(`/api/projectneeds/${this.chosenproject.id}`, {
 				method: 'GET',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include'
@@ -191,7 +187,7 @@ export default {
 			})
 		},
 		getProjectNeedSkills: function() {
-			fetch(`/api/projectskills/${this.querydata_project.id}`, {
+			fetch(`/api/projectskills/${this.chosenproject.id}`, {
 				method: 'GET',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include'
@@ -215,8 +211,7 @@ export default {
 			this.getSkillScope(newID)
 		},
 		'chosenproject.id': function(newID, oldID) {
-			console.log("querydata_project.id changed from " + oldID + " to " + newID)
-			this.querydata_project.id = this.chosenproject.id
+			console.log("chosenproject.id changed from " + oldID + " to " + newID)
 			this.querydata_need.project_id = this.chosenproject.id
 			this.getProjectNeeds()
 		}
@@ -227,7 +222,6 @@ export default {
 		}
 	},
 	mounted() {
-		this.querydata_project.id = this.chosenproject.id
 		this.querydata_need.project_id = this.chosenproject.id
 		this.getAllSkills()
 		this.getAllLevels()
