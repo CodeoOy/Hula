@@ -6,13 +6,14 @@
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+					{{ chosenproject }}
 					<h1>Welcome {{ this.$store.state.loggeduser.firstname }}!</h1>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="chosenform = 'project'">Add project</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="chosenform = 'skill'">Add skill</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="chosenform = 'scope'">Add scope</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="chosenform = 'category'">Add category</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="chosenform = 'scopelevel'">Add level</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="chosenform = 'deleteuser'">Delete user</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New Project', chosenform = 'project', chosenproject = {}">Add project</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New skill', chosenform = 'skill'">Add skill</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New scope', chosenform = 'scope'">Add scope</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New category', chosenform = 'category'">Add category</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New level', chosenform = 'scopelevel'">Add level</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'Delete user', chosenform = 'deleteuser'">Delete user</a></p>
 				</div>
 			</div>
 			<div class="col-md-8">

@@ -1,15 +1,14 @@
 <template>
 	<div>
 		<form>
-			<div v-if="!('id' in chosenproject)" class="mb-2">
+			<div class="mb-2">
 				<p v-if="errorsPresent" class="error">Please fill out label!</p>
 				<div class="mb-2">
 					<label class="form-label">Project name</label>
 					<input class="form-control" type="text" placeholder="Project name" name="label" v-model="querydata_project.name" />
 				</div>
-				<button v-on:click="createProject" class="btn btn-gradient" type="button">Save</button>
+				<button v-if="!('id' in chosenproject)" v-on:click="createProject" class="btn btn-gradient" type="button">Save</button>
 			</div>
-			<!--<div v-if="projectneeds.some(projectneeds => projectneeds.id.length)">-->
 			<div v-if="'id' in chosenproject">
 				<h3>{{ chosenproject.name }} needs</h3>
 				<div v-for="need in projectneeds" :key="need.id">
@@ -215,8 +214,10 @@ export default {
 			console.log("querydata_needskill.skill_id changed from " + oldID + " to " + newID)
 			this.getSkillScope(newID)
 		},
-		'querydata_project.id': function(newID, oldID) {
+		'chosenproject.id': function(newID, oldID) {
 			console.log("querydata_project.id changed from " + oldID + " to " + newID)
+			this.querydata_project.id = this.chosenproject.id
+			this.querydata_need.project_id = this.chosenproject.id
 			this.getProjectNeeds()
 		}
 	},
@@ -226,6 +227,8 @@ export default {
 		}
 	},
 	mounted() {
+		this.querydata_project.id = this.chosenproject.id
+		this.querydata_need.project_id = this.chosenproject.id
 		this.getAllSkills()
 		this.getAllLevels()
 	}
