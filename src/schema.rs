@@ -1,132 +1,138 @@
 table! {
-    invitations (id) {
-        id -> Uuid,
-        email -> Varchar,
-        password_plain -> Varchar,
-        first_name -> Varchar,
-        last_name -> Varchar,
-        expires_at -> Timestamp,
-        updated_by -> Varchar,
-    }
+	invitations (id) {
+		id -> Uuid,
+		email -> Varchar,
+		password_plain -> Varchar,
+		first_name -> Varchar,
+		last_name -> Varchar,
+		expires_at -> Timestamp,
+		updated_by -> Varchar,
+	}
 }
 
 table! {
-    projectneeds (id) {
-        id -> Uuid,
-        project_id -> Uuid,
-        count_of_users -> Int4,
-        begin_time -> Timestamp,
-        end_time -> Nullable<Timestamp>,
-        percentage -> Nullable<Int4>,
-        updated_by -> Varchar,
-    }
+	projectneeds (id) {
+		id -> Uuid,
+		project_id -> Uuid,
+		count_of_users -> Int4,
+		begin_time -> Timestamp,
+		end_time -> Nullable<Timestamp>,
+		percentage -> Nullable<Int4>,
+		updated_by -> Varchar,
+	}
 }
 
 table! {
-    projectneedskills (id) {
-        id -> Uuid,
-        projectneed_id -> Uuid,
-        skill_id -> Uuid,
-        skillscopelevel_id -> Nullable<Uuid>,
-        min_years -> Nullable<Float8>,
-        max_years -> Nullable<Float8>,
-        updated_by -> Varchar,
-    }
+	projectneedskills (id) {
+		id -> Uuid,
+		projectneed_id -> Uuid,
+		skill_id -> Uuid,
+		skillscopelevel_id -> Nullable<Uuid>,
+		min_years -> Nullable<Float8>,
+		max_years -> Nullable<Float8>,
+		updated_by -> Varchar,
+	}
 }
 
 table! {
-    projects (id) {
-        id -> Uuid,
-        available -> Bool,
-        name -> Varchar,
-        updated_by -> Varchar,
-    }
+	projects (id) {
+		id -> Uuid,
+		available -> Bool,
+		name -> Varchar,
+		updated_by -> Varchar,
+	}
+}
+table! {
+	sessions(id){
+		id -> Uuid,
+		user_id -> Uuid,
+		updated_by -> Varchar,
+	}
+}
+table! {
+	skillcategories (id) {
+		id -> Uuid,
+		label -> Varchar,
+		parent_id -> Nullable<Uuid>,
+		updated_by -> Varchar,
+	}
 }
 
 table! {
-    skillcategories (id) {
-        id -> Uuid,
-        label -> Varchar,
-        parent_id -> Nullable<Uuid>,
-        updated_by -> Varchar,
-    }
+	skills (id) {
+		id -> Uuid,
+		label -> Varchar,
+		skillcategory_id -> Uuid,
+		skillscope_id -> Uuid,
+		updated_by -> Varchar,
+	}
 }
 
 table! {
-    skills (id) {
-        id -> Uuid,
-        label -> Varchar,
-        skillcategory_id -> Uuid,
-        skillscope_id -> Uuid,
-        updated_by -> Varchar,
-    }
+	skillscopelevels (id) {
+		id -> Uuid,
+		label -> Varchar,
+		skillscope_id -> Uuid,
+		index -> Int4,
+		percentage -> Nullable<Int4>,
+		updated_by -> Varchar,
+	}
 }
 
 table! {
-    skillscopelevels (id) {
-        id -> Uuid,
-        label -> Varchar,
-        skillscope_id -> Uuid,
-        index -> Int4,
-        percentage -> Nullable<Int4>,
-        updated_by -> Varchar,
-    }
+	skillscopes (id) {
+		id -> Uuid,
+		label -> Varchar,
+		updated_by -> Varchar,
+	}
 }
 
 table! {
-    skillscopes (id) {
-        id -> Uuid,
-        label -> Varchar,
-        updated_by -> Varchar,
-    }
+	userfavorites (id) {
+		id -> Uuid,
+		user_id -> Uuid,
+		project_id -> Uuid,
+		updated_by -> Varchar,
+	}
 }
 
 table! {
-    userfavorites (id) {
-        id -> Uuid,
-        user_id -> Uuid,
-        project_id -> Uuid,
-        updated_by -> Varchar,
-    }
+	userreservations (id) {
+		id -> Uuid,
+		user_id -> Uuid,
+		description -> Varchar,
+		begin_time -> Nullable<Timestamp>,
+		end_time -> Nullable<Timestamp>,
+		percentage -> Nullable<Int4>,
+		updated_by -> Varchar,
+	}
 }
 
 table! {
-    userreservations (id) {
-        id -> Uuid,
-        user_id -> Uuid,
-        description -> Varchar,
-        begin_time -> Nullable<Timestamp>,
-        end_time -> Nullable<Timestamp>,
-        percentage -> Nullable<Int4>,
-        updated_by -> Varchar,
-    }
-}
-
-table! {
-    users (id) {
-        id -> Uuid,
-        isadmin -> Bool,
-        ispro -> Bool,
-        available -> Bool,
-        email -> Varchar,
-        firstname -> Varchar,
-        lastname -> Varchar,
-        hash -> Varchar,
+	users (id) {
+		id -> Uuid,
+		isadmin -> Bool,
+		ispro -> Bool,
+		available -> Bool,
+		email -> Varchar,
+		firstname -> Varchar,
+		lastname -> Varchar,
+		hash -> Varchar,
 		inserted_at -> Timestamp,
-        updated_by -> Varchar,
-        is_employee -> Bool,
-    }
+		updated_by -> Varchar,
+		is_employee -> Bool,
+	}
 }
 
 table! {
-    userskills (id) {
-        id -> Uuid,
-        user_id -> Uuid,
-        skill_id -> Uuid,
-        skillscopelevel_id -> Uuid, // TODO: Check if this needs to be nullable
-        years -> Nullable<Double>,
-        updated_by -> Varchar,
-    }
+	userskills (id) {
+		id -> Uuid,
+		user_id -> Uuid,
+		skill_id -> Uuid,
+		skillscopelevel_id -> Uuid, // TODO: Check if this needs to be nullable
+		years -> Nullable<Double>,
+		updated_by -> Varchar,
+	}
 }
 
 table! {
@@ -152,6 +158,7 @@ joinable!(projectneeds -> projects (project_id));
 joinable!(projectneedskills -> projectneeds (projectneed_id));
 joinable!(projectneedskills -> skills (skill_id));
 joinable!(projectneedskills -> skillscopelevels (skillscopelevel_id));
+joinable!(sessions -> users (user_id));
 joinable!(skills -> skillcategories (skillcategory_id));
 joinable!(skills -> skillscopes (skillscope_id));
 joinable!(skillscopelevels -> skillscopes (skillscope_id));
@@ -163,16 +170,17 @@ joinable!(userskills -> skillscopelevels (skillscopelevel_id));
 joinable!(userskills -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
-    invitations,
-    projectneeds,
-    projectneedskills,
-    projects,
-    skillcategories,
-    skills,
-    skillscopelevels,
-    skillscopes,
-    userfavorites,
-    userreservations,
-    users,
-    userskills,
+	invitations,
+	projectneeds,
+	projectneedskills,
+	projects,
+	sessions,
+	skillcategories,
+	skills,
+	skillscopelevels,
+	skillscopes,
+	userfavorites,
+	userreservations,
+	users,
+	userskills,
 );
