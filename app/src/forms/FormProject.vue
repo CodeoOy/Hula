@@ -24,7 +24,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr v-for="skill in projectneedskills" :key="skill.id">
+							<tr v-for="skill in getProjectNeedSkills(need.id)" :key="skill.id">
 								<td>{{ skill.name }}</td>
 								<td>{{ skill.level }}</td>
 								<td>{{ skill.min_years }}</td>
@@ -165,7 +165,7 @@ export default {
 			.then((response) => response.json())
 			.then(response => { 
 				this.chosenskill.id = response.id;
-				this.getProjectNeedSkills()
+				this.getProjectNeedSkills(this.querydata_needskill.projectneed_id) // Do we really need to do anything with the return?
 			}) 
 		},
 		getAllSkills: function() {
@@ -199,15 +199,18 @@ export default {
 				//console.log(errors); // This gives unexpected end of json
 			})
 		},
-		getProjectNeedSkills: function() {
-			fetch(`/api/projectskills/${this.chosenproject.id}`, {
+		getProjectNeedSkills: function(needID) {
+			fetch(`/api/projectskills/${needID}`, {
 				method: 'GET',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include'
 			})
 			.then((response) => response.json())
 			.then(response => { 
-				this.projectneedskills = response; // TODO: Structure is not sufficient, skills need to be per need
+				//this.projectneedskills = response; // TODO: Structure is not sufficient, skills need to be per need
+				console.log("Project skills:")
+				console.log(response)
+				return response
 			})    
 			.catch((errors) => {
 				console.log(errors); // This gives unexpected end of json
@@ -234,6 +237,7 @@ export default {
 			this.projectskills = {}
 			if (typeof newID !== undefined ) {
 				this.getProjectNeeds()
+				//this.getProjectNeedSkills()
 			}
 		}
 	},
@@ -242,14 +246,19 @@ export default {
 			if ('skillscope_id' in this.chosenskill) {
 				return this.skill_levels.filter(levelres => levelres.skillscope_id == this.chosenskill.skillscope_id)
 			}
+		},
+		filterSkills: function(need) {
+			//console.log("Skills:")
+			//console.log(this.projectneedskills)
+			return this.projectneedskills.filter(skill => skill.projectneed_id == need)
 		}
 	},
 	mounted() {
 		console.log("mounted")
 		console.log(this.chosenproject)
-		this.getProjectNeeds()
 		this.getAllSkills()
 		this.getAllLevels()
+		this.getProjectNeeds()
 	}
 };
 </script>

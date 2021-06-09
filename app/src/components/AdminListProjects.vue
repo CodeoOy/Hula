@@ -1,15 +1,12 @@
 <template>
 	<div>
 		<h2>Projects</h2>
-		{{ chosenproject.name }}<br />
-		{{ this.$store.state.chosenproject.name }}
 		<transition name="fadeHeight">
 			<table class="table table-dark table-striped text-light">
 				<thead>
 					<tr>
 						<th scope="col">#</th>
 						<th scope="col">Project name</th>
-						<th scope="col">id</th>
 						<th scope="col">needs</th>
 						<th scope="col">Actions</th>
 					</tr>
@@ -18,7 +15,6 @@
 					<tr v-for="(project, index) in this.$store.state.projects" :key="project.id">
 						<th scope="row">{{ index + 1 }}</th>
 						<td>{{ project.name }}</td>
-						<td>{{ project.id }}</td>
 						<td>
 							<p v-for="need in project.needs" :key="need.id">{{ need.id }}</p>
 						</td>
