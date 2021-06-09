@@ -8,7 +8,7 @@
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					{{ chosenproject }}
 					<h1>Welcome {{ this.$store.state.loggeduser.firstname }}!</h1>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New Project', chosenform = 'project'">Add project</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click.native.prevent="normalizeChosenProject">Add project</a></p>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New skill', chosenform = 'skill'">Add skill</a></p>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New scope', chosenform = 'scope'">Add scope</a></p>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New category', chosenform = 'category'">Add category</a></p>
@@ -29,7 +29,7 @@
 					</li>
 				</ul>
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					<AdminListProjects @project-chosen="updateProject" :leads='projectsdata' v-if="tab == 1" />
+					<AdminListProjects @project-chosen="updateProject" v-if="tab == 1" />
 					<AdminListUsers :users='usersdata' v-if="tab == 2"  />
 					<AdminListSkills :users='skillsdata' v-if="tab == 3"  />
 				</div>
@@ -47,13 +47,20 @@
 	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
 	import FormUserDelete from '../forms/FormUserDelete.vue'
 	import AdminListProjects from '../components/AdminListProjects.vue'
+	import AdminListSkills from '../components/AdminListSkills.vue'
+	import AdminListUsers from '../components/AdminListUsers.vue'
 	export default {
 		name: 'Admin',
 		data() {
 			return {
 				form_title: '',	
 				tab: 1,
-				chosenproject: {},
+				chosenproject: {
+					type: Object,
+					default() {
+						return { id: '' }
+					}
+				},
 				chosenform: '',
 			}
 		},
@@ -66,14 +73,19 @@
 			FormSkillScopeLevel,
 			FormUserDelete,
 			AdminListProjects,
+			AdminListSkills,
+			AdminListUsers,
 		},
 		methods: {
 			updateProject (value) {
-				console.log("updateProject fired")
-				console.log(value)
 				this.chosenform = 'project'
 				this.chosenproject = value
 				this.form_title = value.name
+			},
+			normalizeChosenProject() {
+				this.form_title = 'New Project'
+				this.chosenform = 'project'
+				this.chosenproject = {}
 			}
 		},
 		computed: {
@@ -86,7 +98,6 @@
 					scopelevel: FormSkillScopeLevel,
 					deleteuser: FormUserDelete,
 				}
-				console.log(this.chosenform)
 				return components[this.chosenform]
 			}
 		}

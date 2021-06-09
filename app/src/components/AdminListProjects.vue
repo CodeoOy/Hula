@@ -51,7 +51,6 @@
 		methods: {
 			setProject(project) {
 				this.chosenproject = project
-				console.log("setChosenProject fired")
 				this.$emit('projectChosen', this.chosenproject)
 				this.$store.commit('setChosenProject', this.chosenproject)
 			}

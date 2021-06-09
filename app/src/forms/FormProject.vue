@@ -12,7 +12,7 @@
 			<div v-if="'id' in chosenproject">
 				<h3>{{ chosenproject.name }} needs</h3>
 				<div v-for="need in projectneeds" :key="need.id">
-					{{ need.count_of_users}} from {{ need.begin_time }} to {{ need.end_time }} at percentage:
+					<a href="#" v-on:click.prevent="this.chosenneed.id = need.id">{{ need.count_of_users}} from {{ need.begin_time }} to {{ need.end_time }} at percentage: {{ need.percentage}}</a>
 					<table class="table table-dark table-striped text-light">
 						<thead>
 							<tr>
@@ -35,7 +35,7 @@
 					</table>
 				</div>
 			</div>
-			<div v-if="chosenproject.id.length && !chosenneed.id.length">
+			<div v-if="'id' in chosenproject && !('id' in chosenneed)">
 				<label class="form-label">How many pros for this need?</label>
 				<input type="number" aria-label="Number of pros" class="form-control mb-2" v-model.number="querydata_need.count_of_users">
 				<label class="form-label">When does this need start?</label>
@@ -47,7 +47,7 @@
 				<input type="number" aria-label="Percentage" class="form-control mb-2" v-model.number="querydata_need.percentage">
 				<button v-on:click="createProjectNeed" class="btn btn-gradient" type="button">Save need</button>
 			</div>
-			<div v-if="chosenneed.id.length">
+			<div v-if="'id' in chosenneed">
 				<label class="form-label">Skill</label>
 				<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which skill" v-model="querydata_needskill.skill_id">
 					<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
@@ -91,16 +91,27 @@ export default {
 				updated_by: this.$store.state.loggeduser.email
 			},
 			chosenskill: {
-				id: '',
-				skillscope_id: '',
+				type: Object,
+				default() {
+					return { 
+						id: '',
+						skillscope_id: '',
+					}
+				}
 			},
 			chosenneed: {
-				id: '',
+				type: Object,
+				default() {
+					return { 
+						id: '',
+					}
+				}
 			},
 			projectneedskills: {},
 			projectneeds: {},
 			available_skills: {},
 			skill_levels: {},
+			errorsPresent: false,
 		}
 	},
 	props: {
@@ -123,6 +134,8 @@ export default {
 			.then((response) => {
 				this.chosenproject.id = response.id
 				this.querydata_need.project_id = response.id
+				this.projectneeds = {}
+				this.projectskills = {}
 			})
 		},
 		createProjectNeed: function() {
@@ -138,7 +151,7 @@ export default {
 			.then(response => { 
 				this.querydata_need = response;
 				this.querydata_needskill.projectneed_id = response.id
-				this.chosenneed.id = response.id
+				//this.chosenneed.id = response.id
 				this.getProjectNeeds()
 			}) 
 		},
@@ -194,7 +207,7 @@ export default {
 			})
 			.then((response) => response.json())
 			.then(response => { 
-				this.projectneedskills = response;
+				this.projectneedskills = response; // TODO: Structure is not sufficient, skills need to be per need
 			})    
 			.catch((errors) => {
 				console.log(errors); // This gives unexpected end of json
@@ -206,23 +219,35 @@ export default {
 		}
 	},
 	watch: {
+		'chosenneed.id': function(newID, oldID) {
+			this.querydata_needskill.projectneed_id = newID
+		},
 		'querydata_needskill.skill_id': function(newID, oldID) {
-			console.log("querydata_needskill.skill_id changed from " + oldID + " to " + newID)
 			this.getSkillScope(newID)
 		},
 		'chosenproject.id': function(newID, oldID) {
-			console.log("chosenproject.id changed from " + oldID + " to " + newID)
+			console.log("Project id changed from " + oldID + " to " + newID)
 			this.querydata_need.project_id = this.chosenproject.id
-			this.getProjectNeeds()
+			this.chosenneed = {}
+			this.chosenskill.id = ''
+			this.projectneeds = {}
+			this.projectskills = {}
+			if (typeof newID !== undefined ) {
+				this.getProjectNeeds()
+			}
 		}
 	},
 	computed: {
 		filterLevels: function() {
-			return this.skill_levels.filter(levelres => levelres.skillscope_id == this.chosenskill.skillscope_id)
+			if ('skillscope_id' in this.chosenskill) {
+				return this.skill_levels.filter(levelres => levelres.skillscope_id == this.chosenskill.skillscope_id)
+			}
 		}
 	},
 	mounted() {
-		this.querydata_need.project_id = this.chosenproject.id
+		console.log("mounted")
+		console.log(this.chosenproject)
+		this.getProjectNeeds()
 		this.getAllSkills()
 		this.getAllLevels()
 	}
