@@ -25,7 +25,7 @@
 						</thead>
 						<tbody>
 							<tr v-for="skill in need.skills" :key="skill.id">
-								<td>{{ skill.name }}</td>
+								<td>{{ skill.id }}</td>
 								<td>{{ skill.level }}</td>
 								<td>{{ skill.min_years }}</td>
 								<td>{{ skill.max_years }}</td>
