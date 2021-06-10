@@ -35,11 +35,6 @@ export default {
 		createSkillCategory: function() {
 			if (this.querydata.label === '') {
 				this.errorsPresent = true;
-				this.$flashMessage.show({
-					type: 'error',
-					title: 'Please fill out label.',
-					time: 1000
-				});
 			} else {
 				fetch('/api/skills/categories', {
 					method: 'POST',

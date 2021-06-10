@@ -33,16 +33,11 @@
 				.then((response) => {
 					if(response.ok) {
 						this.logged = true;
-						this.$flashMessage.show({
-							type: 'success',
-							title: 'Some kind of success',
-							time: 1000
-						});
 					} else {
 						this.logged = false;
 						this.$flashMessage.show({
 							type: 'error',
-							title: 'Some kind of error or unauthorized',
+							title: 'Unauthorized',
 							time: 1000
 						});
 						this.$router.push({ path: '/' })

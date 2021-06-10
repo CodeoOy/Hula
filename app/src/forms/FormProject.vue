@@ -162,6 +162,7 @@ export default {
 			.then(response => { 
 				this.querydata_need = response;
 				this.querydata_needskill.projectneed_id = response.id
+				this.chosenneed = response
 			}) 
 		},
 		createProjectNeedSkill: function() {

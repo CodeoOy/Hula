@@ -42,11 +42,6 @@
 						.then((response) => {
 							this.$store.commit('setUser', response)
 							this.$emit('loggedin')
-							this.$flashMessage.show({
-								type: 'success',
-								title: 'Successfully logged in',
-								time: 1000
-							});
 						})
 					} else {
 						fetch('/api/auth', {method: 'DELETE'})

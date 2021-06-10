@@ -58,11 +58,6 @@ export default {
 		onSubmit: function() {
 			if (this.user.lastname === '') {
 				this.errorsPresent = true;
-				this.$flashMessage.show({
-					type: 'error',
-					title: 'Please fill out name.',
-					time: 1000
-				});
 			} else {
 				this.$emit('formsent', this.user);
 			}
