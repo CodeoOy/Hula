@@ -59,6 +59,9 @@ const store = createStore({
 				localStorage.setItem('chosenproject', JSON.stringify(project));
 				state.chosenproject = project
 			})
+		},
+		resetChosenProject (state) {
+			state.chosenproject = {}
 		}
 	}
 })

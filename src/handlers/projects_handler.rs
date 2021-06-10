@@ -238,12 +238,12 @@ fn query_create_projectneedskill(
 }
 
 pub async fn get_by_pid(
-	uuid_data: web::Json<QueryData>,
+	pid: web::Path<String>,
 	pool: web::Data<Pool>,
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	println!("\nGetting project by uuid");
-	let res = web::block(move || query_one(uuid_data.into_inner(), pool)).await;
+	let res = web::block(move || query_one(pid.into_inner(), pool)).await;
 
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
@@ -254,10 +254,10 @@ pub async fn get_by_pid(
 	}
 }
 
-fn query_one(uuid_data: QueryData, pool: web::Data<Pool>) -> Result<Project, crate::errors::ServiceError> {
+fn query_one(pid: String, pool: web::Data<Pool>) -> Result<Project, crate::errors::ServiceError> {
 	use crate::schema::projects::dsl::{id, projects};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data.id)?;
+	let uuid_query = uuid::Uuid::parse_str(&pid)?;
 	let mut items = projects.filter(id.eq(uuid_query)).load::<Project>(conn)?;
 	if let Some(project_res) = items.pop() {
 		println!("\nQuery successful.\n");

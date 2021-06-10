@@ -195,8 +195,12 @@ export default {
 		},
 		'chosenproject.id': function(newID, oldID) {
 			console.log("Project id changed from " + oldID + " to " + newID)
-			this.$store.commit('setChosenProject', newID)
-			this.querydata_need.project_id = this.chosenproject.id
+			if (typeof newID !== 'undefined' && newID.length) {
+				this.$store.commit('setChosenProject', newID)
+				this.querydata_need.project_id = newID 
+			} else {
+				this.$store.commit('resetChosenProject')
+			}
 			this.chosenneed = {}
 			this.chosenskill.id = ''
 		}

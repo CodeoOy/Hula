@@ -41,14 +41,12 @@
 		data() {
 			return {
 				projects: this.$store.state.projects,
-				chosenproject: {},
 			}
 		},
 		methods: {
 			chooseProject(project) {
-				this.chosenproject = project
-				this.$emit('projectChosen', this.chosenproject)
 				this.$store.commit('setChosenProject', project.id)
+				this.$emit('projectChosen', project.name)
 			}
 		}
 	}

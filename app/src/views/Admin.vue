@@ -7,7 +7,7 @@
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					{{ chosenproject }}
+					{{ this.$store.state.chosenproject }}
 					<h1>Welcome {{ this.$store.state.loggeduser.firstname }}!</h1>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click.native.prevent="normalizeChosenProject">Add project</a></p>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New skill', chosenform = 'skill'">Add skill</a></p>
@@ -30,6 +30,7 @@
 					</li>
 				</ul>
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+					<!--<AdminListProjects v-if="tab == 1" />-->
 					<AdminListProjects @project-chosen="updateProject" v-if="tab == 1" />
 					<AdminListUsers :users='usersdata' v-if="tab == 2"  />
 					<AdminListSkills :users='skillsdata' v-if="tab == 3"  />
@@ -79,14 +80,15 @@
 		},
 		methods: {
 			updateProject (value) {
+				console.log("update project emit fired")
 				this.chosenform = 'project'
-				this.chosenproject = value
-				this.form_title = value.name
+				//this.chosenproject = this.$store.state.chosenproject
+				this.form_title = value
 			},
 			normalizeChosenProject() {
 				this.form_title = 'New Project'
 				this.chosenform = 'project'
-				this.chosenproject = {}
+				this.$store.commit('resetChosenProject')
 			}
 		},
 		computed: {
