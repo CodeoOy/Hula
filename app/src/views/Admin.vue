@@ -1,7 +1,8 @@
 <template>
 	<div class="container mt-4">
 		<VModal :modal_title="form_title">
-			<component :is='modalComponent' :chosenproject="chosenproject"/>
+			<!--<component :is='modalComponent' :chosenproject="chosenproject"/>-->
+			<component :is='modalComponent' :chosenproject="this.$store.state.chosenproject"/>
 		</VModal>
 		<div class="row gx-4">
 			<div class="col-md-4">

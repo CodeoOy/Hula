@@ -24,7 +24,7 @@
 								:data-project-name="project.name" 
 								data-bs-toggle="modal" 
 								data-bs-target="#hulaModal" 
-								v-on:click.prevent="this.setProject(project)"
+								v-on:click.prevent="this.chooseProject(project)"
 							>Edit</a>
 							- Delete
 						</td>
@@ -45,10 +45,10 @@
 			}
 		},
 		methods: {
-			setProject(project) {
+			chooseProject(project) {
 				this.chosenproject = project
 				this.$emit('projectChosen', this.chosenproject)
-				this.$store.commit('setChosenProject', this.chosenproject)
+				this.$store.commit('setChosenProject', project.id)
 			}
 		}
 	}

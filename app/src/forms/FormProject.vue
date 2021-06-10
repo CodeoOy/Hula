@@ -11,7 +11,7 @@
 			</div>
 			<div v-if="'id' in chosenproject">
 				<h3>{{ chosenproject.name }} needs</h3>
-				<div v-for="need in projectneeds" :key="need.id">
+				<div v-for="need in chosenproject.needs" :key="need.id">
 					<a href="#" v-on:click.prevent="this.chosenneed.id = need.id">{{ need.count_of_users}} from {{ need.begin_time }} to {{ need.end_time }} at percentage: {{ need.percentage}}</a>
 					<table class="table table-dark table-striped text-light">
 						<thead>
@@ -24,7 +24,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr v-for="skill in getProjectNeedSkills(need.id)" :key="skill.id">
+							<tr v-for="skill in need.skills" :key="skill.id">
 								<td>{{ skill.name }}</td>
 								<td>{{ skill.level }}</td>
 								<td>{{ skill.min_years }}</td>
@@ -107,8 +107,6 @@ export default {
 					}
 				}
 			},
-			projectneedskills: {},
-			projectneeds: {},
 			available_skills: {},
 			skill_levels: {},
 			errorsPresent: false,
@@ -134,8 +132,6 @@ export default {
 			.then((response) => {
 				this.chosenproject.id = response.id
 				this.querydata_need.project_id = response.id
-				this.projectneeds = {}
-				this.projectskills = {}
 			})
 		},
 		createProjectNeed: function() {
@@ -151,8 +147,6 @@ export default {
 			.then(response => { 
 				this.querydata_need = response;
 				this.querydata_needskill.projectneed_id = response.id
-				//this.chosenneed.id = response.id
-				this.getProjectNeeds()
 			}) 
 		},
 		createProjectNeedSkill: function() {
@@ -165,7 +159,6 @@ export default {
 			.then((response) => response.json())
 			.then(response => { 
 				this.chosenskill.id = response.id;
-				this.getProjectNeedSkills(this.querydata_needskill.projectneed_id) // Do we really need to do anything with the return?
 			}) 
 		},
 		getAllSkills: function() {
@@ -178,17 +171,6 @@ export default {
 				//console.log(errors); // This gives unexpected end of json
 			})
 		},
-		getProjectNeeds: function() {
-			fetch(`/api/projectneeds/${this.chosenproject.id}`, {
-				method: 'GET',
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include'
-			})
-			.then((response) => response.json())
-			.then((response) => {
-				this.projectneeds = response
-			})
-		},
 		getAllLevels: function() {
 			fetch('/api/skills/levels', {method: 'GET'})
 			.then((response) => response.json())
@@ -197,23 +179,6 @@ export default {
 			})    
 			.catch((errors) => {
 				//console.log(errors); // This gives unexpected end of json
-			})
-		},
-		getProjectNeedSkills: function(needID) {
-			fetch(`/api/projectskills/${needID}`, {
-				method: 'GET',
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include'
-			})
-			.then((response) => response.json())
-			.then(response => { 
-				//this.projectneedskills = response; // TODO: Structure is not sufficient, skills need to be per need
-				console.log("Project skills:")
-				console.log(response)
-				return response
-			})    
-			.catch((errors) => {
-				console.log(errors); // This gives unexpected end of json
 			})
 		},
 		getSkillScope: function(needle) {
@@ -230,15 +195,10 @@ export default {
 		},
 		'chosenproject.id': function(newID, oldID) {
 			console.log("Project id changed from " + oldID + " to " + newID)
+			this.$store.commit('setChosenProject', newID)
 			this.querydata_need.project_id = this.chosenproject.id
 			this.chosenneed = {}
 			this.chosenskill.id = ''
-			this.projectneeds = {}
-			this.projectskills = {}
-			if (typeof newID !== undefined ) {
-				this.getProjectNeeds()
-				//this.getProjectNeedSkills()
-			}
 		}
 	},
 	computed: {
@@ -254,11 +214,10 @@ export default {
 		}
 	},
 	mounted() {
-		console.log("mounted")
+		console.log("Mounted. chosen project:")
 		console.log(this.chosenproject)
 		this.getAllSkills()
 		this.getAllLevels()
-		this.getProjectNeeds()
 	}
 };
 </script>

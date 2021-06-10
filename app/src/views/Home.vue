@@ -1,6 +1,7 @@
 <template>
 	<div class="container-fluid mt-4">
 		<VModal class="show">
+			{{ logged }}
 			<FormLogin v-if="show_signup == false" v-on:checklogin="isLogged"/>
 			<FormRegister v-else/>
 			<a href="#" v-if="show_signup == false" v-on:click="show_signup = true">Or sign up here.</a>
@@ -25,7 +26,7 @@
 			}
 		},
 		props: {
-			logged: false
+			logged: Boolean
 		},
 		components: {
 			FormRegister,
@@ -39,8 +40,7 @@
 			}
 		},
 		mounted() {
-			this.modal = new Modal(document.getElementById('hulaModal'))
-			this.modal.show()
+			//this.modal = new Modal(document.getElementById('hulaModal'))
 		}
 	}
 </script>
