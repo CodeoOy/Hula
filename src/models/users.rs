@@ -46,6 +46,16 @@ pub struct UserFavorites {
 	pub updated_by: String,
 }
 
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
+#[belongs_to(User, foreign_key = "user_id")]
+#[table_name = "sessions"]
+pub struct Session {
+	pub id: uuid::Uuid,
+	pub user_id: uuid::Uuid,
+	pub expire_at: chrono::NaiveDateTime,
+	pub updated_by: String,
+}
+
 impl User {
 	pub fn from_details<S: Into<String>, T: Into<String>, U: Into<String>, V: Into<String>>(
 		email: S,
