@@ -61,9 +61,10 @@ fn query_projectneedskills(
 	pool: web::Data<Pool>,
 	pid: String
 ) -> Result<Vec<ProjectNeedSkill>, crate::errors::ServiceError> {
-	use crate::schema::projectneedskills::dsl::projectneedskills;
+	use crate::schema::projectneedskills::dsl::{projectneed_id, projectneedskills};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let items = projectneedskills.load::<ProjectNeedSkill>(conn)?;
+	let pid = uuid::Uuid::parse_str(&pid)?;
+	let items = projectneedskills.filter(projectneed_id.eq(pid)).load::<ProjectNeedSkill>(conn)?;
 	if items.is_empty() == false {
 		println!("\nGot all project need skills.\n");
 		return Ok(items);
