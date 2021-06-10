@@ -1,6 +1,6 @@
 <template>
 	<div class="container-fluid mt-4">
-		<VModal class="show">
+		<VModal v-on:loggedin="modal = null">
 			{{ logged }}
 			<FormLogin v-if="show_signup == false" v-on:checklogin="isLogged"/>
 			<FormRegister v-else/>
@@ -40,7 +40,8 @@
 			}
 		},
 		mounted() {
-			//this.modal = new Modal(document.getElementById('hulaModal'))
+			this.modal = new Modal(document.getElementById('hulaModal'))
+			this.modal.show()
 		}
 	}
 </script>

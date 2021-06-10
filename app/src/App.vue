@@ -36,13 +36,13 @@
 							time: 1000
 						});
 					} else {
-						fetch('/api/auth', {method: 'DELETE'})
 						this.logged = false;
 						this.$flashMessage.show({
 							type: 'error',
 							title: 'Some kind of error or unauthorized',
 							time: 1000
 						});
+						this.$router.push({ path: '/' })
 					}
 				})
 				this.user = this.$store.state.loggeduser

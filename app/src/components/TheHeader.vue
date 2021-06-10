@@ -68,7 +68,6 @@ export default {
 				});
 			})
 			this.$emit('loggedout')
-			this.$router.push({ path: 'home' })
 		}
 	}
 };
