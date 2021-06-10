@@ -76,6 +76,10 @@ a {
 	background-color: rgba(15,0,15,0.9);
 }
 
+.modal-header {
+	border-bottom: 1px solid $separator-color;
+}
+
 .text-white {
 	color: #fff;
 }
@@ -174,17 +178,17 @@ header {
 }
 
 .nav-tabs.nav-dark{
-	border-bottom: 1px solid #800da6;
+	border-bottom: 1px solid $separator-color;
 	.nav-link {
 		margin-bottom: 0px;
 		background-color: #330b41;
 		border: none;
 		&.active {
-			background-color: #800da6;
+			background-color: $separator-color;
 			color: lighten($link-color, 10%);
 		}
 		&:hover {
-			background-color: #800da6;
+			background-color: $separator-color;
 		}
 	}
 }
