@@ -21,6 +21,7 @@ export default function setupRouter() {
 			{ path: '/app/dashboard', component: views.Dashboard },
 			{ path: '/app/profile', component: views.Profile },
 			{ path: '/app/admin', component: views.Admin },
+			{ path: '/app/gdpr', component: views.Gdpr },
 		],
 		history: createWebHistory(),
 		linkActiveClass: 'active',

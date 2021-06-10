@@ -5,11 +5,13 @@
 		<router-view :logged='logged' v-on:checklogin="checkLogin" />
 		<p>{{ this.$store.state.loggeduser }}</p>
 		<p>{{ user }}</p>
+		<TheFooter />
 	</main>
 </template>
 
 <script>
 	import TheHeader from './components/TheHeader.vue' 
+	import TheFooter from './components/TheFooter.vue' 
 	export default {
 		name: 'App',
 
@@ -22,7 +24,8 @@
 			}
 		},
 		components: {
-			'TheHeader': TheHeader,
+			TheHeader,
+			TheFooter,
   		},
 		methods: {
 			checkLogin: function() {

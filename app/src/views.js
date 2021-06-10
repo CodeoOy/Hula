@@ -4,6 +4,7 @@ import Dashboard from './views/Dashboard.vue'
 import Profile from './views/Profile.vue'
 import Admin from './views/Admin.vue'
 import Page404 from './views/Page404.vue'
+import Gdpr from './views/Gdpr.vue'
 
 export {
 	Home,
@@ -11,5 +12,6 @@ export {
 	Confirm,
 	Profile,
 	Admin,
-	Dashboard
+	Dashboard,
+	Gdpr
 }
