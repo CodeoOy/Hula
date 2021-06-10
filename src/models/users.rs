@@ -52,6 +52,7 @@ pub struct UserFavorites {
 pub struct Session {
 	pub id: uuid::Uuid,
 	pub user_id: uuid::Uuid,
+	pub expire_at: chrono::NaiveDateTime,
 	pub updated_by: String,
 }
 
