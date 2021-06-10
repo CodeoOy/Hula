@@ -44,6 +44,15 @@ table! {
 }
 
 table! {
+    sessions (id) {
+        id -> Uuid,
+        user_id -> Uuid,
+        expire_at -> Timestamp,
+        updated_by -> Varchar,
+    }
+}
+
+table! {
     skillcategories (id) {
         id -> Uuid,
         label -> Varchar,
@@ -152,6 +161,7 @@ joinable!(projectneeds -> projects (project_id));
 joinable!(projectneedskills -> projectneeds (projectneed_id));
 joinable!(projectneedskills -> skills (skill_id));
 joinable!(projectneedskills -> skillscopelevels (skillscopelevel_id));
+joinable!(sessions -> users (user_id));
 joinable!(skills -> skillcategories (skillcategory_id));
 joinable!(skills -> skillscopes (skillscope_id));
 joinable!(skillscopelevels -> skillscopes (skillscope_id));
@@ -167,6 +177,7 @@ allow_tables_to_appear_in_same_query!(
     projectneeds,
     projectneedskills,
     projects,
+    sessions,
     skillcategories,
     skills,
     skillscopelevels,
