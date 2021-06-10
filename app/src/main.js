@@ -38,7 +38,7 @@ const store = createStore({
 				credentials: 'include'
 			})
 			.then((response) => response.json())
-				.then((response) => {
+			.then((response) => {
 				var project = response
 				fetch(`/api/projectneeds/${data}`, {
 					method: 'GET',
@@ -46,6 +46,11 @@ const store = createStore({
 					credentials: 'include'
 				})
 				.then((response) => response.json())
+				.catch((errors) => {
+					console.log("No needs for project: " + project.id)
+					console.log(errors)
+					project.needs = {}
+				})
 				.then((response) => {
 					project.needs = response
 					project.needs.forEach(function (projectneed) {
@@ -55,10 +60,20 @@ const store = createStore({
 							credentials: 'include'
 						})
 						.then((response) => response.json())
+						.catch((errors) => {
+							console.log("No skills for need: " + projectneed.id)
+							console.log(errors)
+							projectneed.skills = {}
+						})
 						.then((response) => {
 							projectneed.skills = response
 						})
 					});
+				})
+				.catch((errors) => {
+					console.log("No needs for project: " + project.id)
+					console.log(errors)
+					project.needs = {}
 				})
 				.then((response) => {
 					console.log("Project from state:")

@@ -1,6 +1,6 @@
 <template>
 	<div class="container-fluid mt-4">
-		<VModal v-on:loggedin="modal = null">
+		<VModal v-on:loggedin="hideModal">
 			{{ logged }}
 			<FormLogin v-if="show_signup == false" v-on:checklogin="isLogged"/>
 			<FormRegister v-else/>
@@ -37,6 +37,9 @@
 		methods: {
 			isLogged () {
 				this.$emit('checklogin')
+			},
+			hideModal () {
+				//this.modal.hide()
 			}
 		},
 		mounted() {

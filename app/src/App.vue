@@ -63,6 +63,11 @@
 							credentials: 'include'
 						})
 						.then((response) => response.json())
+						.catch((errors) => {
+							console.log("No needs for project: " + project.id)
+							console.log(errors)
+							project.needs = {}
+						})
 						.then((response) => {
 							project.needs = response
 						})
