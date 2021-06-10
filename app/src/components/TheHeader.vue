@@ -66,9 +66,9 @@ export default {
 					title: 'Successfully logged out',
 					time: 1000
 				});
+				this.$emit('loggedout')
 				this.$router.push({ path: '/' })
 			})
-			this.$emit('loggedout')
 		}
 	}
 };
