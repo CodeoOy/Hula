@@ -36,6 +36,8 @@
 				</div>
 			</div>
 			<div v-if="'id' in chosenproject && !('id' in chosenneed)">
+				<hr />
+				<h3>New need</h3>
 				<label class="form-label">How many pros for this need?</label>
 				<input type="number" aria-label="Number of pros" class="form-control mb-2" v-model.number="querydata_need.count_of_users">
 				<label class="form-label">When does this need start?</label>
@@ -48,6 +50,8 @@
 				<button v-on:click="createProjectNeed" class="btn btn-gradient" type="button">Save need</button>
 			</div>
 			<div v-if="'id' in chosenneed">
+				<hr />
+				<h3>Add skill to this need</h3>
 				<label class="form-label">Skill</label>
 				<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which skill" v-model="querydata_needskill.skill_id">
 					<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
