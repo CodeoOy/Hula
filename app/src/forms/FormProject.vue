@@ -180,6 +180,7 @@ export default {
 				this.querydata_need = response;
 				this.querydata_needskill.projectneed_id = response.id
 				this.chosenneed = response
+				this.$store.commit('setChosenProject', this.chosenproject.id)
 			})
 			.catch((errors) => {
 				console.log(errors);
@@ -195,6 +196,7 @@ export default {
 			.then((response) => response.json())
 			.then(response => { 
 				this.chosenskill.id = response.id;
+				this.$store.commit('setChosenProject', this.chosenproject.id)
 			})
 			.catch((errors) => {
 				console.log(errors);
