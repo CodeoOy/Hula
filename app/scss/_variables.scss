@@ -17,6 +17,11 @@ $input-bg:				#eee;
 $input-disabled-bg: 	#ccc;
 $table-striped-color:	$light;
 
+$accordion-bg: darken($primary, 40%);
+$accordion-button-active-bg: darken($primary, 30%);
+$accordion-color: $link-color;
+$accordion-button-active-color: $link-color;
+
 @font-face {
     font-family: 'salomeitalic';
     src: url('../assets/salome_italic-webfont.woff2') format('woff2'),

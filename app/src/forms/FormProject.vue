@@ -10,28 +10,38 @@
 		</div>
 		<div v-if="'id' in chosenproject">
 			<h3>{{ chosenproject.name }} needs</h3>
-			<div v-for="need in chosenproject.needs" :key="need.id">
-				<a href="#" v-on:click.prevent="this.chosenneed.id = need.id">{{ need.count_of_users}} from {{ need.begin_time }} to {{ need.end_time }} at percentage: {{ need.percentage}}</a>
-				<table class="table table-dark table-striped text-light" v-if="'id' in chosenneed">
-					<thead>
-						<tr>
-							<th scope="col">Skill</th>
-							<th scope="col">Min level</th>
-							<th scope="col">Min years</th>
-							<th scope="col">Max years</th>
-							<th scope="col">Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="skill in need.skills" :key="skill.id">
-							<td>{{ skill.id }}</td>
-							<td>{{ skill.level }}</td>
-							<td>{{ skill.min_years }}</td>
-							<td>{{ skill.max_years }}</td>
-							<td>Edit - Delete</td>
-						</tr>
-					</tbody>
-				</table>
+			<div class="accordion accordion-flush" id="needsAccordion">
+				<div class="accordion-item bg-dark" v-for="need in chosenproject.needs" :key="need.id">
+					<h4 class="accordion-header" :id="'heading' + need.id">
+					<button v-on:click.prevent="this.chosenneed.id = need.id" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#acc-' + need.id" aria-expanded="true" :aria-controls="need.id">
+						{{ need.count_of_users}} from {{ need.begin_time }} to {{ need.end_time }} at percentage: {{ need.percentage}}
+					</button>
+					</h4>
+					<div :id="'acc-' + need.id" class="accordion-collapse collapse" :aria-labelledby="'heading' + need.id" data-bs-parent="#needsAccordion">
+						<div class="accordion-body">
+							<table class="table table-dark table-striped text-light">
+								<thead>
+									<tr>
+										<th scope="col">Skill</th>
+										<th scope="col">Min level</th>
+										<th scope="col">Min years</th>
+										<th scope="col">Max years</th>
+										<th scope="col">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="skill in need.skills" :key="skill.id">
+										<td>{{ skill.id }}</td>
+										<td>{{ skill.level }}</td>
+										<td>{{ skill.min_years }}</td>
+										<td>{{ skill.max_years }}</td>
+										<td>Edit - Delete</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div v-if="'id' in chosenproject && !('id' in chosenneed)">
