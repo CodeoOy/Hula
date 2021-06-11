@@ -14,7 +14,7 @@
 				<tbody>
 					<tr v-for="(project, index) in this.$store.state.projects" :key="project.id">
 						<th scope="row">{{ index + 1 }}</th>
-						<td><router-link :to="{ path: 'project', params: { project: project.id}}">{{ project.name }}</router-link></td>
+						<td><router-link :to="{ name: 'project', params: { id: project.id}}">{{ project.name }}</router-link></td>
 						<td>
 							<p v-for="need in project.needs" :key="need.id">{{ need.id }}</p>
 						</td>

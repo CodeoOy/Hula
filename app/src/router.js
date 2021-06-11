@@ -22,7 +22,7 @@ export default function setupRouter() {
 			{ path: '/app/profile', component: views.Profile },
 			{ path: '/app/admin', component: views.Admin },
 			{ path: '/app/gdpr', component: views.Gdpr },
-			{ path: '/app/project/:id', component: views.Project },
+			{ path: '/app/project/:id', component: views.Project, name: 'project' },
 		],
 		history: createWebHistory(),
 		linkActiveClass: 'active',
