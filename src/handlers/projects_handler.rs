@@ -41,7 +41,7 @@ fn query_all_projects(pool: web::Data<Pool>) -> Result<Vec<Project>, crate::erro
 }
 
 pub async fn get_projectneedskills(
-	pool: web::Data<Pool>, 
+	pool: web::Data<Pool>,
 	pid: web::Path<String>,
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
@@ -59,12 +59,14 @@ pub async fn get_projectneedskills(
 
 fn query_projectneedskills(
 	pool: web::Data<Pool>,
-	pid: String
+	pid: String,
 ) -> Result<Vec<ProjectNeedSkill>, crate::errors::ServiceError> {
 	use crate::schema::projectneedskills::dsl::{projectneed_id, projectneedskills};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let pid = uuid::Uuid::parse_str(&pid)?;
-	let items = projectneedskills.filter(projectneed_id.eq(pid)).load::<ProjectNeedSkill>(conn)?;
+	let items = projectneedskills
+		.filter(projectneed_id.eq(pid))
+		.load::<ProjectNeedSkill>(conn)?;
 	if items.is_empty() == false {
 		println!("\nGot all project need skills.\n");
 		return Ok(items);
@@ -267,12 +269,13 @@ fn query_one(pid: String, pool: web::Data<Pool>) -> Result<Project, crate::error
 }
 
 pub async fn update_project(
-	uuid_data: web::Path<String>, 
+	uuid_data: web::Path<String>,
 	projectdata: web::Json<ProjectData>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	let res = web::block(move || query_update_project(uuid_data.into_inner(), projectdata, pool, logged_user.email)).await;
+	let res =
+		web::block(move || query_update_project(uuid_data.into_inner(), projectdata, pool, logged_user.email)).await;
 	println!("\nProject updated\n");
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
@@ -284,7 +287,7 @@ pub async fn update_project(
 }
 
 fn query_update_project(
-	uuid_data: String, 
+	uuid_data: String,
 	projectdata: web::Json<ProjectData>,
 	pool: web::Data<Pool>,
 	email: String,
@@ -296,10 +299,7 @@ fn query_update_project(
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	let mut items = diesel::update(projects)
 		.filter(id.eq(uuid_query))
-		.set((
-			name.eq(projectdata.name.clone()),
-			updated_by.eq(email.clone()),
-		))
+		.set((name.eq(projectdata.name.clone()), updated_by.eq(email.clone())))
 		.load::<Project>(conn)?;
 	if let Some(_project_res) = items.pop() {
 		println!("\nUpdate successful.\n");
@@ -331,9 +331,12 @@ fn query_delete_project(uuid_data: String, pool: web::Data<Pool>) -> Result<(), 
 	Ok(())
 }
 
-pub async fn delete_all_projects(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
-	let res = web::block(move || query_delete_all_projects(pool)).await;
-	println!("\nAll projects deleted\n");
+pub async fn delete_projectneed(
+	uuid_data: web::Path<String>,
+	pool: web::Data<Pool>,
+) -> Result<HttpResponse, ServiceError> {
+	let res = web::block(move || query_delete_projectneed(uuid_data.into_inner(), pool)).await;
+	println!("\nProject's need deleted\n");
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
@@ -343,10 +346,37 @@ pub async fn delete_all_projects(pool: web::Data<Pool>) -> Result<HttpResponse, 
 	}
 }
 
-fn query_delete_all_projects(pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
+fn query_delete_projectneed(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
 	let conn: &PgConnection = &pool.get().unwrap();
-	use crate::schema::projects::dsl::*;
+	use crate::schema::projectneeds::dsl::id;
+	use crate::schema::projectneeds::dsl::*;
 
-	diesel::delete(projects).execute(conn)?;
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	diesel::delete(projectneeds.filter(id.eq(uuid_query))).execute(conn)?;
+	Ok(())
+}
+
+pub async fn delete_projectneedskill(
+	uuid_data: web::Path<String>,
+	pool: web::Data<Pool>,
+) -> Result<HttpResponse, ServiceError> {
+	let res = web::block(move || query_delete_projectneedskill(uuid_data.into_inner(), pool)).await;
+	println!("\nProject's skill deleted\n");
+	match res {
+		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_delete_projectneedskill(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
+	let conn: &PgConnection = &pool.get().unwrap();
+	use crate::schema::projectneedskills::dsl::id;
+	use crate::schema::projectneedskills::dsl::*;
+
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	diesel::delete(projectneedskills.filter(id.eq(uuid_query))).execute(conn)?;
 	Ok(())
 }

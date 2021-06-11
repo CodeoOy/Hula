@@ -138,14 +138,13 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/projects")
 							.route(web::get().to(handlers::projects_handler::get_all_projects))
-							.route(web::post().to(handlers::projects_handler::create_project))
-							.route(web::delete().to(handlers::projects_handler::delete_all_projects)),
+							.route(web::post().to(handlers::projects_handler::create_project)),
 					)
 					.service(
 						web::resource("/projects/{id}")
-						.route(web::put().to(handlers::projects_handler::update_project))
-						.route(web::delete().to(handlers::projects_handler::delete_project))
-						.route(web::get().to(handlers::projects_handler::get_by_pid)),
+							.route(web::put().to(handlers::projects_handler::update_project))
+							.route(web::delete().to(handlers::projects_handler::delete_project))
+							.route(web::get().to(handlers::projects_handler::get_by_pid)),
 					)
 					.service(
 						web::resource("/projectneeds")
@@ -153,7 +152,8 @@ async fn main() -> std::io::Result<()> {
 					)
 					.service(
 						web::resource("/projectneeds/{id}")
-							.route(web::get().to(handlers::projects_handler::get_project_needs)),
+							.route(web::get().to(handlers::projects_handler::get_project_needs))
+							.route(web::delete().to(handlers::projects_handler::delete_projectneed)),
 					)
 					.service(
 						web::resource("/projectskills")
@@ -161,7 +161,8 @@ async fn main() -> std::io::Result<()> {
 					)
 					.service(
 						web::resource("/projectskills/{id}")
-							.route(web::get().to(handlers::projects_handler::get_projectneedskills)),
+							.route(web::get().to(handlers::projects_handler::get_projectneedskills))
+							.route(web::delete().to(handlers::projects_handler::delete_projectneedskill)),
 					)
 					.service(web::resource("/matches").route(web::get().to(handlers::matches_handler::get_all_matches)))
 					.service(
