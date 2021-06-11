@@ -27,6 +27,9 @@ export default {
 			fetch(`/api/users/${this.usertodelete}`, {
 				method: 'DELETE', 
 			})
+			.catch((errors) => {
+				console.log(errors);
+			})
 		},
 		getAllUsers: function() {
 			fetch('/api/users', {method: 'GET'})

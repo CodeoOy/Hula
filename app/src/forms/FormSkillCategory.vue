@@ -42,6 +42,9 @@ export default {
 					credentials: 'include',
 					body: JSON.stringify(this.querydata)
 				})
+				.catch((errors) => {
+					console.log(errors);
+				})
 			}
 		},
 		getSkillCategories: function() {

@@ -44,6 +44,9 @@ export default {
 				credentials: 'include',
 				body: JSON.stringify(this.querydata)
 			})
+			.catch((errors) => {
+				console.log(errors);
+			})
 		},
 		getSkillScopes: function() {
 			fetch('/api/skills/scopes', {method: 'GET'})

@@ -75,7 +75,8 @@
 			</select>
 			<button v-on:click="createProjectNeedSkill" class="btn btn-gradient" type="button">Save skill to need</button>
 		</div>
-		<button v-if="'id' in chosenproject" type="submit" class="btn btn-gradient mb-1">Save Project</button>
+		<hr />
+		<button v-if="'id' in chosenproject" type="submit" class="btn btn-gradient mb-1 mt-4">Save Project</button>
 	</form> 
 </template>
 
@@ -86,7 +87,7 @@ export default {
 		return {
 			querydata_need: {
 				id: '06ba4809-f20b-4687-945b-e033a6751fca',
-				project_id: '',
+				project_id: this.chosenproject.id,
 				count_of_users: Number,
 				begin_time: "",
 				end_time: "",
@@ -145,6 +146,9 @@ export default {
 				this.chosenproject.id = response.id
 				this.querydata_need.project_id = response.id
 			})
+			.catch((errors) => {
+				console.log(errors);
+			})
 		},
 		updateProject: function() {
 			fetch(`/api/projects/${this.chosenproject.id}`, {
@@ -157,6 +161,9 @@ export default {
 			.then((response) => {
 				this.chosenproject.id = response.id
 				this.querydata_need.project_id = response.id
+			})
+			.catch((errors) => {
+				console.log(errors);
 			})
 		},
 		createProjectNeed: function() {
@@ -173,7 +180,10 @@ export default {
 				this.querydata_need = response;
 				this.querydata_needskill.projectneed_id = response.id
 				this.chosenneed = response
-			}) 
+			})
+			.catch((errors) => {
+				console.log(errors);
+			})
 		},
 		createProjectNeedSkill: function() {
 			fetch('/api/projectskills', {
@@ -185,7 +195,10 @@ export default {
 			.then((response) => response.json())
 			.then(response => { 
 				this.chosenskill.id = response.id;
-			}) 
+			})
+			.catch((errors) => {
+				console.log(errors);
+			})
 		},
 		getAllSkills: function() {
 			fetch('/api/skills', {method: 'GET'})
@@ -194,7 +207,7 @@ export default {
 				this.available_skills = response;
 			})    
 			.catch((errors) => {
-				//console.log(errors); // This gives unexpected end of json
+				console.log(errors);
 			})
 		},
 		getAllLevels: function() {
@@ -204,7 +217,7 @@ export default {
 				this.skill_levels = response
 			})    
 			.catch((errors) => {
-				//console.log(errors); // This gives unexpected end of json
+				console.log(errors);
 			})
 		},
 		getSkillScope: function(needle) {
@@ -238,8 +251,6 @@ export default {
 			}
 		},
 		filterSkills: function(need) {
-			//console.log("Skills:")
-			//console.log(this.projectneedskills)
 			return this.projectneedskills.filter(skill => skill.projectneed_id == need)
 		}
 	},

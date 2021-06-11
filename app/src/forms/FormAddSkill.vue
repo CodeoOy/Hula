@@ -50,6 +50,9 @@ export default {
 			.then(() => {
 				this.$store.commit('setUser', this.user.id)
 			})
+			.catch((errors) => {
+				console.log(errors);
+			})
 		},
 		getAllSkills: function() {
 			fetch('/api/skills', {method: 'GET'})
@@ -58,7 +61,7 @@ export default {
 				this.available_skills = response;
 			})    
 			.catch((errors) => {
-				console.log(errors); // This gives unexpected end of json
+				console.log(errors);
 			})
 		},
 		getAllLevels: function() {
@@ -68,7 +71,7 @@ export default {
 				this.skill_levels = response;
 			})    
 			.catch((errors) => {
-				console.log(errors); // This gives unexpected end of json
+				console.log(errors);
 			})
 		},
 		getSkillScope: function(needle) {

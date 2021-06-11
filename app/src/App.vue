@@ -43,6 +43,9 @@
 						this.$router.push({ path: '/' })
 					}
 				})
+				.catch((errors) => {
+					console.log(errors);
+				})
 				this.user = this.$store.state.loggeduser
 			},
 			getProjects: function() {
@@ -51,6 +54,9 @@
 					headers: {"Content-Type": "application/json"}
 				})
 				.then((response) => response.json())
+				.catch((errors) => {
+					console.log(errors);
+				})
 				.then(response => {
 					let self = this
 					this.projects = response
