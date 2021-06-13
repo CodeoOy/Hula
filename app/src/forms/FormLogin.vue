@@ -52,6 +52,9 @@
 						});
 					}
 				})
+				.catch((errors) => {
+					console.log("Error data: " + errors);
+				}) 
 			},
 			login: async function(e) { 
 				e.preventDefault()    

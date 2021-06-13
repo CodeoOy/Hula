@@ -39,6 +39,7 @@
 				this.$emit('checklogin')
 			},
 			hideModal () {
+				console.log("hidemodal")
 				//this.modal.hide()
 			}
 		},
