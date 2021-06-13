@@ -67,7 +67,6 @@ export default {
 					time: 1000
 				});
 				this.$emit('loggedout')
-				this.$router.push({ path: '/' })
 			})
 		}
 	}

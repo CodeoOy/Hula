@@ -83,9 +83,6 @@
 		mounted() {
 			this.checkLogin()
 			this.getProjects()
-		},
-		updated() {
-			this.checkLogin()
 		}
 	}
 </script>
