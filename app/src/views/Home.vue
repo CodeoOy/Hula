@@ -1,8 +1,8 @@
 <template>
 	<div class="container-fluid mt-4">
-		<VModal v-on:loggedin="hideModal">
+		<VModal v-if="!logged">
 			{{ logged }}
-			<FormLogin v-if="show_signup == false" v-on:checklogin="isLogged"/>
+			<FormLogin v-if="show_signup == false" v-on:checklogin="isLogged" v-on:loggedin="hideModal"/>
 			<FormRegister v-else/>
 			<a href="#" v-if="show_signup == false" v-on:click="show_signup = true">Or sign up here.</a>
 			<a href="#" v-else v-on:click="show_signup = false">Already a user? Log in here.</a>
@@ -39,13 +39,14 @@
 				this.$emit('checklogin')
 			},
 			hideModal () {
-				console.log("hidemodal")
-				//this.modal.hide()
+				this.modal.hide()
 			}
 		},
 		mounted() {
 			this.modal = new Modal(document.getElementById('hulaModal'))
-			this.modal.show()
+			if (this.logged == false) {
+				this.modal.show()
+			}
 		}
 	}
 </script>

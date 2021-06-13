@@ -36,25 +36,30 @@
 					body: JSON.stringify(data)
 				})
 				.then((response) => {
-					if (response.ok) {
-						fetch('/api/auth', {method: 'GET'})
-						.then((response) => response.json())
-						.then((response) => {
-							this.$store.commit('setUser', response)
-							this.$emit('loggedin')
-						})
+					if(response.ok) {
+						this.logged = true;
 					} else {
-						fetch('/api/auth', {method: 'DELETE'})
+						this.logged = false;
 						this.$flashMessage.show({
 							type: 'error',
-							title: 'Bad credentials. Cookies maybe deleted.',
+							title: 'Unauthorized',
 							time: 1000
 						});
+						throw new Error('Auth (POST) failed');
 					}
 				})
-				.catch((errors) => {
-					console.log("Error data: " + errors);
-				}) 
+				.then((response) => {
+					fetch('/api/auth', {method: 'GET'})
+					.then((response) => response.json())
+					.catch((errors) => {
+						console.log("Auth (GET) failed, error data:");
+						console.log(errors)
+					}) 
+					.then((response) => {
+						this.$store.commit('setUser', response)
+						this.$emit('loggedin')
+					})
+				})
 			},
 			login: async function(e) { 
 				e.preventDefault()    
