@@ -29,12 +29,15 @@
   		},
 		methods: {
 			checkLogin: function() {
+				console.log("Checking log in")
 				fetch('/api/auth', {method: 'GET'})
 				.then((response) => {
 					if(response.ok) {
 						this.logged = true;
+						this.user = this.$store.state.loggeduser
 					} else {
 						this.logged = false;
+						this.user = {}
 						this.$flashMessage.show({
 							type: 'error',
 							title: 'Unauthorized',
@@ -46,7 +49,6 @@
 				.catch((errors) => {
 					console.log(errors);
 				})
-				this.user = this.$store.state.loggeduser
 			},
 			getProjects: function() {
 				fetch('/api/projects', {

@@ -37,9 +37,17 @@
 				})
 				.then((response) => {
 					if(response.ok) {
-						this.logged = true;
+						fetch('/api/auth', {method: 'GET'})
+						.then((response) => response.json())
+						.catch((errors) => {
+							console.log("Auth (GET) failed, error data:");
+							console.log(errors)
+						}) 
+						.then((response) => {
+							this.$store.commit('setUser', response)
+							this.$emit('hideModal')
+						})
 					} else {
-						this.logged = false;
 						this.$flashMessage.show({
 							type: 'error',
 							title: 'Unauthorized',
@@ -47,18 +55,6 @@
 						});
 						throw new Error('Auth (POST) failed');
 					}
-				})
-				.then((response) => {
-					fetch('/api/auth', {method: 'GET'})
-					.then((response) => response.json())
-					.catch((errors) => {
-						console.log("Auth (GET) failed, error data:");
-						console.log(errors)
-					}) 
-					.then((response) => {
-						this.$store.commit('setUser', response)
-						this.$emit('loggedin')
-					})
 				})
 			},
 			login: async function(e) { 
