@@ -1,7 +1,7 @@
 <template>
 	<form v-on:submit="UpdateProject">
 		<div class="mb-2">
-			<p v-if="errorsPresent" class="error">Please fill out label!</p>
+			<p v-if="errors.length && errors.includes('project-error')" class="error">Please fill out label!</p>
 			<div class="mb-2">
 				<label class="form-label">Project name</label>
 				<input class="form-control" type="text" placeholder="Project name" name="label" v-model="chosenproject.name" />
@@ -39,6 +39,24 @@
 									</tr>
 								</tbody>
 							</table>
+							<div v-if="'id' in chosenneed">
+								<hr />
+								<h3>Add skill to this need</h3>
+								<p v-if="errors.length && errors.includes('skill-error')" class="error">Error in adding skill. Maybe it's already added?</p>
+								<label class="form-label">Skill</label>
+								<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which skill" v-model="querydata_needskill.skill_id">
+									<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
+										{{ avskill.label }}
+									</option>
+								</select>
+								<label class="form-label">Minimum level</label>
+								<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which level" v-model="querydata_needskill.skillscopelevel_id">
+									<option v-for="levelres in filterLevels" :key="levelres" :value="levelres.id">
+										{{ levelres.label }}
+									</option>
+								</select>
+								<button v-on:click="createProjectNeedSkill" class="btn btn-gradient" type="button">Save skill to need</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -57,23 +75,6 @@
 			<label class="form-label">At what percentage?</label>
 			<input type="number" aria-label="Percentage" class="form-control mb-2" v-model.number="querydata_need.percentage">
 			<button v-on:click="createProjectNeed" class="btn btn-gradient" type="button">Save need</button>
-		</div>
-		<div v-if="'id' in chosenneed">
-			<hr />
-			<h3>Add skill to this need</h3>
-			<label class="form-label">Skill</label>
-			<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which skill" v-model="querydata_needskill.skill_id">
-				<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
-					{{ avskill.label }}
-				</option>
-			</select>
-			<label class="form-label">Minimum level</label>
-			<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which level" v-model="querydata_needskill.skillscopelevel_id">
-				<option v-for="levelres in filterLevels" :key="levelres" :value="levelres.id">
-					{{ levelres.label }}
-				</option>
-			</select>
-			<button v-on:click="createProjectNeedSkill" class="btn btn-gradient" type="button">Save skill to need</button>
 		</div>
 		<hr />
 		<button v-if="'id' in chosenproject" type="submit" class="btn btn-gradient mb-1 mt-4">Save Project</button>
@@ -122,7 +123,7 @@ export default {
 			},
 			available_skills: {},
 			skill_levels: {},
-			errorsPresent: false,
+			errors: []
 		}
 	},
 	props: {
@@ -147,6 +148,7 @@ export default {
 				this.querydata_need.project_id = response.id
 			})
 			.catch((errors) => {
+				this.errors.push('project-error')
 				console.log(errors);
 			})
 		},
@@ -199,6 +201,7 @@ export default {
 				this.$store.commit('setChosenProject', this.chosenproject.id)
 			})
 			.catch((errors) => {
+				this.errors.push('skill-error')
 				console.log(errors);
 			})
 		},
