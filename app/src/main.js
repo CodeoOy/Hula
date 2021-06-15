@@ -31,16 +31,15 @@ const store = createStore({
 			localStorage.setItem('projects', JSON.stringify(data));
 			state.projects = data
 		},
-		setChosenProject (state, data) {
-			fetch(`/api/projects/${data}`, {
-				method: 'GET',
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include'
-			})
-			.then((response) => response.json())
-			.then((response) => {
-				var project = response
-				fetch(`/api/projectneeds/${data}`, {
+		async setChosenProject (state, data) {
+			try {
+				let project = await fetch(`/api/projects/${data}`, {
+					method: 'GET',
+					headers: {"Content-Type": "application/json"},
+					credentials: 'include'
+				})
+				.then((response) => response.json())
+				project.needs = await fetch(`/api/projectneeds/${data}`, {
 					method: 'GET',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include'
@@ -51,37 +50,24 @@ const store = createStore({
 					console.log(errors)
 					project.needs = {}
 				})
-				.then((response) => {
-					project.needs = response
-					project.needs.forEach(function (projectneed) {
-						fetch(`/api/projectskills/${projectneed.id}`, {
-							method: 'GET',
-							headers: {"Content-Type": "application/json"},
-							credentials: 'include'
-						})
-						.then((response) => response.json())
-						.catch((errors) => {
-							console.log("No skills for need: " + projectneed.id)
-							console.log(errors)
-							projectneed.skills = {}
-						})
-						.then((response) => {
-							projectneed.skills = response
-						})
-					});
-				})
-				.catch((errors) => {
-					console.log("No needs for project: " + project.id)
-					console.log(errors)
-					project.needs = {}
-				})
-				.then((response) => {
-					console.log("Project from state:")
-					console.log(project)
-					localStorage.setItem('chosenproject', JSON.stringify(project));
-					state.chosenproject = project
-				})
-			})
+				console.log("Project from state:")
+				console.log(project)
+				await Promise.all(project.needs.map(need =>
+					fetch(`/api/projectskills/${need.id}`, {
+						method: 'GET',
+						headers: {"Content-Type": "application/json"},
+						credentials: 'include'
+					})
+					.then((response) => response.json())
+					.then(response => {
+						need.skills = response
+					})
+				))
+				localStorage.setItem('chosenproject', JSON.stringify(project));
+				state.chosenproject = project
+			} catch (errors) {
+				console.log(errors)
+			}
 		},
 		resetChosenProject (state) {
 			state.chosenproject = {}

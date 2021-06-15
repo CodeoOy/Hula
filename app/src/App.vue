@@ -84,7 +84,7 @@
 		},
 		mounted() {
 			this.checkLogin()
-			this.getProjects()
+			//this.getProjects()
 		}
 	}
 </script>
