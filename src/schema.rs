@@ -157,6 +157,16 @@ table! {
 	}
 }
 
+table! {
+	activesessions (session_id) {
+        session_id -> Uuid,
+        user_id -> Uuid,
+		email -> Varchar,
+        expire_at -> Timestamp,
+        isadmin -> Bool,
+	}
+}
+
 joinable!(projectneeds -> projects (project_id));
 joinable!(projectneedskills -> projectneeds (projectneed_id));
 joinable!(projectneedskills -> skills (skill_id));

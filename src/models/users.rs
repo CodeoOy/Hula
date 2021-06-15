@@ -1,10 +1,11 @@
 use super::super::schema::*;
 use crate::errors::ServiceError;
 use actix_identity::Identity;
-use actix_web::{dev::Payload, Error, FromRequest, HttpRequest};
-use diesel::{r2d2::ConnectionManager, PgConnection};
+use actix_web::{dev::Payload, Error, FromRequest, HttpRequest, web::Data};
+use diesel::{prelude::*, r2d2::ConnectionManager, PgConnection};
 use futures::future::{err, ok, Ready};
 use serde::{Deserialize, Serialize};
+use crate::models;
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
@@ -56,6 +57,16 @@ pub struct Session {
 	pub updated_by: String,
 }
 
+#[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
+#[table_name = "activesessions"]
+pub struct ActiveSession {
+	pub session_id: uuid::Uuid,
+	pub user_id: uuid::Uuid,
+	pub email: String,
+	pub expire_at: chrono::NaiveDateTime,
+	pub isadmin: bool,
+}
+
 impl User {
 	pub fn from_details<S: Into<String>, T: Into<String>, U: Into<String>, V: Into<String>>(
 		email: S,
@@ -81,23 +92,23 @@ impl User {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct SlimUser {
+pub struct LoggedUser {
 	pub email: String,
 	pub uid: uuid::Uuid,
+	pub session_id: uuid::Uuid,
+	pub isadmin: bool,
 }
 
-impl From<User> for SlimUser {
-	fn from(user: User) -> Self {
-		SlimUser {
-			email: user.email,
-			uid: user.id,
+impl From<ActiveSession> for LoggedUser {
+	fn from(session: ActiveSession) -> Self {
+		LoggedUser {
+			email: session.email,
+			uid: session.user_id,
+			session_id: session.session_id,
+			isadmin: session.isadmin,
 		}
 	}
 }
-
-// we need the same data
-// simple aliasing makes the intentions clear and its more readable
-pub type LoggedUser = SlimUser;
 
 impl FromRequest for LoggedUser {
 	type Config = ();
@@ -106,13 +117,45 @@ impl FromRequest for LoggedUser {
 
 	fn from_request(req: &HttpRequest, pl: &mut Payload) -> Self::Future {
 		if let Ok(identity) = Identity::from_request(req, pl).into_inner() {
-			if let Some(user_json) = identity.identity() {
-				if let Ok(user) = serde_json::from_str(&user_json) {
-					println!("\nSuccessfully authenticated (from_request).\n");
-					return ok(user);
-				}
+			if let Some(cookie) = identity.identity() {
+				let pool = req.app_data::<Data<models::users::Pool>>().unwrap().clone();
+
+				let conn: &PgConnection = &pool.get().unwrap();
+				use crate::schema::activesessions::dsl::session_id;
+				use crate::schema::activesessions::dsl::*;
+
+				let id_res = uuid::Uuid::parse_str(&cookie);
+				match id_res {
+					Ok(id) => {
+						let session = activesessions
+							.filter(session_id.eq(&id))
+							.get_result::<ActiveSession>(conn);
+
+						if let Ok(s) = session {
+							if s.expire_at > chrono::offset::Utc::now().naive_utc() {
+								let u: LoggedUser = s.into();
+								return ok(u);
+							}
+
+							println!("extractor: Session expired!");
+						}
+						else {
+							println!("extractor: No active session found!");
+						}
+					},
+					Err(err) => {
+						println!("extractor: Not an UUID in the cookie! Error: {:?}", err);
+					}
+				};
+			}
+			else {
+				println!("extractor: Identity (cookie) not received!");
 			}
 		}
+		else {
+			println!("extractor: Request processing failed!");
+		}
+
 		err(ServiceError::Unauthorized.into())
 	}
 }
