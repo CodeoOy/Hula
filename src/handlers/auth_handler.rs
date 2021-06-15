@@ -5,7 +5,7 @@ use diesel::PgConnection;
 use serde::Deserialize;
 
 use crate::errors::ServiceError;
-use crate::models::users::{LoggedUser, Pool, Session, SlimUser, User};
+use crate::models::users::{LoggedUser, Pool, Session, User};
 use crate::utils::verify;
 
 #[derive(Debug, Deserialize)]
@@ -23,7 +23,7 @@ pub async fn logout(
 	println!("\nLogout\n");
 	id.forget();
 	match res {
-		Ok(sessio) => Ok(HttpResponse::Ok().json(&sessio)),
+		Ok(session) => Ok(HttpResponse::Ok().json(&session)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -39,9 +39,7 @@ pub async fn login(
 	println!("\nAuthenticating....\n");
 	match res {
 		Ok(user) => {
-			let user_string = serde_json::to_string(&user).unwrap();
-			//let user_to_vue = user_string.clone();
-			id.remember(user_string);
+			id.remember(user.id.to_string());
 			println!("\nSuccessfully authenticated (login).\n");
 			Ok(HttpResponse::Ok().finish()) // Instead of empty response, do we need the cookie to body in order to call it from Vue?
 			                    //Ok(HttpResponse::Ok().json(user_to_vue))
@@ -60,7 +58,7 @@ pub async fn get_me(logged_user: LoggedUser) -> HttpResponse {
 fn query(
 	auth_data: AuthData, 
 	pool: web::Data<Pool>
-) -> Result<SlimUser, ServiceError> {
+) -> Result<Session, ServiceError> {
 	use crate::schema::users::dsl::{email, users};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let mut items = users.filter(email.eq(&auth_data.email)).load::<User>(conn)?;
@@ -70,7 +68,7 @@ fn query(
 				println!("\nSuccessfully authenticated (db query).\n");
 				
 				if let Ok(session) = query_create_session(user.id.clone(), user.email.clone(), pool) {
-					return Ok(user.into());
+					return Ok(session);
 				}
 			}
 		}
@@ -84,7 +82,6 @@ fn query_create_session(
 	pool: web::Data<Pool>
 ) -> Result<Session, crate::errors::ServiceError> {
 	use crate::schema::sessions::dsl::sessions;
-	use crate::schema::users::dsl::{email, id, users};
 
 	let expiry_mins = std::env::var("SESSION_EXPIRY_MINS").unwrap_or_else(|_| "60".to_string());
 	let mins = expiry_mins.parse::<i64>().expect(&format!("Invalid number format in SESSION_EXPIRY_MINS: {}", expiry_mins));
@@ -115,7 +112,6 @@ fn query_delete_session(
 	pool: web::Data<Pool>
 ) -> Result<(), crate::errors::ServiceError> {
 	let conn: &PgConnection = &pool.get().unwrap();
-	use crate::schema::sessions::dsl::id;
 	use crate::schema::sessions::dsl::*;
 
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
