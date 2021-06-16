@@ -11,12 +11,21 @@
 			</div>
 			<div class="col-md-8">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					<h3>Needs</h3>
+					<div class="d-flex flex-row justify-content-between align-items-start">
+						<h2>Needs</h2>
+						<button class="btn btn-gradient">Add need</button>
+					</div>
+					<hr />
 					<div v-for="need in project.needs" :key="need.id">
-						<h4>
-							{{ need.count_of_users}} from {{ need.begin_time }} to {{ need.end_time }} at percentage: {{ need.percentage}}
-						</h4>
-						<table class="table table-dark table-striped text-light">
+						<div class="d-flex flex-row justify-content-between align-items-baseline">
+							<h6>{{ need.count_of_users}} from {{ need.begin_time }} to {{ need.end_time }} at percentage: {{ need.percentage}}</h6>
+							<div class="btn-group" role="group" aria-label="Basic example">
+								<a href="#" class="me-2">Edit</a>
+								<a href="#" class="me-2">Add skill</a>
+								<a href="#">Delete</a>
+							</div>
+						</div>
+						<table class="table table-dark table-striped text-light mb-4">
 							<thead>
 								<tr>
 									<th scope="col">Skill</th>
