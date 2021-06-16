@@ -15,10 +15,10 @@
 						<h2>Needs</h2>
 						<button class="btn btn-gradient">Add need</button>
 					</div>
-					<hr />
-					<div v-for="need in project.needs" :key="need.id">
-						<div class="d-flex flex-row justify-content-between align-items-baseline">
-							<h6>{{ need.count_of_users}} from {{ need.begin_time }} to {{ need.end_time }} at percentage: {{ need.percentage}}</h6>
+					<div class="mt-3" v-for="need in project.needs" :key="need.id">
+						<hr />
+						<div class="d-flex flex-row justify-content-between align-items-baseline mb-3">
+							<h5>{{ need.count_of_users}} from {{ need.begin_time }} at percentage: {{ need.percentage}}</h5>
 							<div class="btn-group" role="group" aria-label="Basic example">
 								<a href="#" class="me-2">Edit</a>
 								<a href="#" class="me-2">Add skill</a>
@@ -41,7 +41,10 @@
 									<td>{{ skill.level }}</td>
 									<td>{{ skill.min_years }}</td>
 									<td>{{ skill.max_years }}</td>
-									<td>Edit - Delete</td>
+									<td>
+										<a href="#" class="me-2">Edit</a>
+										<a href="#">Delete</a>
+									</td>
 								</tr>
 							</tbody>
 						</table>
