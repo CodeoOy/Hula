@@ -6,10 +6,7 @@
 		<div class="row gx-4">
 			<div class="col-md-4">
                 <div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-                    <h2>{{ project.name }}</h2>
-					{{ project.needs }}
-					<br /><br />
-					{{ this.$store.state.chosenproject.needs }}
+                	<h2>{{ project.name }}</h2>
                 </div>
 			</div>
 			<div class="col-md-8">
@@ -57,12 +54,10 @@
 		},
 		computed: {
 			project () {
-				//console.log(this.$store.state.chosenproject)
 				return this.$store.state.chosenproject
 			}
 		},
         mounted () {
-			console.log(this.$store.state.chosenproject)
 			this.$store.commit('setChosenProject', this.$route.params.id)
 		}
 	}
