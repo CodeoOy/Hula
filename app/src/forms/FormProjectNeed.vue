@@ -1,6 +1,8 @@
 <template>
-	<form v-on:submit="createProjectNeed">
-		<h3>New need</h3>
+	<form v-on:submit.prevent="createUpdateProjectNeed">
+		<h3 v-if="'id' in this.chosenneed">{{ chosenneed.id }}</h3>
+		<h3 v-else>New need</h3>
+		{{ querydata_need }}
 		<label class="form-label">How many pros for this need?</label>
 		<input type="number" aria-label="Number of pros" class="form-control mb-2" v-model.number="querydata_need.count_of_users">
 		<label class="form-label">When does this need start?</label>
@@ -27,31 +29,46 @@ export default {
 				end_time: "",
 				percentage: Number,
 				updated_by: this.$store.state.loggeduser.email
-			},
+			}
 		}
 	},
 	methods: {
-		createProjectNeed: function() {
+		createUpdateProjectNeed: function() {
 			this.querydata_need.begin_time = `${this.querydata_need.begin_time}T00:00:00`
 			this.querydata_need.end_time = `${this.querydata_need.end_time}T00:00:00`
-			fetch('/api/projectneeds', {
-				method: 'POST',
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include',
-				body: JSON.stringify(this.querydata_need)
-			})
-			.catch((errors) => {
-				console.log(errors);
-			})
+			if ('id' in this.chosenneed) {
+				fetch(`/api/projectneeds/${this.chosenneed.id}`, {
+					method: 'PUT',
+					headers: {"Content-Type": "application/json"},
+					credentials: 'include',
+					body: JSON.stringify(this.querydata_need)
+				})
+				.catch((errors) => {
+					console.log(errors);
+				})
+			} else {
+				fetch('/api/projectneeds', {
+					method: 'POST',
+					headers: {"Content-Type": "application/json"},
+					credentials: 'include',
+					body: JSON.stringify(this.querydata_need)
+				})
+				.catch((errors) => {
+					console.log(errors);
+				})
+			}
 		},
 	},
 	props: {
 		chosenneed: {}
 	},
-	mounted () {
-		if (this.chosenneed) {
-			this.querydata_need = this.chosenneed;
-		}
+	watch: {
+		'chosenneed': function() {
+			if ('id' in this.chosenneed) {
+				delete this.chosenneed.skills
+				this.querydata_need = this.chosenneed
+			}
+		},
 	}
 };
 </script>
