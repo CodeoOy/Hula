@@ -254,9 +254,6 @@ export default {
 			if ('skillscope_id' in this.chosenskill) {
 				return this.skill_levels.filter(levelres => levelres.skillscope_id == this.chosenskill.skillscope_id)
 			}
-		},
-		filterSkills: function(need) {
-			return this.projectneedskills.filter(skill => skill.projectneed_id == need)
 		}
 	},
 	mounted() {

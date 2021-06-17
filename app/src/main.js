@@ -62,6 +62,11 @@ const store = createStore({
 					.then(response => {
 						need.skills = response
 					})
+					.catch((errors) => {
+						console.log("No skills for need" + need.id)
+						console.log(errors)
+						need.skills = {}
+					})
 				))
 				localStorage.setItem('chosenproject', JSON.stringify(project));
 				state.chosenproject = project
