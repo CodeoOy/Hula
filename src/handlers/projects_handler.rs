@@ -309,6 +309,53 @@ fn query_update_project(
 	Ok(())
 }
 
+pub async fn update_projectneed(
+	uuid_data: web::Path<String>,
+	projectneed: web::Json<ProjectNeed>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	let res =
+		web::block(move || query_update_projectneed(uuid_data.into_inner(), projectneed, pool, logged_user.email)).await;
+	println!("\nProject need updated\n");
+	match res {
+		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_update_projectneed(
+	uuid_data: String,
+	projectneed: web::Json<ProjectNeed>,
+	pool: web::Data<Pool>,
+	email: String,
+) -> Result<(), crate::errors::ServiceError> {
+	let conn: &PgConnection = &pool.get().unwrap();
+	use crate::schema::projectneeds::dsl::{*, projectneeds};
+
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	let mut items = diesel::update(projectneeds)
+		.filter(id.eq(uuid_query))
+		.set((
+			project_id.eq(projectneed.project_id),
+			count_of_users.eq(projectneed.count_of_users),
+			percentage.eq(projectneed.percentage),
+			begin_time.eq(projectneed.begin_time),
+			end_time.eq(projectneed.end_time),
+			updated_by.eq(email.clone())
+		))
+		.load::<ProjectNeed>(conn)?;
+	if let Some(_project_res) = items.pop() {
+		println!("\nUpdate successful.\n");
+		return Ok(());
+	}
+
+	Ok(())
+}
+
 pub async fn delete_project(uuid_data: web::Path<String>, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_delete_project(uuid_data.into_inner(), pool)).await;
 	println!("\nProject deleted\n");

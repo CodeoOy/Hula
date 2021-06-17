@@ -44,6 +44,14 @@ export default {
 				console.log(errors);
 			})
 		},
+	},
+	props: {
+		chosenneed: {}
+	},
+	mounted () {
+		if (this.chosenneed) {
+			this.querydata_need = this.chosenneed;
+		}
 	}
 };
 </script>

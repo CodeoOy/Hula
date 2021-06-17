@@ -153,6 +153,7 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/projectneeds/{id}")
 							.route(web::get().to(handlers::projects_handler::get_project_needs))
+							.route(web::put().to(handlers::projects_handler::update_projectneed))
 							.route(web::delete().to(handlers::projects_handler::delete_projectneed)),
 					)
 					.service(
