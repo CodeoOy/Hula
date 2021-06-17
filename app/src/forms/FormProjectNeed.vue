@@ -7,9 +7,10 @@
 		<input type="number" aria-label="Number of pros" class="form-control mb-2" v-model.number="querydata_need.count_of_users">
 		<label class="form-label">When does this need start?</label>
 		<input type="date" aria-label="Date start" class="form-control mb-2" v-model="querydata_need.begin_time">
-		{{ querydata_need.begin_time }}
+		{{ querydata_need.begin_time }}<br />
 		<label class="form-label">When does this need end?</label>
 		<input type="date" aria-label="Date end" class="form-control mb-2" v-model="querydata_need.end_time">
+		{{ querydata_need.end_time }}<br />
 		<label class="form-label">At what percentage?</label>
 		<input type="number" aria-label="Percentage" class="form-control mb-2" v-model.number="querydata_need.percentage">
 		<button type="submit" class="btn btn-gradient mb-1">Save</button>
@@ -34,7 +35,10 @@ export default {
 	},
 	methods: {
 		createUpdateProjectNeed: function() {
-			this.querydata_need.begin_time = `${this.querydata_need.begin_time}T00:00:00`
+			//this.querydata_need.begin_time = new Date((this.querydata_need.begin_time).getTime())
+			//this.querydata_need.end_time = new Date((this.querydata_need.end_time).getTime())
+			console.log(this.querydata_need.begin_time.valueAsNumber)
+			this.querydata_need.begin_time = `${this.querydata_need.begin_time}T00:00:00` // TODO: This breaks the api call if user doesn't change the dates
 			this.querydata_need.end_time = `${this.querydata_need.end_time}T00:00:00`
 			if ('id' in this.chosenneed) {
 				fetch(`/api/projectneeds/${this.chosenneed.id}`, {
