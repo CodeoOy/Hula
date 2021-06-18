@@ -35,11 +35,8 @@ export default {
 	},
 	methods: {
 		createUpdateProjectNeed: function() {
-			//this.querydata_need.begin_time = new Date((this.querydata_need.begin_time).getTime())
-			//this.querydata_need.end_time = new Date((this.querydata_need.end_time).getTime())
-			console.log(this.querydata_need.begin_time.valueAsNumber)
 			this.querydata_need.begin_time = `${this.querydata_need.begin_time}T00:00:00` // TODO: This breaks the api call if user doesn't change the dates
-			this.querydata_need.end_time = `${this.querydata_need.end_time}T00:00:00`
+			this.querydata_need.end_time = `${this.querydata_need.end_time}T00:00:00` // So maybe use moment.js?
 			if ('id' in this.chosenneed) {
 				fetch(`/api/projectneeds/${this.chosenneed.id}`, {
 					method: 'PUT',
