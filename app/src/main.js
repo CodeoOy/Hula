@@ -76,6 +76,10 @@ const store = createStore({
 		},
 		resetChosenProject (state) {
 			state.chosenproject = {}
+		},
+		deleteUser (state) {
+			state.loggeduser = null
+			localStorage.removeItem('user');
 		}
 	}
 })

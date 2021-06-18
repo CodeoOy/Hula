@@ -1,13 +1,13 @@
 <template>
 	<div class="container-fluid mt-4">
-		<VModal v-if="logged == false">
-			{{ logged }}
+		<!-- <VModal v-if="logged == false"> -->
+		<VModal>
 			<FormLogin v-if="show_signup == false" v-on:hide-modal="hideModal"/>
 			<FormRegister v-else/>
 			<a href="#" v-if="show_signup == false" v-on:click="show_signup = true">Or sign up here.</a>
 			<a href="#" v-else v-on:click="show_signup = false">Already a user? Log in here.</a>
 		</VModal>
-		<AdminList v-if="logged" />
+		<AdminList v-if="this.$store.state.loggeduser" />
 	</div>
 </template>
 
@@ -22,11 +22,8 @@
 		data() {
 			return {
 				show_signup: false,
-				modal: null
+				modal: null,
 			}
-		},
-		props: {
-			logged: Boolean
 		},
 		components: {
 			FormRegister,
@@ -41,9 +38,9 @@
 		},
 		mounted() {
 			this.modal = new Modal(document.getElementById('hulaModal'))
-			if (this.logged == false) {
+			if (!this.$store.state.loggeduser) {
 				this.modal.show()
-			}
+			} 
 		}
 	}
 </script>

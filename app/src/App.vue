@@ -2,10 +2,9 @@
 	<main>
 		<TheHeader v-on:loggedout="checkLogin" />
 		<FlashMessage position="right top" />
-		<router-view :logged='logged' v-on:checklogin="checkLogin" />
-		<p>{{ this.$store.state.loggeduser }}</p>
-		<p>{{ user }}</p>
+		<router-view v-on:checklogin="checkLogin" />
 		<TheFooter />
+		{{ this.$store.state.loggeduser }}
 	</main>
 </template>
 
@@ -18,7 +17,6 @@
 		data() {
 			return {
 				currentpath: this.$router.currentRoute.value.path,
-				logged: false,
 				user: {},
 				projects: {}
 			}
@@ -31,23 +29,26 @@
 			checkLogin: function() {
 				console.log("Checking log in")
 				fetch('/api/auth', {method: 'GET'})
-				.then((response) => {
-					if(response.ok) {
-						this.logged = true;
-						this.user = this.$store.state.loggeduser
-					} else {
-						this.logged = false;
-						this.user = {}
-						this.$flashMessage.show({
-							type: 'error',
-							title: 'Unauthorized',
-							time: 1000
-						});
-						this.$router.push({ path: '/' })
-					}
-				})
+				.then(response => response.json()
 				.catch((errors) => {
 					console.log(errors);
+					this.$store.commit('deleteUser')
+					this.user = {}
+					this.$flashMessage.show({
+						type: 'error',
+						title: 'Unauthorized',
+						time: 1000
+					});
+					this.$router.push({ path: '/' })
+				})
+				.then(data => ({status: response, body: data})))
+				.then(obj => {
+					if(obj.status.ok) {
+						this.$store.commit('setUser', obj.body)
+						this.user = this.$store.state.loggeduser
+					} else {
+						console.log("not ok")
+					}
 				})
 			},
 			getProjects: function() {
