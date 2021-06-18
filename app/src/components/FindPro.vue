@@ -1,5 +1,6 @@
 <template>
 	<div>
+		<AutoComplete :suggestions="testprojects" :selection.sync="value"></AutoComplete>
 		<form action="#" @submit.prevent="onSubmit" v-on:submit="getMatchedUsers">
 			<select class="mb-2 form-select" v-model="querydata.projectname" aria-label="Choose project">
 				<option disabled>Choose the project</option>
@@ -11,10 +12,17 @@
 </template>
 
 <script>
+	import AutoComplete from '../components/AutoComplete.vue'
 	export default {
 		name: 'FindPro',
 		data() {
 			return {
+				testprojects: [
+					"mansikka",
+					"mustikka",
+					"vadelma"
+				],
+				value: '',
 				projects: {},
 				user: {},
 				users: {},
@@ -23,6 +31,9 @@
 					projectname: '',
 				},
 			}
+		},
+		components: {
+			AutoComplete
 		},
 		methods: {
 			getProjects: function() {
