@@ -64,6 +64,18 @@ body {
 	background-attachment: fixed;
 }
 
+#mainwrap {
+	height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+	flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
 a {
 	text-decoration: none;
 }

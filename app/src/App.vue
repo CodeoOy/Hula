@@ -1,11 +1,12 @@
 <template>
-	<main>
+	<div id="mainwrap">
 		<TheHeader v-on:loggedout="checkLogin" />
 		<FlashMessage position="right top" />
-		<router-view v-on:checklogin="checkLogin" />
+		<main>
+			<router-view v-on:checklogin="checkLogin" />
+		</main>
 		<TheFooter />
-		{{ this.$store.state.loggeduser }}
-	</main>
+	</div>
 </template>
 
 <script>
