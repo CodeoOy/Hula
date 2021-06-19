@@ -26,7 +26,10 @@
 								data-bs-target="#hulaModal" 
 								v-on:click.prevent="this.chooseProject(project)"
 							>Edit</a>
-							- Delete
+							<a href="#"
+								v-on:click.prevent="this.deleteProject(project.id)"
+							>Delete
+							</a>
 						</td>
 					</tr>
 				</tbody>
@@ -47,6 +50,16 @@
 			chooseProject(project) {
 				this.$store.commit('setChosenProject', project.id)
 				this.$emit('projectChosen', project.name)
+			},
+			deleteProject(id) {
+				fetch(`/api/projects/${id}`, {
+					method: 'DELETE',
+					headers: {"Content-Type": "application/json"},
+					credentials: 'include'
+				})
+				.catch(() => {
+					throw new Error('Project not deleted');
+				})
 			}
 		}
 	}

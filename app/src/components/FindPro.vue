@@ -1,13 +1,14 @@
 <template>
 	<div>
-		<AutoComplete :suggestions="testprojects" :selection.sync="value"></AutoComplete>
-		<form action="#" @submit.prevent="onSubmit" v-on:submit="getMatchedUsers">
+		<form action="#" v-on:submit.prevent="getMatchedUsers">
 			<select class="mb-2 form-select" v-model="querydata.projectname" aria-label="Choose project">
 				<option disabled>Choose the project</option>
 				<option v-for="project in projects" :key="project.name" :value="project.name">{{ project.name }}</option>
 			</select>
 			<button type="submit" class="btn btn-gradient mb-1">Search</button>
 		</form>
+		<p>Form below is a demo of autocomplete. It doesn't do anything yet.</p>
+		<AutoComplete :suggestions="testprojects" :selection.sync="value"></AutoComplete>
 	</div>
 </template>
 
@@ -82,6 +83,7 @@
 					this.$emit('usersfetched', this.users)
 				})    
 				.catch((errors) => {
+					this.users = {}
 					console.log(errors);
 				})
 			}

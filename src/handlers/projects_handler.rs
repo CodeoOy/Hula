@@ -246,7 +246,6 @@ pub async fn get_by_pid(
 ) -> Result<HttpResponse, ServiceError> {
 	println!("\nGetting project by uuid");
 	let res = web::block(move || query_one(pid.into_inner(), pool)).await;
-
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
@@ -276,7 +275,6 @@ pub async fn update_project(
 ) -> Result<HttpResponse, ServiceError> {
 	let res =
 		web::block(move || query_update_project(uuid_data.into_inner(), projectdata, pool, logged_user.email)).await;
-	println!("\nProject updated\n");
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
@@ -317,7 +315,6 @@ pub async fn update_projectneed(
 ) -> Result<HttpResponse, ServiceError> {
 	let res =
 		web::block(move || query_update_projectneed(uuid_data.into_inner(), projectneed, pool, logged_user.email)).await;
-	println!("\nProject need updated\n");
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
@@ -352,15 +349,13 @@ fn query_update_projectneed(
 		println!("\nUpdate successful.\n");
 		return Ok(());
 	}
-
 	Ok(())
 }
 
 pub async fn delete_project(uuid_data: web::Path<String>, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_delete_project(uuid_data.into_inner(), pool)).await;
-	println!("\nProject deleted\n");
 	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -375,7 +370,7 @@ fn query_delete_project(uuid_data: String, pool: web::Data<Pool>) -> Result<(), 
 
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	diesel::delete(projects.filter(id.eq(uuid_query))).execute(conn)?;
-	Ok(())
+	Ok(()) // TODO: Error handling. This query returns ok even if the delete doesn't happen
 }
 
 pub async fn delete_projectneed(
@@ -383,9 +378,8 @@ pub async fn delete_projectneed(
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_delete_projectneed(uuid_data.into_inner(), pool)).await;
-	println!("\nProject's need deleted\n");
 	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -408,9 +402,8 @@ pub async fn delete_projectneedskill(
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_delete_projectneedskill(uuid_data.into_inner(), pool)).await;
-	println!("\nProject's skill deleted\n");
 	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),

@@ -18,8 +18,7 @@
 		data() {
 			return {
 				currentpath: this.$router.currentRoute.value.path,
-				user: {},
-				projects: {}
+				user: {}
 			}
 		},
 		components: {
@@ -52,41 +51,10 @@
 					}
 				})
 			},
-			getProjects: function() {
-				fetch('/api/projects', {
-					method: 'GET',
-					headers: {"Content-Type": "application/json"}
-				})
-				.then((response) => response.json())
-				.catch((errors) => {
-					console.log(errors);
-				})
-				.then(response => {
-					let self = this
-					this.projects = response
-					this.projects.forEach(function (project) {
-						fetch(`/api/projectneeds/${project.id}`, {
-							method: 'GET',
-							headers: {"Content-Type": "application/json"},
-							credentials: 'include'
-						})
-						.then((response) => response.json())
-						.catch((errors) => {
-							console.log("No needs for project: " + project.id)
-							console.log(errors)
-							project.needs = {}
-						})
-						.then((response) => {
-							project.needs = response
-						})
-					});
-					self.$store.commit('setProjects', self.projects)
-				})
-			},
 		},
 		mounted() {
 			this.checkLogin()
-			//this.getProjects()
+			this.$store.commit('getProjects')
 		}
 	}
 </script>

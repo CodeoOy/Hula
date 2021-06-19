@@ -27,9 +27,35 @@ const store = createStore({
 				state.loggeduser = response;
 			})   
 		},
-		setProjects (state, data) {
-			localStorage.setItem('projects', JSON.stringify(data));
-			state.projects = data
+		getProjects (state) {
+			fetch('/api/projects', {
+				method: 'GET',
+				headers: {"Content-Type": "application/json"}
+			})
+			.then((response) => response.json())
+			.catch((errors) => {
+				console.log(errors);
+			})
+			.then(response => {
+				state.projects = response
+				state.projects.forEach(function (project) {
+					fetch(`/api/projectneeds/${project.id}`, {
+						method: 'GET',
+						headers: {"Content-Type": "application/json"},
+						credentials: 'include'
+					})
+					.then((response) => response.json())
+					.catch((errors) => {
+						console.log("No needs for project: " + project.id)
+						console.log(errors)
+						project.needs = {}
+					})
+					.then((response) => {
+						project.needs = response
+					})
+				});
+			})
+			localStorage.setItem('projects', JSON.stringify(state.projects));
 		},
 		async setChosenProject (state, data) {
 			try {
