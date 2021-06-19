@@ -115,7 +115,7 @@ a {
 	background-image: linear-gradient(to bottom, $secondary 0%,rgb(14, 191, 185) 100%);
 	border: none;
 	&:hover {
-		background-image: linear-gradient(to bottom, lighten($secondary, 10%) 0%,rgb(14, 191, 185) 100%);
+		background-image: linear-gradient(to bottom, lighten($secondary, 20%) 0%,rgb(14, 191, 185) 100%);
 	}
 }
 
