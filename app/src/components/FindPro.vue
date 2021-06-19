@@ -2,7 +2,7 @@
 	<div>
 		<form action="#" v-on:submit.prevent="getMatchedUsers">
 			<select class="mb-2 form-select" v-model="querydata.projectname" aria-label="Choose project">
-				<option disabled>Choose the project</option>
+				<option :value="''" disabled>Choose the project</option>
 				<option v-for="project in projects" :key="project.name" :value="project.name">{{ project.name }}</option>
 			</select>
 			<button type="submit" class="btn btn-gradient mb-1">Search</button>
