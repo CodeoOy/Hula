@@ -1,8 +1,8 @@
 <template>
 	<div class="container mt-4">
-		<Modal :modal_title="form_title">
+		<VModal :modal_title="form_title">
 			<FormAddSkill v-if="form_title == 'Add Skill'"/>
-		</Modal>
+		</VModal>
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
