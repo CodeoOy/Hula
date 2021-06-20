@@ -3,15 +3,15 @@
 		<h3>Add skill to this need</h3>
 		<p v-if="errors.length && errors.includes('skill-error')" class="error">Error in adding skill. Maybe it's already added?</p>
 		<label class="form-label">Skill</label>
-		<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which skill" v-model="querydata_needskill.skill_id">
-			<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
+		<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which skill" v-model="queryDataNeedSkill.skill_id">
+			<option v-for="avskill in availableSkills" :key="avskill" :value="avskill.id">
 				{{ avskill.label }}
 			</option>
 		</select>
 		<label class="form-label">Minimum level</label>
-		<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which level" v-model="querydata_needskill.skillscopelevel_id">
-			<option v-for="levelres in filterLevels" :key="levelres" :value="levelres.id">
-				{{ levelres.label }}
+		<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which level" v-model="queryDataNeedSkill.skillscopelevel_id">
+			<option v-for="lvl in filterLevels" :key="lvl" :value="lvl.id">
+				{{ lvl.label }}
 			</option>
 		</select>
 		<button type="submit" class="btn btn-gradient mb-1">Save</button>
@@ -23,16 +23,16 @@ export default {
 	name: 'ProjectNeedSkill',
 	data() {
 		return {
-			querydata_needskill: {
+			queryDataNeedSkill: {
 				id: '06ba4809-f20b-4687-945b-e033a6751fca',
-				projectneed_id: this.chosenneed.id,
+				projectneed_id: this.chosenNeed.id,
 				skill_id: '',
 				skillscopelevel_id: '',
 				min_years: 1,
 				max_years: 10,
 				updated_by: this.$store.state.loggeduser.email
 			},
-			chosenskill: {
+			chosenSkill: {
 				type: Object,
 				default() {
 					return { 
@@ -41,13 +41,13 @@ export default {
 					}
 				}
 			},
-			available_skills: {},
-			skill_levels: {},
+			availableSkills: {},
+			skillLevels: {},
 			errors: []
 		}
 	},
 	props: {
-		chosenneed: {
+		chosenNeed: {
 			type: Object,
 			default() {
 				return { 
@@ -57,55 +57,55 @@ export default {
 		},
 	},
 	methods: {
-		createProjectNeedSkill: function() {
+		createProjectNeedSkill() {
 			fetch('/api/projectskills', {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.querydata_needskill)
+				body: JSON.stringify(this.queryDataNeedSkill)
 			})
 			.catch((errors) => {
 				this.errors.push('skill-error')
 				console.log(errors);
 			})
 		},
-		getAllSkills: function() {
+		getAllSkills() {
 			fetch('/api/skills', {method: 'GET'})
 			.then((response) => response.json())
 			.then(response => { 
-				this.available_skills = response;
+				this.availableSkills = response;
 			})    
 			.catch((errors) => {
 				console.log(errors);
 			})
 		},
-		getAllLevels: function() {
+		getAllLevels() {
 			fetch('/api/skills/levels', {method: 'GET'})
 			.then((response) => response.json())
 			.then(response => { 
-				this.skill_levels = response
+				this.skillLevels = response
 			})    
 			.catch((errors) => {
 				console.log(errors);
 			})
 		},
-		getSkillScope: function(needle) {
-			var scope = this.available_skills.find(x => x.id == needle).skillscope_id;
-			this.chosenskill.skillscope_id = scope;
+		getSkillScope(needle) {
+			var scope = this.availableSkills.find(x => x.id == needle).skillscope_id;
+			this.chosenSkill.skillscope_id = scope;
 		}
 	},
 	watch: {
-		'querydata_needskill.skill_id': function(newID, oldID) {
+		'queryDataNeedSkill.skill_id'(newID) {
 			this.getSkillScope(newID)
 		},
-		'chosenneed.id': function(newID, oldID) {
-			this.querydata_needskill.projectneed_id = newID
+		'chosenNeed.id'(newID) {
+			this.queryDataNeedSkill.projectneed_id = newID
 		},
 	},
 	computed: {
-		filterLevels: function() {
-			if ('skillscope_id' in this.chosenskill) {
-				return this.skill_levels.filter(levelres => levelres.skillscope_id == this.chosenskill.skillscope_id)
+		filterLevels() {
+			if ('skillscope_id' in this.chosenSkill) {
+				return this.skillLevels.filter(lvl => lvl.skillscope_id == this.chosenSkill.skillscope_id)
 			}
 		}
 	},

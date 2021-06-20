@@ -1,7 +1,7 @@
 <template>
 	<div class="container mt-4">
-		<VModal :modal_title="form_title">
-			<component :is='modalComponent' :chosenneed="chosenneed"/>
+		<VModal :modalTitle="formTitle">
+			<component :is='modalComponent' :chosenNeed="chosenNeed"/>
 		</VModal>
 		<div class="row gx-4">
 			<div class="col-md-4">
@@ -13,15 +13,15 @@
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<div class="d-flex flex-row justify-content-between align-items-start">
 						<h2>Needs</h2>
-						<button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'Add need', chosenform = 'need', chosenneed = {}">Add need</button>
+						<button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="formTitle = 'Add need', chosenForm = 'need', chosenNeed = {}">Add need</button>
 					</div>
 					<div class="mt-3" v-for="need in project.needs" :key="need.id">
 						<hr />
 						<div class="d-flex flex-row justify-content-between align-items-baseline mb-3">
 							<h5>{{ need.count_of_users}} from {{ need.begin_time }} at percentage: {{ need.percentage}}</h5>
 							<div class="btn-group" role="group" aria-label="Need actions">
-								<a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="chosenneed = need, form_title = 'Edit need', chosenform = 'need'">Edit</a>
-								<a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="chosenneed = need, form_title = 'New skill', chosenform = 'skill'">Add skill</a>
+								<a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="chosenNeed = need, formTitle = 'Edit need', chosenForm = 'need'">Edit</a>
+								<a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="chosenNeed = need, formTitle = 'New skill', chosenForm = 'skill'">Add skill</a>
 								<a href="#" v-on:click="deleteNeed(need.id)">Delete</a>
 							</div>
 						</div>
@@ -63,9 +63,9 @@
 		name: 'Project',
 		data() {
 			return {
-				chosenneed: {},
-				form_title: '',
-				chosenform: ''
+				chosenNeed: {},
+				formTitle: '',
+				chosenForm: ''
 			}
 		},
 		components: {
@@ -74,7 +74,7 @@
 			FormProjectNeedSkill,
 		},
 		computed: {
-			project () {
+			project() {
 				return this.$store.state.chosenproject
 			},
 			modalComponent() {
@@ -82,11 +82,11 @@
 					need: FormProjectNeed,
 					skill: FormProjectNeedSkill,
 				}
-				return components[this.chosenform]
+				return components[this.chosenForm]
 			}
 		},
 		methods: {
-			deleteNeed: function(id) {
+			deleteNeed(id) {
 				fetch(`/api/projectneeds/${id}`, {method: 'DELETE'})
 				.then(response => { 
 					if (response.ok) {
@@ -102,7 +102,7 @@
 					console.log(errors);
 				})
 			},
-			deleteSkill: function(id) {
+			deleteSkill(id) {
 				fetch(`/api/projectskills/${id}`, {method: 'DELETE'})
 				.then(response => { 
 					if (response.ok) {

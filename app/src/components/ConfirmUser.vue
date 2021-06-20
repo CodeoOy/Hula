@@ -1,7 +1,7 @@
 <template>
 	<div class="p-3 rounded-2 content-box bg-dark text-light">
 		<h2>Raw registration data:</h2>
-		<pre>{{ registration_data }}</pre>
+		<pre>{{ registrationData }}</pre>
 	</div>
 </template>
 
@@ -11,15 +11,15 @@
 		name: 'ConfirmUser',
 		data: function() {
 			return {
-				registration_data: {},
+				registrationData: {},
 			};
 		},
 		methods: {
-			confirm_registration: function() {  
-				fetch(`/api/register/${this.registration_data.id}`, {
+			confirmRegistration: function() {  
+				fetch(`/api/register/${this.registrationData.id}`, {
 					method: 'POST', 
 					headers: {"Content-Type": "application/json"}, 
-					body: JSON.stringify(this.registration_data)
+					body: JSON.stringify(this.registrationData)
 				})
 				.then((response) => response.json())
 				.then(() => {    
@@ -41,8 +41,8 @@
 		},
 		mounted() {
 			const route = useRoute()
-			this.registration_data = route.query
-			this.confirm_registration();
+			this.registrationData = route.query
+			this.confirmRegistration();
 		}
 	}
 </script>

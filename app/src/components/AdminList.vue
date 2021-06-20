@@ -3,14 +3,14 @@
 		<div class="col-md-4">
 			<ul class="nav nav-tabs nav-dark">
 				<li class="nav-item">
-					<a class="nav-link" v-bind:class="{ active: tabtoggle }" aria-current="page" href="#" v-on:click="tabtoggle = true">Find a pro</a>
+					<a class="nav-link" v-bind:class="{ active: tabToggle }" aria-current="page" href="#" v-on:click="tabToggle = true">Find a pro</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" v-bind:class="{ active: !tabtoggle }" href="#" v-on:click="tabtoggle = false">Find a lead</a>
+					<a class="nav-link" v-bind:class="{ active: !tabToggle }" href="#" v-on:click="tabToggle = false">Find a lead</a>
 				</li>
 			</ul>
 			<div class="p-3 rounded-2 content-box bg-dark text-light">
-				<FindLead v-on:leadsfetched="passLeads" v-if="tabtoggle == false" />
+				<FindLead v-on:leadsfetched="passLeads" v-if="tabToggle == false" />
 				<FindPro v-on:usersfetched="passUsers" v-else />
 			</div>
 		</div>
@@ -19,8 +19,8 @@
 				<h2>Matches from teh algorithm</h2>
 				<FeatMatches />
 			</div>
-			<ResultsLeads :leads='leaddata' v-if="tabtoggle == false" />
-			<ResultsPros :users='userdata' v-else />
+			<ResultsLeads :leads='leadData' v-if="tabToggle == false" />
+			<ResultsPros :users='userData' v-else />
 		</div>
 	</div>
 </template>
@@ -34,25 +34,25 @@
 	export default {
 		name: 'AdminList',
 		components: {
-			'FindPro': FindPro,
-			'FindLead': FindLead,
-			'ResultsLeads': ResultsLeads,
-			'ResultsPros': ResultsPros,
-			'FeatMatches': FeatMatches
+			FindPro,
+			FindLead,
+			ResultsLeads,
+			ResultsPros,
+			FeatMatches
 		},
 		data() {
 			return {
-				tabtoggle: true,
-				userdata: {},
-				leaddata: {},
+				tabToggle: true,
+				userData: {},
+				leadData: {},
 			}
 		},
 		methods: {
-			passUsers (value) {
-				this.userdata = value
+			passUsers(value) {
+				this.userData = value
 			},
-			passLeads (value) {
-				this.leaddata = value
+			passLeads(value) {
+				this.leadData = value
 			}
 		}
 	}

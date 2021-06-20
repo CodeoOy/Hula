@@ -1,18 +1,18 @@
 <template>
 	<div class="container mt-4">
-		<VModal :modal_title="form_title">
-			<component :is='modalComponent' :chosenproject="this.$store.state.chosenproject"/>
+		<VModal :modalTitle="form_title">
+			<component :is='modalComponent' :chosenProject="this.$store.state.chosenproject"/>
 		</VModal>
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h1>Welcome {{ this.$store.state.loggeduser.firstname }}!</h1>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click.native.prevent="normalizeChosenProject">Add project</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New skill', chosenform = 'skill'">Add skill</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New scope', chosenform = 'scope'">Add scope</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New category', chosenform = 'category'">Add category</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New level', chosenform = 'scopelevel'">Add level</a></p>
-					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'Delete user', chosenform = 'deleteuser'">Delete user</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New skill', chosenForm = 'skill'">Add skill</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New scope', chosenForm = 'scope'">Add scope</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New category', chosenForm = 'category'">Add category</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New level', chosenForm = 'scopelevel'">Add level</a></p>
+					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'Delete user', chosenForm = 'deleteuser'">Delete user</a></p>
 				</div>
 			</div>
 			<div class="col-md-8">
@@ -55,13 +55,13 @@
 			return {
 				form_title: '',	
 				tab: 1,
-				chosenproject: {
+				chosenProject: {
 					type: Object,
 					default() {
 						return { id: '' }
 					}
 				},
-				chosenform: '',
+				chosenForm: '',
 			}
 		},
 		components: {
@@ -77,15 +77,15 @@
 			AdminListUsers,
 		},
 		methods: {
-			updateProject (value) {
+			updateProject(value) {
 				console.log("update project emit fired")
-				this.chosenform = 'project'
-				//this.chosenproject = this.$store.state.chosenproject
+				this.chosenForm = 'project'
+				//this.chosenProject = this.$store.state.chosenproject
 				this.form_title = value
 			},
 			normalizeChosenProject() {
 				this.form_title = 'New Project'
-				this.chosenform = 'project'
+				this.chosenForm = 'project'
 				this.$store.commit('resetChosenProject')
 			}
 		},
@@ -99,7 +99,7 @@
 					scopelevel: FormSkillScopeLevel,
 					deleteuser: FormUserDelete,
 				}
-				return components[this.chosenform]
+				return components[this.chosenForm]
 			}
 		}
 	}

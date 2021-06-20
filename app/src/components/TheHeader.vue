@@ -59,7 +59,7 @@
 export default {
 	name: 'TheHeader',
 	methods: {
-		logOut () {
+		logOut() {
 			fetch('/api/auth', {method: 'DELETE'})
 			.then((response) => {
 				this.message = response;

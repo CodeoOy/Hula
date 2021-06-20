@@ -22,7 +22,7 @@
 			}
 		},
 		methods: {
-			getUserData: function(userid) { 
+			getUserData(userid) { 
 				fetch(`/api/users/${userid}`, {
 					method: 'GET',
 					headers: {"Content-Type": "application/json"}
@@ -32,7 +32,7 @@
 					this.user = response;
 				})    
 			},
-			getUsers: function() {
+			getUsers() {
 				fetch('api/users', {method: 'GET'})
 				.then((response) => response.json())
 				.then(response => { 
@@ -43,7 +43,7 @@
 					console.log(errors);
 				})
 			},
-			getProjects: function() {
+			getProjects() {
 				fetch('api/projects', {method: 'GET'})
 				.then((response) => response.json())
 				.then(response => { 

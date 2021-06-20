@@ -1,5 +1,8 @@
 <template>
 	<div>
+		<VModal :modalTitle="'Match'">
+			<MatchContent :match="currentMatch"/>
+		</VModal>
 		<div class="modal fade" v-bind:class="{ 'show db': show, '': !show }">
 			<div class="modal-dialog">
 				<div class="modal-content p-3 rounded-2 content-box bg-dark text-light">
@@ -8,50 +11,58 @@
 						<thead>
 							<tr>
 								<th></th>
-								<th scope="col">{{ currentmatch.projectname }}</th>
-								<th scope="col">{{ currentmatch.firstname }} {{ currentmatch.lastname }}</th>
+								<th scope="col">{{ currentMatch.projectname }}</th>
+								<th scope="col">{{ currentMatch.firstname }} {{ currentMatch.lastname }}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
-								<td>{{ currentmatch.skillname }}</td>
-								<td>{{ currentmatch.required_minyears }}</td>
-								<td>{{ currentmatch.user_years }}</td>
+								<td>{{ currentMatch.skillname }}</td>
+								<td>{{ currentMatch.required_minyears }}</td>
+								<td>{{ currentMatch.user_years }}</td>
 							</tr>
 						</tbody>
 					</table>
-					<button class="btn btn-primary" v-on:click="show = false">Close</button>
+					<button class="btn btn-gradient" v-on:click="show = false">Close</button>
 				</div>
 			</div>
 		</div>
 		<ul class="matches">
-			<li v-on:click="show = true, currentmatch = match" class="match" v-for="match in matches" :key="match.projectname">
-				<div class="match__bg"></div>
-				<div class="match__pro">
-					<img :src="'/public/assets/' + match.firstname + '.jpg'">
-					<h4>{{ match.firstname }}</h4>
-				</div>
-				<div class="match__project">
-					<img :src="'/public/assets/' + match.projectname + '.jpg'">
-					<h4>{{ match.projectname }}</h4>
-				</div>
+			<li class="match" v-for="match in matches" :key="match.projectname">
+				<a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="currentMatch = match">
+					<div class="match__bg"></div>
+					<div class="match__pro">
+						<img :src="'/public/assets/' + match.firstname + '.jpg'">
+						<h4>{{ match.firstname }}</h4>
+					</div>
+					<div class="match__project">
+						<img :src="'/public/assets/' + match.projectname + '.jpg'">
+						<h4>{{ match.projectname }}</h4>
+					</div>
+				</a>
 			</li>
 		</ul>
 	</div>
 </template>
 
 <script>
+	import VModal from '../components/VModal.vue'
+	import MatchContent from '../components/MatchContent.vue'
 	export default {
 		name: 'FeatMatches',
 		data() {
 			return {
-				currentmatch: {},
+				currentMatch: {},
 				matches: {},
 				show: false,
 			}
 		},
+		components: {
+			VModal,
+			MatchContent
+		},
 		methods: {
-			getMatches: function() { 
+			getMatches() { 
 				fetch('api/matches', {
 					method: 'GET',
 					headers: {"Content-Type": "application/json"}

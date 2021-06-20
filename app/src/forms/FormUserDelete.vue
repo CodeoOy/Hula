@@ -3,7 +3,7 @@
 		<p v-if="errorsPresent" class="error">Please fill out label!</p>
 		<div class="mb-2">
 			<label class="form-label">Pick user</label>
-			<select class="form-select mb-2" id="User" aria-label="User" v-model="usertodelete">
+			<select class="form-select mb-2" id="User" aria-label="User" v-model="userToDelete">
 				<option v-for="user in users" :key="user" :value="user.id">
 					{{ user.firstname }} {{ user.lastname }}
 				</option>
@@ -19,19 +19,19 @@ export default {
 	data() {
 		return {
 			users: {},	
-			usertodelete: ''	
+			userToDelete: ''	
 		}
 	},
 	methods: {
-		deleteUser: function() {
-			fetch(`/api/users/${this.usertodelete}`, {
+		deleteUser() {
+			fetch(`/api/users/${this.userToDelete}`, {
 				method: 'DELETE', 
 			})
 			.catch((errors) => {
 				console.log(errors);
 			})
 		},
-		getAllUsers: function() {
+		getAllUsers() {
 			fetch('/api/users', {method: 'GET'})
 			.then((response) => response.json())
 			.then(response => { 

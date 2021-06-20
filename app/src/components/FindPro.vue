@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<form action="#" v-on:submit.prevent="getMatchedUsers">
-			<select class="mb-2 form-select" v-model="querydata.projectname" aria-label="Choose project">
+			<select class="mb-2 form-select" v-model="queryData.projectName" aria-label="Choose project">
 				<option :value="''" disabled>Choose the project</option>
 				<option v-for="project in projects" :key="project.name" :value="project.name">{{ project.name }}</option>
 			</select>
@@ -24,12 +24,12 @@
 					"vadelma"
 				],
 				value: '',
-				projects: {},
+				projects: this.$store.state.projects,
 				user: {},
 				users: {},
 				selected: {},
-				querydata: {
-					projectname: '',
+				queryData: {
+					projectName: '',
 				},
 			}
 		},
@@ -37,45 +37,12 @@
 			AutoComplete
 		},
 		methods: {
-			getProjects: function() {
-				fetch('api/projects', {method: 'GET'})
-				.then((response) => response.json())
-				.then(response => { 
-					this.projects = response;
-					this.$emit('datafetched', this.projects)
-				})    
-				.catch((errors) => {
-					console.log(errors);
-				})
-			},
-			getProjectData: function(pid) { 
-				fetch('api/project', {
-					method: 'POST',
-					headers: {"Content-Type": "application/json"},
-					body: JSON.stringify({"pid": pid})
-				})
-				.then((response) => response.json())
-				.then(response => {
-					this.project = response;
-				})    
-			},
-			getUserData: function(uid) { // Currently not used but there should be a modal with this data
-				fetch('api/user', {
-					method: 'POST',
-					headers: {"Content-Type": "application/json"},
-					body: JSON.stringify({"uid": uid})
-				})
-				.then((response) => response.json())
-				.then(response => { 
-					this.user = response;
-				})    
-			},
-			getMatchedUsers: function() {
+			getMatchedUsers() {
 				fetch('api/matchedusers', {
 					method: 'POST',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
-					body: JSON.stringify(this.querydata)
+					body: JSON.stringify(this.queryData)
 				})
 				.then((response) => response.json())
 				.then(response => { 
@@ -87,9 +54,6 @@
 					console.log(errors);
 				})
 			}
-		},
-		mounted() {
-			this.getProjects()
 		}
 	}
 </script>

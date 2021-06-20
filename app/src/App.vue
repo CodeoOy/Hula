@@ -14,26 +14,18 @@
 	import TheFooter from './components/TheFooter.vue' 
 	export default {
 		name: 'App',
-
-		data() {
-			return {
-				currentpath: this.$router.currentRoute.value.path,
-				user: {}
-			}
-		},
 		components: {
 			TheHeader,
 			TheFooter,
   		},
 		methods: {
-			checkLogin: function() {
+			checkLogin() {
 				console.log("Checking log in")
 				fetch('/api/auth', {method: 'GET'})
 				.then(response => response.json()
 				.catch((errors) => {
 					console.log(errors);
 					this.$store.commit('deleteUser')
-					this.user = {}
 					this.$flashMessage.show({
 						type: 'error',
 						title: 'Unauthorized',
@@ -45,7 +37,6 @@
 				.then(obj => {
 					if(obj.status.ok) {
 						this.$store.commit('setUser', obj.body)
-						this.user = this.$store.state.loggeduser
 					} else {
 						console.log("not ok")
 					}

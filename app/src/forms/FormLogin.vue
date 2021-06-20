@@ -24,7 +24,7 @@
 			}
 		},
 		methods: {
-			loginUser: function(email, password) {   
+			loginUser(email, password) {   
 				let data = {    
 					"email": email,    
 					"password": password

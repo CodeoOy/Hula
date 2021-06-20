@@ -3,11 +3,11 @@
 		<p v-if="errorsPresent" class="error">Please fill out label!</p>
 		<div class="mb-2">
 			<label class="form-label">Skill name</label>
-			<input class="form-control" type="text" placeholder="Languages" name="label" v-model="querydata.label" />
+			<input class="form-control" type="text" placeholder="Languages" name="label" v-model="queryData.label" />
 		</div>
 		<div class="mb-2">
 			<label class="form-label">Skill category</label>
-			<select class="form-select mb-2" id="Skill" aria-label="Skill category" v-model="querydata.category_id">
+			<select class="form-select mb-2" id="Skill" aria-label="Skill category" v-model="queryData.category_id">
 				<option v-for="category in categories" :key="category" :value="category.id">
 					{{ category.label }}
 				</option>
@@ -15,7 +15,7 @@
 		</div>
 		<div class="mb-2">
 			<label class="form-label">Skill scope</label>
-			<select class="form-select mb-2" id="Skill" aria-label="Skill scope" v-model="querydata.skillscope_id">
+			<select class="form-select mb-2" id="Skill" aria-label="Skill scope" v-model="queryData.skillscope_id">
 				<option v-for="scope in scopes" :key="scope" :value="scope.id">
 					{{ scope.label }}
 				</option>
@@ -30,7 +30,7 @@ export default {
 	name: 'Skill',
 	data() {
 		return {
-			querydata: {
+			queryData: {
 				label: '',
 				category_id: null,
 				skillscope_id: null,
@@ -41,18 +41,18 @@ export default {
 		}
 	},
 	methods: {
-		createSkill: function() {
+		createSkill() {
 			fetch('/api/skills', {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.querydata)
+				body: JSON.stringify(this.queryData)
 			})
 			.catch((errors) => {
 				console.log(errors);
 			})
 		},
-		getSkillCategories: function() {
+		getSkillCategories() {
 			fetch('/api/skills/categories', {method: 'GET'})
 			.then((response) => response.json())
 			.then(response => { 
@@ -62,7 +62,7 @@ export default {
 				console.log(errors);
 			})
 		},
-		getSkillScopes: function() {
+		getSkillScopes() {
 			fetch('/api/skills/scopes', {method: 'GET'})
 			.then((response) => response.json())
 			.then(response => { 

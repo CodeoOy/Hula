@@ -1,16 +1,16 @@
 <template>
 	<form v-on:submit="addExistingSkill">
-		<select class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="querydata.skill_id">
-			<option v-for="avskill in available_skills" :key="avskill" :value="avskill.id">
+		<select class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="queryData.skill_id">
+			<option v-for="avskill in availableSkills" :key="avskill" :value="avskill.id">
 				{{ avskill.label }}
 			</option>
 		</select>
-		<select v-if="chosenskill.skillscope_id" class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="querydata.skillscopelevel_id">
-			<option v-for="levelres in filterLevels" :key="levelres" :value="levelres.id">
-				{{ levelres.label }}
+		<select v-if="chosenSkill.skillscope_id" class="form-select" id="AddExistingSkill" aria-label="Example select with button addon" v-model="queryData.skillscopelevel_id">
+			<option v-for="lvl in filterLevels" :key="lvl" :value="lvl.id">
+				{{ lvl.label }}
 			</option>
 		</select>
-		<input type="number" aria-label="Years" class="form-control" v-model.number="querydata.years">
+		<input type="number" aria-label="Years" class="form-control" v-model.number="queryData.years">
 		<button class="btn btn-outline-secondary" type="button">Button</button>
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 	</form>
@@ -22,12 +22,11 @@ export default {
 	data() {
 		return {
 			user: {},
-			editing_info: false,
-			chosenskill: {
+			chosenSkill: {
 				id: '',
 				skillscope_id: '',
 			},
-			querydata: {
+			queryData: {
 				id: '83d7a553-2e53-47cc-8c16-a8a10c0cadd0', // TODO: This is here only to satisfy UserSkill struct. Remove somehow.
 				user_id: this.$store.state.loggeduser.id,
 				skill_id: '',
@@ -35,17 +34,17 @@ export default {
 				years: Number,
 				updated_by: this.$store.state.loggeduser.email,
 			},
-			available_skills: {},
-			skill_levels: [],
+			availableSkills: {},
+			skillLevels: [],
 		}
 	},
 	methods: {
-		addExistingSkill: function() {
+		addExistingSkill() {
 			fetch(`/api/userskills/${this.user.id}`, {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.querydata)
+				body: JSON.stringify(this.queryData)
 			})
 			.then(() => {
 				this.$store.commit('setUser', this.user.id)
@@ -54,39 +53,39 @@ export default {
 				console.log(errors);
 			})
 		},
-		getAllSkills: function() {
+		getAllSkills() {
 			fetch('/api/skills', {method: 'GET'})
 			.then((response) => response.json())
 			.then(response => { 
-				this.available_skills = response;
+				this.availableSkills = response;
 			})    
 			.catch((errors) => {
 				console.log(errors);
 			})
 		},
-		getAllLevels: function() {
+		getAllLevels() {
 			fetch('/api/skills/levels', {method: 'GET'})
 			.then((response) => response.json())
 			.then(response => { 
-				this.skill_levels = response;
+				this.skillLevels = response;
 			})    
 			.catch((errors) => {
 				console.log(errors);
 			})
 		},
-		getSkillScope: function(needle) {
-			var scope = this.available_skills.find(x => x.id == needle).skillscope_id;
-			this.chosenskill.skillscope_id = scope;
+		getSkillScope(needle) {
+			var scope = this.availableSkills.find(x => x.id == needle).skillscope_id;
+			this.chosenSkill.skillscope_id = scope;
 		}
 	},
 	watch: {
-		'querydata.skill_id': function(newID, oldID) {
+		'queryData.skill_id'(newID) {
 			this.getSkillScope(newID)
 		}
 	},
 	computed: {
-		filterLevels: function() {
-			return this.skill_levels.filter(levelres => levelres.skillscope_id == this.chosenskill.skillscope_id)
+		filterLevels() {
+			return this.skillLevels.filter(lvl => lvl.skillscope_id == this.chosenSkill.skillscope_id)
 		}
 	},
 	mounted() {

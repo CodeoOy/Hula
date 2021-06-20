@@ -29,7 +29,7 @@ export default {
 		};
 	},
 	methods: {
-		onSubmit: function() {
+		onSubmit() {
 			if (this.user.lastname === '') {
 				this.errorsPresent = true;
 			} else {

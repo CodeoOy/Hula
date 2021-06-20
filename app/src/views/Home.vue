@@ -1,11 +1,10 @@
 <template>
 	<div class="container-fluid mt-4">
-		<!-- <VModal v-if="logged == false"> -->
 		<VModal>
-			<FormLogin v-if="show_signup == false" v-on:hide-modal="hideModal"/>
+			<FormLogin v-if="showSignup == false" v-on:hide-modal="hideModal"/>
 			<FormRegister v-else/>
-			<a href="#" v-if="show_signup == false" v-on:click="show_signup = true">Or sign up here.</a>
-			<a href="#" v-else v-on:click="show_signup = false">Already a user? Log in here.</a>
+			<a href="#" v-if="showSignup == false" v-on:click="showSignup = true">Or sign up here.</a>
+			<a href="#" v-else v-on:click="showSignup = false">Already a user? Log in here.</a>
 		</VModal>
 		<AdminList v-if="this.$store.state.loggeduser" />
 	</div>
@@ -21,7 +20,7 @@
 		name: 'Home',
 		data() {
 			return {
-				show_signup: false,
+				showSignup: false,
 				modal: null,
 			}
 		},
@@ -32,7 +31,7 @@
 			VModal,
   		},
 		methods: {
-			hideModal () {
+			hideModal() {
 				this.modal.hide()
 			}
 		},

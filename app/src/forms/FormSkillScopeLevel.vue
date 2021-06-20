@@ -3,11 +3,11 @@
 		<p v-if="errorsPresent" class="error">Please fill out label!</p>
 		<div class="mb-2">
 			<label class="form-label">Level name</label>
-			<input class="form-control" type="text" placeholder="Rookie" name="levelname" v-model="querydata.label" />
+			<input class="form-control" type="text" placeholder="Rookie" name="levelname" v-model="queryData.label" />
 		</div>
 		<div class="mb-2">
 			<label class="form-label">Level scope</label>
-			<select class="form-select mb-2" id="SkillScope" aria-label="Select scope" v-model="querydata.skillscope_id">
+			<select class="form-select mb-2" id="SkillScope" aria-label="Select scope" v-model="queryData.skillscope_id">
 				<option v-for="scope in scopes" :key="scope" :value="scope.id">
 					{{ scope.label }}
 				</option>
@@ -15,7 +15,7 @@
 		</div>
 		<div class="mb-2">
 			<label class="form-label">Percentage</label>
-			<input type="number" aria-label="Percentage" class="form-control" v-model.number="querydata.percentage">
+			<input type="number" aria-label="Percentage" class="form-control" v-model.number="queryData.percentage">
 		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 	</form> 
@@ -27,7 +27,7 @@ export default {
 	data() {
 		return {
 			errorsPresent: false,
-			querydata: {
+			queryData: {
 				email: this.$store.state.loggeduser.email,
 				label: "",
 				skillscope_id: null,
@@ -37,18 +37,18 @@ export default {
 		};
 	},
 	methods: {
-		createSkillScopeLevel: function() {
+		createSkillScopeLevel() {
 			fetch('/api/skills/levels', {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.querydata)
+				body: JSON.stringify(this.queryData)
 			})
 			.catch((errors) => {
 				console.log(errors);
 			})
 		},
-		getSkillScopes: function() {
+		getSkillScopes() {
 			fetch('/api/skills/scopes', {method: 'GET'})
 			.then((response) => response.json())
 			.then(response => { 
@@ -58,7 +58,7 @@ export default {
 				console.log(errors);
 			})
 		},
-		onSubmit: function() {
+		onSubmit() {
 			if (this.user.lastname === '') {
 				this.errorsPresent = true;
 			} else {

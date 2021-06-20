@@ -3,11 +3,11 @@
 		<p v-if="errorsPresent" class="error">Please fill out label!</p>
 		<div class="mb-2">
 			<label class="form-label">Scope name</label>
-			<input class="form-control" type="text" placeholder="Language levels" name="scopename" v-model="querydata.label" />
+			<input class="form-control" type="text" placeholder="Language levels" name="scopename" v-model="queryData.label" />
 		</div>
 		<div class="mb-2">
 			<label class="form-label">Scope category</label>
-			<select class="form-select mb-2" id="SkillScope" aria-label="Scope category" v-model="querydata.category_id">
+			<select class="form-select mb-2" id="SkillScope" aria-label="Scope category" v-model="queryData.category_id">
 				<option v-for="category in categories" :key="category" :value="category.id">
 					{{ category.label }}
 				</option>
@@ -23,7 +23,7 @@ export default {
 	data() {
 		return {
 			errorsPresent: false,
-			querydata: {
+			queryData: {
 				email: this.$store.state.loggeduser.email,
 				label: "",
 				category_id: null,
@@ -32,18 +32,18 @@ export default {
 		};
 	},
 	methods: {
-		createSkillScope: function() {
+		createSkillScope() {
 			fetch('/api/skills/scopes', {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.querydata)
+				body: JSON.stringify(this.queryData)
 			})
 			.catch((errors) => {
 				console.log(errors);
 			})
 		},
-		getSkillCategories: function() {
+		getSkillCategories() {
 			fetch('/api/skills/categories', {method: 'GET'})
 			.then((response) => response.json())
 			.then(response => { 

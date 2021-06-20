@@ -9,9 +9,7 @@
 </template>
 
 <script>
-export default {
-	name: 'TheFooter',
-	methods: {
+	export default {
+		name: 'TheFooter',
 	}
-};
 </script>

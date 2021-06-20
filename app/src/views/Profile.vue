@@ -1,7 +1,7 @@
 <template>
 	<div class="container mt-4">
-		<VModal :modal_title="form_title">
-			<FormAddSkill v-if="form_title == 'Add Skill'"/>
+		<VModal :modalTitle="formTitle">
+			<FormAddSkill v-if="formTitle == 'Add Skill'"/>
 		</VModal>
 		<div class="row gx-4">
 			<div class="col-md-4">
@@ -17,10 +17,10 @@
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h2>Professional profile</h2>
 					<h3>Basic info</h3>
-					<a href="#" v-on:click="editing_info = true">Edit your info</a>
+					<a href="#" v-on:click="editingInfo = true">Edit your info</a>
 					<p>Available: {{ user.available }}</p>
 					<transition name="fadeHeight">
-						<FormUserBasicInfo :user='user' v-if="editing_info == true" v-on:formsent="editing_info = false, updateUser()"/>
+						<FormUserBasicInfo :user='user' v-if="editingInfo == true" v-on:formsent="editingInfo = false, updateUser()"/>
 					</transition>
 					<h3>Skills</h3>
 					<table class="table table-dark table-striped text-light">
@@ -39,7 +39,7 @@
 							</tr>
 						</tbody>
 					</table>
-					<p><a href="#" v-on:click="form_title = 'Add Skill'" data-bs-toggle="modal" data-bs-target="#hulaModal">Add skill</a></p>
+					<p><a href="#" v-on:click="formTitle = 'Add Skill'" data-bs-toggle="modal" data-bs-target="#hulaModal">Add skill</a></p>
 				</div>
 			</div>
 		</div>
@@ -54,10 +54,9 @@
 		name: 'Profile',
 		data() {
 			return {
-				show_modal: false,
-				form_title: '',
+				formTitle: '',
 				user: {},
-				editing_info: false,
+				editingInfo: false,
 			}
 		},
 		components: {
@@ -66,7 +65,7 @@
 			VModal,
 		},
 		methods: {
-			updateUser: function() { // This is not working. Make the user update happen in some other way.
+			updateUser() { // This is not working. Make the user update happen in some other way.
 				fetch(`/api/users/${this.user.id}`, {
 					method: 'PUT',
 					headers: {"Content-Type": "application/json"},

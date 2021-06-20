@@ -29,7 +29,6 @@
 		name: 'FormRegister',
 		data() {
 			return {
-				message: "Click here",
 				user: {}
 			}
 		},
