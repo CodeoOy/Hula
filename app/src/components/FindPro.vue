@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<form action="#" v-on:submit.prevent="getMatchedUsers">
-			<select class="mb-2 form-select" v-model="queryData.projectName" aria-label="Choose project">
+			<select class="mb-2 form-select" v-model="queryData.projectname" aria-label="Choose project">
 				<option :value="''" disabled>Choose the project</option>
 				<option v-for="project in projects" :key="project.name" :value="project.name">{{ project.name }}</option>
 			</select>
@@ -29,7 +29,7 @@
 				users: {},
 				selected: {},
 				queryData: {
-					projectName: '',
+					projectname: '',
 				},
 			}
 		},

@@ -40,6 +40,13 @@
 			if (!this.$store.state.loggeduser) {
 				this.modal.show()
 			} 
-		}
+		},
+		/*
+		updated() {
+			this.modal = new Modal(document.getElementById('hulaModallogin')) // This is pretty WET
+			if (!this.$store.state.loggeduser) {
+				this.modal.show()
+			} 
+		}*/
 	}
 </script>
