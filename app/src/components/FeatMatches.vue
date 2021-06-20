@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<VModal :modalTitle="'Match'">
+		<VModal :modalTitle="'Match'" :modalID="'match'">
 			<MatchContent :match="currentMatch"/>
 		</VModal>
 		<div class="modal fade" v-bind:class="{ 'show db': show, '': !show }">
@@ -29,7 +29,7 @@
 		</div>
 		<ul class="matches">
 			<li class="match" v-for="match in matches" :key="match.projectname">
-				<a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="currentMatch = match">
+				<a href="#" data-bs-toggle="modal" data-bs-target="#hulaModalmatch" v-on:click="currentMatch = match">
 					<div class="match__bg"></div>
 					<div class="match__pro">
 						<img :src="'/public/assets/' + match.firstname + '.jpg'">

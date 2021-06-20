@@ -1,6 +1,6 @@
 <template>
 	<div class="container-fluid mt-4">
-		<VModal>
+		<VModal :modalID="'login'">
 			<FormLogin v-if="showSignup == false" v-on:hide-modal="hideModal"/>
 			<FormRegister v-else/>
 			<a href="#" v-if="showSignup == false" v-on:click="showSignup = true">Or sign up here.</a>
@@ -36,7 +36,7 @@
 			}
 		},
 		mounted() {
-			this.modal = new Modal(document.getElementById('hulaModal'))
+			this.modal = new Modal(document.getElementById('hulaModallogin'))
 			if (!this.$store.state.loggeduser) {
 				this.modal.show()
 			} 

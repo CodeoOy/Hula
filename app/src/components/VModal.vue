@@ -1,10 +1,10 @@
 <template>
-	<div class="modal fade" id="hulaModal">
+	<div class="modal fade" :id="'hulaModal' + modalID">
 		<div class="modal-dialog">
 			<div class="modal-content rounded-2 content-box bg-dark text-light">
 				<div class="modal-header">
 					<h2 class="modal-title">{{ modalTitle }}</h2>
-					<button type="button" class="close" data-bs-toggle="modal" data-bs-target="#hulaModal" aria-label="Close">
+					<button type="button" class="close" data-bs-toggle="modal" :data-bs-target="'#hulaModal' + modalID" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
@@ -21,6 +21,7 @@ export default {
 	name: 'VModal',
 	props: {	
 		modalTitle: String,
+		modalID: String,
 	}
 };
 </script>
