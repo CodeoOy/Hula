@@ -6,7 +6,7 @@
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					<h1>Welcome {{ this.$store.state.loggeduser.firstname }}!</h1>
+					<h1>Welcome!</h1>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click.native.prevent="normalizeChosenProject">Add project</a></p>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New skill', chosenForm = 'skill'">Add skill</a></p>
 					<p><a href="#" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="form_title = 'New scope', chosenForm = 'scope'">Add scope</a></p>
