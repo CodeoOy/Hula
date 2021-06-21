@@ -267,4 +267,14 @@ nav {
 	40%, 60% {
 	  transform: translate3d(4px, 0, 0);
 	}
-  }
+}
+
+
+// PAGE SPECIFIC STYLES
+
+
+.page-login {
+	.modal.show {
+		background-color: rgba(25,0,25,1);
+	}
+}
