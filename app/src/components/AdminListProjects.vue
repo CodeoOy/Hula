@@ -19,13 +19,13 @@
 							<p v-for="need in project.needs" :key="need.id">{{ need.id }}</p>
 						</td>
 						<td>
-							<a href="#" 
+							<!--<a href="#" 
 								:data-project-id="project.id" 
 								:data-project-name="project.name" 
 								data-bs-toggle="modal" 
 								data-bs-target="#hulaModal" 
 								v-on:click.prevent="this.chooseProject(project)"
-							>Edit</a>
+							>Edit</a>-->
 							<a href="#"
 								v-on:click.prevent="this.deleteProject(project.id)"
 							>Delete
