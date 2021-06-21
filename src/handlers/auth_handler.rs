@@ -15,9 +15,9 @@ pub struct AuthData {
 }
 
 pub async fn logout(
-	logged_user: LoggedUser,
 	id: Identity,
 	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_delete_session(logged_user.uid.to_string(), pool)).await;
 	println!("\nLogout\n");
@@ -30,10 +30,11 @@ pub async fn logout(
 		},
 	}
 }
+
 pub async fn login(
-	auth_data: web::Json<AuthData>,
 	id: Identity,
 	pool: web::Data<Pool>,
+	auth_data: web::Json<AuthData>,
 ) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query(auth_data.into_inner(), pool)).await;
 	println!("\nAuthenticating....\n");
@@ -51,7 +52,9 @@ pub async fn login(
 	}
 }
 
-pub async fn get_me(logged_user: LoggedUser) -> HttpResponse {
+pub async fn get_me(
+	logged_user: LoggedUser
+) -> HttpResponse {
 	HttpResponse::Ok().json(logged_user.uid)
 }
 

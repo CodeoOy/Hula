@@ -4,7 +4,7 @@ use serde::Deserialize;
 
 use crate::errors::ServiceError;
 use crate::models::skills::{Pool, Skill, SkillCategory, SkillScope, SkillScopeLevel};
-use crate::models::users::LoggedUser;
+use crate::models::users::{LoggedUser, LoggedAdminUser};
 
 #[derive(Deserialize, Debug)]
 pub struct SkillData {
@@ -35,7 +35,10 @@ pub struct ScopeLevelData {
 	pub percentage: Option<i32>,
 }
 
-pub async fn get_all_skills(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
+pub async fn get_all_skills(
+	pool: web::Data<Pool>, 
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_all_skills(pool)).await;
 
 	match res {
@@ -47,7 +50,9 @@ pub async fn get_all_skills(pool: web::Data<Pool>, _logged_user: LoggedUser) -> 
 	}
 }
 
-fn query_all_skills(pool: web::Data<Pool>) -> Result<Vec<Skill>, crate::errors::ServiceError> {
+fn query_all_skills(
+	pool: web::Data<Pool>
+) -> Result<Vec<Skill>, crate::errors::ServiceError> {
 	use crate::schema::skills::dsl::skills;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let items = skills.load::<Skill>(conn)?;
@@ -58,7 +63,10 @@ fn query_all_skills(pool: web::Data<Pool>) -> Result<Vec<Skill>, crate::errors::
 	Err(ServiceError::Empty)
 }
 
-pub async fn get_skillscopes(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
+pub async fn get_skillscopes(
+	pool: web::Data<Pool>, 
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_skillscopes(pool)).await;
 
 	match res {
@@ -70,7 +78,9 @@ pub async fn get_skillscopes(pool: web::Data<Pool>, _logged_user: LoggedUser) ->
 	}
 }
 
-fn query_skillscopes(pool: web::Data<Pool>) -> Result<Vec<SkillScope>, crate::errors::ServiceError> {
+fn query_skillscopes(
+	pool: web::Data<Pool>
+) -> Result<Vec<SkillScope>, crate::errors::ServiceError> {
 	use crate::schema::skillscopes::dsl::skillscopes;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let items = skillscopes.load::<SkillScope>(conn)?;
@@ -81,7 +91,10 @@ fn query_skillscopes(pool: web::Data<Pool>) -> Result<Vec<SkillScope>, crate::er
 	Err(ServiceError::Empty)
 }
 
-pub async fn get_skill_levels(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
+pub async fn get_skill_levels(
+	pool: web::Data<Pool>, 
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_skill_levels(pool)).await;
 
 	match res {
@@ -93,7 +106,9 @@ pub async fn get_skill_levels(pool: web::Data<Pool>, _logged_user: LoggedUser) -
 	}
 }
 
-fn query_skill_levels(pool: web::Data<Pool>) -> Result<Vec<SkillScopeLevel>, crate::errors::ServiceError> {
+fn query_skill_levels(
+	pool: web::Data<Pool>
+) -> Result<Vec<SkillScopeLevel>, crate::errors::ServiceError> {
 	use crate::schema::skillscopelevels::dsl::skillscopelevels;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let items = skillscopelevels.load::<SkillScopeLevel>(conn)?;
@@ -119,7 +134,9 @@ pub async fn get_skill_categories(
 	}
 }
 
-fn query_skill_categories(pool: web::Data<Pool>) -> Result<Vec<SkillCategory>, crate::errors::ServiceError> {
+fn query_skill_categories(
+	pool: web::Data<Pool>
+) -> Result<Vec<SkillCategory>, crate::errors::ServiceError> {
 	use crate::schema::skillcategories::dsl::skillcategories;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let items = skillcategories.load::<SkillCategory>(conn)?;
@@ -133,7 +150,7 @@ fn query_skill_categories(pool: web::Data<Pool>) -> Result<Vec<SkillCategory>, c
 pub async fn create_skill_category(
 	categorydata: web::Json<CategoryData>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedUser,
+	logged_user: LoggedAdminUser,
 ) -> Result<HttpResponse, ServiceError> {
 	println!("Creating a skill category");
 	let res = web::block(move || query_create_skill_category(categorydata, pool, logged_user.email)).await;
@@ -175,7 +192,7 @@ fn query_create_skill_category(
 pub async fn create_skill(
 	skilldata: web::Json<SkillData>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedUser,
+	logged_user: LoggedAdminUser,
 ) -> Result<HttpResponse, ServiceError> {
 	println!("Creating a skill");
 	let res = web::block(move || query_create_skill(skilldata, pool, logged_user.email)).await;
@@ -216,7 +233,7 @@ fn query_create_skill(
 pub async fn create_skill_scope(
 	scopedata: web::Json<ScopeData>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedUser,
+	logged_user: LoggedAdminUser,
 ) -> Result<HttpResponse, ServiceError> {
 	println!("Creating a skill scope");
 	let res = web::block(move || query_create_skill_scope(scopedata, pool, logged_user.email)).await;
@@ -257,7 +274,7 @@ fn query_create_skill_scope(
 pub async fn create_skill_scope_level(
 	scopeleveldata: web::Json<ScopeLevelData>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedUser,
+	logged_user: LoggedAdminUser,
 ) -> Result<HttpResponse, ServiceError> {
 	println!("Creating a skill scope level");
 	let res = web::block(move || query_create_skill_scope_level(scopeleveldata, pool, logged_user.email)).await;
@@ -306,7 +323,11 @@ fn query_create_skill_scope_level(
 	Err(ServiceError::Unauthorized)
 }
 
-pub async fn delete_skill(uuid_data: web::Path<String>, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+pub async fn delete_skill(
+	uuid_data: web::Path<String>, 
+	pool: web::Data<Pool>,
+	_logged_user: LoggedAdminUser,
+) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_delete_skill(uuid_data.into_inner(), pool)).await;
 	println!("\nSkill deleted\n");
 	match res {
@@ -318,32 +339,15 @@ pub async fn delete_skill(uuid_data: web::Path<String>, pool: web::Data<Pool>) -
 	}
 }
 
-fn query_delete_skill(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
+fn query_delete_skill(
+	uuid_data: String, 
+	pool: web::Data<Pool>
+) -> Result<(), crate::errors::ServiceError> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::skills::dsl::id;
 	use crate::schema::skills::dsl::*;
 
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
 	diesel::delete(skills.filter(id.eq(uuid_query))).execute(conn)?;
-	Ok(())
-}
-
-pub async fn delete_all_skills(pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
-	let res = web::block(move || query_delete_all_skills(pool)).await;
-	println!("\nAll skills deleted\n");
-	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
-		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
-			BlockingError::Canceled => Err(ServiceError::InternalServerError),
-		},
-	}
-}
-
-fn query_delete_all_skills(pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
-	let conn: &PgConnection = &pool.get().unwrap();
-	use crate::schema::skills::dsl::*;
-
-	diesel::delete(skills).execute(conn)?;
 	Ok(())
 }

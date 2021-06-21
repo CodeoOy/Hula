@@ -110,6 +110,27 @@ impl From<ActiveSession> for LoggedUser {
 	}
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct LoggedAdminUser {
+	pub email: String,
+	pub uid: uuid::Uuid,
+	pub session_id: uuid::Uuid,
+}
+
+impl From<ActiveSession> for LoggedAdminUser {
+	fn from(session: ActiveSession) -> Self {
+		if session.isadmin == false {
+			panic!("Tried to make a LoggedAdminUser from a normal user");
+		}
+
+		LoggedAdminUser {
+			email: session.email,
+			uid: session.user_id,
+			session_id: session.session_id,
+		}
+	}
+}
+
 impl FromRequest for LoggedUser {
 	type Config = ();
 	type Error = Error;
@@ -118,35 +139,10 @@ impl FromRequest for LoggedUser {
 	fn from_request(req: &HttpRequest, pl: &mut Payload) -> Self::Future {
 		if let Ok(identity) = Identity::from_request(req, pl).into_inner() {
 			if let Some(cookie) = identity.identity() {
-				let pool = req.app_data::<Data<models::users::Pool>>().unwrap().clone();
-
-				let conn: &PgConnection = &pool.get().unwrap();
-				use crate::schema::activesessions::dsl::session_id;
-				use crate::schema::activesessions::dsl::*;
-
-				let id_res = uuid::Uuid::parse_str(&cookie);
-				match id_res {
-					Ok(id) => {
-						let session = activesessions
-							.filter(session_id.eq(&id))
-							.get_result::<ActiveSession>(conn);
-
-						if let Ok(s) = session {
-							if s.expire_at > chrono::offset::Utc::now().naive_utc() {
-								let u: LoggedUser = s.into();
-								return ok(u);
-							}
-
-							println!("extractor: Session expired!");
-						}
-						else {
-							println!("extractor: No active session found!");
-						}
-					},
-					Err(err) => {
-						println!("extractor: Not an UUID in the cookie! Error: {:?}", err);
-					}
-				};
+				if let Some(session) = get_active_session(req, cookie) {
+					let u: LoggedUser = session.into();
+					return ok(u);
+				}
 			}
 			else {
 				println!("extractor: Identity (cookie) not received!");
@@ -158,4 +154,70 @@ impl FromRequest for LoggedUser {
 
 		err(ServiceError::Unauthorized.into())
 	}
+}
+
+impl FromRequest for LoggedAdminUser {
+	type Config = ();
+	type Error = Error;
+	type Future = Ready<Result<LoggedAdminUser, Error>>;
+
+	fn from_request(req: &HttpRequest, pl: &mut Payload) -> Self::Future {
+		if let Ok(identity) = Identity::from_request(req, pl).into_inner() {
+			if let Some(cookie) = identity.identity() {
+				if let Some(session) = get_active_session(req, cookie) {
+					if session.isadmin == true {
+						let u: LoggedAdminUser = session.into();
+						return ok(u);
+					}
+					else {
+						println!("extractor: Not an admin user!");
+					}
+				}
+			}
+			else {
+				println!("extractor: Identity (cookie) not received!");
+			}
+		}
+		else {
+			println!("extractor: Request processing failed!");
+		}
+
+		err(ServiceError::Unauthorized.into())
+	}
+}
+
+fn get_active_session (
+	req: &HttpRequest,
+	cookie: String,
+) -> Option<ActiveSession> {
+	let pool = req.app_data::<Data<models::users::Pool>>().unwrap().clone();
+
+	let conn: &PgConnection = &pool.get().unwrap();
+	use crate::schema::activesessions::dsl::session_id;
+	use crate::schema::activesessions::dsl::*;
+
+	let id_res = uuid::Uuid::parse_str(&cookie);
+	match id_res {
+		Ok(id) => {
+			let session = activesessions
+				.filter(session_id.eq(&id))
+				.get_result::<ActiveSession>(conn);
+
+			if let Ok(s) = session {
+				if s.expire_at > chrono::offset::Utc::now().naive_utc() {
+					return Some(s);
+				}
+
+				println!("extractor: Session expired!");
+			}
+			else {
+				println!("extractor: No active session found!");
+			}
+		},
+		Err(err) => {
+			println!("extractor: Not an UUID in the cookie! Error: {:?}", err);
+		}
+	};
+
+	None
 }
