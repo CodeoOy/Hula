@@ -15,17 +15,20 @@ const store = createStore({
 			projects: JSON.parse(localStorage.getItem('projects')),
 		}
 	},
-	mutations: {
-		setUser (state, data) {
-			fetch(`/api/users/${data}`, {
+	actions: {
+		async setUser(context, data) {
+			const userData = await fetch(`/api/users/${data}`, {
 				method: 'GET',
 				headers: {"Content-Type": "application/json"}
 			})
 			.then((response) => response.json())
-			.then(response => { 
-				localStorage.setItem('user', JSON.stringify(response));
-				state.loggeduser = response;
-			})   
+			context.commit('setUser', userData)
+		},
+	},
+	mutations: {
+		setUser(state, data) {
+			state.loggeduser = data;
+			localStorage.setItem('user', JSON.stringify(data));
 		},
 		getProjects (state) {
 			fetch('/api/projects', {

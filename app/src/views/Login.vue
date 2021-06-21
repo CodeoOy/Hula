@@ -30,6 +30,7 @@
 		methods: {
 			hideModal() {
 				this.modal.hide()
+				this.$emit('checklogin')
 			}
 		},
 		mounted() {

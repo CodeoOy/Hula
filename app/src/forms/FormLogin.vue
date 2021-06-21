@@ -1,7 +1,8 @@
 <template>
 	<div>
 		<h2>Log in</h2>
-		<form v-on:submit.prevent="login">
+		<form v-on:submit="login">
+			{{ this.$store.state.loggeduser }}
 			<div class="mb-3">
 				<label for="loginUser" class="form-label">Email</label>
 				<input type="text" class="form-control" id="loginUser" aria-describedby="emailHelp" name="email">
@@ -43,10 +44,14 @@
 							console.log("Auth (GET) failed, error data:");
 							console.log(errors)
 						}) 
-						.then((response) => {
-							this.$store.commit('setUser', response)
-							this.$router.push({ name: 'page-home' })
+						.then(async response => {
+							console.log(response)
+							await this.$store.dispatch('setUser', response)
+						})
+						.then((data) => {
 							this.$emit('hideModal')
+							console.log(this.$store.state.loggeduser)
+							this.$router.push({ name: 'page-home' })
 						})
 					} else {
 						this.$flashMessage.show({

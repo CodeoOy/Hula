@@ -1,10 +1,11 @@
 <template>
 	<div id="mainwrap" :class="this.$route.name">
-		<TheHeader v-on:loggedout="checkLogin" />
+		<TheHeader v-on:loggedout="checkLogin" v-if="this.$store.state.loggeduser"/>
 		<FlashMessage position="right top" />
 		<main>
 			<router-view v-on:checklogin="checkLogin" />
 		</main>
+		{{ this.$store.state.loggeduser }}
 		<TheFooter />
 	</div>
 </template>
@@ -36,16 +37,23 @@
 				.then(data => ({status: response, body: data})))
 				.then(obj => {
 					if(obj.status.ok) {
-						this.$store.commit('setUser', obj.body)
+						this.$store.dispatch('setUser', obj.body)
 					} else {
 						console.log("not ok")
 					}
 				})
-			},
+			}
 		},
 		mounted() {
+			console.log("mounted fired")
+			this.checkLogin()
+		},
+		/*
+		beforeRouteUpdate(to, from, next) {
+			console.log("beforeRouteUpdate fired")
 			this.checkLogin()
 			this.$store.commit('getProjects')
 		}
+		*/
 	}
 </script>

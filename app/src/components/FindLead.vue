@@ -57,6 +57,8 @@
 		},
 		mounted() {
 			this.getUsers()
+			this.getProjects()
+			//this.$store.commit('getProjects')
 		}
 	}
 </script>
