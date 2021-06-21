@@ -14,7 +14,10 @@
 				<tbody>
 					<tr v-for="(project, index) in this.$store.state.projects" :key="project.id">
 						<th scope="row">{{ index + 1 }}</th>
-						<td><router-link :to="{ name: 'page-project', params: { id: project.id}}">{{ project.name }}</router-link></td>
+						<td><router-link
+							:to="{ name: 'page-project', params: { id: project.id}}"
+							v-on:click="this.chooseProject(project)"
+						>{{ project.name }}</router-link></td>
 						<td>
 							<p v-for="need in project.needs" :key="need.id">{{ need.id }}</p>
 						</td>
@@ -41,11 +44,6 @@
 <script>
 	export default {
 		name: 'AdminListProjects',
-		data() {
-			return {
-				projects: this.$store.state.projects,
-			}
-		},
 		methods: {
 			chooseProject(project) {
 				this.$store.commit('setChosenProject', project.id)
@@ -61,6 +59,9 @@
 					throw new Error('Project not deleted');
 				})
 			}
+		},
+		mounted() {
+			this.$store.commit('getProjects')
 		}
 	}
 </script>
