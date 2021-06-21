@@ -1,6 +1,6 @@
 <template>
 	<div class="container mt-4">
-		<VModal :modalTitle="formTitle">
+		<VModal :modalTitle="formTitle" :modalID="'Profile'">
 			<FormAddSkill v-if="formTitle == 'Add Skill'"/>
 		</VModal>
 		<div class="row gx-4">
@@ -39,7 +39,7 @@
 							</tr>
 						</tbody>
 					</table>
-					<p><a href="#" v-on:click="formTitle = 'Add Skill'" data-bs-toggle="modal" data-bs-target="#hulaModal">Add skill</a></p>
+					<p><a href="#" v-on:click="formTitle = 'Add Skill'" data-bs-toggle="modal" data-bs-target="#hulaModalProfile">Add skill</a></p>
 				</div>
 			</div>
 		</div>
