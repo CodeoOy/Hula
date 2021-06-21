@@ -6,6 +6,7 @@ import Admin from './views/Admin.vue'
 import Page404 from './views/Page404.vue'
 import Project from './views/Project.vue'
 import Gdpr from './views/Gdpr.vue'
+import Login from './views/Login.vue'
 
 export {
 	Home,
@@ -15,5 +16,6 @@ export {
 	Admin,
 	Dashboard,
 	Project,
-	Gdpr
+	Gdpr,
+	Login
 }

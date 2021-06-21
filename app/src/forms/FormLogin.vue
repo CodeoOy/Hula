@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h2>Log in</h2>
-		<form v-on:submit="login">
+		<form v-on:submit.prevent="login">
 			<div class="mb-3">
 				<label for="loginUser" class="form-label">Email</label>
 				<input type="text" class="form-control" id="loginUser" aria-describedby="emailHelp" name="email">
@@ -45,6 +45,7 @@
 						}) 
 						.then((response) => {
 							this.$store.commit('setUser', response)
+							this.$router.push({ name: 'Home' })
 							this.$emit('hideModal')
 						})
 					} else {

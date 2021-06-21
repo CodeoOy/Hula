@@ -31,7 +31,7 @@
 						title: 'Unauthorized',
 						time: 1000
 					});
-					this.$router.push({ path: '/' })
+					this.$router.push({ name: 'Login' })
 				})
 				.then(data => ({status: response, body: data})))
 				.then(obj => {

@@ -115,10 +115,12 @@ const app = createApp(App)
 	.use(router)
 	.use(FlashMessage)
 	.use(store)
+/*
 router.beforeEach((to, from, next) => {
 	//if (to.name !== 'Login' && !isAuthenticated) next({ name: 'Login' })
-	if (to.path !== '/' && !store.state.loggeduser) next({ path: '/' })
+	if (to.name !== 'Login' && !store.state.loggeduser) next({ name: 'Login' })
 	else next()
 })
+*/
 router.isReady()
 	.then(() => app.mount('#hula'))
