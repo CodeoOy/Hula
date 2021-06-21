@@ -1,5 +1,5 @@
 <template>
-	<div id="mainwrap">
+	<div id="mainwrap" :class="this.$route.name">
 		<TheHeader v-on:loggedout="checkLogin" />
 		<FlashMessage position="right top" />
 		<main>
@@ -31,7 +31,7 @@
 						title: 'Unauthorized',
 						time: 1000
 					});
-					this.$router.push({ name: 'Login' })
+					this.$router.push({ name: 'page-login' })
 				})
 				.then(data => ({status: response, body: data})))
 				.then(obj => {

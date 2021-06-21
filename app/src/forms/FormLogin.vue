@@ -45,7 +45,7 @@
 						}) 
 						.then((response) => {
 							this.$store.commit('setUser', response)
-							this.$router.push({ name: 'Home' })
+							this.$router.push({ name: 'page-home' })
 							this.$emit('hideModal')
 						})
 					} else {
