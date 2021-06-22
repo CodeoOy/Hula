@@ -37,7 +37,7 @@ const store = createStore({
 				method: 'GET',
 				headers: {"Content-Type": "application/json"}
 			})
-			.then((response) => response.json()) // TODO: Doesn't work in demo environment
+			.then((response) => response.json())
 			.catch((errors) => {
 				console.log(errors);
 				state.projects = {}

@@ -5,14 +5,6 @@
 			<label class="form-label">Scope name</label>
 			<input class="form-control" type="text" placeholder="Language levels" name="scopename" v-model="queryData.label" />
 		</div>
-		<div class="mb-2">
-			<label class="form-label">Scope category</label>
-			<select class="form-select mb-2" id="SkillScope" aria-label="Scope category" v-model="queryData.category_id">
-				<option v-for="category in categories" :key="category" :value="category.id">
-					{{ category.label }}
-				</option>
-			</select>
-		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 	</form>  
 </template>
@@ -26,7 +18,6 @@ export default {
 			queryData: {
 				email: this.$store.state.loggeduser.email,
 				label: "",
-				category_id: null,
 			},
 			categories: {},
 		};
@@ -42,20 +33,7 @@ export default {
 			.catch((errors) => {
 				console.log(errors);
 			})
-		},
-		getSkillCategories() {
-			fetch('/api/skills/categories', {method: 'GET'})
-			.then((response) => response.json())
-			.then(response => { 
-				this.categories = response;
-			})    
-			.catch((errors) => {
-				console.log(errors);
-			})
-		},
-	},
-	mounted() {
-		this.getSkillCategories()
+		}
 	}
 };
 </script>

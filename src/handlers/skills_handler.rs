@@ -24,7 +24,6 @@ pub struct CategoryData {
 pub struct ScopeData {
 	pub email: String,
 	pub label: String,
-	pub category_id: uuid::Uuid,
 }
 
 #[derive(Deserialize, Debug)]
