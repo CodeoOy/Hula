@@ -51,7 +51,11 @@
 						.then((data) => {
 							this.$emit('hideModal')
 							console.log(this.$store.state.loggeduser)
-							this.$router.push({ name: 'page-home' })
+							if (this.$store.state.nextpage.length) {
+								this.$router.push({ name: this.$store.state.nextpage })
+							} else {
+								this.$router.push({ name: 'page-home' })
+							}
 						})
 					} else {
 						this.$flashMessage.show({

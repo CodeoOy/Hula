@@ -13,6 +13,7 @@ const store = createStore({
 			loggeduser: JSON.parse(localStorage.getItem('user')),
 			chosenproject: JSON.parse(localStorage.getItem('chosenproject')),
 			projects: JSON.parse(localStorage.getItem('projects')),
+			nextpage: ''
 		}
 	},
 	actions: {
@@ -122,12 +123,14 @@ const app = createApp(App)
 	.use(router)
 	.use(FlashMessage)
 	.use(store)
-/*
 router.beforeEach((to, from, next) => {
 	//if (to.name !== 'Login' && !isAuthenticated) next({ name: 'Login' })
-	if (to.name !== 'Login' && !store.state.loggeduser) next({ name: 'Login' })
+	if (to.name !== 'page-login' && !store.state.loggeduser) {
+		store.state.nextpage = to.name
+		//alert(store.state.nextpage)
+		next({ name: 'page-login' })
+	}
 	else next()
 })
-*/
 router.isReady()
 	.then(() => app.mount('#hula'))
