@@ -124,10 +124,8 @@ const app = createApp(App)
 	.use(FlashMessage)
 	.use(store)
 router.beforeEach((to, from, next) => {
-	//if (to.name !== 'Login' && !isAuthenticated) next({ name: 'Login' })
 	if (to.name !== 'page-login' && !store.state.loggeduser) {
 		store.state.nextpage = to.name
-		//alert(store.state.nextpage)
 		next({ name: 'page-login' })
 	}
 	else next()
