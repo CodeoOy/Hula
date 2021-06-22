@@ -32,32 +32,37 @@ const store = createStore({
 			localStorage.setItem('user', JSON.stringify(data));
 		},
 		getProjects (state) {
+			let projectsExist = true
 			fetch('/api/projects', {
 				method: 'GET',
 				headers: {"Content-Type": "application/json"}
 			})
-			.then((response) => response.json())
+			.then((response) => response.json()) // TODO: Doesn't work in demo environment
 			.catch((errors) => {
 				console.log(errors);
+				state.projects = {}
+				projectsExist = false
 			})
 			.then(response => {
-				state.projects = response
-				state.projects.forEach(function (project) {
-					fetch(`/api/projectneeds/${project.id}`, {
-						method: 'GET',
-						headers: {"Content-Type": "application/json"},
-						credentials: 'include'
-					})
-					.then((response) => response.json())
-					.catch((errors) => {
-						console.log("No needs for project: " + project.id)
-						console.log(errors)
-						project.needs = {}
-					})
-					.then((response) => {
-						project.needs = response
-					})
-				});
+				if (projectsExist === true) {
+					state.projects = response
+					state.projects.forEach(function (project) {
+						fetch(`/api/projectneeds/${project.id}`, {
+							method: 'GET',
+							headers: {"Content-Type": "application/json"},
+							credentials: 'include'
+						})
+						.then((response) => response.json())
+						.catch((errors) => {
+							console.log("No needs for project: " + project.id)
+							console.log(errors)
+							project.needs = {}
+						})
+						.then((response) => {
+							project.needs = response
+						})
+					});
+				}
 			})
 			localStorage.setItem('projects', JSON.stringify(state.projects));
 		},

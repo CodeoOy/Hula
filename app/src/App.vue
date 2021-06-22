@@ -24,10 +24,6 @@
 				this.$store.commit('deleteUser')
 				this.$router.push({ name: 'page-login' })
 			}
-		},
-		mounted() {
-			console.log("mounted fired")
-			//this.checkLogin()
 		}
 	}
 </script>
