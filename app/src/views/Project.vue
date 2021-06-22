@@ -20,8 +20,8 @@
 						<div class="d-flex flex-row justify-content-between align-items-baseline mb-3">
 							<h5>{{ need.count_of_users}} from {{ need.begin_time }} at percentage: {{ need.percentage}}</h5>
 							<div class="btn-group" role="group" aria-label="Need actions">
-								<a href="#" data-bs-toggle="modal" data-bs-target="#hulaModalSingleProject" v-on:click="chosenNeed = need, formTitle = 'Edit need', chosenForm = 'need'">Edit</a>
-								<a href="#" data-bs-toggle="modal" data-bs-target="#hulaModalSingleProject" v-on:click="chosenNeed = need, formTitle = 'New skill', chosenForm = 'skill'">Add skill</a>
+								<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#hulaModalSingleProject" v-on:click="chosenNeed = need, formTitle = 'Edit need', chosenForm = 'need'">Edit</a>
+								<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#hulaModalSingleProject" v-on:click="chosenNeed = need, formTitle = 'New skill', chosenForm = 'skill'">Add skill</a>
 								<a href="#" v-on:click="deleteNeed(need.id)">Delete</a>
 							</div>
 						</div>
