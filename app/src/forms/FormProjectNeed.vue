@@ -1,23 +1,67 @@
 <template>
-	<form v-on:submit="createUpdateProjectNeed">
-		<h3 v-if="'id' in this.chosenNeed">{{ chosenNeed.id }}</h3>
-		<h3 v-else>New need</h3>
+	<v-form v-on:submit="createUpdateProjectNeed">
+		<h2 v-if="'id' in this.chosenNeed">{{ chosenNeed.id }}</h2>
+		<h2 v-else>New need</h2>
 		{{ queryDataNeed }}
-		<label class="form-label">How many pros for this need?</label>
-		<input type="number" aria-label="Number of pros" class="form-control mb-2" v-model.number="queryDataNeed.count_of_users">
-		<label class="form-label">When does this need start?</label>
-		<input type="date" aria-label="Date start" class="form-control mb-2" v-model="queryDataNeed.begin_time">
-		{{ queryDataNeed.begin_time }}<br />
-		<label class="form-label">When does this need end?</label>
-		<input type="date" aria-label="Date end" class="form-control mb-2" v-model="queryDataNeed.end_time">
-		{{ queryDataNeed.end_time }}<br />
-		<label class="form-label">At what percentage?</label>
-		<input type="number" aria-label="Percentage" class="form-control mb-2" v-model.number="queryDataNeed.percentage">
+		<div class="mb-2">
+			<label class="form-label">How many pros for this need?</label>
+			<error-message name="users" class="error"></error-message>
+			<v-field
+				v-model.number="queryDataNeed.count_of_users"
+				:rules="isRequired"
+				as="input"
+				type="number"
+				name="users"
+				class="form-select"
+				aria-label="Number of pros" 
+			></v-field>
+		</div>
+		<div class="mb-2">
+			<label class="form-label">When does this need start?</label>
+			{{ queryDataNeed.begin_time }}<br />
+			<error-message name="begintime" class="error"></error-message>
+			<v-field
+				v-model="queryDataNeed.begin_time"
+				:rules="isRequired"
+				as="input"
+				type="date"
+				name="begintime"
+				class="form-select"
+				aria-label="Date start" 
+			></v-field>
+		</div>
+		<div class="mb-2">
+			<label class="form-label">When does this need end?</label>
+			{{ queryDataNeed.end_time }}<br />
+			<error-message name="endtime" class="error"></error-message>
+			<v-field
+				v-model="queryDataNeed.end_time"
+				as="input"
+				type="date"
+				name="endtime"
+				class="form-select"
+				aria-label="Date end" 
+			></v-field>
+		</div>
+		<div class="mb-2">
+			<label class="form-label">At what percentage?</label>
+			<error-message name="percentage" class="error"></error-message>
+			<v-field
+				v-model.number="queryDataNeed.percentage"
+				:rules="isRequired"
+				as="input"
+				type="number"
+				name="percentage"
+				class="form-select"
+				aria-label="Percentage" 
+			></v-field>
+		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Save</button>
-	</form>
+	</v-form>
 </template>
 
 <script>
+import { Field, Form, ErrorMessage } from 'vee-validate';
 export default {
 	name: 'ProjectNeed',
 	data() {
@@ -33,7 +77,15 @@ export default {
 			}
 		}
 	},
+	components: {
+		'VForm': Form,
+		'VField': Field,
+		ErrorMessage
+	},
 	methods: {
+		isRequired(value) {
+			return value ? true : 'This field is required';
+		},
 		createUpdateProjectNeed() {
 			this.queryDataNeed.begin_time = `${this.queryDataNeed.begin_time}T00:00:00` // TODO: This breaks the api call if user doesn't change the dates
 			this.queryDataNeed.end_time = `${this.queryDataNeed.end_time}T00:00:00` // So maybe use moment.js?
@@ -53,6 +105,9 @@ export default {
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
 					body: JSON.stringify(this.queryDataNeed)
+				})
+				.then(() => {
+					this.$router.go()
 				})
 				.catch((errors) => {
 					console.log(errors);
