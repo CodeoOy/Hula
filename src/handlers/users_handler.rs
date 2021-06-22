@@ -178,6 +178,26 @@ fn query_add_skill(
 	Err(ServiceError::Unauthorized)
 }
 
+pub async fn delete_userskill(uuid_data: web::Path<String>, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+	let res = web::block(move || query_delete_userskill(uuid_data.into_inner(), pool)).await;
+	match res {
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_delete_userskill(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
+	let conn: &PgConnection = &pool.get().unwrap();
+	use crate::schema::userskills::dsl::{userskills, id};
+
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	diesel::delete(userskills.filter(id.eq(uuid_query))).execute(conn)?;
+	Ok(())
+}
+
 pub async fn get_by_uuid(
 	uuid_data: web::Path<String>,
 	pool: web::Data<Pool>,
