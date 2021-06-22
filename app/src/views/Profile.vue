@@ -35,7 +35,7 @@
 							<tr v-for="skill in user.skills" :key="skill.id">
 								<td>{{ skill.skill_label }}</td>
 								<td>{{ skill.years }}</td>
-								<td>Edit - Delete</td>
+								<td><a href="#" v-on:click.prevent="this.deleteSkill(skill.id)">Delete</a></td>
 							</tr>
 						</tbody>
 					</table>
@@ -55,8 +55,8 @@
 		data() {
 			return {
 				formTitle: '',
-				user: {},
 				editingInfo: false,
+				user: this.$store.state.loggeduser
 			}
 		},
 		components: {
@@ -66,19 +66,21 @@
 		},
 		methods: {
 			updateUser() { // This is not working. Make the user update happen in some other way.
-				fetch(`/api/users/${this.user.id}`, {
+				fetch(`/api/users/${this.$store.state.loggeduser}`, {
 					method: 'PUT',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
 					body: JSON.stringify(this.user)
 				})
-				.then(() => {
-					this.$store.commit('setUser', this.user.id)
+			},
+			deleteSkill(id) {
+				fetch(`/api/userskills/${id}`, {
+					method: 'DELETE',
+					headers: {"Content-Type": "application/json"},
+					credentials: 'include',
+					body: JSON.stringify(this.user)
 				})
 			}
-		},
-		mounted() {
-			this.user = this.$store.state.loggeduser
 		}
 	}
 </script>

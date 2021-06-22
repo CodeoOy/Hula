@@ -29,10 +29,7 @@
 								data-bs-target="#hulaModal" 
 								v-on:click.prevent="this.chooseProject(project)"
 							>Edit</a>-->
-							<a href="#"
-								v-on:click.prevent="this.deleteProject(project.id)"
-							>Delete
-							</a>
+							<a href="#" v-on:click.prevent="this.deleteProject(project.id)">Delete</a>
 						</td>
 					</tr>
 				</tbody>

@@ -109,7 +109,8 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/userskills/{user_id}")
 							.route(web::post().to(handlers::users_handler::add_skill))
-							.route(web::put().to(handlers::users_handler::update_year)),
+							.route(web::put().to(handlers::users_handler::update_year))
+							.route(web::delete().to(handlers::users_handler::delete_userskill)),
 					)
 					.service(
 						web::resource("/skills")
