@@ -1,5 +1,5 @@
 <template>
-	<form v-on:submit.prevent="createUpdateProjectNeed">
+	<form v-on:submit="createUpdateProjectNeed">
 		<h3 v-if="'id' in this.chosenNeed">{{ chosenNeed.id }}</h3>
 		<h3 v-else>New need</h3>
 		{{ queryDataNeed }}
