@@ -110,27 +110,6 @@ impl From<ActiveSession> for LoggedUser {
 	}
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct LoggedAdminUser {
-	pub email: String,
-	pub uid: uuid::Uuid,
-	pub session_id: uuid::Uuid,
-}
-
-impl From<ActiveSession> for LoggedAdminUser {
-	fn from(session: ActiveSession) -> Self {
-		if session.isadmin == false {
-			panic!("Tried to make a LoggedAdminUser from a normal user");
-		}
-
-		LoggedAdminUser {
-			email: session.email,
-			uid: session.user_id,
-			session_id: session.session_id,
-		}
-	}
-}
-
 impl FromRequest for LoggedUser {
 	type Config = ();
 	type Error = Error;
@@ -142,36 +121,6 @@ impl FromRequest for LoggedUser {
 				if let Some(session) = get_active_session(req, cookie) {
 					let u: LoggedUser = session.into();
 					return ok(u);
-				}
-			}
-			else {
-				println!("extractor: Identity (cookie) not received!");
-			}
-		}
-		else {
-			println!("extractor: Request processing failed!");
-		}
-
-		err(ServiceError::Unauthorized.into())
-	}
-}
-
-impl FromRequest for LoggedAdminUser {
-	type Config = ();
-	type Error = Error;
-	type Future = Ready<Result<LoggedAdminUser, Error>>;
-
-	fn from_request(req: &HttpRequest, pl: &mut Payload) -> Self::Future {
-		if let Ok(identity) = Identity::from_request(req, pl).into_inner() {
-			if let Some(cookie) = identity.identity() {
-				if let Some(session) = get_active_session(req, cookie) {
-					if session.isadmin == true {
-						let u: LoggedAdminUser = session.into();
-						return ok(u);
-					}
-					else {
-						println!("extractor: Not an admin user!");
-					}
 				}
 			}
 			else {

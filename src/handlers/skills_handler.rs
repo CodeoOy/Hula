@@ -4,7 +4,7 @@ use serde::Deserialize;
 
 use crate::errors::ServiceError;
 use crate::models::skills::{Pool, Skill, SkillCategory, SkillScope, SkillScopeLevel};
-use crate::models::users::{LoggedUser, LoggedAdminUser};
+use crate::models::users::LoggedUser;
 
 #[derive(Deserialize, Debug)]
 pub struct SkillData {
@@ -150,8 +150,13 @@ fn query_skill_categories(
 pub async fn create_skill_category(
 	categorydata: web::Json<CategoryData>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedAdminUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
 	println!("Creating a skill category");
 	let res = web::block(move || query_create_skill_category(categorydata, pool, logged_user.email)).await;
 	match res {
@@ -192,8 +197,13 @@ fn query_create_skill_category(
 pub async fn create_skill(
 	skilldata: web::Json<SkillData>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedAdminUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
 	println!("Creating a skill");
 	let res = web::block(move || query_create_skill(skilldata, pool, logged_user.email)).await;
 	match res {
@@ -233,8 +243,13 @@ fn query_create_skill(
 pub async fn create_skill_scope(
 	scopedata: web::Json<ScopeData>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedAdminUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
 	println!("Creating a skill scope");
 	let res = web::block(move || query_create_skill_scope(scopedata, pool, logged_user.email)).await;
 	match res {
@@ -274,8 +289,13 @@ fn query_create_skill_scope(
 pub async fn create_skill_scope_level(
 	scopeleveldata: web::Json<ScopeLevelData>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedAdminUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
 	println!("Creating a skill scope level");
 	let res = web::block(move || query_create_skill_scope_level(scopeleveldata, pool, logged_user.email)).await;
 	match res {
@@ -326,8 +346,13 @@ fn query_create_skill_scope_level(
 pub async fn delete_skill(
 	uuid_data: web::Path<String>, 
 	pool: web::Data<Pool>,
-	_logged_user: LoggedAdminUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
 	let res = web::block(move || query_delete_skill(uuid_data.into_inner(), pool)).await;
 	println!("\nSkill deleted\n");
 	match res {

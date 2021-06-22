@@ -4,7 +4,7 @@ use serde::Deserialize;
 
 use crate::errors::ServiceError;
 use crate::models::projects::{Pool, Project, ProjectNeed, ProjectNeedSkill};
-use crate::models::users::{LoggedUser, LoggedAdminUser};
+use crate::models::users::LoggedUser;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
@@ -115,8 +115,13 @@ fn query_project_needs(
 pub async fn create_project(
 	projectdata: web::Json<ProjectData>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedAdminUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
 	println!("Creating a project");
 	let res = web::block(move || query_create_project(projectdata, pool, logged_user.email)).await;
 	match res {
@@ -157,8 +162,13 @@ fn query_create_project(
 pub async fn create_projectneed(
 	projectneeddata: web::Json<ProjectNeed>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedAdminUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
 	println!("Creating a project skill");
 	let res = web::block(move || query_create_projectneed(projectneeddata, pool, logged_user.email)).await;
 	match res {
@@ -202,8 +212,13 @@ fn query_create_projectneed(
 pub async fn create_projectneedskill(
 	projectneedskilldata: web::Json<ProjectNeedSkill>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedAdminUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
 	println!("Creating a project skill");
 	let res = web::block(move || query_create_projectneedskill(projectneedskilldata, pool, logged_user.email)).await;
 	match res {
@@ -279,8 +294,13 @@ pub async fn update_project(
 	uuid_data: web::Path<String>,
 	projectdata: web::Json<ProjectData>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedAdminUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
 	let res =
 		web::block(move || query_update_project(uuid_data.into_inner(), projectdata, pool, logged_user.email)).await;
 	match res {
@@ -319,8 +339,13 @@ pub async fn update_projectneed(
 	uuid_data: web::Path<String>,
 	projectneed: web::Json<ProjectNeed>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedAdminUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
 	let res =
 		web::block(move || query_update_projectneed(uuid_data.into_inner(), projectneed, pool, logged_user.email)).await;
 	match res {
@@ -363,8 +388,13 @@ fn query_update_projectneed(
 pub async fn delete_project(
 	uuid_data: web::Path<String>, 
 	pool: web::Data<Pool>,
-	_logged_user: LoggedAdminUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
 	let res = web::block(move || query_delete_project(uuid_data.into_inner(), pool)).await;
 	match res {
 		Ok(_) => Ok(HttpResponse::Ok().finish()),
@@ -391,8 +421,13 @@ fn query_delete_project(
 pub async fn delete_projectneed(
 	uuid_data: web::Path<String>,
 	pool: web::Data<Pool>,
-	_logged_user: LoggedAdminUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
 	let res = web::block(move || query_delete_projectneed(uuid_data.into_inner(), pool)).await;
 	match res {
 		Ok(_) => Ok(HttpResponse::Ok().finish()),
@@ -419,8 +454,13 @@ fn query_delete_projectneed(
 pub async fn delete_projectneedskill(
 	uuid_data: web::Path<String>,
 	pool: web::Data<Pool>,
-	_logged_user: LoggedAdminUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
 	let res = web::block(move || query_delete_projectneedskill(uuid_data.into_inner(), pool)).await;
 	match res {
 		Ok(_) => Ok(HttpResponse::Ok().finish()),

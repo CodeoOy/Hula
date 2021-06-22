@@ -86,6 +86,7 @@ pub async fn update_user(
 ) -> Result<HttpResponse, ServiceError> {
 	let uuid = uuid_data.into_inner();
 
+	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
 		return Err(ServiceError::Unauthorized);
 	}
@@ -133,6 +134,7 @@ pub async fn add_skill(
 ) -> Result<HttpResponse, ServiceError> {
 	let uuid = uuid_data.into_inner();
 
+	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
 		return Err(ServiceError::Unauthorized);
 	}
@@ -248,6 +250,7 @@ pub async fn delete_user(
 ) -> Result<HttpResponse, ServiceError> {
 	let uuid = uuid_data.into_inner();
 
+	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
 		return Err(ServiceError::Unauthorized);
 	}
@@ -284,6 +287,7 @@ pub async fn update_year(
 ) -> Result<HttpResponse, ServiceError> {
 	let uuid = uuid_data.into_inner();
 
+	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
 		return Err(ServiceError::Unauthorized);
 	}
@@ -329,6 +333,7 @@ pub async fn add_favorite_project(
 ) -> Result<HttpResponse, ServiceError> {
 	let uuid = uuid_data.into_inner();
 
+	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
 		return Err(ServiceError::Unauthorized);
 	}
@@ -377,6 +382,7 @@ pub async fn delete_favorite_project(
 ) -> Result<HttpResponse, ServiceError> {
 	let uuid = uuid_data.into_inner();
 
+	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
 		return Err(ServiceError::Unauthorized);
 	}
