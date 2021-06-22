@@ -118,10 +118,35 @@ impl FromRequest for LoggedUser {
 	fn from_request(req: &HttpRequest, pl: &mut Payload) -> Self::Future {
 		if let Ok(identity) = Identity::from_request(req, pl).into_inner() {
 			if let Some(cookie) = identity.identity() {
-				if let Some(session) = get_active_session(req, cookie) {
-					let u: LoggedUser = session.into();
-					return ok(u);
-				}
+				let pool = req.app_data::<Data<models::users::Pool>>().unwrap().clone();
+
+				let conn: &PgConnection = &pool.get().unwrap();
+				use crate::schema::activesessions::dsl::session_id;
+				use crate::schema::activesessions::dsl::*;
+
+				let id_res = uuid::Uuid::parse_str(&cookie);
+				match id_res {
+					Ok(id) => {
+						let session = activesessions
+							.filter(session_id.eq(&id))
+							.get_result::<ActiveSession>(conn);
+
+						if let Ok(s) = session {
+							if s.expire_at > chrono::offset::Utc::now().naive_utc() {
+								let u: LoggedUser = s.into();
+								return ok(u);
+							}
+
+							println!("extractor: Session expired!");
+						}
+						else {
+							println!("extractor: No active session found!");
+						}
+					},
+					Err(err) => {
+						println!("extractor: Not an UUID in the cookie! Error: {:?}", err);
+					}
+				};
 			}
 			else {
 				println!("extractor: Identity (cookie) not received!");
@@ -133,40 +158,4 @@ impl FromRequest for LoggedUser {
 
 		err(ServiceError::Unauthorized.into())
 	}
-}
-
-fn get_active_session (
-	req: &HttpRequest,
-	cookie: String,
-) -> Option<ActiveSession> {
-	let pool = req.app_data::<Data<models::users::Pool>>().unwrap().clone();
-
-	let conn: &PgConnection = &pool.get().unwrap();
-	use crate::schema::activesessions::dsl::session_id;
-	use crate::schema::activesessions::dsl::*;
-
-	let id_res = uuid::Uuid::parse_str(&cookie);
-	match id_res {
-		Ok(id) => {
-			let session = activesessions
-				.filter(session_id.eq(&id))
-				.get_result::<ActiveSession>(conn);
-
-			if let Ok(s) = session {
-				if s.expire_at > chrono::offset::Utc::now().naive_utc() {
-					return Some(s);
-				}
-
-				println!("extractor: Session expired!");
-			}
-			else {
-				println!("extractor: No active session found!");
-			}
-		},
-		Err(err) => {
-			println!("extractor: Not an UUID in the cookie! Error: {:?}", err);
-		}
-	};
-
-	None
 }
