@@ -13,15 +13,15 @@
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<div class="d-flex flex-row justify-content-between align-items-start">
 						<h2>Needs</h2>
-						<button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#hulaModal" v-on:click="formTitle = 'Add need', chosenForm = 'need', chosenNeed = {}">Add need</button>
+						<button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#hulaModalSingleProject" v-on:click="formTitle = 'Add need', chosenForm = 'need', chosenNeed = {}">Add need</button>
 					</div>
 					<div class="mt-3" v-for="need in project.needs" :key="need.id">
 						<hr />
 						<div class="d-flex flex-row justify-content-between align-items-baseline mb-3">
 							<h5>{{ need.count_of_users}} from {{ need.begin_time }} at percentage: {{ need.percentage}}</h5>
 							<div class="btn-group" role="group" aria-label="Need actions">
-								<a href="#" data-bs-toggle="modal" data-bs-target="#hulaModalSingleProject" v-on:click="chosenNeed = need, formTitle = 'Edit need', chosenForm = 'need'">Edit</a>
-								<a href="#" data-bs-toggle="modal" data-bs-target="#hulaModalSingleProject" v-on:click="chosenNeed = need, formTitle = 'New skill', chosenForm = 'skill'">Add skill</a>
+								<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#hulaModalSingleProject" v-on:click="chosenNeed = need, formTitle = 'Edit need', chosenForm = 'need'">Edit</a>
+								<a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#hulaModalSingleProject" v-on:click="chosenNeed = need, formTitle = 'New skill', chosenForm = 'skill'">Add skill</a>
 								<a href="#" v-on:click="deleteNeed(need.id)">Delete</a>
 							</div>
 						</div>

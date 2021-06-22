@@ -4,9 +4,7 @@
 			<div class="modal-content rounded-2 content-box bg-dark text-light">
 				<div class="modal-header">
 					<h2 class="modal-title">{{ modalTitle }}</h2>
-					<button type="button" class="close" data-bs-toggle="modal" :data-bs-target="'#hulaModal' + modalID" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
 					<slot></slot>

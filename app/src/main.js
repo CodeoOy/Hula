@@ -13,6 +13,7 @@ const store = createStore({
 			loggeduser: JSON.parse(localStorage.getItem('user')),
 			chosenproject: JSON.parse(localStorage.getItem('chosenproject')),
 			projects: JSON.parse(localStorage.getItem('projects')),
+			nextpage: ''
 		}
 	},
 	actions: {
@@ -31,6 +32,7 @@ const store = createStore({
 			localStorage.setItem('user', JSON.stringify(data));
 		},
 		getProjects (state) {
+			let projectsExist = true
 			fetch('/api/projects', {
 				method: 'GET',
 				headers: {"Content-Type": "application/json"}
@@ -38,30 +40,35 @@ const store = createStore({
 			.then((response) => response.json())
 			.catch((errors) => {
 				console.log(errors);
+				state.projects = {}
+				projectsExist = false
 			})
 			.then(response => {
-				state.projects = response
-				state.projects.forEach(function (project) {
-					fetch(`/api/projectneeds/${project.id}`, {
-						method: 'GET',
-						headers: {"Content-Type": "application/json"},
-						credentials: 'include'
-					})
-					.then((response) => response.json())
-					.catch((errors) => {
-						console.log("No needs for project: " + project.id)
-						console.log(errors)
-						project.needs = {}
-					})
-					.then((response) => {
-						project.needs = response
-					})
-				});
+				if (projectsExist === true) {
+					state.projects = response
+					state.projects.forEach(function (project) {
+						fetch(`/api/projectneeds/${project.id}`, {
+							method: 'GET',
+							headers: {"Content-Type": "application/json"},
+							credentials: 'include'
+						})
+						.then((response) => response.json())
+						.catch((errors) => {
+							console.log("No needs for project: " + project.id)
+							console.log(errors)
+							project.needs = {}
+						})
+						.then((response) => {
+							project.needs = response
+						})
+					});
+				}
 			})
 			localStorage.setItem('projects', JSON.stringify(state.projects));
 		},
 		async setChosenProject (state, data) {
 			try {
+				let hasProjects = true
 				let project = await fetch(`/api/projects/${data}`, {
 					method: 'GET',
 					headers: {"Content-Type": "application/json"},
@@ -78,25 +85,28 @@ const store = createStore({
 					console.log("No needs for project: " + project.id)
 					console.log(errors)
 					project.needs = {}
+					hasProjects = false
 				})
 				console.log("Project from state:")
 				console.log(project)
-				await Promise.all(project.needs.map(need =>
-					fetch(`/api/projectskills/${need.id}`, {
-						method: 'GET',
-						headers: {"Content-Type": "application/json"},
-						credentials: 'include'
-					})
-					.then((response) => response.json())
-					.then(response => {
-						need.skills = response
-					})
-					.catch((errors) => {
-						console.log("No skills for need" + need.id)
-						console.log(errors)
-						need.skills = {}
-					})
-				))
+				if (hasProjects === true) {
+					await Promise.all(project.needs.map(need =>
+						fetch(`/api/projectskills/${need.id}`, {
+							method: 'GET',
+							headers: {"Content-Type": "application/json"},
+							credentials: 'include'
+						})
+						.then((response) => response.json())
+						.then(response => {
+							need.skills = response
+						})
+						.catch((errors) => {
+							console.log("No skills for need" + need.id)
+							console.log(errors)
+							need.skills = {}
+						})
+					))
+				}
 				localStorage.setItem('chosenproject', JSON.stringify(project));
 				state.chosenproject = project
 			} catch (errors) {
@@ -118,12 +128,12 @@ const app = createApp(App)
 	.use(router)
 	.use(FlashMessage)
 	.use(store)
-/*
 router.beforeEach((to, from, next) => {
-	//if (to.name !== 'Login' && !isAuthenticated) next({ name: 'Login' })
-	if (to.name !== 'Login' && !store.state.loggeduser) next({ name: 'Login' })
+	if (to.name !== 'page-login' && !store.state.loggeduser) {
+		store.state.nextpage = to.name
+		next({ name: 'page-login' })
+	}
 	else next()
 })
-*/
 router.isReady()
 	.then(() => app.mount('#hula'))
