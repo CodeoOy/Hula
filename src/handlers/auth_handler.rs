@@ -3,6 +3,7 @@ use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::prelude::*;
 use diesel::PgConnection;
 use serde::Deserialize;
+use log::info;
 
 use crate::errors::ServiceError;
 use crate::models::users::{LoggedUser, Pool, Session, User};
@@ -36,6 +37,9 @@ pub async fn login(
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query(auth_data.into_inner(), pool)).await;
+
+	info!("{}", "Its fleece was white as snow");
+	
 	println!("\nAuthenticating....\n");
 	match res {
 		Ok(user) => {
