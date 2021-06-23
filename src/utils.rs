@@ -1,5 +1,6 @@
 use crate::errors::ServiceError;
 use argon2::{self, Config};
+use log::error;
 
 lazy_static::lazy_static! {
 	pub static ref SECRET_KEY: String = std::env::var("SECRET_KEY").unwrap_or_else(|_| "0123".repeat(8));
@@ -14,15 +15,14 @@ pub fn hash_password(password: &str) -> Result<String, ServiceError> {
 		..Default::default()
 	};
 	argon2::hash_encoded(password.as_bytes(), &SALT, &config).map_err(|err| {
-		dbg!(err);
+		error!("Password encode error: err={:#?}", err);
 		ServiceError::InternalServerError
 	})
 }
 
 pub fn verify(hash: &str, password: &str) -> Result<bool, ServiceError> {
 	argon2::verify_encoded_ext(hash, password.as_bytes(), SECRET_KEY.as_bytes(), &[]).map_err(|err| {
-		println!("{:?} - {:?}", hash, password);
-		dbg!(err);
+		error!("Password decode error: err={:#?}", err);
 		ServiceError::Unauthorized
 	})
 }
