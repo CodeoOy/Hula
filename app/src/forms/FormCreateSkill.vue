@@ -1,31 +1,58 @@
 <template>
-	<form v-on:submit="createSkill">
-		<p v-if="errorsPresent" class="error">Please fill out label!</p>
+	<v-form v-on:submit="createSkill">
 		<div class="mb-2">
+			<error-message name="name" class="error"></error-message>
 			<label class="form-label">Skill name</label>
-			<input class="form-control" type="text" placeholder="Languages" name="label" v-model="queryData.label" />
+			<v-field
+				v-model.number="queryData.label"
+				:rules="isRequired"
+				as="input"
+				type="text"
+				name="name"
+				class="form-control"
+				aria-label="Skill name"
+			></v-field>
 		</div>
 		<div class="mb-2">
 			<label class="form-label">Skill category</label>
-			<select class="form-select mb-2" id="Skill" aria-label="Skill category" v-model="queryData.category_id">
+			<error-message name="category" class="error"></error-message>
+			<v-field
+				v-model="queryData.category_id"
+				:rules="isRequired"
+				as="select"
+				name="category"
+				class="form-select"
+				id="AddNewSkill"
+				aria-label="Skill category"
+			>
 				<option v-for="category in categories" :key="category" :value="category.id">
 					{{ category.label }}
 				</option>
-			</select>
+			</v-field>
 		</div>
 		<div class="mb-2">
 			<label class="form-label">Skill scope</label>
-			<select class="form-select mb-2" id="Skill" aria-label="Skill scope" v-model="queryData.skillscope_id">
+			<error-message name="scope" class="error"></error-message>
+			<v-field
+				v-model="queryData.skillscope_id"
+				:rules="isRequired"
+				as="select"
+				name="scope"
+				class="form-select"
+				id="AddExistingSkillScope"
+				aria-label="Pick scope"
+			>
 				<option v-for="scope in scopes" :key="scope" :value="scope.id">
 					{{ scope.label }}
 				</option>
-			</select>
+			</v-field>
 		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
-	</form> 
+	</v-form> 
 </template>
 
 <script>
+import { Field, Form, ErrorMessage } from 'vee-validate';
 export default {
 	name: 'Skill',
 	data() {
@@ -40,13 +67,24 @@ export default {
 			scopes: {},		
 		}
 	},
+	components: {
+		'VForm': Form,
+		'VField': Field,
+		ErrorMessage
+	},
 	methods: {
+		isRequired(value) {
+			return value ? true : 'This field is required';
+		},
 		createSkill() {
 			fetch('/api/skills', {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
 				body: JSON.stringify(this.queryData)
+			})
+			.then(() => {
+				this.$router.go()
 			})
 			.catch((errors) => {
 				console.log(errors);

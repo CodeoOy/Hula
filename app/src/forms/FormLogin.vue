@@ -1,34 +1,65 @@
 <template>
 	<div>
 		<h2>Log in</h2>
-		<form v-on:submit="login">
-			{{ this.$store.state.loggeduser }}
-			<div class="mb-3">
+		<v-form v-on:submit="loginUser">
+			<div class="mb-2">
 				<label for="loginUser" class="form-label">Email</label>
-				<input type="text" class="form-control" id="loginUser" aria-describedby="emailHelp" name="email">
+				<error-message name="email" class="error"></error-message>
+				<v-field
+					v-model="email"
+					:rules="isRequired"
+					as="input"
+					name="email"
+					type="email"
+					class="form-control"
+					id="loginUser"
+					aria-label="email" 
+				></v-field>
 			</div>
-			<div class="mb-3">
+			<div class="mb-2">
 				<label for="loginPassword" class="form-label">Password</label>
-				<input type="password" class="form-control" id="loginPassword" name="password">
+				<error-message name="password" class="error"></error-message>
+				<v-field
+					v-model="password"
+					:rules="isRequired"
+					as="input"
+					name="password"
+					type="password"
+					class="form-control"
+					id="loginPassword"
+					aria-label="password" 
+				></v-field>
 			</div>
 			<button type="submit" class="btn btn-gradient mb-1">Login</button>
-		</form>
+		</v-form>
 	</div>
 </template>
 
 <script>
+	import { Field, Form, ErrorMessage } from 'vee-validate';
 	export default {
 		name: 'FormLogin',
 		data() {
 			return {
 				user: {},
+				email: '',
+				password: ''
 			}
 		},
+		components: {
+			'VForm': Form,
+			'VField': Field,
+			ErrorMessage
+		},
 		methods: {
-			loginUser(email, password) {   
+			isRequired(value) {
+				return value ? true : 'This field is required';
+			},
+			loginUser() {
+				console.log("Logging in")   
 				let data = {    
-					"email": email,    
-					"password": password
+					"email": this.email,    
+					"password": this.password
 				}
 				fetch('/api/auth', {
 					method: 'POST',
@@ -48,7 +79,7 @@
 							console.log(response)
 							await this.$store.dispatch('setUser', response)
 						})
-						.then((data) => {
+						.then(() => {
 							this.$emit('hideModal')
 							console.log(this.$store.state.loggeduser)
 							if (this.$store.state.nextpage.length) {
@@ -67,12 +98,13 @@
 					}
 				})
 			},
+			/*
 			login: async function(e) { 
 				e.preventDefault()    
 				let email = e.target.elements.email.value
 				let password = e.target.elements.password.value 
 				this.loginUser(email, password);
-			}
+			}*/
 		}
 	}
 </script>

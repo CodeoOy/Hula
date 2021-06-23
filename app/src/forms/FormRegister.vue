@@ -46,7 +46,7 @@
 						"first_name": first_name,
 						"last_name": last_name,
 					}
-					fetch('api/invitations', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
+					fetch('/api/invitations', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
 					.then((response) => response.json())
 					.then((response) => {    
 						localStorage.setItem('user', JSON.stringify(response));
