@@ -32,9 +32,9 @@ pub async fn logout(
 }
 
 pub async fn login(
+	auth_data: web::Json<AuthData>,
 	id: Identity,
 	pool: web::Data<Pool>,
-	auth_data: web::Json<AuthData>,
 ) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query(auth_data.into_inner(), pool)).await;
 	println!("\nAuthenticating....\n");
