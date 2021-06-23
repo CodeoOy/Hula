@@ -29,7 +29,7 @@ pub struct ProjectNeedSkill {
 #[table_name = "projectneeds"]
 pub struct ProjectNeed {
 	pub id: uuid::Uuid,
-    pub project_id: uuid::Uuid,
+	pub project_id: uuid::Uuid,
 	pub count_of_users: i32,
 	pub begin_time: chrono::NaiveDateTime,
 	pub end_time: Option<chrono::NaiveDateTime>,

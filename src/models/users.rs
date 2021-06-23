@@ -1,11 +1,11 @@
 use super::super::schema::*;
 use crate::errors::ServiceError;
+use crate::models;
 use actix_identity::Identity;
-use actix_web::{dev::Payload, Error, FromRequest, HttpRequest, web::Data};
+use actix_web::{dev::Payload, web::Data, Error, FromRequest, HttpRequest};
 use diesel::{prelude::*, r2d2::ConnectionManager, PgConnection};
 use futures::future::{err, ok, Ready};
 use serde::{Deserialize, Serialize};
-use crate::models;
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
@@ -138,21 +138,18 @@ impl FromRequest for LoggedUser {
 							}
 
 							println!("extractor: Session expired!");
-						}
-						else {
+						} else {
 							println!("extractor: No active session found!");
 						}
-					},
+					}
 					Err(err) => {
 						println!("extractor: Not an UUID in the cookie! Error: {:?}", err);
 					}
 				};
-			}
-			else {
+			} else {
 				println!("extractor: Identity (cookie) not received!");
 			}
-		}
-		else {
+		} else {
 			println!("extractor: Request processing failed!");
 		}
 

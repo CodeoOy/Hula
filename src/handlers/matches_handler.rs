@@ -12,10 +12,7 @@ pub struct QueryData {
 	pub projectname: String,
 }
 
-pub async fn get_all_matches(
-	pool: web::Data<Pool>, 
-	_logged_user: LoggedUser,
-) -> Result<HttpResponse, ServiceError> {
+pub async fn get_all_matches(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
 	println!("\nGetting all matches");
 	let res = web::block(move || query(pool)).await;
 
@@ -28,9 +25,7 @@ pub async fn get_all_matches(
 	}
 }
 
-fn query(
-	pool: web::Data<Pool>
-) -> Result<Vec<MatchCandidate>, crate::errors::ServiceError> {
+fn query(pool: web::Data<Pool>) -> Result<Vec<MatchCandidate>, crate::errors::ServiceError> {
 	use crate::schema::matchcandidates::dsl::matchcandidates;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let mut items = matchcandidates.load::<MatchCandidate>(conn)?;
