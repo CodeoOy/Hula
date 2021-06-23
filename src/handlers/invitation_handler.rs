@@ -31,6 +31,7 @@ pub async fn post_invitation(
 		},
 	}
 }
+
 fn create_invitation(invdata: InvitationData, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
 	let invitation = dbg!(query(
 		invdata.email,
