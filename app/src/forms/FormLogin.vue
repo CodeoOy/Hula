@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h2>Log innn</h2>
+		<h2>Log in</h2>
 		<v-form v-on:submit="loginUser">
 			<div class="mb-2">
 				<label for="loginUser" class="form-label">Email</label>
