@@ -115,8 +115,7 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/skills")
 							.route(web::post().to(handlers::skills_handler::create_skill))
-							.route(web::get().to(handlers::skills_handler::get_all_skills))
-							.route(web::delete().to(handlers::skills_handler::delete_all_skills)),
+							.route(web::get().to(handlers::skills_handler::get_all_skills)),
 					)
 					.service(
 						web::resource("/skills/levels")

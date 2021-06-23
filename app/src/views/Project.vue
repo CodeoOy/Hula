@@ -13,7 +13,7 @@
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<div class="d-flex flex-row justify-content-between align-items-start">
 						<h2>Needs</h2>
-						<button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#hulaModalSingleProject" v-on:click="formTitle = 'Add need', chosenForm = 'need', chosenNeed = {}">Add need</button>
+						<button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#hulaModalSingleProject" v-on:click="formTitle = 'Add need', chosenForm = 'need', chosenNeed = chosenNeedDefault">Add need</button>
 					</div>
 					<div class="mt-3" v-for="need in project.needs" :key="need.id">
 						<hr />
@@ -64,6 +64,14 @@
 		data() {
 			return {
 				chosenNeed: {},
+				chosenNeedDefault: {
+					project_id: this.$store.state.chosenproject.id,
+					count_of_users: Number,
+					begin_time: String,
+					end_time: String,
+					percentage: Number,
+					updated_by: this.$store.state.loggeduser.email
+				},
 				formTitle: '',
 				chosenForm: ''
 			}

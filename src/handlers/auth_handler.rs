@@ -16,9 +16,9 @@ pub struct AuthData {
 }
 
 pub async fn logout(
-	logged_user: LoggedUser,
 	id: Identity,
 	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	let res = web::block(move || query_delete_session(logged_user.uid.to_string(), pool)).await;
 	println!("\nLogout\n");
@@ -31,6 +31,7 @@ pub async fn logout(
 		},
 	}
 }
+
 pub async fn login(
 	auth_data: web::Json<AuthData>,
 	id: Identity,
@@ -59,10 +60,7 @@ pub async fn get_me(logged_user: LoggedUser) -> HttpResponse {
 	HttpResponse::Ok().json(logged_user.uid)
 }
 
-fn query(
-	auth_data: AuthData, 
-	pool: web::Data<Pool>
-) -> Result<Session, ServiceError> {
+fn query(auth_data: AuthData, pool: web::Data<Pool>) -> Result<Session, ServiceError> {
 	use crate::schema::users::dsl::{email, users};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let mut items = users.filter(email.eq(&auth_data.email)).load::<User>(conn)?;
@@ -70,7 +68,7 @@ fn query(
 		if let Ok(matching) = verify(&user.hash, &auth_data.password) {
 			if matching {
 				println!("\nSuccessfully authenticated (db query).\n");
-				
+
 				if let Ok(session) = query_create_session(user.id.clone(), user.email.clone(), pool) {
 					return Ok(session);
 				}
@@ -81,14 +79,17 @@ fn query(
 }
 
 fn query_create_session(
-	user_id: uuid::Uuid, 
-	user_email: String, 
-	pool: web::Data<Pool>
+	user_id: uuid::Uuid,
+	user_email: String,
+	pool: web::Data<Pool>,
 ) -> Result<Session, crate::errors::ServiceError> {
 	use crate::schema::sessions::dsl::sessions;
 
 	let expiry_mins = std::env::var("SESSION_EXPIRY_MINS").unwrap_or_else(|_| "60".to_string());
-	let mins = expiry_mins.parse::<i64>().expect(&format!("Invalid number format in SESSION_EXPIRY_MINS: {}", expiry_mins));
+	let mins = expiry_mins.parse::<i64>().expect(&format!(
+		"Invalid number format in SESSION_EXPIRY_MINS: {}",
+		expiry_mins
+	));
 
 	let expiration = chrono::offset::Utc::now() + chrono::Duration::minutes(mins);
 
@@ -111,10 +112,7 @@ fn query_create_session(
 	Err(ServiceError::Unauthorized)
 }
 
-fn query_delete_session(
-	uuid_data: String, 
-	pool: web::Data<Pool>
-) -> Result<(), crate::errors::ServiceError> {
+fn query_delete_session(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::sessions::dsl::*;
 

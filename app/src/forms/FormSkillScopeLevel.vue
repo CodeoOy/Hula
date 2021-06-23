@@ -1,32 +1,58 @@
 <template>
-	<form v-on:submit="createSkillScopeLevel">
-		<p v-if="errorsPresent" class="error">Please fill out label!</p>
+	<v-form v-on:submit="createSkillScopeLevel">
 		<div class="mb-2">
 			<label class="form-label">Level name</label>
-			<input class="form-control" type="text" placeholder="Rookie" name="levelname" v-model="queryData.label" />
+			<error-message name="name" class="error"></error-message>
+			<v-field
+				v-model.number="queryData.label"
+				:rules="isRequired"
+				as="input"
+				type="text"
+				name="name"
+				class="form-control"
+				placeholder="Rookie"
+				aria-label="Level name"
+			></v-field>
 		</div>
 		<div class="mb-2">
 			<label class="form-label">Level scope</label>
-			<select class="form-select mb-2" id="SkillScope" aria-label="Select scope" v-model="queryData.skillscope_id">
+			<error-message name="scope" class="error"></error-message>
+			<v-field
+				v-model="queryData.skillscope_id"
+				:rules="isRequired"
+				as="select"
+				name="scope"
+				class="form-select"
+				aria-label="Level scope"
+			>
 				<option v-for="scope in scopes" :key="scope" :value="scope.id">
 					{{ scope.label }}
 				</option>
-			</select>
+			</v-field>
 		</div>
 		<div class="mb-2">
 			<label class="form-label">Percentage</label>
-			<input type="number" aria-label="Percentage" class="form-control" v-model.number="queryData.percentage">
+			<error-message name="percentage" class="error"></error-message>
+			<v-field
+				v-model.number="queryData.percentage"
+				:rules="isRequired"
+				as="input"
+				type="number"
+				name="percentage"
+				class="form-control"
+				aria-label="Level percentage"
+			></v-field>
 		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
-	</form> 
+	</v-form> 
 </template>
 
 <script>
+import { Field, Form, ErrorMessage } from 'vee-validate';
 export default {
 	name: 'SkillScopeLevel',
 	data() {
 		return {
-			errorsPresent: false,
 			queryData: {
 				email: this.$store.state.loggeduser.email,
 				label: "",
@@ -36,13 +62,24 @@ export default {
 			scopes: {}
 		};
 	},
+	components: {
+		'VForm': Form,
+		'VField': Field,
+		ErrorMessage
+	},
 	methods: {
+		isRequired(value) {
+			return value ? true : 'This field is required';
+		},
 		createSkillScopeLevel() {
 			fetch('/api/skills/levels', {
 				method: 'POST',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
 				body: JSON.stringify(this.queryData)
+			})
+			.then(() => {
+				this.$router.go()
 			})
 			.catch((errors) => {
 				console.log(errors);
@@ -57,14 +94,7 @@ export default {
 			.catch((errors) => {
 				console.log(errors);
 			})
-		},
-		onSubmit() {
-			if (this.user.lastname === '') {
-				this.errorsPresent = true;
-			} else {
-				this.$emit('formsent', this.user);
-			}
-		},
+		}
 	},
 	mounted() {
 		this.getSkillScopes()

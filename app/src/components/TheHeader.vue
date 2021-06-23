@@ -45,12 +45,13 @@
 					</li>
 				</ul>
 			</div>
+			<!--
 			<div class="collapse navbar-collapse order-2 order-sm-1" id="navbarToggler">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					<li class="nav-item"><a href="/app/dashboard" class="nav-link px-2">Dashboard</a></li>
 				</ul>
 			</div>
-
+			-->
 		</div>
 	</nav>
 </template>
