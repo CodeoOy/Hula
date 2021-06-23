@@ -94,10 +94,7 @@ async fn main() -> std::io::Result<()> {
 						web::resource("/invitations")
 							.route(web::post().to(handlers::invitation_handler::post_invitation)),
 					)
-					.service(
-						web::resource("/users")
-							.route(web::get().to(handlers::users_handler::get_all)),
-					)
+					.service(web::resource("/users").route(web::get().to(handlers::users_handler::get_all)))
 					.service(
 						web::resource("/users/{user_id}")
 							.route(web::get().to(handlers::users_handler::get_by_uuid))
@@ -121,10 +118,6 @@ async fn main() -> std::io::Result<()> {
 							.route(web::get().to(handlers::skills_handler::get_all_skills)),
 					)
 					.service(
-						web::resource("/skills/{id}")
-							.route(web::delete().to(handlers::skills_handler::delete_skill)),
-					)
-					.service(
 						web::resource("/skills/levels")
 							.route(web::get().to(handlers::skills_handler::get_skill_levels))
 							.route(web::post().to(handlers::skills_handler::create_skill_scope_level)),
@@ -138,6 +131,9 @@ async fn main() -> std::io::Result<()> {
 						web::resource("/skills/scopes")
 							.route(web::get().to(handlers::skills_handler::get_skillscopes))
 							.route(web::post().to(handlers::skills_handler::create_skill_scope)),
+					)
+					.service(
+						web::resource("/skills/{id}").route(web::delete().to(handlers::skills_handler::delete_skill)),
 					)
 					.service(
 						web::resource("/projects")
@@ -169,10 +165,7 @@ async fn main() -> std::io::Result<()> {
 							.route(web::get().to(handlers::projects_handler::get_projectneedskills))
 							.route(web::delete().to(handlers::projects_handler::delete_projectneedskill)),
 					)
-					.service(
-						web::resource("/matches")
-							.route(web::get().to(handlers::matches_handler::get_all_matches)),
-					)
+					.service(web::resource("/matches").route(web::get().to(handlers::matches_handler::get_all_matches)))
 					.service(
 						web::resource("/matchedusers")
 							.route(web::post().to(handlers::matches_handler::get_matches_by_params)),

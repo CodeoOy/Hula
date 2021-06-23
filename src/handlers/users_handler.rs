@@ -178,8 +178,19 @@ fn query_add_skill(
 	Err(ServiceError::Unauthorized)
 }
 
-pub async fn delete_userskill(uuid_data: web::Path<String>, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
-	let res = web::block(move || query_delete_userskill(uuid_data.into_inner(), pool)).await;
+pub async fn delete_userskill(
+	uuid_data: web::Path<String>, 
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	let uuid = uuid_data.into_inner();
+
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
+		return Err(ServiceError::Unauthorized);
+	}
+	
+	let res = web::block(move || query_delete_userskill(uuid, pool)).await;
 	match res {
 		Ok(_) => Ok(HttpResponse::Ok().finish()),
 		Err(err) => match err {
@@ -189,7 +200,10 @@ pub async fn delete_userskill(uuid_data: web::Path<String>, pool: web::Data<Pool
 	}
 }
 
-fn query_delete_userskill(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
+fn query_delete_userskill(
+	uuid_data: String, 
+	pool: web::Data<Pool>
+) -> Result<(), crate::errors::ServiceError> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::userskills::dsl::{userskills, id};
 
