@@ -1,9 +1,17 @@
 <template>
 	<div>
-		<h2>Skills</h2>
-		<VModal :modalTitle="formTitle" :modalID="'SingleSkill'">
-			<form-create-skill/>
-		</VModal>
+		<div class="d-flex flex-row justify-content-between align-items-start">
+			<h2>Skills</h2>
+			<button
+				class="btn btn-gradient"
+				data-bs-toggle="modal"
+				data-bs-target="#hulaModalCreateSkill"
+				v-on:click="formTitle = 'Add skill', chosenForm = 'CreateSkill'"
+			>Add skill</button>
+			<VModal :modalTitle="formTitle" :modalID="chosenForm">
+				<component :is='modalComponent' :chosenSkill="chosenSkill"/>
+			</VModal>
+		</div>
 		<transition name="fadeHeight">
 			<table class="table table-dark table-striped text-light">
 				<thead>
@@ -25,8 +33,8 @@
 								:data-skill-id="skill.id" 
 								:data-skill-name="skill.label" 
 								data-bs-toggle="modal" 
-								data-bs-target="#hulaModalSingleSkill" 
-								v-on:click.prevent="chosenSkill = skill"
+								data-bs-target="#hulaModalEditSkill" 
+								v-on:click="chosenSkill = skill, formTitle = 'Edit skill', chosenForm = 'EditSkill'"
 								class="me-2"
 							>Edit</a>
 							<a href="#" v-on:click.prevent="this.deleteSkill(skill.id)">Delete</a>
@@ -45,11 +53,13 @@
 	import FormSkillCategory from '../forms/FormSkillCategory.vue'
 	import FormSkillScope from '../forms/FormSkillScope.vue'
 	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
+	import FormGeneralRename from '../forms/FormGeneralRename.vue'
 	export default {
 		name: 'AdminListSkills',
 		data () {
 			return {
 				formTitle: '',
+				chosenForm: '',
 				chosenSkill: {},
 				skills: [],
 			}
@@ -60,7 +70,8 @@
 			FormSkillCategory,
 			FormSkillScope,
 			FormSkillScopeLevel,
-			FormAddSkill
+			FormAddSkill,
+			FormGeneralRename
 		},
 		methods: {
 			getAllSkills() {
@@ -93,10 +104,10 @@
 		computed: {
 			modalComponent() {
 				const components = {
-					skill: FormCreateSkill,
-					category: FormSkillCategory,
-					scope: FormSkillScope,
-					level: FormSkillScopeLevel
+					CreateSkill: FormCreateSkill,
+					Category: FormSkillCategory,
+					Scope: FormSkillScope,
+					Level: FormSkillScopeLevel
 				}
 				return components[this.chosenForm]
 			}
