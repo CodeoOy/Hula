@@ -1,38 +1,33 @@
 <template>
 	<div>
-		<h2>Projects</h2>
+		<h2>Skills</h2>
 		<VModal :modalTitle="formTitle" :modalID="'SingleSkill'">
-			<component :is='modalComponent' :chosenNeed="chosenNeed"/>
+			<form-add-skill/>
 		</VModal>
 		<transition name="fadeHeight">
 			<table class="table table-dark table-striped text-light">
 				<thead>
 					<tr>
 						<th scope="col">#</th>
-						<th scope="col">Project name</th>
-						<th scope="col">needs</th>
+						<th scope="col">Skill name</th>
+						<th scope="col">Scope</th>
 						<th scope="col">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(project, index) in this.$store.state.projects" :key="project.id">
+					<tr v-for="(skill, index) in skills" :key="skill.id">
 						<th scope="row">{{ index + 1 }}</th>
-						<td><router-link
-							:to="{ name: 'page-project', params: { id: project.id}}"
-							v-on:click="this.chooseProject(project)"
-						>{{ project.name }}</router-link></td>
-						<td>
-							<p v-for="need in project.needs" :key="need.id">{{ need.id }}</p>
-						</td>
+						<td>{{ skill.label }}</td>
+						<td>{{ skill.skillscope_id }}</td>
 						<td>
 							<a href="#" 
-								:data-project-id="project.id" 
-								:data-project-name="project.name" 
+								:data-skill-id="skill.id" 
+								:data-skill-name="skill.label" 
 								data-bs-toggle="modal" 
-								data-bs-target="#hulaModal" 
-								v-on:click.prevent="this.chooseProject(project)"
+								data-bs-target="#hulaModalSingleSkill" 
+								v-on:click.prevent="chosenSkill = skill"
 							>Edit</a>
-							<a href="#" v-on:click.prevent="this.deleteProject(project.id)">Delete</a>
+							<a href="#" v-on:click.prevent="this.deleteSkill(skill.id)">Delete</a>
 						</td>
 					</tr>
 				</tbody>
@@ -43,37 +38,69 @@
 
 <script>
 	import VModal from '../components/VModal.vue'
+import FormAddSkill from '../forms/FormAddSkill.vue'
 	import FormCreateSkill from '../forms/FormCreateSkill.vue'
 	import FormSkillCategory from '../forms/FormSkillCategory.vue'
 	import FormSkillScope from '../forms/FormSkillScope.vue'
 	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
 	export default {
 		name: 'AdminListSkills',
+		data () {
+			return {
+				formTitle: '',
+				chosenSkill: {},
+				skills: [],
+			}
+		},
 		components: {
 			VModal,
 			FormCreateSkill,
 			FormSkillCategory,
 			FormSkillScope,
-			FormSkillScopeLevel
+			FormSkillScopeLevel,
+			FormAddSkill
 		},
 		methods: {
-			chooseProject(project) {
-				this.$store.commit('setChosenProject', project.id)
-				this.$emit('projectChosen', project.name)
-			},
-			deleteProject(id) {
-				fetch(`/api/projects/${id}`, {
-					method: 'DELETE',
-					headers: {"Content-Type": "application/json"},
-					credentials: 'include'
+			getAllSkills() {
+				fetch('/api/skills', {method: 'GET'})
+				.then((response) => response.json())
+				.then(response => { 
+					this.skills = response;
+				})    
+				.catch((errors) => {
+					console.log(errors);
 				})
-				.catch(() => {
-					throw new Error('Project not deleted');
+			},
+			deleteSkill(id) {
+				fetch(`/api/skills/${id}`, {method: 'DELETE'})
+				.then(response => { 
+					if (response.ok) {
+						this.$flashMessage.show({
+							type: 'success',
+							title: 'Skill removed',
+							time: 1000
+						});
+						this.$router.go()
+					}
+				})    
+				.catch((errors) => {
+					console.log(errors);
 				})
 			}
 		},
+		computed: {
+			modalComponent() {
+				const components = {
+					skill: FormCreateSkill,
+					category: FormSkillCategory,
+					scope: FormSkillScope,
+					level: FormSkillScopeLevel
+				}
+				return components[this.chosenForm]
+			}
+		},
 		mounted() {
-			this.$store.commit('getProjects')
+			this.getAllSkills()
 		}
 	}
 </script>
