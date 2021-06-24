@@ -4,7 +4,7 @@
 			<error-message name="name" class="error"></error-message>
 			<label class="form-label">Skill name</label>
 			<v-field
-				v-model.number="queryData.label"
+				v-model="queryData.label"
 				:rules="isRequired"
 				as="input"
 				type="text"

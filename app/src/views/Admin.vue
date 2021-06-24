@@ -30,8 +30,8 @@
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<!--<AdminListProjects v-if="tab == 1" />-->
 					<AdminListProjects @project-chosen="updateProject" v-if="tab == 1" />
-					<AdminListUsers :users='usersdata' v-if="tab == 2"  />
-					<AdminListSkills :users='skillsdata' v-if="tab == 3"  />
+					<AdminListUsers v-if="tab == 2"  />
+					<AdminListSkills v-if="tab == 3"  />
 				</div>
 			</div>
 		</div>
