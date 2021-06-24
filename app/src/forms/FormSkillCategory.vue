@@ -4,7 +4,7 @@
 			<label class="form-label">Category label</label>
 			<error-message name="name" class="error"></error-message>
 			<v-field
-				v-model.number="queryData.label"
+				v-model="queryData.label"
 				:rules="isRequired"
 				as="input"
 				type="text"

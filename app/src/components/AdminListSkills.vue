@@ -2,7 +2,7 @@
 	<div>
 		<h2>Skills</h2>
 		<VModal :modalTitle="formTitle" :modalID="'SingleSkill'">
-			<form-add-skill/>
+			<form-create-skill/>
 		</VModal>
 		<transition name="fadeHeight">
 			<table class="table table-dark table-striped text-light">
@@ -20,12 +20,14 @@
 						<td>{{ skill.label }}</td>
 						<td>{{ skill.skillscope_id }}</td>
 						<td>
-							<a href="#" 
+							<a
+								href="#" 
 								:data-skill-id="skill.id" 
 								:data-skill-name="skill.label" 
 								data-bs-toggle="modal" 
 								data-bs-target="#hulaModalSingleSkill" 
 								v-on:click.prevent="chosenSkill = skill"
+								class="me-2"
 							>Edit</a>
 							<a href="#" v-on:click.prevent="this.deleteSkill(skill.id)">Delete</a>
 						</td>
@@ -38,7 +40,7 @@
 
 <script>
 	import VModal from '../components/VModal.vue'
-import FormAddSkill from '../forms/FormAddSkill.vue'
+	import FormAddSkill from '../forms/FormAddSkill.vue'
 	import FormCreateSkill from '../forms/FormCreateSkill.vue'
 	import FormSkillCategory from '../forms/FormSkillCategory.vue'
 	import FormSkillScope from '../forms/FormSkillScope.vue'
