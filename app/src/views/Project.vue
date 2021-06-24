@@ -127,7 +127,7 @@
 				})
 			}
 		},
-        mounted () {
+    	mounted () {
 			this.$store.commit('setChosenProject', this.$route.params.id)
 		}
 	}

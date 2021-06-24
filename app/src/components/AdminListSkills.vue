@@ -1,14 +1,79 @@
 <template>
-	<h2></h2>
+	<div>
+		<h2>Projects</h2>
+		<VModal :modalTitle="formTitle" :modalID="'SingleSkill'">
+			<component :is='modalComponent' :chosenNeed="chosenNeed"/>
+		</VModal>
+		<transition name="fadeHeight">
+			<table class="table table-dark table-striped text-light">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Project name</th>
+						<th scope="col">needs</th>
+						<th scope="col">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(project, index) in this.$store.state.projects" :key="project.id">
+						<th scope="row">{{ index + 1 }}</th>
+						<td><router-link
+							:to="{ name: 'page-project', params: { id: project.id}}"
+							v-on:click="this.chooseProject(project)"
+						>{{ project.name }}</router-link></td>
+						<td>
+							<p v-for="need in project.needs" :key="need.id">{{ need.id }}</p>
+						</td>
+						<td>
+							<a href="#" 
+								:data-project-id="project.id" 
+								:data-project-name="project.name" 
+								data-bs-toggle="modal" 
+								data-bs-target="#hulaModal" 
+								v-on:click.prevent="this.chooseProject(project)"
+							>Edit</a>
+							<a href="#" v-on:click.prevent="this.deleteProject(project.id)">Delete</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</transition>
+	</div>
 </template>
 
 <script>
+	import VModal from '../components/VModal.vue'
+	import FormCreateSkill from '../forms/FormCreateSkill.vue'
+	import FormSkillCategory from '../forms/FormSkillCategory.vue'
+	import FormSkillScope from '../forms/FormSkillScope.vue'
+	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
 	export default {
 		name: 'AdminListSkills',
-		data() {
-			return {
-				skills: {}
+		components: {
+			VModal,
+			FormCreateSkill,
+			FormSkillCategory,
+			FormSkillScope,
+			FormSkillScopeLevel
+		},
+		methods: {
+			chooseProject(project) {
+				this.$store.commit('setChosenProject', project.id)
+				this.$emit('projectChosen', project.name)
+			},
+			deleteProject(id) {
+				fetch(`/api/projects/${id}`, {
+					method: 'DELETE',
+					headers: {"Content-Type": "application/json"},
+					credentials: 'include'
+				})
+				.catch(() => {
+					throw new Error('Project not deleted');
+				})
 			}
 		},
+		mounted() {
+			this.$store.commit('getProjects')
+		}
 	}
 </script>
