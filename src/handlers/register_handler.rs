@@ -1,6 +1,7 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::prelude::*;
 use serde::Deserialize;
+use log::trace;
 
 use crate::errors::ServiceError;
 use crate::models::invitations::{Invitation, Pool};
@@ -17,6 +18,7 @@ pub async fn register_user(
 	user_data: web::Json<UserData>,
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Registering a user: user_data={:#?}", &user_data);
 	let res = web::block(move || query(user_data.into_inner(), pool)).await;
 
 	match res {

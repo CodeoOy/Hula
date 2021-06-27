@@ -1,6 +1,7 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
+use log::trace;
 
 use crate::errors::ServiceError;
 use crate::models::projects::{Pool, Project, ProjectNeed, ProjectNeedSkill};
@@ -17,7 +18,7 @@ pub struct ProjectData {
 }
 
 pub async fn get_all_projects(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
-	println!("\nGetting all projects");
+	trace!("Getting all projects: logged_user={:#?}", &_logged_user);
 	let res = web::block(move || query_all_projects(pool)).await;
 
 	match res {
@@ -34,7 +35,6 @@ fn query_all_projects(pool: web::Data<Pool>) -> Result<Vec<Project>, crate::erro
 	let conn: &PgConnection = &pool.get().unwrap();
 	let items = projects.load::<Project>(conn)?;
 	if items.is_empty() == false {
-		println!("\nGot all projects.\n");
 		return Ok(items);
 	}
 	Err(ServiceError::Empty)
@@ -45,7 +45,7 @@ pub async fn get_projectneedskills(
 	pool: web::Data<Pool>,
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	println!("\nGetting all project need skills");
+	trace!("Getting project need skills: pid = {:#?} logged_user={:#?}", &pid, &_logged_user);
 	let res = web::block(move || query_projectneedskills(pid.into_inner(), pool)).await;
 
 	match res {
@@ -68,7 +68,6 @@ fn query_projectneedskills(
 		.filter(projectneed_id.eq(pid))
 		.load::<ProjectNeedSkill>(conn)?;
 	if items.is_empty() == false {
-		println!("\nGot all project need skills.\n");
 		return Ok(items);
 	}
 	Err(ServiceError::Empty)
@@ -79,7 +78,7 @@ pub async fn get_project_needs(
 	pool: web::Data<Pool>,
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	println!("\nGetting all projects");
+	trace!("Getting project needs: pid = {:#?} logged_user={:#?}", &pid, &_logged_user);
 	let res = web::block(move || query_project_needs(pool, pid.into_inner())).await;
 
 	match res {
@@ -100,10 +99,8 @@ fn query_project_needs(
 	let pid = uuid::Uuid::parse_str(&pid_path)?;
 	let items = projectneeds.filter(project_id.eq(pid)).load::<ProjectNeed>(conn)?;
 	if items.is_empty() == false {
-		println!("\nGot all project needs.\n");
 		return Ok(items.into());
 	}
-	println!("\nNo needs in project.\n");
 	Err(ServiceError::Empty)
 }
 
@@ -112,12 +109,13 @@ pub async fn create_project(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Create project: projectdata = {:#?} logged_user={:#?}", &projectdata, &logged_user);
+
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Unauthorized);
 	}
 
-	println!("Creating a project");
 	let res = web::block(move || query_create_project(projectdata, pool, logged_user.email)).await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
@@ -135,20 +133,16 @@ fn query_create_project(
 ) -> Result<Project, crate::errors::ServiceError> {
 	use crate::schema::projects::dsl::projects;
 	let conn: &PgConnection = &pool.get().unwrap();
-	println!("Connected to db");
 	let new_project = Project {
 		id: uuid::Uuid::new_v4(),
 		available: true,
 		name: projectdata.name.clone(),
 		updated_by: email,
 	};
-	println!("Inserting data");
 	let rows_inserted = diesel::insert_into(projects)
 		.values(&new_project)
 		.get_result::<Project>(conn);
-	println!("{:?}", rows_inserted);
 	if rows_inserted.is_ok() {
-		println!("\nProject added successfully.\n");
 		return Ok(new_project.into());
 	}
 	Err(ServiceError::Unauthorized)
@@ -159,12 +153,13 @@ pub async fn create_projectneed(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Create project need: projectneeddata = {:#?} logged_user={:#?}", &projectneeddata, &logged_user);
+
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Unauthorized);
 	}
 
-	println!("Creating a project skill");
 	let res = web::block(move || query_create_projectneed(projectneeddata, pool, logged_user.email)).await;
 	match res {
 		Ok(projectneed) => Ok(HttpResponse::Ok().json(&projectneed)),
@@ -182,7 +177,6 @@ fn query_create_projectneed(
 ) -> Result<ProjectNeed, crate::errors::ServiceError> {
 	use crate::schema::projectneeds::dsl::projectneeds;
 	let conn: &PgConnection = &pool.get().unwrap();
-	println!("Connected to db");
 	let new_projectneed = ProjectNeed {
 		id: uuid::Uuid::new_v4(),
 		project_id: projectneeddata.project_id,
@@ -192,13 +186,11 @@ fn query_create_projectneed(
 		end_time: projectneeddata.end_time,
 		updated_by: email,
 	};
-	println!("Inserting data");
 	let rows_inserted = diesel::insert_into(projectneeds)
 		.values(&new_projectneed)
 		.get_result::<ProjectNeed>(conn);
 	println!("{:?}", rows_inserted);
 	if rows_inserted.is_ok() {
-		println!("\nProject need added successfully.\n");
 		return Ok(new_projectneed.into());
 	}
 	Err(ServiceError::Unauthorized)
@@ -209,12 +201,13 @@ pub async fn create_projectneedskill(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Create project need skill: projectneedskilldata = {:#?} logged_user={:#?}", &projectneedskilldata, &logged_user);
+
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Unauthorized);
 	}
 
-	println!("Creating a project skill");
 	let res = web::block(move || query_create_projectneedskill(projectneedskilldata, pool, logged_user.email)).await;
 	match res {
 		Ok(projectneedskill) => Ok(HttpResponse::Ok().json(&projectneedskill)),
@@ -232,7 +225,6 @@ fn query_create_projectneedskill(
 ) -> Result<ProjectNeedSkill, crate::errors::ServiceError> {
 	use crate::schema::projectneedskills::dsl::projectneedskills;
 	let conn: &PgConnection = &pool.get().unwrap();
-	println!("Connected to db");
 	let new_projectneedskill = ProjectNeedSkill {
 		id: uuid::Uuid::new_v4(),
 		projectneed_id: projectneedskilldata.projectneed_id,
@@ -242,13 +234,11 @@ fn query_create_projectneedskill(
 		max_years: projectneedskilldata.max_years,
 		updated_by: email,
 	};
-	println!("Inserting data");
 	let rows_inserted = diesel::insert_into(projectneedskills)
 		.values(&new_projectneedskill)
 		.get_result::<ProjectNeedSkill>(conn);
 	println!("{:?}", rows_inserted);
 	if rows_inserted.is_ok() {
-		println!("\nProject need added successfully.\n");
 		return Ok(new_projectneedskill.into());
 	}
 	Err(ServiceError::Unauthorized)
@@ -259,7 +249,7 @@ pub async fn get_by_pid(
 	pool: web::Data<Pool>,
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	println!("\nGetting project by uuid");
+	trace!("Getting project by pid: pid={:#?}", &pid);
 	let res = web::block(move || query_one(pid.into_inner(), pool)).await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
@@ -276,7 +266,6 @@ fn query_one(pid: String, pool: web::Data<Pool>) -> Result<Project, crate::error
 	let uuid_query = uuid::Uuid::parse_str(&pid)?;
 	let mut items = projects.filter(id.eq(uuid_query)).load::<Project>(conn)?;
 	if let Some(project_res) = items.pop() {
-		println!("\nQuery successful.\n");
 		return Ok(project_res.into());
 	}
 	Err(ServiceError::Unauthorized)
@@ -288,6 +277,8 @@ pub async fn update_project(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Update project: uuid_data = {:#?} projectdata = {:#?} logged_user={:#?}", &uuid_data, &projectdata, &logged_user);
+
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Unauthorized);
@@ -320,7 +311,6 @@ fn query_update_project(
 		.set((name.eq(projectdata.name.clone()), updated_by.eq(email.clone())))
 		.load::<Project>(conn)?;
 	if let Some(_project_res) = items.pop() {
-		println!("\nUpdate successful.\n");
 		return Ok(());
 	}
 
@@ -333,6 +323,8 @@ pub async fn update_projectneed(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Update project need: uuid_data = {:#?} projectneed = {:#?} logged_user={:#?}", &uuid_data, &projectneed, &logged_user);
+
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Unauthorized);
@@ -372,7 +364,6 @@ fn query_update_projectneed(
 		))
 		.load::<ProjectNeed>(conn)?;
 	if let Some(_project_res) = items.pop() {
-		println!("\nUpdate successful.\n");
 		return Ok(());
 	}
 	Ok(())
@@ -383,6 +374,8 @@ pub async fn delete_project(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Delete project: uuid_data = {:#?} logged_user={:#?}", &uuid_data, &logged_user);
+
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Unauthorized);
@@ -413,6 +406,8 @@ pub async fn delete_projectneed(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Deleting project need: uuid_data = {:#?} logged_user={:#?}", &uuid_data, &logged_user);
+
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Unauthorized);
@@ -443,6 +438,8 @@ pub async fn delete_projectneedskill(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Delete project need skill: uuid_data = {:#?} logged_user={:#?}", &uuid_data, &logged_user);
+
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Unauthorized);

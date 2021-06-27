@@ -3,6 +3,7 @@ use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::prelude::*;
 use diesel::PgConnection;
 use serde::Deserialize;
+use log::{debug, trace};
 
 use crate::errors::ServiceError;
 use crate::models::users::{LoggedUser, Pool, Session, User};
@@ -19,8 +20,8 @@ pub async fn logout(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Logging out: id={:#?} logged_user={:#?}", &id.identity(), &logged_user);
 	let res = web::block(move || query_delete_session(logged_user.uid.to_string(), pool)).await;
-	println!("\nLogout\n");
 	id.forget();
 	match res {
 		Ok(session) => Ok(HttpResponse::Ok().json(&session)),
@@ -36,14 +37,12 @@ pub async fn login(
 	id: Identity,
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Logging in: email={:#?}", &auth_data.email);
 	let res = web::block(move || query(auth_data.into_inner(), pool)).await;
-	println!("\nAuthenticating....\n");
 	match res {
 		Ok(user) => {
 			id.remember(user.id.to_string());
-			println!("\nSuccessfully authenticated (login).\n");
-			Ok(HttpResponse::Ok().finish()) // Instead of empty response, do we need the cookie to body in order to call it from Vue?
-			                    //Ok(HttpResponse::Ok().json(user_to_vue))
+			Ok(HttpResponse::Ok().finish())
 		}
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error),
@@ -59,16 +58,23 @@ pub async fn get_me(logged_user: LoggedUser) -> HttpResponse {
 fn query(auth_data: AuthData, pool: web::Data<Pool>) -> Result<Session, ServiceError> {
 	use crate::schema::users::dsl::{email, users};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let mut items = users.filter(email.eq(&auth_data.email)).load::<User>(conn)?;
-	if let Some(user) = items.pop() {
-		if let Ok(matching) = verify(&user.hash, &auth_data.password) {
-			if matching {
-				println!("\nSuccessfully authenticated (db query).\n");
 
-				if let Ok(session) = query_create_session(user.id.clone(), user.email.clone(), pool) {
-					return Ok(session);
+	let res = users.filter(email.eq(&auth_data.email)).get_result::<User>(conn);
+	match res {
+		Ok(user) => { 
+			if let Ok(matching) = verify(&user.hash, &auth_data.password) {
+				if matching {
+					if let Ok(session) = query_create_session(user.id.clone(), user.email.clone(), pool) {
+						return Ok(session);
+					}
 				}
 			}
+		}
+		Err(diesel::result::Error::NotFound) => {
+			debug!("User not found");
+		}
+		Err(error) => {
+			return Err(error.into());
 		}
 	}
 	Err(ServiceError::Unauthorized)
@@ -97,15 +103,11 @@ fn query_create_session(
 		expire_at: expiration.naive_utc(),
 		updated_by: user_email,
 	};
-	let rows_inserted = diesel::insert_into(sessions)
+	let _rows_inserted = diesel::insert_into(sessions)
 		.values(&session)
-		.get_result::<Session>(conn);
-	println!("{:?}", rows_inserted);
-	if rows_inserted.is_ok() {
-		println!("\nSession added successfully.\n");
-		return Ok(session.into());
-	}
-	Err(ServiceError::Unauthorized)
+		.get_result::<Session>(conn)?;
+
+	Ok(session.into())
 }
 
 fn query_delete_session(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {

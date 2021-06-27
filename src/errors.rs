@@ -3,6 +3,7 @@ use derive_more::Display;
 use diesel::result::{DatabaseErrorKind, Error as DBError};
 use std::convert::From;
 use uuid::Error as ParseError;
+use log::error;
 
 #[derive(Debug, Display)]
 pub enum ServiceError {
@@ -43,6 +44,9 @@ impl From<ParseError> for ServiceError {
 
 impl From<DBError> for ServiceError {
 	fn from(error: DBError) -> ServiceError {
+
+		error!("Database query (DIESEL) failed: {:#?}", error);
+
 		// Right now we just care about UniqueViolation from diesel
 		// But this would be helpful to easily map errors as our app grows
 		match error {

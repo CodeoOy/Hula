@@ -66,7 +66,8 @@ fn initialize_db(name: &str) {
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
 	dotenv::dotenv().ok();
-	std::env::set_var("RUST_LOG", "simple-auth-server=debug,actix_web=info,actix_server=info");
+	let rust_log = std::env::var("RUST_LOG").unwrap_or("info, simple-auth-server=debug".to_string());
+	std::env::set_var("RUST_LOG", rust_log);
 	env_logger::init();
 	let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 	initialize_db(&database_url);

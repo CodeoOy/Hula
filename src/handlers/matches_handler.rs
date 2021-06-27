@@ -1,6 +1,7 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
+use log::trace;
 
 use crate::errors::ServiceError;
 use crate::models::matchcandidates::MatchCandidate;
@@ -13,7 +14,7 @@ pub struct QueryData {
 }
 
 pub async fn get_all_matches(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
-	println!("\nGetting all matches");
+	trace!("Getting all matches: logged_user={:#?}", &_logged_user);
 	let res = web::block(move || query(pool)).await;
 
 	match res {
@@ -36,7 +37,6 @@ fn query(pool: web::Data<Pool>) -> Result<Vec<MatchCandidate>, crate::errors::Se
 	items.retain(|x| x.available == true);
 
 	if items.is_empty() == false {
-		println!("\nGot some matches.\n");
 		return Ok(items);
 	}
 	Err(ServiceError::Empty)
@@ -47,7 +47,7 @@ pub async fn get_matches_by_params(
 	pool: web::Data<Pool>,
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	println!("\nGetting matches by parameters");
+	trace!("Getting matches by params: querydata = {:#?} logged_user={:#?}", &querydata, &_logged_user);
 	let res = web::block(move || query_by_params(querydata, pool)).await;
 	match res {
 		Ok(matches) => Ok(HttpResponse::Ok().json(&matches)),
@@ -73,7 +73,6 @@ fn query_by_params(
 	items.retain(|x| x.projectname == querydata.projectname);
 
 	if items.is_empty() == false {
-		println!("\nGot some matches.\n");
 		return Ok(items);
 	}
 	Err(ServiceError::Empty)

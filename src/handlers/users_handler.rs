@@ -4,6 +4,7 @@ use crate::models::users::{LoggedUser, Pool, User, UserFavorites, UserSkill};
 use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::{prelude::*, PgConnection};
 use serde::{Deserialize, Serialize};
+use log::trace;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
@@ -50,7 +51,7 @@ pub struct SkillDTO {
 }
 
 pub async fn get_all(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
-	println!("\nGetting all users");
+	trace!("Getting all users: logged_user = {:#?}", &_logged_user);
 	let res = web::block(move || query_all(pool)).await;
 
 	match res {
@@ -67,7 +68,6 @@ fn query_all(pool: web::Data<Pool>) -> Result<Vec<User>, crate::errors::ServiceE
 	let conn: &PgConnection = &pool.get().unwrap();
 	let items = users.load::<User>(conn)?;
 	if items.is_empty() == false {
-		println!("\nGot all users.\n");
 		return Ok(items);
 	}
 	Err(ServiceError::Empty)
@@ -79,6 +79,8 @@ pub async fn update_user(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Updating a user: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+
 	let uuid = uuid_data.into_inner();
 
 	// todo: create a macro to simplify this
@@ -86,7 +88,6 @@ pub async fn update_user(
 		return Err(ServiceError::Unauthorized);
 	}
 
-	println!("\nUpdating user");
 	let res = web::block(move || query_update(uuid, payload, pool)).await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
@@ -115,7 +116,6 @@ fn query_update(
 		))
 		.load::<User>(conn)?;
 	if let Some(user_res) = items.pop() {
-		println!("\nUpdate successful.\n");
 		return Ok(user_res.into());
 	}
 	Err(ServiceError::Unauthorized)
@@ -127,6 +127,8 @@ pub async fn add_skill(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Adding a user skill: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}", &uuid_data, &payload, &logged_user);
+
 	let uuid = uuid_data.into_inner();
 
 	// todo: create a macro to simplify this
@@ -134,7 +136,6 @@ pub async fn add_skill(
 		return Err(ServiceError::Unauthorized);
 	}
 
-	println!("Adding skill");
 	let res = web::block(move || query_add_skill(uuid, payload, pool, logged_user.email)).await;
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
@@ -167,7 +168,6 @@ fn query_add_skill(
 		.get_result::<UserSkill>(conn);
 	println!("{:?}", rows_inserted);
 	if rows_inserted.is_ok() {
-		println!("\nSkill added successfully.\n");
 		return Ok(new_user_skill.into());
 	}
 	Err(ServiceError::Unauthorized)
@@ -178,6 +178,7 @@ pub async fn delete_userskill(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Deleting a user skill: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
 	let uuid = uuid_data.into_inner();
 
 	// todo: create a macro to simplify this
@@ -209,7 +210,7 @@ pub async fn get_by_uuid(
 	pool: web::Data<Pool>,
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	println!("\nGetting user by uuid");
+	trace!("Getting a user by uuid: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &_logged_user);
 	let res = web::block(move || query_one(uuid_data.into_inner(), pool)).await;
 
 	match res {
@@ -231,7 +232,6 @@ fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, crate:
 	let mut skills_dto: Vec<SkillDTO> = Vec::new();
 	let user_skills = UserSkill::belonging_to(&user).load::<UserSkill>(conn)?;
 	for user_skill in user_skills.iter() {
-		println!("Got a skill");
 		let mut allskills_iter = allskills.iter(); // Iterator might cause problems when there are many skills
 		let skilldata = SkillDTO {
 			id: user_skill.id,
@@ -260,7 +260,6 @@ fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, crate:
 		skills: skills_dto,
 	};
 	if data.id.is_nil() == false {
-		println!("\nQuery successful.\n");
 		return Ok(data.into());
 	}
 	Err(ServiceError::Empty)
@@ -271,6 +270,8 @@ pub async fn delete_user(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Deleting a user: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+
 	let uuid = uuid_data.into_inner();
 
 	// todo: create a macro to simplify this
@@ -279,7 +280,6 @@ pub async fn delete_user(
 	}
 
 	let res = web::block(move || query_delete_user(uuid, pool)).await;
-	println!("\nUser deleted\n");
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
@@ -305,6 +305,8 @@ pub async fn update_year(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Updating a user years: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}", &uuid_data, &payload, &logged_user);
+
 	let uuid = uuid_data.into_inner();
 
 	// todo: create a macro to simplify this
@@ -312,7 +314,6 @@ pub async fn update_year(
 		return Err(ServiceError::Unauthorized);
 	}
 
-	println!("\nUpdating skill's year");
 	let res = web::block(move || query_update_year(uuid, payload, pool, logged_user.email)).await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
@@ -339,7 +340,6 @@ fn query_update_year(
 		.set((years.eq(userdata.years.clone()), updated_by.eq(email)))
 		.load::<UserSkill>(conn)?;
 	if let Some(user_res) = items.pop() {
-		println!("\nUpdate successful.\n");
 		return Ok(user_res.into());
 	}
 	Err(ServiceError::Unauthorized)
@@ -351,6 +351,8 @@ pub async fn add_favorite_project(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Adding a favorite project: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}", &uuid_data, &payload, &logged_user);
+
 	let uuid = uuid_data.into_inner();
 
 	// todo: create a macro to simplify this
@@ -358,7 +360,6 @@ pub async fn add_favorite_project(
 		return Err(ServiceError::Unauthorized);
 	}
 
-	println!("Adding favorite project");
 	let res = web::block(move || query_add_favorite_project(uuid, payload, pool, logged_user.email)).await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
@@ -389,7 +390,6 @@ fn query_add_favorite_project(
 		.get_result::<UserFavorites>(conn);
 	println!("{:?}", rows_inserted);
 	if rows_inserted.is_ok() {
-		println!("\nFavorite added successfully.\n");
 		return Ok(new_favorite.into());
 	}
 	Err(ServiceError::Unauthorized)
@@ -400,6 +400,8 @@ pub async fn delete_favorite_project(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
+	trace!("Delete a favorite project: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+
 	let uuid = uuid_data.into_inner();
 
 	// todo: create a macro to simplify this
@@ -408,7 +410,6 @@ pub async fn delete_favorite_project(
 	}
 
 	let res = web::block(move || query_delete_favorite_project(uuid, pool)).await;
-	println!("\nProject removed from favorites\n");
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
