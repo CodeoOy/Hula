@@ -3,7 +3,7 @@ use actix_web::{error::BlockingError, web, HttpResponse};
 use diesel::prelude::*;
 use diesel::PgConnection;
 use serde::Deserialize;
-use log::{debug};
+use log::{debug, trace};
 
 use crate::errors::ServiceError;
 use crate::models::users::{LoggedUser, Pool, Session, User};
@@ -20,7 +20,7 @@ pub async fn logout(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	debug!("Logging out: id={:#?} logged_user={:#?}", &id.identity(), &logged_user);
+	trace!("Logging out: id={:#?} logged_user={:#?}", &id.identity(), &logged_user);
 	let res = web::block(move || query_delete_session(logged_user.uid.to_string(), pool)).await;
 	id.forget();
 	match res {
@@ -37,7 +37,7 @@ pub async fn login(
 	id: Identity,
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
-	debug!("Logging in: email={:#?}", &auth_data.email);
+	trace!("Logging in: email={:#?}", &auth_data.email);
 	let res = web::block(move || query(auth_data.into_inner(), pool)).await;
 	match res {
 		Ok(user) => {
