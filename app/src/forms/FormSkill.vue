@@ -1,7 +1,5 @@
 <template>
 	<v-form v-on:submit="createSkill">
-		{{ chosenSkill }}<br />
-		{{ method }}
 		<div class="mb-2">
 			<error-message name="name" class="error"></error-message>
 			<label class="form-label">Skill name</label>
@@ -15,12 +13,11 @@
 				aria-label="Skill name"
 			></v-field>
 		</div>
-		<!--
 		<div class="mb-2">
 			<label class="form-label">Skill category</label>
 			<error-message name="category" class="error"></error-message>
 			<v-field
-				v-model="chosenSkill.category_id"
+				v-model="chosenSkill.skillcategory_id"
 				:rules="isRequired"
 				as="select"
 				name="category"
@@ -48,7 +45,7 @@
 					{{ scope.label }}
 				</option>
 			</v-field>
-		</div>-->
+		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 	</v-form> 
 </template>
@@ -60,7 +57,7 @@ export default {
 	data() {
 		return {
 			categories: {},
-			scopes: {},		
+			scopes: {},
 		}
 	},
 	components: {
@@ -116,6 +113,6 @@ export default {
 	mounted() {
 		this.getSkillCategories()
 		this.getSkillScopes()
-	}
+	},
 };
 </script>
