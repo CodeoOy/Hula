@@ -4,14 +4,11 @@ use diesel::{prelude::*, PgConnection};
 use crate::errors::ServiceError;
 use crate::models::skills::{Pool, Skill};
 
-pub fn query_all_skills(pool: &web::Data<Pool>) -> Result<Vec<Skill>, crate::errors::ServiceError> {
+pub fn query_all_skills(pool: &web::Data<Pool>) -> Result<Vec<Skill>, diesel::result::Error> {
 	use crate::schema::skills::dsl::skills;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let items = skills.load::<Skill>(conn)?;
-	if items.is_empty() == false {
-		return Ok(items);
-	}
-	Err(ServiceError::Empty)
+	Ok(items)
 }
 
 pub fn query_create_skill(

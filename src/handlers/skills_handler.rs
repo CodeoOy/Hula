@@ -40,9 +40,14 @@ pub async fn get_all_skills(pool: web::Data<Pool>, _logged_user: LoggedUser) -> 
 	let res = web::block(move || skills_repository::query_all_skills(&pool)).await;
 
 	match res {
-		Ok(skills) => Ok(HttpResponse::Ok().json(&skills)),
+		Ok(skills) => {
+			if skills.is_empty() == false {
+				return Ok(HttpResponse::Ok().json(&skills));
+			}
+			Err(ServiceError::Empty)
+		},
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}

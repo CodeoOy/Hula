@@ -3,14 +3,11 @@ use crate::models::users::{Pool, User, UserSkill};
 use actix_web::web;
 use diesel::{prelude::*, PgConnection};
 
-pub fn query_belong_to_user(user: &User, pool: &web::Data<Pool>) -> Result<Vec<UserSkill>, ServiceError> {
+pub fn query_belong_to_user(user: &User, pool: &web::Data<Pool>) -> Result<Vec<UserSkill>, diesel::result::Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let items = UserSkill::belonging_to(user).load::<UserSkill>(conn)?;
-	if items.is_empty() == false {
-		return Ok(items);
-	}
-	Err(ServiceError::Empty)
+	Ok(items)
 }
 
 pub fn query_add_skill(

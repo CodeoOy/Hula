@@ -154,10 +154,10 @@ pub async fn get_by_uuid(
 
 fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, ServiceError> {
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+
 	let user = users_repository::get(uuid_query, &pool)?;
 	let allskills = skills_repository::query_all_skills(&pool)?;
 	let mut skills_dto: Vec<SkillDTO> = Vec::new();
-
 	let user_skills = userskills_repository::query_belong_to_user(&user, &pool)?;
 
 	for user_skill in user_skills.iter() {
