@@ -9,27 +9,23 @@ use crate::models::users::LoggedUser;
 
 #[derive(Deserialize, Debug)]
 pub struct SkillData {
-	pub email: String,
 	pub label: String,
-	pub category_id: uuid::Uuid,
+	pub skillcategory_id: uuid::Uuid,
 	pub skillscope_id: uuid::Uuid,
 }
 #[derive(Deserialize, Debug)]
 pub struct CategoryData {
-	pub email: String,
 	pub label: String,
 	pub parent_id: Option<uuid::Uuid>,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct ScopeData {
-	pub email: String,
 	pub label: String,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct ScopeLevelData {
-	pub email: String,
 	pub label: String,
 	pub skillscope_id: uuid::Uuid,
 	pub percentage: Option<i32>,
@@ -207,7 +203,7 @@ fn query_create_skill(
 	let new_skill = Skill {
 		id: uuid::Uuid::new_v4(),
 		label: skilldata.label.clone(),
-		skillcategory_id: skilldata.category_id,
+		skillcategory_id: skilldata.skillcategory_id,
 		skillscope_id: skilldata.skillscope_id,
 		updated_by: email,
 	};
@@ -255,7 +251,7 @@ fn query_update_skill(
 		.filter(id.eq(uuid_query))
 		.set((
 			label.eq(skilldata.label.clone()),
-			skillcategory_id.eq(skilldata.category_id.clone()),
+			skillcategory_id.eq(skilldata.skillcategory_id.clone()),
 			updated_by.eq(email.clone()),
 		))
 		.load::<Skill>(conn)?;

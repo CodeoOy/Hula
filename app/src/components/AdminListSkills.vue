@@ -73,7 +73,6 @@
 					label: '',
 					category_id: null,
 					skillscope_id: null,
-					email: this.$store.state.loggeduser.email,
 				},
 				skills: [],
 			}

@@ -75,7 +75,8 @@ export default {
 			return value ? true : 'This field is required';
 		},
 		createSkill() {
-			this.chosenSkill.email = this.$store.state.loggeduser.email,
+			delete this.chosenSkill.id
+			delete this.chosenSkill.updated_by
 			fetch(this.url, {
 				method: this.method,
 				headers: {"Content-Type": "application/json"},
