@@ -1,12 +1,11 @@
 use actix_identity::Identity;
 use actix_web::{error::BlockingError, web, HttpResponse};
-use diesel::prelude::*;
-use diesel::PgConnection;
 use serde::Deserialize;
 use log::{debug, trace};
 
 use crate::errors::ServiceError;
-use crate::models::users::{LoggedUser, Pool, Session, User};
+use crate::models::users::{LoggedUser, Pool, Session};
+use crate::repositories::*;
 use crate::utils::verify;
 
 #[derive(Debug, Deserialize)]
@@ -21,7 +20,7 @@ pub async fn logout(
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Logging out: id={:#?} logged_user={:#?}", &id.identity(), &logged_user);
-	let res = web::block(move || query_delete_session(logged_user.uid.to_string(), pool)).await;
+	let res = web::block(move || sessions_repository::query_delete_session(logged_user.uid.to_string(), pool)).await;
 	id.forget();
 	match res {
 		Ok(session) => Ok(HttpResponse::Ok().json(&session)),
@@ -56,65 +55,25 @@ pub async fn get_me(logged_user: LoggedUser) -> HttpResponse {
 }
 
 fn query(auth_data: AuthData, pool: web::Data<Pool>) -> Result<Session, ServiceError> {
-	use crate::schema::users::dsl::{email, users};
-	let conn: &PgConnection = &pool.get().unwrap();
-
-	let res = users.filter(email.eq(&auth_data.email)).get_result::<User>(conn);
+	let res = users_repository::get_by_email(auth_data.email.clone(), &pool);
+	
 	match res {
 		Ok(user) => { 
 			if let Ok(matching) = verify(&user.hash, &auth_data.password) {
 				if matching {
-					if let Ok(session) = query_create_session(user.id.clone(), user.email.clone(), pool) {
+					if let Ok(session) = sessions_repository::query_create_session(user.id.clone(), user.email.clone(), pool) {
 						return Ok(session);
 					}
 				}
 			}
 		}
-		Err(diesel::result::Error::NotFound) => {
+		Err(ServiceError::Empty) => {
 			debug!("User not found");
 		}
 		Err(error) => {
-			return Err(error.into());
+			return Err(error);
 		}
 	}
 	Err(ServiceError::Unauthorized)
 }
 
-fn query_create_session(
-	user_id: uuid::Uuid,
-	user_email: String,
-	pool: web::Data<Pool>,
-) -> Result<Session, crate::errors::ServiceError> {
-	use crate::schema::sessions::dsl::sessions;
-
-	let expiry_mins = std::env::var("SESSION_EXPIRY_MINS").unwrap_or_else(|_| "60".to_string());
-	let mins = expiry_mins.parse::<i64>().expect(&format!(
-		"Invalid number format in SESSION_EXPIRY_MINS: {}",
-		expiry_mins
-	));
-
-	let expiration = chrono::offset::Utc::now() + chrono::Duration::minutes(mins);
-
-	let conn: &PgConnection = &pool.get().unwrap();
-
-	let session = Session {
-		id: uuid::Uuid::new_v4(),
-		user_id: user_id,
-		expire_at: expiration.naive_utc(),
-		updated_by: user_email,
-	};
-	let _rows_inserted = diesel::insert_into(sessions)
-		.values(&session)
-		.get_result::<Session>(conn)?;
-
-	Ok(session.into())
-}
-
-fn query_delete_session(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
-	let conn: &PgConnection = &pool.get().unwrap();
-	use crate::schema::sessions::dsl::*;
-
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	diesel::delete(sessions.filter(user_id.eq(uuid_query))).execute(conn)?;
-	Ok(())
-}
