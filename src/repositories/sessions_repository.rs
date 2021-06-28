@@ -3,12 +3,13 @@ use diesel::prelude::*;
 use diesel::PgConnection;
 
 use crate::models::users::{Pool, Session};
+use crate::errors::ServiceError;
 
 pub fn query_create_session(
 	user_id: uuid::Uuid,
 	user_email: String,
 	pool: web::Data<Pool>,
-) -> Result<Session, crate::errors::ServiceError> {
+) -> Result<Session, ServiceError> {
 	use crate::schema::sessions::dsl::sessions;
 
 	let expiry_mins = std::env::var("SESSION_EXPIRY_MINS").unwrap_or_else(|_| "60".to_string());

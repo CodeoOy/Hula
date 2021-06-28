@@ -1,13 +1,12 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
-use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
-use log::trace;
+use log::{debug, trace};
 
 use crate::email_service::send_invitation;
 use crate::errors::ServiceError;
 use crate::models::invitations::{Invitation, Pool};
-use crate::models::users::User;
 use crate::utils::hash_password;
+use crate::repositories::*;
 
 #[derive(Deserialize, Debug)]
 pub struct InvitationData {
@@ -50,19 +49,20 @@ fn query(
 	first_name: String,
 	last_name: String,
 	pool: web::Data<Pool>,
-) -> Result<Invitation, crate::errors::ServiceError> {
-	use crate::schema::invitations::dsl::invitations;
-	use crate::schema::users::dsl::*;
-	let conn: &PgConnection = &pool.get().unwrap();
-	let items = users.filter(email.eq(eml.clone())).load::<User>(conn)?;
+) -> Result<Invitation, ServiceError> {
+	let res = users_repository::get_by_email(eml.clone(), &pool);
 	let password: String = hash_password(&psw)?;
-	if items.is_empty() {
-		let new_invitation = Invitation::from_details(eml, password, first_name, last_name);
-		let inserted_invitation = diesel::insert_into(invitations)
-			.values(&new_invitation)
-			.get_result(conn)?;
-		Ok(inserted_invitation)
-	} else {
-		Err(ServiceError::Unauthorized)
+	match res {
+		Ok(user) => {
+			debug!("User {} already found. Cannot process invitation.", &user.email);
+			return Err(ServiceError::Unauthorized);
+		},
+		Err(ServiceError::Empty) => {
+			let invitation = invitations_repository::query_create_invitation(eml, password, first_name, last_name, &pool)?;
+			Ok(invitation)
+		},
+		Err(error) => {
+			Err(error.into())
+		}
 	}
 }

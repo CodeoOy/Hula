@@ -1,11 +1,12 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
-use diesel::prelude::*;
 use serde::Deserialize;
 use log::trace;
 
 use crate::errors::ServiceError;
-use crate::models::invitations::{Invitation, Pool};
+use crate::models::invitations::Pool;
 use crate::models::users::User;
+use crate::repositories::*;
+
 // UserData is used to extract data from a post request by the client
 #[derive(Debug, Deserialize)]
 pub struct UserData {
@@ -31,10 +32,20 @@ pub async fn register_user(
 }
 
 fn query(user_data: UserData, pool: web::Data<Pool>) -> Result<User, crate::errors::ServiceError> {
-	use crate::schema::invitations::dsl::{email, id, invitations};
-	use crate::schema::users::dsl::users;
 	let invitation_id = uuid::Uuid::parse_str(&user_data.id)?;
 
+	let invitation = invitations_repository::get_by_invitation(invitation_id.clone(), user_data.email.clone(), &pool)?;
+
+	if invitation.expires_at > chrono::Local::now().naive_local() {
+		let password: String = user_data.password;
+		let user = users_repository::create(invitation.email, password, invitation.first_name, invitation.last_name, &pool)?;
+
+		return Ok(user);
+	}
+
+	Err(ServiceError::BadRequest("Invalid Invitation".into()))
+
+	/* 
 	let conn: &PgConnection = &pool.get().unwrap();
 	invitations
 		.filter(id.eq(invitation_id))
@@ -53,5 +64,5 @@ fn query(user_data: UserData, pool: web::Data<Pool>) -> Result<User, crate::erro
 				}
 			}
 			Err(ServiceError::BadRequest("Invalid Invitation".into()))
-		})
+		}) */
 }
