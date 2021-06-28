@@ -1,22 +1,21 @@
 <template>
 	<div>
+		<VModal :modalTitle="formTitle" :modalID="'Skills'">
+			<component 
+				:is='modalComponent' 
+				:chosenSkill="chosenSkill" 
+				:url="url"
+				:method="method"
+			/>
+		</VModal>
 		<div class="d-flex flex-row justify-content-between align-items-start">
 			<h2>Skills</h2>
-			{{ chosenSkill }}
 			<button
 				class="btn btn-gradient"
 				data-bs-toggle="modal"
 				data-bs-target="#hulaModalSkills"
 				v-on:click="formTitle = 'Add skill', chosenForm = 'CreateSkill', chosenSkill = chosenSkillDefault, url='/api/skills', method='POST'"
 			>Add skill</button>
-			<VModal :modalTitle="formTitle" :modalID="'Skills'">
-				<component 
-					:is='modalComponent' 
-					:chosenSkill="chosenSkill" 
-					:url="url"
-					:method="method"
-				/>
-			</VModal>
 		</div>
 		<transition name="fadeHeight">
 			<table class="table table-dark table-striped text-light">
