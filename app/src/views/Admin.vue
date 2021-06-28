@@ -27,6 +27,7 @@
 	import AdminListProjects from '../components/AdminListProjects.vue'
 	import AdminListSkills from '../components/AdminListSkills.vue'
 	import AdminListUsers from '../components/AdminListUsers.vue'
+	import AdminListScopes from '../components/AdminListScopes.vue'
 	export default {
 		name: 'Admin',
 		data() {
@@ -46,6 +47,7 @@
 			AdminListProjects,
 			AdminListSkills,
 			AdminListUsers,
+			AdminListScopes,
 		},
 		methods: {
 			updateProject(value) {
