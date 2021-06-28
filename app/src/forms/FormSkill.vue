@@ -1,10 +1,12 @@
 <template>
 	<v-form v-on:submit="createSkill">
+		{{ chosenSkill }}<br />
+		{{ method }}
 		<div class="mb-2">
 			<error-message name="name" class="error"></error-message>
 			<label class="form-label">Skill name</label>
 			<v-field
-				v-model="queryData.label"
+				v-model="chosenSkill.label"
 				:rules="isRequired"
 				as="input"
 				type="text"
@@ -13,11 +15,12 @@
 				aria-label="Skill name"
 			></v-field>
 		</div>
+		<!--
 		<div class="mb-2">
 			<label class="form-label">Skill category</label>
 			<error-message name="category" class="error"></error-message>
 			<v-field
-				v-model="queryData.category_id"
+				v-model="chosenSkill.category_id"
 				:rules="isRequired"
 				as="select"
 				name="category"
@@ -30,12 +33,11 @@
 				</option>
 			</v-field>
 		</div>
-		<div class="mb-2">
+		<div class="mb-2" v-if="method == 'POST'">
 			<label class="form-label">Skill scope</label>
 			<error-message name="scope" class="error"></error-message>
 			<v-field
-				v-model="queryData.skillscope_id"
-				:rules="isRequired"
+				v-model="chosenSkill.skillscope_id"
 				as="select"
 				name="scope"
 				class="form-select"
@@ -46,7 +48,7 @@
 					{{ scope.label }}
 				</option>
 			</v-field>
-		</div>
+		</div>-->
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 	</v-form> 
 </template>
@@ -57,12 +59,6 @@ export default {
 	name: 'Skill',
 	data() {
 		return {
-			queryData: {
-				label: '',
-				category_id: null,
-				skillscope_id: null,
-				email: this.$store.state.loggeduser.email,
-			},
 			categories: {},
 			scopes: {},		
 		}
@@ -72,16 +68,22 @@ export default {
 		'VField': Field,
 		ErrorMessage
 	},
+	props: {
+		chosenSkill: {},
+		url: '',
+		method: ''
+	},	
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
 		createSkill() {
-			fetch('/api/skills', {
-				method: 'POST',
+			this.chosenSkill.email = this.$store.state.loggeduser.email,
+			fetch(this.url, {
+				method: this.method,
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.queryData)
+				body: JSON.stringify(this.chosenSkill)
 			})
 			.then(() => {
 				this.$router.go()

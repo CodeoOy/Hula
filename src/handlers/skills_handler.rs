@@ -219,6 +219,52 @@ fn query_create_skill(
 	Err(ServiceError::Unauthorized)
 }
 
+pub async fn update_skill(
+	uuid_data: web::Path<String>,
+	skilldata: web::Json<SkillData>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!("Creating a skill: skilldata = {:#?} logged_user = {:#?}", &skilldata, &logged_user);
+
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
+	let res = web::block(move || query_update_skill(uuid_data.into_inner(), skilldata, pool, logged_user.email)).await;
+	match res {
+		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn query_update_skill(
+	uuid_data: String,
+	skilldata: web::Json<SkillData>,
+	pool: web::Data<Pool>,
+	email: String,
+) -> Result<Skill, crate::errors::ServiceError> {
+	use crate::schema::skills::dsl::{skills, *};
+	let conn: &PgConnection = &pool.get().unwrap();
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	let mut skill = diesel::update(skills)
+		.filter(id.eq(uuid_query))
+		.set((
+			label.eq(skilldata.label.clone()),
+			skillcategory_id.eq(skilldata.category_id.clone()),
+			updated_by.eq(email.clone()),
+		))
+		.load::<Skill>(conn)?;
+	if let Some(skill_res) = skill.pop() {
+		return Ok(skill_res.into());
+	}
+	Err(ServiceError::Unauthorized)
+}
+
 pub async fn create_skill_scope(
 	scopedata: web::Json<ScopeData>,
 	pool: web::Data<Pool>,

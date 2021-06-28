@@ -2,14 +2,20 @@
 	<div>
 		<div class="d-flex flex-row justify-content-between align-items-start">
 			<h2>Skills</h2>
+			{{ chosenSkill }}
 			<button
 				class="btn btn-gradient"
 				data-bs-toggle="modal"
-				data-bs-target="#hulaModalCreateSkill"
-				v-on:click="formTitle = 'Add skill', chosenForm = 'CreateSkill'"
+				data-bs-target="#hulaModalSkills"
+				v-on:click="formTitle = 'Add skill', chosenForm = 'CreateSkill', chosenSkill = chosenSkillDefault, url='/api/skills', method='POST'"
 			>Add skill</button>
-			<VModal :modalTitle="formTitle" :modalID="chosenForm">
-				<component :is='modalComponent' :chosenSkill="chosenSkill"/>
+			<VModal :modalTitle="formTitle" :modalID="'Skills'">
+				<component 
+					:is='modalComponent' 
+					:chosenSkill="chosenSkill" 
+					:url="url"
+					:method="method"
+				/>
 			</VModal>
 		</div>
 		<transition name="fadeHeight">
@@ -33,8 +39,8 @@
 								:data-skill-id="skill.id" 
 								:data-skill-name="skill.label" 
 								data-bs-toggle="modal" 
-								data-bs-target="#hulaModalEditSkill" 
-								v-on:click="chosenSkill = skill, formTitle = 'Edit skill', chosenForm = 'EditSkill'"
+								data-bs-target="#hulaModalSkills" 
+								v-on:click="chosenSkill=skill, formTitle=skill.label, chosenForm='CreateSkill', url=`/api/skills/${skill.id}`, method='PUT'"
 								class="me-2"
 							>Edit</a>
 							<a href="#" v-on:click.prevent="this.deleteSkill(skill.id)">Delete</a>
@@ -49,7 +55,7 @@
 <script>
 	import VModal from '../components/VModal.vue'
 	import FormAddSkill from '../forms/FormAddSkill.vue'
-	import FormCreateSkill from '../forms/FormCreateSkill.vue'
+	import FormSkill from '../forms/FormSkill.vue'
 	import FormSkillCategory from '../forms/FormSkillCategory.vue'
 	import FormSkillScope from '../forms/FormSkillScope.vue'
 	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
@@ -60,13 +66,21 @@
 			return {
 				formTitle: '',
 				chosenForm: '',
+				url: '',
+				method: '',
 				chosenSkill: {},
+				chosenSkillDefault: {
+					label: '',
+					category_id: null,
+					skillscope_id: null,
+					email: this.$store.state.loggeduser.email,
+				},
 				skills: [],
 			}
 		},
 		components: {
 			VModal,
-			FormCreateSkill,
+			FormSkill,
 			FormSkillCategory,
 			FormSkillScope,
 			FormSkillScopeLevel,
@@ -104,7 +118,7 @@
 		computed: {
 			modalComponent() {
 				const components = {
-					CreateSkill: FormCreateSkill,
+					CreateSkill: FormSkill,
 					Category: FormSkillCategory,
 					Scope: FormSkillScope,
 					Level: FormSkillScopeLevel

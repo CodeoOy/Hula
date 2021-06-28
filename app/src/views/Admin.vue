@@ -41,7 +41,7 @@
 <script>
 	import VModal from '../components/VModal.vue'
 	import FormProject from '../forms/FormProject.vue'
-	import FormCreateSkill from '../forms/FormCreateSkill.vue'
+	import FormSkill from '../forms/FormSkill.vue'
 	import FormSkillScope from '../forms/FormSkillScope.vue'
 	import FormSkillCategory from '../forms/FormSkillCategory.vue'
 	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
@@ -67,7 +67,7 @@
 		components: {
 			VModal,
 			FormProject,
-			FormCreateSkill,
+			FormSkill,
 			FormSkillScope,
 			FormSkillCategory,
 			FormSkillScopeLevel,
@@ -93,7 +93,7 @@
 			modalComponent() {
 				const components = {
 					project: FormProject,
-					skill: FormCreateSkill,
+					skill: FormSkill,
 					scope: FormSkillScope,
 					category: FormSkillCategory,
 					scopelevel: FormSkillScopeLevel,
