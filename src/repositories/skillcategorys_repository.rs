@@ -19,7 +19,7 @@ pub fn query_create_skill_category(
 	q_parent_id: Option<uuid::Uuid>,
 	pool: web::Data<Pool>,
 	email: String,
-) -> Result<SkillCategory, crate::errors::ServiceError> {
+) -> Result<SkillCategory, diesel::result::Error> {
 	use crate::schema::skillcategories::dsl::skillcategories;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let new_skill_category = SkillCategory {
@@ -28,13 +28,18 @@ pub fn query_create_skill_category(
 		parent_id: q_parent_id,
 		updated_by: email,
 	};
-	let rows_inserted = diesel::insert_into(skillcategories)
+	let _rows_inserted = diesel::insert_into(skillcategories)
 		.values(&new_skill_category)
-		.get_result::<SkillCategory>(conn);
-	println!("{:?}", rows_inserted);
-	if rows_inserted.is_ok() {
-		return Ok(new_skill_category.into());
-	}
-	Err(ServiceError::Unauthorized)
+		.get_result::<SkillCategory>(conn)?;
+
+	return Ok(new_skill_category.into());
+}
+
+pub fn delete_skillcategory(uuid_data: uuid::Uuid, pool: web::Data<Pool>) -> Result<usize, diesel::result::Error> {
+	let conn: &PgConnection = &pool.get().unwrap();
+	use crate::schema::skillcategories::dsl::{skillcategories, id};
+
+	let deleted = diesel::delete(skillcategories.filter(id.eq(uuid_data))).execute(conn)?;
+	Ok(deleted)
 }
 

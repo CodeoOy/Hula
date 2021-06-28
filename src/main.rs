@@ -139,6 +139,9 @@ async fn main() -> std::io::Result<()> {
 						web::resource("/skills/{id}").route(web::delete().to(handlers::skills_handler::delete_skill)),
 					)
 					.service(
+						web::resource("/skills/categories/{id}").route(web::delete().to(handlers::skills_handler::delete_skill_category)),
+					)
+					.service(
 						web::resource("/projects")
 							.route(web::get().to(handlers::projects_handler::get_all_projects))
 							.route(web::post().to(handlers::projects_handler::create_project)),

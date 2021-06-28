@@ -6,7 +6,7 @@ use crate::models::users::Pool;
 use crate::models::invitations::Invitation;
 use crate::errors::ServiceError;
 
-pub fn query_create_invitation(
+pub fn create_invitation(
 	q_email: String,
 	q_password: String,
 	q_first_name: String,

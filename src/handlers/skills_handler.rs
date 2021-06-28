@@ -2,7 +2,7 @@ use actix_web::{error::BlockingError, web, HttpResponse};
 use serde::Deserialize;
 use log::trace;
 
-use crate::errors::ServiceError;
+use crate::errors::{ForbiddenType, ServiceError};
 use crate::models::skills::Pool;
 use crate::models::users::LoggedUser;
 use crate::repositories::*;
@@ -104,14 +104,43 @@ pub async fn create_skill_category(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res = web::block(move || skillcategorys_repository::query_create_skill_category(categorydata.label.clone(), categorydata.parent_id, pool, logged_user.email)).await;
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+pub async fn delete_skill_category(
+	uuid_data: web::Path<String>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!("Deleting a skill category: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Unauthorized);
+	}
+
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || skillcategorys_repository::delete_skillcategory(id, pool)).await;
+	match res {
+		Ok(deleted) => {
+			if deleted > 0 {
+				return Ok(HttpResponse::Ok().finish());
+			}
+			Err(ServiceError::Gone)
+		},
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -133,7 +162,7 @@ pub async fn create_skill(
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -195,11 +224,13 @@ pub async fn delete_skill(
 		return Err(ServiceError::Unauthorized);
 	}
 
-	let res = web::block(move || skills_repository::query_delete_skill(uuid_data.into_inner(), pool)).await;
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || skills_repository::query_delete_skill(id, pool)).await;
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}

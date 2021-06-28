@@ -58,7 +58,7 @@ fn query(
 			return Err(ServiceError::Unauthorized);
 		},
 		Err(ServiceError::Empty) => {
-			let invitation = invitations_repository::query_create_invitation(eml, password, first_name, last_name, &pool)?;
+			let invitation = invitations_repository::create_invitation(eml, password, first_name, last_name, &pool)?;
 			Ok(invitation)
 		},
 		Err(error) => {
