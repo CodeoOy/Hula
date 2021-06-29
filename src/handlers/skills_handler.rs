@@ -122,7 +122,7 @@ pub async fn create_skill_category(
 		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || skillcategories_repository::create_skill_category(categorydata.label.clone(), categorydata.parent_id, &pool, logged_user.email)).await;
+	let res = web::block(move || skillcategories_repository::create_skill_category(categorydata.label.clone(), categorydata.parent_id, logged_user.email, &pool)).await;
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
@@ -146,7 +146,7 @@ pub async fn delete_skill_category(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	let res = web::block(move || skillcategories_repository::delete_skill_category(id, pool)).await;
+	let res = web::block(move || skillcategories_repository::delete_skill_category(id, &pool)).await;
 	match res {
 		Ok(deleted) => {
 			if deleted > 0 {
@@ -241,7 +241,7 @@ pub async fn delete_skill(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	let res = web::block(move || skills_repository::delete_skill(id, pool)).await;
+	let res = web::block(move || skills_repository::delete_skill(id, &pool)).await;
 	match res {
 		Ok(deleted) => {
 			if deleted > 0 {

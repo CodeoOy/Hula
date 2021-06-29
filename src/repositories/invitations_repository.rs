@@ -4,7 +4,7 @@ use diesel::PgConnection;
 
 use crate::models::users::Pool;
 use crate::models::invitations::Invitation;
-use crate::errors::ServiceError;
+use diesel::result::Error;
 
 pub fn create_invitation(
 	q_email: String,
@@ -12,19 +12,19 @@ pub fn create_invitation(
 	q_first_name: String,
 	q_last_name: String,
 	pool: &web::Data<Pool>,
-) -> Result<Invitation, ServiceError> {
+) -> Result<Invitation, Error> {
 	use crate::schema::invitations::dsl::invitations;
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let new_invitation = Invitation::from_details(q_email, q_password, q_first_name, q_last_name);
-	let inserted_invitation = diesel::insert_into(invitations)
+	diesel::insert_into(invitations)
 		.values(&new_invitation)
-		.get_result::<Invitation>(conn)?;
+		.execute(conn)?;
 
-	Ok(inserted_invitation.into())
+	Ok(new_invitation)
 }
 
-pub fn get_by_invitation(q_invitation_id: uuid::Uuid, q_email: String, pool: &web::Data<Pool>) -> Result<Invitation, ServiceError> {
+pub fn get_by_invitation(q_invitation_id: uuid::Uuid, q_email: String, pool: &web::Data<Pool>) -> Result<Option<Invitation>, Error> {
 	use crate::schema::invitations::dsl::{email, id, invitations};
 	let conn: &PgConnection = &pool.get().unwrap();
 
@@ -32,10 +32,11 @@ pub fn get_by_invitation(q_invitation_id: uuid::Uuid, q_email: String, pool: &we
 		.filter(id.eq(&q_invitation_id))
 		.filter(email.eq(&q_email))
 		.load::<Invitation>(conn)?;
+
 	if let Some(invitation) = items.pop() {
-		return Ok(invitation);
+		return Ok(Some(invitation));
 	}
-	Err(ServiceError::Empty)
+	Ok(None)
 }
 
 

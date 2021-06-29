@@ -20,12 +20,14 @@ pub async fn logout(
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Logging out: id={:#?} logged_user={:#?}", &id.identity(), &logged_user);
-	let res = web::block(move || sessions_repository::query_delete_session(logged_user.uid.to_string(), pool)).await;
+	let res = web::block(move || sessions_repository::delete_session(logged_user.uid, &pool)).await;
 	id.forget();
 	match res {
-		Ok(session) => Ok(HttpResponse::Ok().json(&session)),
+		Ok(_) => {
+			Ok(HttpResponse::Ok().finish())
+		},
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -61,7 +63,7 @@ fn query(auth_data: AuthData, pool: web::Data<Pool>) -> Result<Session, ServiceE
 		Ok(user) => { 
 			if let Ok(matching) = verify(&user.hash, &auth_data.password) {
 				if matching {
-					if let Ok(session) = sessions_repository::query_create_session(user.id.clone(), user.email.clone(), pool) {
+					if let Ok(session) = sessions_repository::create_session(user.id.clone(), user.email.clone(), &pool) {
 						return Ok(session);
 					}
 				}

@@ -20,7 +20,7 @@ pub async fn post_invitation(
 	invitation_data: web::Json<InvitationData>,
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Posting invitation: invitation_data={:#?}", &invitation_data);
+	trace!("Posting invitation: invitation_data = {} {} {}", &invitation_data.email, &invitation_data.first_name, &invitation_data.last_name);
 	let res = web::block(move || create_invitation(invitation_data.into_inner(), pool)).await;
 
 	match res {
@@ -33,13 +33,13 @@ pub async fn post_invitation(
 }
 
 fn create_invitation(invdata: InvitationData, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
-	let invitation = dbg!(query(
+	let invitation = query(
 		invdata.email,
 		invdata.password_plain,
 		invdata.first_name,
 		invdata.last_name,
 		pool
-	)?);
+	)?;
 	send_invitation(&invitation)
 }
 

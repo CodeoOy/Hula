@@ -33,7 +33,7 @@ pub fn create_skill(
 	Ok(new_skill.into())
 }
 
-pub fn delete_skill(uuid_data: uuid::Uuid, pool: web::Data<Pool>) -> Result<usize, Error> {
+pub fn delete_skill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<usize, Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::skills::dsl::id;
 	use crate::schema::skills::dsl::*;

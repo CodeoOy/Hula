@@ -36,33 +36,14 @@ fn query(user_data: UserData, pool: web::Data<Pool>) -> Result<User, crate::erro
 
 	let invitation = invitations_repository::get_by_invitation(invitation_id.clone(), user_data.email.clone(), &pool)?;
 
-	if invitation.expires_at > chrono::Local::now().naive_local() {
-		let password: String = user_data.password;
-		let user = users_repository::create(invitation.email, password, invitation.first_name, invitation.last_name, &pool)?;
+	if let Some(invitation) = invitation {
+		if invitation.expires_at > chrono::Local::now().naive_local() {
+			let password: String = user_data.password;
+			let user = users_repository::create(invitation.email, password, invitation.first_name, invitation.last_name, &pool)?;
 
-		return Ok(user);
+			return Ok(user);
+		}
 	}
 
 	Err(ServiceError::BadRequest("Invalid Invitation".into()))
-
-	/* 
-	let conn: &PgConnection = &pool.get().unwrap();
-	invitations
-		.filter(id.eq(invitation_id))
-		.filter(email.eq(&user_data.email))
-		.load::<Invitation>(conn)
-		.map_err(|_db_error| ServiceError::BadRequest("Invalid Invitation".into()))
-		.and_then(|mut result| {
-			if let Some(invitation) = result.pop() {
-				if invitation.expires_at > chrono::Local::now().naive_local() {
-					let password: String = user_data.password;
-					let user =
-						User::from_details(invitation.email, password, invitation.first_name, invitation.last_name);
-					let inserted_user: User = diesel::insert_into(users).values(&user).get_result(conn)?;
-					dbg!(&inserted_user);
-					return Ok(inserted_user);
-				}
-			}
-			Err(ServiceError::BadRequest("Invalid Invitation".into()))
-		}) */
 }

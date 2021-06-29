@@ -14,8 +14,8 @@ pub fn query_skill_categories(pool: web::Data<Pool>) -> Result<Vec<SkillCategory
 pub fn create_skill_category(
 	q_label: String,
 	q_parent_id: Option<uuid::Uuid>,
+	q_email: String,
 	pool: &web::Data<Pool>,
-	email: String,
 ) -> Result<SkillCategory, Error> {
 	use crate::schema::skillcategories::dsl::skillcategories;
 	let conn: &PgConnection = &pool.get().unwrap();
@@ -24,7 +24,7 @@ pub fn create_skill_category(
 		id: uuid::Uuid::new_v4(),
 		label: q_label,
 		parent_id: q_parent_id,
-		updated_by: email,
+		updated_by: q_email,
 	};
 	
 	diesel::insert_into(skillcategories)
@@ -34,7 +34,7 @@ pub fn create_skill_category(
 	Ok(new_skill_category.into())
 }
 
-pub fn delete_skill_category(uuid_data: uuid::Uuid, pool: web::Data<Pool>) -> Result<usize, Error> {
+pub fn delete_skill_category(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<usize, Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::skillcategories::dsl::{skillcategories, id};
 
