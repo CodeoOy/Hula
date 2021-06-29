@@ -15,21 +15,19 @@
 				data-bs-toggle="modal"
 				data-bs-target="#hulaModalScopes"
 				v-on:click="formTitle = 'Add scope', chosenForm = 'Scope', chosenScope = chosenScopeDefault, url='/api/skills/scopes', method='POST'"
-			>Add skill</button>
+			>Add scope</button>
 		</div>
 		<transition name="fadeHeight">
 			<table class="table table-dark table-striped text-light">
 				<thead>
 					<tr>
-						<th scope="col">#</th>
 						<th scope="col">Scope name</th>
 						<th scope="col">Levels</th>
 						<th scope="col">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(scope, index) in scopes" :key="scope.id">
-						<th scope="row">{{ index + 1 }}</th>
+					<tr v-for="scope in scopes" :key="scope.id">
 						<td>{{ scope.label }}</td>
 						<td>Levels here</td>
 						<td>
