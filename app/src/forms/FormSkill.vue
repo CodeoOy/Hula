@@ -1,5 +1,7 @@
 <template>
 	<v-form v-on:submit="createSkill">
+		{{ method }}
+		{{ chosenSkill }}
 		<div class="mb-2">
 			<error-message name="name" class="error"></error-message>
 			<label class="form-label">Skill name</label>
@@ -35,6 +37,7 @@
 			<error-message name="scope" class="error"></error-message>
 			<v-field
 				v-model="chosenSkill.skillscope_id"
+				:rules="isRequired"
 				as="select"
 				name="scope"
 				class="form-select"

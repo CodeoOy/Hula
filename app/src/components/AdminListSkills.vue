@@ -23,7 +23,7 @@
 					<tr>
 						<th scope="col">#</th>
 						<th scope="col">Skill name</th>
-						<th scope="col">Scope</th>
+						<th scope="col">Category</th>
 						<th scope="col">Actions</th>
 					</tr>
 				</thead>
@@ -31,7 +31,7 @@
 					<tr v-for="(skill, index) in skills" :key="skill.id">
 						<th scope="row">{{ index + 1 }}</th>
 						<td>{{ skill.label }}</td>
-						<td>{{ skill.skillscope_id }}</td>
+						<td>{{ skill.skillcategory_id }}</td>
 						<td>
 							<a
 								href="#" 
@@ -70,7 +70,7 @@
 				chosenSkill: {},
 				chosenSkillDefault: {
 					label: '',
-					category_id: null,
+					skillcategory_id: null,
 					skillscope_id: null,
 				},
 				skills: [],
