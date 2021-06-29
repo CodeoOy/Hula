@@ -28,7 +28,7 @@
 				aria-label="Skill category"
 			>
 				<option v-for="category in categories" :key="category" :value="category.id">
-					{{ category.label }}
+					{{ category }}
 				</option>
 			</v-field>
 		</div>
@@ -115,6 +115,7 @@ export default {
 		}
 	},
 	mounted() {
+		console.log(this.chosenSkill)
 		this.getSkillCategories()
 		this.getSkillScopes()
 	},

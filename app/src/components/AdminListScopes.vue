@@ -3,7 +3,7 @@
 		<VModal :modalTitle="formTitle" :modalID="'Scopes'">
 			<component 
 				:is='modalComponent' 
-				:chosenSkill="chosenSkill" 
+				:chosenScope="chosenScope" 
 				:url="url"
 				:method="method"
 			/>
@@ -27,9 +27,11 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="scope in scopes" :key="scope.id">
+					<tr v-for="scope in skillScopes" :key="scope.id">
 						<td>{{ scope.label }}</td>
-						<td>Levels here</td>
+						<td>
+							<p v-for="lvl in filterLevels(scope.id)" :key="lvl" :value="lvl.id">{{ lvl }}</p>
+						</td>
 						<td>
 							<a
 								href="#" 
@@ -40,7 +42,7 @@
 								v-on:click="chosenScope=scope, formTitle=scope.label, chosenForm='CreateScope', url=`/api/skills/scopes/${scope.id}`, method='PUT'"
 								class="me-2"
 							>Edit</a>
-							<a href="#" v-on:click.prevent="this.deletescope(scope.id)">Delete</a>
+							<a href="#" v-on:click.prevent="this.deleteScope(scope.id)">Delete</a>
 						</td>
 					</tr>
 				</tbody>
@@ -66,7 +68,8 @@
 				chosenScopeDefault: {
 					label: '',
 				},
-				scopes: [],
+				skillScopes: [],
+				skillLevels: [],
 			}
 		},
 		components: {
@@ -80,7 +83,33 @@
 				fetch('/api/skills/scopes', {method: 'GET'})
 				.then((response) => response.json())
 				.then(response => { 
-					this.scopes = response;
+					this.skillScopes = response;
+				})    
+				.catch((errors) => {
+					console.log(errors);
+				})
+			},
+			getAllLevels() {
+				fetch('/api/skills/levels', {method: 'GET'})
+				.then((response) => response.json())
+				.then(response => { 
+					this.skillLevels = response;
+				})
+				.catch((errors) => {
+					console.log(errors);
+				})
+			},
+			deleteScope(id) {
+				fetch(`/api/skills/scopes/${id}`, {method: 'DELETE'})
+				.then(response => { 
+					if (response.ok) {
+						this.$flashMessage.show({
+							type: 'success',
+							title: 'Scope removed',
+							time: 1000
+						});
+						this.$router.go()
+					}
 				})    
 				.catch((errors) => {
 					console.log(errors);
@@ -96,7 +125,14 @@
 				return components[this.chosenForm]
 			}
 		},
+		computed: {
+			filterLevels(id) {
+				console.log(this.skillLevels)
+				return this.skillLevels.filter(lvl => lvl.skillscope_id == id)
+			}
+		},
 		mounted() {
+			this.getAllLevels()
 			this.getAllScopes()
 		}
 	}

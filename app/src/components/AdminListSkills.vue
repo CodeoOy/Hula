@@ -36,7 +36,8 @@
 							<a
 								href="#" 
 								:data-skill-id="skill.id" 
-								:data-skill-name="skill.label" 
+								:data-skill-name="skill.label"
+								:data-skill-category="skill.skillcategory_id" 
 								data-bs-toggle="modal" 
 								data-bs-target="#hulaModalSkills" 
 								v-on:click="chosenSkill=skill, formTitle=skill.label, chosenForm='CreateSkill', url=`/api/skills/${skill.id}`, method='PUT'"
