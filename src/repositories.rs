@@ -4,7 +4,7 @@ pub mod projectneedskills_repository;
 pub mod projectneeds_repository;
 pub mod projects_repository;
 pub mod sessions_repository;
-pub mod skillcategorys_repository;
+pub mod skillcategories_repository;
 pub mod skills_repository;
 pub mod skillscopes_repository;
 pub mod skillscopelevels_repository;

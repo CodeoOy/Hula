@@ -2,7 +2,7 @@ use actix_web::{error::BlockingError, web, HttpResponse};
 use serde::Deserialize;
 use log::trace;
 
-use crate::errors::ServiceError;
+use crate::errors::{ForbiddenType, ServiceError};
 use crate::models::projects::{Pool, ProjectNeed, ProjectNeedSkill};
 use crate::models::users::LoggedUser;
 use crate::repositories::*;
@@ -73,7 +73,7 @@ pub async fn create_project(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res = web::block(move || projects_repository::query_create_project(projectdata.name.clone(), pool, logged_user.email)).await;
@@ -95,7 +95,7 @@ pub async fn create_projectneed(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res = web::block(move || projectneeds_repository::query_create_projectneed(projectneeddata, pool, logged_user.email)).await;
@@ -117,7 +117,7 @@ pub async fn create_projectneedskill(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res = web::block(move || projectneedskills_repository::query_create_projectneedskill(projectneedskilldata, pool, logged_user.email)).await;
@@ -156,7 +156,7 @@ pub async fn update_project(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res =
@@ -180,7 +180,7 @@ pub async fn update_projectneed(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res =
@@ -204,7 +204,7 @@ pub async fn delete_project(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res = web::block(move || projects_repository::query_delete_project(uuid_data.into_inner(), pool)).await;
@@ -226,7 +226,7 @@ pub async fn delete_projectneed(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res = web::block(move || projectneeds_repository::query_delete_projectneed(uuid_data.into_inner(), pool)).await;
@@ -248,7 +248,7 @@ pub async fn delete_projectneedskill(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res = web::block(move || projectneedskills_repository::query_delete_projectneedskill(uuid_data.into_inner(), pool)).await;

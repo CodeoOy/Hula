@@ -1,4 +1,4 @@
-use crate::errors::ServiceError;
+use crate::errors::{ForbiddenType, ServiceError};
 use crate::models::users::{LoggedUser, Pool, UserSkill};
 use crate::repositories::*;
 use actix_web::{error::BlockingError, web, HttpResponse};
@@ -74,7 +74,7 @@ pub async fn update_user(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res = web::block(move || users_repository::query_update(uuid, payload.firstname.clone(), payload.lastname.clone(), payload.available, payload.email.clone(), pool)).await;
@@ -99,7 +99,7 @@ pub async fn add_skill(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res = web::block(move || userskills_repository::query_add_skill(uuid, payload, pool, logged_user.email)).await;
@@ -122,7 +122,7 @@ pub async fn delete_userskill(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res = web::block(move || userskills_repository::query_delete_userskill(uuid, pool)).await;
@@ -205,7 +205,7 @@ pub async fn delete_user(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res = web::block(move || users_repository::query_delete_user(uuid, pool)).await;
@@ -230,7 +230,7 @@ pub async fn update_year(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res = web::block(move || userskills_repository::query_update_year(uuid, payload.user_id.clone(), payload.years, pool, logged_user.email)).await;
@@ -255,7 +255,7 @@ pub async fn add_favorite_project(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res = web::block(move || userfavorites_repository::query_add_favorite_project(uuid, payload.project_id.clone(), pool, logged_user.email)).await;
@@ -279,7 +279,7 @@ pub async fn delete_favorite_project(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
 	let res = web::block(move || userfavorites_repository::query_delete_favorite_project(uuid, pool)).await;
