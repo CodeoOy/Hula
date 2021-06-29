@@ -196,7 +196,8 @@ pub async fn update_skill(
 
 	let res = web::block(move || skills_repository::update_skill(id, skilldata.label.clone(), skilldata.skillcategory_id, logged_user.email, &pool)).await;
 	match res {
-		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
+		Ok(Some(skill)) => Ok(HttpResponse::Ok().json(&skill)),
+		Ok(None) => Err(ServiceError::Gone),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
