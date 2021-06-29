@@ -1,12 +1,11 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
-use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
 use log::trace;
 
 use crate::errors::ServiceError;
-use crate::models::matchcandidates::MatchCandidate;
 use crate::models::matchcandidates::Pool;
 use crate::models::users::LoggedUser;
+use crate::repositories::*;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
@@ -15,7 +14,7 @@ pub struct QueryData {
 
 pub async fn get_all_matches(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting all matches: logged_user={:#?}", &_logged_user);
-	let res = web::block(move || query(pool)).await;
+	let res = web::block(move || matches_repository::query(&pool)).await;
 
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
@@ -26,29 +25,13 @@ pub async fn get_all_matches(pool: web::Data<Pool>, _logged_user: LoggedUser) ->
 	}
 }
 
-fn query(pool: web::Data<Pool>) -> Result<Vec<MatchCandidate>, crate::errors::ServiceError> {
-	use crate::schema::matchcandidates::dsl::matchcandidates;
-	let conn: &PgConnection = &pool.get().unwrap();
-	let mut items = matchcandidates.load::<MatchCandidate>(conn)?;
-
-	items.retain(|x| x.required_index <= x.user_index);
-	items.retain(|x| x.required_minyears <= x.user_years);
-	items.retain(|x| x.required_maxyears >= x.user_years);
-	items.retain(|x| x.available == true);
-
-	if items.is_empty() == false {
-		return Ok(items);
-	}
-	Err(ServiceError::Empty)
-}
-
 pub async fn get_matches_by_params(
 	querydata: web::Json<QueryData>,
 	pool: web::Data<Pool>,
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting matches by params: querydata = {:#?} logged_user={:#?}", &querydata, &_logged_user);
-	let res = web::block(move || query_by_params(querydata, pool)).await;
+	let res = web::block(move || matches_repository::query_by_params(querydata.projectname.clone(), &pool)).await;
 	match res {
 		Ok(matches) => Ok(HttpResponse::Ok().json(&matches)),
 		Err(err) => match err {
@@ -58,22 +41,3 @@ pub async fn get_matches_by_params(
 	}
 }
 
-fn query_by_params(
-	querydata: web::Json<QueryData>,
-	pool: web::Data<Pool>,
-) -> Result<Vec<MatchCandidate>, crate::errors::ServiceError> {
-	use crate::schema::matchcandidates::dsl::matchcandidates;
-	let conn: &PgConnection = &pool.get().unwrap();
-	let mut items = matchcandidates.load::<MatchCandidate>(conn)?;
-
-	items.retain(|x| x.required_index <= x.user_index);
-	items.retain(|x| x.required_minyears <= x.user_years);
-	items.retain(|x| x.required_maxyears >= x.user_years);
-	items.retain(|x| x.available == true);
-	items.retain(|x| x.projectname == querydata.projectname);
-
-	if items.is_empty() == false {
-		return Ok(items);
-	}
-	Err(ServiceError::Empty)
-}

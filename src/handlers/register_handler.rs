@@ -1,11 +1,12 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
-use diesel::prelude::*;
 use serde::Deserialize;
 use log::trace;
 
 use crate::errors::ServiceError;
-use crate::models::invitations::{Invitation, Pool};
+use crate::models::invitations::Pool;
 use crate::models::users::User;
+use crate::repositories::*;
+
 // UserData is used to extract data from a post request by the client
 #[derive(Debug, Deserialize)]
 pub struct UserData {
@@ -31,27 +32,18 @@ pub async fn register_user(
 }
 
 fn query(user_data: UserData, pool: web::Data<Pool>) -> Result<User, crate::errors::ServiceError> {
-	use crate::schema::invitations::dsl::{email, id, invitations};
-	use crate::schema::users::dsl::users;
 	let invitation_id = uuid::Uuid::parse_str(&user_data.id)?;
 
-	let conn: &PgConnection = &pool.get().unwrap();
-	invitations
-		.filter(id.eq(invitation_id))
-		.filter(email.eq(&user_data.email))
-		.load::<Invitation>(conn)
-		.map_err(|_db_error| ServiceError::BadRequest("Invalid Invitation".into()))
-		.and_then(|mut result| {
-			if let Some(invitation) = result.pop() {
-				if invitation.expires_at > chrono::Local::now().naive_local() {
-					let password: String = user_data.password;
-					let user =
-						User::from_details(invitation.email, password, invitation.first_name, invitation.last_name);
-					let inserted_user: User = diesel::insert_into(users).values(&user).get_result(conn)?;
-					dbg!(&inserted_user);
-					return Ok(inserted_user);
-				}
-			}
-			Err(ServiceError::BadRequest("Invalid Invitation".into()))
-		})
+	let invitation = invitations_repository::get_by_invitation(invitation_id.clone(), user_data.email.clone(), &pool)?;
+
+	if let Some(invitation) = invitation {
+		if invitation.expires_at > chrono::Local::now().naive_local() {
+			let password: String = user_data.password;
+			let user = users_repository::create(invitation.email, password, invitation.first_name, invitation.last_name, &pool)?;
+
+			return Ok(user);
+		}
+	}
+
+	Err(ServiceError::BadRequest("Invalid Invitation".into()))
 }

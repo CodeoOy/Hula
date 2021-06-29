@@ -2,6 +2,7 @@ use crate::errors::ServiceError;
 use crate::models::invitations::Invitation;
 use sparkpost::transmission::{EmailAddress, Message, Options, Recipient, Transmission, TransmissionResponse};
 use url::Url;
+use log::{error, trace};
 
 lazy_static::lazy_static! {
 static ref API_KEY: String = std::env::var("SPARKPOST_API_KEY").expect("SPARKPOST_API_KEY must be set");
@@ -60,16 +61,16 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
 	match result {
 		Ok(res) => match res {
 			TransmissionResponse::ApiResponse(api_res) => {
-				println!("API Response: \n {:#?}", api_res);
+				trace!("API Response: \n {:#?}", api_res);
 				Ok(())
 			}
 			TransmissionResponse::ApiError(errors) => {
-				println!("Response Errors: \n {:#?}", &errors);
+				error!("Response Errors: \n {:#?}", &errors);
 				Err(ServiceError::InternalServerError)
 			}
 		},
 		Err(error) => {
-			println!("Send Email Error: \n {:#?}", error);
+			error!("Send Email Error: \n {:#?}", error);
 			Err(ServiceError::InternalServerError)
 		}
 	}

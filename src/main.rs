@@ -8,10 +8,12 @@ use actix_web::http::{header, StatusCode};
 use actix_web::{get, middleware, web, App, HttpRequest, HttpResponse, HttpServer, Result};
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
+use log::{info, error, trace};
 
 mod email_service;
 mod errors;
 mod handlers;
+mod repositories;
 mod models;
 mod schema;
 mod utils;
@@ -20,7 +22,7 @@ mod utils;
 async fn home(session: Session) -> Result<HttpResponse> {
 	let mut counter = 1;
 	if let Some(count) = session.get::<i32>("counter")? {
-		println!("SESSION value: {}", count);
+		trace!("SESSION value: {}", count);
 		counter = count + 1;
 	}
 
@@ -33,10 +35,10 @@ async fn home(session: Session) -> Result<HttpResponse> {
 
 #[get("/app/*")]
 async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
-	println!("{:?}", req);
+	trace!("allviews: {:?}", req);
 	let mut counter = 1;
 	if let Some(count) = session.get::<i32>("counter")? {
-		println!("SESSION value: {}", count);
+		trace!("SESSION value: {}", count);
 		counter = count + 1;
 	}
 
@@ -48,17 +50,17 @@ async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
 }
 
 fn initialize_db(name: &str) {
-	println!("Running database migrations...");
+	info!("Running database migrations...");
 	let connection = PgConnection::establish(&name).expect(&format!("Error connecting to {}", name));
 
 	let result = diesel_migrations::run_pending_migrations(&connection);
 
 	match result {
 		Ok(_res) => {
-			println!("Migrations done!");
+			info!("Migrations done!");
 		}
 		Err(error) => {
-			println!("Database migration error: \n {:#?}", error);
+			error!("Database migration error: \n {:#?}", error);
 		}
 	}
 }
@@ -139,6 +141,9 @@ async fn main() -> std::io::Result<()> {
 							.route(web::delete().to(handlers::skills_handler::delete_skill)),
 					)
 					.service(
+						web::resource("/skills/categories/{id}").route(web::delete().to(handlers::skills_handler::delete_skill_category)),
+					)
+					.service(
 						web::resource("/projects")
 							.route(web::get().to(handlers::projects_handler::get_all_projects))
 							.route(web::post().to(handlers::projects_handler::create_project)),
@@ -188,7 +193,7 @@ async fn main() -> std::io::Result<()> {
 			.service(home)
 			.service(allviews)
 			.service(web::resource("/").route(web::get().to(|req: HttpRequest| {
-				println!("HTTP REQ:\n{:?}\n", req);
+				trace!("HTTP REQ:\n{:?}\n", req);
 				HttpResponse::Found().header(header::LOCATION, "index.html").finish()
 			})))
 	})

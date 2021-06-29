@@ -1,8 +1,7 @@
-use crate::errors::ServiceError;
-use crate::models::skills::Skill;
-use crate::models::users::{LoggedUser, Pool, User, UserFavorites, UserSkill};
+use crate::errors::{ForbiddenType, ServiceError};
+use crate::models::users::{LoggedUser, Pool, UserSkill};
+use crate::repositories::*;
 use actix_web::{error::BlockingError, web, HttpResponse};
-use diesel::{prelude::*, PgConnection};
 use serde::{Deserialize, Serialize};
 use log::trace;
 
@@ -52,7 +51,7 @@ pub struct SkillDTO {
 
 pub async fn get_all(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting all users: logged_user = {:#?}", &_logged_user);
-	let res = web::block(move || query_all(pool)).await;
+	let res = web::block(move || users_repository::query_all(&pool)).await;
 
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
@@ -61,16 +60,6 @@ pub async fn get_all(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_all(pool: web::Data<Pool>) -> Result<Vec<User>, crate::errors::ServiceError> {
-	use crate::schema::users::dsl::users;
-	let conn: &PgConnection = &pool.get().unwrap();
-	let items = users.load::<User>(conn)?;
-	if items.is_empty() == false {
-		return Ok(items);
-	}
-	Err(ServiceError::Empty)
 }
 
 pub async fn update_user(
@@ -85,10 +74,10 @@ pub async fn update_user(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || query_update(uuid, payload, pool)).await;
+	let res = web::block(move || users_repository::query_update(uuid, payload.firstname.clone(), payload.lastname.clone(), payload.available, payload.email.clone(), pool)).await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
@@ -96,29 +85,6 @@ pub async fn update_user(
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_update(
-	uuid_data: String,
-	userdata: web::Json<QueryData>,
-	pool: web::Data<Pool>,
-) -> Result<User, crate::errors::ServiceError> {
-	use crate::schema::users::dsl::{available, firstname, id, lastname, updated_by, users};
-	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	let mut items = diesel::update(users)
-		.filter(id.eq(uuid_query))
-		.set((
-			firstname.eq(userdata.firstname.clone()),
-			lastname.eq(userdata.lastname.clone()),
-			available.eq(userdata.available),
-			updated_by.eq(userdata.email.clone()),
-		))
-		.load::<User>(conn)?;
-	if let Some(user_res) = items.pop() {
-		return Ok(user_res.into());
-	}
-	Err(ServiceError::Unauthorized)
 }
 
 pub async fn add_skill(
@@ -133,10 +99,10 @@ pub async fn add_skill(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || query_add_skill(uuid, payload, pool, logged_user.email)).await;
+	let res = web::block(move || userskills_repository::query_add_skill(uuid, payload, pool, logged_user.email)).await;
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
@@ -144,33 +110,6 @@ pub async fn add_skill(
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_add_skill(
-	uuid_data: String,
-	skill_data: web::Json<UserSkill>,
-	pool: web::Data<Pool>,
-	email: String,
-) -> Result<UserSkill, crate::errors::ServiceError> {
-	use crate::schema::userskills::dsl::userskills;
-	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	let new_user_skill = UserSkill {
-		id: uuid::Uuid::new_v4(),
-		user_id: uuid_query,
-		skill_id: skill_data.skill_id,
-		skillscopelevel_id: skill_data.skillscopelevel_id,
-		years: skill_data.years,
-		updated_by: email,
-	};
-	let rows_inserted = diesel::insert_into(userskills)
-		.values(&new_user_skill)
-		.get_result::<UserSkill>(conn);
-	println!("{:?}", rows_inserted);
-	if rows_inserted.is_ok() {
-		return Ok(new_user_skill.into());
-	}
-	Err(ServiceError::Unauthorized)
 }
 
 pub async fn delete_userskill(
@@ -183,10 +122,10 @@ pub async fn delete_userskill(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || query_delete_userskill(uuid, pool)).await;
+	let res = web::block(move || userskills_repository::query_delete_userskill(uuid, pool)).await;
 	match res {
 		Ok(_) => Ok(HttpResponse::Ok().finish()),
 		Err(err) => match err {
@@ -194,15 +133,6 @@ pub async fn delete_userskill(
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_delete_userskill(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
-	let conn: &PgConnection = &pool.get().unwrap();
-	use crate::schema::userskills::dsl::{id, userskills};
-
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	diesel::delete(userskills.filter(id.eq(uuid_query))).execute(conn)?;
-	Ok(())
 }
 
 pub async fn get_by_uuid(
@@ -222,15 +152,14 @@ pub async fn get_by_uuid(
 	}
 }
 
-fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, crate::errors::ServiceError> {
-	use crate::schema::skills::dsl::skills;
-	use crate::schema::users::dsl::{id, users};
-	let conn: &PgConnection = &pool.get().unwrap();
+fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, ServiceError> {
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	let user = users.filter(id.eq(uuid_query)).get_result::<User>(conn)?; // Make a prettier error check, this produces 500
-	let allskills = skills.load::<Skill>(conn)?;
+
+	let user = users_repository::get(uuid_query, &pool)?;
+	let allskills = skills_repository::query_all_skills(&pool)?;
 	let mut skills_dto: Vec<SkillDTO> = Vec::new();
-	let user_skills = UserSkill::belonging_to(&user).load::<UserSkill>(conn)?;
+	let user_skills = userskills_repository::query_belong_to_user(&user, &pool)?;
+
 	for user_skill in user_skills.iter() {
 		let mut allskills_iter = allskills.iter(); // Iterator might cause problems when there are many skills
 		let skilldata = SkillDTO {
@@ -276,10 +205,10 @@ pub async fn delete_user(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || query_delete_user(uuid, pool)).await;
+	let res = web::block(move || users_repository::query_delete_user(uuid, pool)).await;
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
@@ -287,16 +216,6 @@ pub async fn delete_user(
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_delete_user(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
-	let conn: &PgConnection = &pool.get().unwrap();
-	use crate::schema::users::dsl::id;
-	use crate::schema::users::dsl::*;
-
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	diesel::delete(users.filter(id.eq(uuid_query))).execute(conn)?;
-	Ok(())
 }
 
 pub async fn update_year(
@@ -311,10 +230,10 @@ pub async fn update_year(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || query_update_year(uuid, payload, pool, logged_user.email)).await;
+	let res = web::block(move || userskills_repository::query_update_year(uuid, payload.user_id.clone(), payload.years, pool, logged_user.email)).await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
@@ -322,27 +241,6 @@ pub async fn update_year(
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_update_year(
-	uuid_data: String,
-	userdata: web::Json<UserSkillData>,
-	pool: web::Data<Pool>,
-	email: String,
-) -> Result<UserSkill, crate::errors::ServiceError> {
-	use crate::schema::userskills::dsl::*;
-	use crate::schema::userskills::dsl::{skill_id, updated_by, years};
-	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	let mut items = diesel::update(userskills)
-		.filter(skill_id.eq(uuid_query))
-		.filter(user_id.eq(userdata.user_id))
-		.set((years.eq(userdata.years.clone()), updated_by.eq(email)))
-		.load::<UserSkill>(conn)?;
-	if let Some(user_res) = items.pop() {
-		return Ok(user_res.into());
-	}
-	Err(ServiceError::Unauthorized)
 }
 
 pub async fn add_favorite_project(
@@ -357,10 +255,10 @@ pub async fn add_favorite_project(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || query_add_favorite_project(uuid, payload, pool, logged_user.email)).await;
+	let res = web::block(move || userfavorites_repository::query_add_favorite_project(uuid, payload.project_id.clone(), pool, logged_user.email)).await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
@@ -368,31 +266,6 @@ pub async fn add_favorite_project(
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_add_favorite_project(
-	uuid_data: String,
-	favorite_data: web::Json<Favorite>,
-	pool: web::Data<Pool>,
-	email: String,
-) -> Result<UserFavorites, crate::errors::ServiceError> {
-	use crate::schema::userfavorites::dsl::userfavorites;
-	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	let new_favorite = UserFavorites {
-		id: uuid::Uuid::new_v4(),
-		user_id: uuid_query,
-		project_id: favorite_data.project_id,
-		updated_by: email,
-	};
-	let rows_inserted = diesel::insert_into(userfavorites)
-		.values(&new_favorite)
-		.get_result::<UserFavorites>(conn);
-	println!("{:?}", rows_inserted);
-	if rows_inserted.is_ok() {
-		return Ok(new_favorite.into());
-	}
-	Err(ServiceError::Unauthorized)
 }
 
 pub async fn delete_favorite_project(
@@ -406,10 +279,10 @@ pub async fn delete_favorite_project(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || query_delete_favorite_project(uuid, pool)).await;
+	let res = web::block(move || userfavorites_repository::query_delete_favorite_project(uuid, pool)).await;
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
@@ -419,10 +292,3 @@ pub async fn delete_favorite_project(
 	}
 }
 
-fn query_delete_favorite_project(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
-	let conn: &PgConnection = &pool.get().unwrap();
-	use crate::schema::userfavorites::dsl::*;
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	diesel::delete(userfavorites.filter(id.eq(uuid_query))).execute(conn)?;
-	Ok(())
-}

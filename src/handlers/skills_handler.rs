@@ -1,11 +1,11 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
-use diesel::{prelude::*, PgConnection};
 use serde::Deserialize;
 use log::trace;
 
-use crate::errors::ServiceError;
-use crate::models::skills::{Pool, Skill, SkillCategory, SkillScope, SkillScopeLevel};
+use crate::errors::{ForbiddenType, ServiceError};
+use crate::models::skills::Pool;
 use crate::models::users::LoggedUser;
+use crate::repositories::*;
 
 #[derive(Deserialize, Debug)]
 pub struct SkillData {
@@ -33,71 +33,56 @@ pub struct ScopeLevelData {
 
 pub async fn get_all_skills(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting all skills: logged_user= {:#?}", &_logged_user);
-	let res = web::block(move || query_all_skills(pool)).await;
+	let res = web::block(move || skills_repository::query_all_skills(&pool)).await;
 
 	match res {
-		Ok(skills) => Ok(HttpResponse::Ok().json(&skills)),
+		Ok(skills) => {
+			if skills.is_empty() == false {
+				return Ok(HttpResponse::Ok().json(&skills));
+			}
+			Err(ServiceError::Empty)
+		},
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_all_skills(pool: web::Data<Pool>) -> Result<Vec<Skill>, crate::errors::ServiceError> {
-	use crate::schema::skills::dsl::skills;
-	let conn: &PgConnection = &pool.get().unwrap();
-	let items = skills.load::<Skill>(conn)?;
-	if items.is_empty() == false {
-		return Ok(items);
-	}
-	Err(ServiceError::Empty)
 }
 
 pub async fn get_skillscopes(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting skill scopes: logged_user= {:#?}", &_logged_user);
-	let res = web::block(move || query_skillscopes(pool)).await;
+	let res = web::block(move || skillscopes_repository::query_skill_scopes(&pool)).await;
 
 	match res {
-		Ok(skillscopes) => Ok(HttpResponse::Ok().json(&skillscopes)),
+		Ok(skillscopes) => {
+			if skillscopes.is_empty() == false {
+				return Ok(HttpResponse::Ok().json(&skillscopes));
+			}
+			Err(ServiceError::Empty)
+		},
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_skillscopes(pool: web::Data<Pool>) -> Result<Vec<SkillScope>, crate::errors::ServiceError> {
-	use crate::schema::skillscopes::dsl::skillscopes;
-	let conn: &PgConnection = &pool.get().unwrap();
-	let items = skillscopes.load::<SkillScope>(conn)?;
-	if items.is_empty() == false {
-		return Ok(items);
-	}
-	Err(ServiceError::Empty)
 }
 
 pub async fn get_skill_levels(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting skill levels: logged_user= {:#?}", &_logged_user);
-	let res = web::block(move || query_skill_levels(pool)).await;
+	let res = web::block(move || skillscopelevels_repository::query_skill_levels(&pool)).await;
 
 	match res {
-		Ok(skill_levels) => Ok(HttpResponse::Ok().json(&skill_levels)),
+		Ok(skill_levels) => {
+			if skill_levels.is_empty() == false {
+				return Ok(HttpResponse::Ok().json(&skill_levels));
+			}
+			Err(ServiceError::Empty)
+		},
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_skill_levels(pool: web::Data<Pool>) -> Result<Vec<SkillScopeLevel>, crate::errors::ServiceError> {
-	use crate::schema::skillscopelevels::dsl::skillscopelevels;
-	let conn: &PgConnection = &pool.get().unwrap();
-	let items = skillscopelevels.load::<SkillScopeLevel>(conn)?;
-	if items.is_empty() == false {
-		return Ok(items);
-	}
-	Err(ServiceError::Empty)
 }
 
 pub async fn get_skill_categories(
@@ -105,25 +90,20 @@ pub async fn get_skill_categories(
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting skill categories: logged_user= {:#?}", &_logged_user);
-	let res = web::block(move || query_skill_categories(pool)).await;
+	let res = web::block(move || skillcategories_repository::query_skill_categories(pool)).await;
 
 	match res {
-		Ok(categories) => Ok(HttpResponse::Ok().json(&categories)),
+		Ok(categories) => {
+			if categories.is_empty() == false {
+				return Ok(HttpResponse::Ok().json(&categories));
+			}
+			Err(ServiceError::Empty)
+		},
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_skill_categories(pool: web::Data<Pool>) -> Result<Vec<SkillCategory>, crate::errors::ServiceError> {
-	use crate::schema::skillcategories::dsl::skillcategories;
-	let conn: &PgConnection = &pool.get().unwrap();
-	let items = skillcategories.load::<SkillCategory>(conn)?;
-	if items.is_empty() == false {
-		return Ok(items);
-	}
-	Err(ServiceError::Empty)
 }
 
 pub async fn create_skill_category(
@@ -135,40 +115,46 @@ pub async fn create_skill_category(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || query_create_skill_category(categorydata, pool, logged_user.email)).await;
+	let res = web::block(move || skillcategories_repository::create_skill_category(categorydata.label.clone(), categorydata.parent_id, logged_user.email, &pool)).await;
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
 }
 
-fn query_create_skill_category(
-	categorydata: web::Json<CategoryData>,
+pub async fn delete_skill_category(
+	uuid_data: web::Path<String>,
 	pool: web::Data<Pool>,
-	email: String,
-) -> Result<SkillCategory, crate::errors::ServiceError> {
-	use crate::schema::skillcategories::dsl::skillcategories;
-	let conn: &PgConnection = &pool.get().unwrap();
-	let new_skill_category = SkillCategory {
-		id: uuid::Uuid::new_v4(),
-		label: categorydata.label.clone(),
-		parent_id: categorydata.parent_id,
-		updated_by: email,
-	};
-	let rows_inserted = diesel::insert_into(skillcategories)
-		.values(&new_skill_category)
-		.get_result::<SkillCategory>(conn);
-	println!("{:?}", rows_inserted);
-	if rows_inserted.is_ok() {
-		return Ok(new_skill_category.into());
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!("Deleting a skill category: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
-	Err(ServiceError::Unauthorized)
+
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || skillcategories_repository::delete_skill_category(id, &pool)).await;
+	match res {
+		Ok(deleted) => {
+			if deleted > 0 {
+				return Ok(HttpResponse::Ok().finish());
+			}
+			Err(ServiceError::Gone)
+		},
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
 }
 
 pub async fn create_skill(
@@ -180,39 +166,17 @@ pub async fn create_skill(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || query_create_skill(skilldata, pool, logged_user.email)).await;
+	let res = web::block(move || skills_repository::create_skill(skilldata.label.clone(), skilldata.skillcategory_id, skilldata.skillscope_id, logged_user.email, &pool)).await;
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_create_skill(
-	skilldata: web::Json<SkillData>,
-	pool: web::Data<Pool>,
-	email: String,
-) -> Result<Skill, crate::errors::ServiceError> {
-	use crate::schema::skills::dsl::skills;
-	let conn: &PgConnection = &pool.get().unwrap();
-	let new_skill = Skill {
-		id: uuid::Uuid::new_v4(),
-		label: skilldata.label.clone(),
-		skillcategory_id: skilldata.skillcategory_id,
-		skillscope_id: skilldata.skillscope_id,
-		updated_by: email,
-	};
-	let rows_inserted = diesel::insert_into(skills).values(&new_skill).get_result::<Skill>(conn);
-	println!("{:?}", rows_inserted);
-	if rows_inserted.is_ok() {
-		return Ok(new_skill.into());
-	}
-	Err(ServiceError::Unauthorized)
 }
 
 pub async fn update_skill(
@@ -225,40 +189,19 @@ pub async fn update_skill(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || query_update_skill(uuid_data.into_inner(), skilldata, pool, logged_user.email)).await;
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || skills_repository::update_skill(id, skilldata.label.clone(), skilldata.skillcategory_id, logged_user.email, &pool)).await;
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_update_skill(
-	uuid_data: String,
-	skilldata: web::Json<SkillData>,
-	pool: web::Data<Pool>,
-	email: String,
-) -> Result<Skill, crate::errors::ServiceError> {
-	use crate::schema::skills::dsl::{skills, *};
-	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	let mut skill = diesel::update(skills)
-		.filter(id.eq(uuid_query))
-		.set((
-			label.eq(skilldata.label.clone()),
-			skillcategory_id.eq(skilldata.skillcategory_id.clone()),
-			updated_by.eq(email.clone()),
-		))
-		.load::<Skill>(conn)?;
-	if let Some(skill_res) = skill.pop() {
-		return Ok(skill_res.into());
-	}
-	Err(ServiceError::Unauthorized)
 }
 
 pub async fn create_skill_scope(
@@ -270,39 +213,17 @@ pub async fn create_skill_scope(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || query_create_skill_scope(scopedata, pool, logged_user.email)).await;
+	let res = web::block(move || skillscopes_repository::create_skill_scope(scopedata.label.clone(), logged_user.email, &pool)).await;
 	match res {
 		Ok(skill_scope) => Ok(HttpResponse::Ok().json(&skill_scope)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_create_skill_scope(
-	scopedata: web::Json<ScopeData>,
-	pool: web::Data<Pool>,
-	email: String,
-) -> Result<SkillScope, crate::errors::ServiceError> {
-	use crate::schema::skillscopes::dsl::skillscopes;
-	let conn: &PgConnection = &pool.get().unwrap();
-	let new_scope = SkillScope {
-		id: uuid::Uuid::new_v4(),
-		label: scopedata.label.clone(),
-		updated_by: email,
-	};
-	let rows_inserted = diesel::insert_into(skillscopes)
-		.values(&new_scope)
-		.get_result::<SkillScope>(conn);
-	println!("{:?}", rows_inserted);
-	if rows_inserted.is_ok() {
-		return Ok(new_scope.into());
-	}
-	Err(ServiceError::Unauthorized)
 }
 
 pub async fn create_skill_scope_level(
@@ -314,50 +235,17 @@ pub async fn create_skill_scope_level(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || query_create_skill_scope_level(scopeleveldata, pool, logged_user.email)).await;
+	let res = web::block(move || skillscopelevels_repository::create_skill_scope_level(scopeleveldata.label.clone(), scopeleveldata.percentage, scopeleveldata.skillscope_id.clone(), logged_user.email, &pool)).await;
 	match res {
 		Ok(skill_scope_level) => Ok(HttpResponse::Ok().json(&skill_scope_level)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-}
-
-fn query_create_skill_scope_level(
-	scopeleveldata: web::Json<ScopeLevelData>,
-	pool: web::Data<Pool>,
-	email: String,
-) -> Result<SkillScopeLevel, crate::errors::ServiceError> {
-	use crate::schema::skillscopelevels::dsl::{index, skillscope_id, skillscopelevels};
-	let conn: &PgConnection = &pool.get().unwrap();
-	let mut currentindex = 0;
-	let latestlevel = skillscopelevels
-		.filter(skillscope_id.eq(scopeleveldata.skillscope_id))
-		.order_by(index.desc())
-		.limit(1)
-		.load::<SkillScopeLevel>(conn)?;
-	if latestlevel.len() > 0 {
-		currentindex = latestlevel[0].index;
-	}
-	let new_scope_level = SkillScopeLevel {
-		id: uuid::Uuid::new_v4(),
-		label: scopeleveldata.label.clone(), // TODO: This is unique, sanitize field or handle error more gracefully
-		skillscope_id: scopeleveldata.skillscope_id,
-		index: currentindex + 1,
-		percentage: scopeleveldata.percentage,
-		updated_by: email,
-	};
-	let rows_inserted = diesel::insert_into(skillscopelevels)
-		.values(&new_scope_level)
-		.get_result::<SkillScopeLevel>(conn);
-	if rows_inserted.is_ok() {
-		return Ok(new_scope_level.into());
-	}
-	Err(ServiceError::Unauthorized)
 }
 
 pub async fn delete_skill(
@@ -369,25 +257,23 @@ pub async fn delete_skill(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Unauthorized);
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || query_delete_skill(uuid_data.into_inner(), pool)).await;
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || skills_repository::delete_skill(id, &pool)).await;
 	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Ok(deleted) => {
+			if deleted > 0 {
+				return Ok(HttpResponse::Ok().finish());
+			}
+			Err(ServiceError::Gone)
+		},
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
 }
 
-fn query_delete_skill(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
-	let conn: &PgConnection = &pool.get().unwrap();
-	use crate::schema::skills::dsl::id;
-	use crate::schema::skills::dsl::*;
-
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	diesel::delete(skills.filter(id.eq(uuid_query))).execute(conn)?;
-	Ok(())
-}

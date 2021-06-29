@@ -6,6 +6,7 @@ use actix_web::{dev::Payload, web::Data, Error, FromRequest, HttpRequest};
 use diesel::{prelude::*, r2d2::ConnectionManager, PgConnection};
 use futures::future::{err, ok, Ready};
 use serde::{Deserialize, Serialize};
+use log::debug;
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
@@ -137,20 +138,20 @@ impl FromRequest for LoggedUser {
 								return ok(u);
 							}
 
-							println!("extractor: Session expired!");
+							debug!("Session expired!");
 						} else {
-							println!("extractor: No active session found!");
+							debug!("No active session found!");
 						}
 					}
 					Err(err) => {
-						println!("extractor: Not an UUID in the cookie! Error: {:?}", err);
+						debug!("Not an UUID in the cookie! Error: {:?}", err);
 					}
 				};
 			} else {
-				println!("extractor: Identity (cookie) not received!");
+				debug!("Identity (cookie) not received!");
 			}
 		} else {
-			println!("extractor: Request processing failed!");
+			debug!("Request processing failed!");
 		}
 
 		err(ServiceError::Unauthorized.into())
