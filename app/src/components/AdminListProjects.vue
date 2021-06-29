@@ -3,7 +3,7 @@
 		<VModal :modalTitle="formTitle" :modalID="'Projects'">
 			<component 
 				:is='modalComponent' 
-				:chosenSkill="chosenSkill" 
+				:chosenProject="chosenProject" 
 				:url="url"
 				:method="method"
 			/>
@@ -14,7 +14,7 @@
 				class="btn btn-gradient"
 				data-bs-toggle="modal"
 				data-bs-target="#hulaModalProjects"
-				v-on:click="formTitle = 'New project', chosenForm = 'CreateProject', chosenSkill = chosenSkillDefault, url='/api/projects', method='POST'"
+				v-on:click="formTitle = 'New project', chosenForm = 'CreateProject', chosenProject = chosenProjectDefault, url='/api/projects', method='POST'"
 			>New project</button>
 		</div>
 		<transition name="fadeHeight">
@@ -55,8 +55,23 @@
 </template>
 
 <script>
+	import FormProject from '../forms/FormProject.vue'
+	import VModal from '../components/VModal.vue'
 	export default {
 		name: 'AdminListProjects',
+		data () {
+			return {
+				formTitle: '',
+				chosenForm: '',
+				chosenProject: {},
+				url: '',
+				method: '',
+			}
+		},
+		components: {
+			VModal,
+			FormProject,
+		},
 		methods: {
 			chooseProject(project) {
 				this.$store.commit('setChosenProject', project.id)
@@ -73,8 +88,16 @@
 				})
 			}
 		},
+		computed: {
+			modalComponent() {
+				const components = {
+					CreateProject: FormProject,
+				}
+				return components[this.chosenForm]
+			}
+		},
 		mounted() {
 			this.$store.commit('getProjects')
-		}
+		},
 	}
 </script>
