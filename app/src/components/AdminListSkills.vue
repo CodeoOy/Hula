@@ -1,16 +1,21 @@
 <template>
 	<div>
+		<VModal :modalTitle="formTitle" :modalID="'Skills'">
+			<component 
+				:is='modalComponent' 
+				:chosenSkill="chosenSkill" 
+				:url="url"
+				:method="method"
+			/>
+		</VModal>
 		<div class="d-flex flex-row justify-content-between align-items-start">
 			<h2>Skills</h2>
 			<button
 				class="btn btn-gradient"
 				data-bs-toggle="modal"
-				data-bs-target="#hulaModalCreateSkill"
-				v-on:click="formTitle = 'Add skill', chosenForm = 'CreateSkill'"
+				data-bs-target="#hulaModalSkills"
+				v-on:click="formTitle = 'Add skill', chosenForm = 'CreateSkill', chosenSkill = chosenSkillDefault, url='/api/skills', method='POST'"
 			>Add skill</button>
-			<VModal :modalTitle="formTitle" :modalID="chosenForm">
-				<component :is='modalComponent' :chosenSkill="chosenSkill"/>
-			</VModal>
 		</div>
 		<transition name="fadeHeight">
 			<table class="table table-dark table-striped text-light">
@@ -18,7 +23,7 @@
 					<tr>
 						<th scope="col">#</th>
 						<th scope="col">Skill name</th>
-						<th scope="col">Scope</th>
+						<th scope="col">Category</th>
 						<th scope="col">Actions</th>
 					</tr>
 				</thead>
@@ -26,15 +31,15 @@
 					<tr v-for="(skill, index) in skills" :key="skill.id">
 						<th scope="row">{{ index + 1 }}</th>
 						<td>{{ skill.label }}</td>
-						<td>{{ skill.skillscope_id }}</td>
+						<td>{{ skill.skillcategory_id }}</td>
 						<td>
 							<a
 								href="#" 
 								:data-skill-id="skill.id" 
 								:data-skill-name="skill.label" 
 								data-bs-toggle="modal" 
-								data-bs-target="#hulaModalEditSkill" 
-								v-on:click="chosenSkill = skill, formTitle = 'Edit skill', chosenForm = 'EditSkill'"
+								data-bs-target="#hulaModalSkills" 
+								v-on:click="chosenSkill=skill, formTitle=skill.label, chosenForm='CreateSkill', url=`/api/skills/${skill.id}`, method='PUT'"
 								class="me-2"
 							>Edit</a>
 							<a href="#" v-on:click.prevent="this.deleteSkill(skill.id)">Delete</a>
@@ -49,7 +54,7 @@
 <script>
 	import VModal from '../components/VModal.vue'
 	import FormAddSkill from '../forms/FormAddSkill.vue'
-	import FormCreateSkill from '../forms/FormCreateSkill.vue'
+	import FormSkill from '../forms/FormSkill.vue'
 	import FormSkillCategory from '../forms/FormSkillCategory.vue'
 	import FormSkillScope from '../forms/FormSkillScope.vue'
 	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
@@ -60,13 +65,20 @@
 			return {
 				formTitle: '',
 				chosenForm: '',
+				url: '',
+				method: '',
 				chosenSkill: {},
+				chosenSkillDefault: {
+					label: '',
+					skillcategory_id: null,
+					skillscope_id: null,
+				},
 				skills: [],
 			}
 		},
 		components: {
 			VModal,
-			FormCreateSkill,
+			FormSkill,
 			FormSkillCategory,
 			FormSkillScope,
 			FormSkillScopeLevel,
@@ -104,7 +116,7 @@
 		computed: {
 			modalComponent() {
 				const components = {
-					CreateSkill: FormCreateSkill,
+					CreateSkill: FormSkill,
 					Category: FormSkillCategory,
 					Scope: FormSkillScope,
 					Level: FormSkillScopeLevel

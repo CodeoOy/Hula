@@ -77,9 +77,6 @@ export default {
 				this.$emit('loggedout')
 			})
 		}
-	},
-	mounted() {
-		console.log("Header mounted")
 	}
 };
 </script>

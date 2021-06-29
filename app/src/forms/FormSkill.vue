@@ -1,10 +1,12 @@
 <template>
 	<v-form v-on:submit="createSkill">
+		{{ method }}
+		{{ chosenSkill }}
 		<div class="mb-2">
 			<error-message name="name" class="error"></error-message>
 			<label class="form-label">Skill name</label>
 			<v-field
-				v-model="queryData.label"
+				v-model="chosenSkill.label"
 				:rules="isRequired"
 				as="input"
 				type="text"
@@ -17,7 +19,7 @@
 			<label class="form-label">Skill category</label>
 			<error-message name="category" class="error"></error-message>
 			<v-field
-				v-model="queryData.category_id"
+				v-model="chosenSkill.skillcategory_id"
 				:rules="isRequired"
 				as="select"
 				name="category"
@@ -30,11 +32,11 @@
 				</option>
 			</v-field>
 		</div>
-		<div class="mb-2">
+		<div class="mb-2" v-if="method == 'POST'">
 			<label class="form-label">Skill scope</label>
 			<error-message name="scope" class="error"></error-message>
 			<v-field
-				v-model="queryData.skillscope_id"
+				v-model="chosenSkill.skillscope_id"
 				:rules="isRequired"
 				as="select"
 				name="scope"
@@ -57,14 +59,8 @@ export default {
 	name: 'Skill',
 	data() {
 		return {
-			queryData: {
-				label: '',
-				category_id: null,
-				skillscope_id: null,
-				email: this.$store.state.loggeduser.email,
-			},
 			categories: {},
-			scopes: {},		
+			scopes: {},
 		}
 	},
 	components: {
@@ -72,16 +68,23 @@ export default {
 		'VField': Field,
 		ErrorMessage
 	},
+	props: {
+		chosenSkill: {},
+		url: '',
+		method: ''
+	},	
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
 		createSkill() {
-			fetch('/api/skills', {
-				method: 'POST',
+			delete this.chosenSkill.id
+			delete this.chosenSkill.updated_by
+			fetch(this.url, {
+				method: this.method,
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.queryData)
+				body: JSON.stringify(this.chosenSkill)
 			})
 			.then(() => {
 				this.$router.go()
@@ -114,6 +117,6 @@ export default {
 	mounted() {
 		this.getSkillCategories()
 		this.getSkillScopes()
-	}
+	},
 };
 </script>

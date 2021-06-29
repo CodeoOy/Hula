@@ -12,7 +12,7 @@
 				as="input"
 				type="number"
 				name="users"
-				class="form-select"
+				class="form-control"
 				aria-label="Number of pros" 
 			></v-field>
 		</div>
@@ -52,7 +52,7 @@
 				as="input"
 				type="number"
 				name="percentage"
-				class="form-select"
+				class="form-control"
 				aria-label="Percentage" 
 			></v-field>
 		</div>

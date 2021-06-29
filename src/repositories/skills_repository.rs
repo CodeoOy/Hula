@@ -33,6 +33,32 @@ pub fn create_skill(
 	Ok(new_skill.into())
 }
 
+pub fn update_skill(
+	uuid_data: uuid::Uuid,
+	q_label: String,
+	q_skillcategory_id: uuid::Uuid,
+	q_email: String,
+	pool: &web::Data<Pool>,
+) -> Result<Option<Skill>, Error> {
+	use crate::schema::skills::dsl::{skills, *};
+	let conn: &PgConnection = &pool.get().unwrap();
+
+	let mut skill = diesel::update(skills)
+		.filter(id.eq(uuid_data))
+		.set((
+			label.eq(q_label),
+			skillcategory_id.eq(q_skillcategory_id),
+			updated_by.eq(q_email.clone()),
+		))
+		.load::<Skill>(conn)?;
+
+	if let Some(skill_res) = skill.pop() {
+		return Ok(skill_res.into());
+	}
+
+	Ok(None)
+}
+
 pub fn delete_skill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<usize, Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::skills::dsl::id;

@@ -9,27 +9,23 @@ use crate::repositories::*;
 
 #[derive(Deserialize, Debug)]
 pub struct SkillData {
-	pub email: String,
 	pub label: String,
-	pub category_id: uuid::Uuid,
+	pub skillcategory_id: uuid::Uuid,
 	pub skillscope_id: uuid::Uuid,
 }
 #[derive(Deserialize, Debug)]
 pub struct CategoryData {
-	pub email: String,
 	pub label: String,
 	pub parent_id: Option<uuid::Uuid>,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct ScopeData {
-	pub email: String,
 	pub label: String,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct ScopeLevelData {
-	pub email: String,
 	pub label: String,
 	pub skillscope_id: uuid::Uuid,
 	pub percentage: Option<i32>,
@@ -173,7 +169,32 @@ pub async fn create_skill(
 		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || skills_repository::create_skill(skilldata.label.clone(), skilldata.category_id, skilldata.skillscope_id, logged_user.email, &pool)).await;
+	let res = web::block(move || skills_repository::create_skill(skilldata.label.clone(), skilldata.skillcategory_id, skilldata.skillscope_id, logged_user.email, &pool)).await;
+	match res {
+		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+pub async fn update_skill(
+	uuid_data: web::Path<String>,
+	skilldata: web::Json<SkillData>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!("Creating a skill: skilldata = {:#?} logged_user = {:#?}", &skilldata, &logged_user);
+
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+	}
+
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || skills_repository::update_skill(id, skilldata.label.clone(), skilldata.skillcategory_id, logged_user.email, &pool)).await;
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
