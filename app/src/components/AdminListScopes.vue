@@ -30,7 +30,7 @@
 					<tr v-for="scope in skillScopes" :key="scope.id">
 						<td>{{ scope.label }}</td>
 						<td>
-							<p v-for="lvl in filterLevels(scope.id)" :key="lvl" :value="lvl.id">{{ lvl }}</p>
+							<p v-for="lvl in filterLevels(scope.id)" :key="lvl" :value="lvl.id">{{ lvl.label }}</p>
 						</td>
 						<td>
 							<a
@@ -114,6 +114,9 @@
 				.catch((errors) => {
 					console.log(errors);
 				})
+			},
+			filterLevels(id) {
+				return this.skillLevels.filter(lvl => lvl.skillscope_id == id)
 			}
 		},
 		computed: {
@@ -123,12 +126,6 @@
 					Level: FormSkillScopeLevel
 				}
 				return components[this.chosenForm]
-			}
-		},
-		computed: {
-			filterLevels(id) {
-				console.log(this.skillLevels)
-				return this.skillLevels.filter(lvl => lvl.skillscope_id == id)
 			}
 		},
 		mounted() {
