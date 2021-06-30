@@ -233,6 +233,31 @@ pub async fn update_skill(
 	}
 }
 
+pub async fn update_skill_scope(
+	uuid_data: web::Path<String>,
+	scopedata: web::Json<ScopeData>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!("Updating a scope: scopedata = {:#?} logged_user = {:#?}", &scopedata, &logged_user);
+
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+	}
+
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || skillscopes_repository::update_skill_scope(id, scopedata.label.clone(), logged_user.email, &pool)).await;
+	match res {
+		Ok(Some(scope)) => Ok(HttpResponse::Ok().json(&scope)),
+		Ok(None) => Err(ServiceError::Gone),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
 pub async fn create_skill_scope(
 	scopedata: web::Json<ScopeData>,
 	pool: web::Data<Pool>,

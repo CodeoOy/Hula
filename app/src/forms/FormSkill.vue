@@ -1,7 +1,5 @@
 <template>
 	<v-form v-on:submit="createSkill">
-		{{ method }}
-		{{ chosenSkill }}
 		<div class="mb-2">
 			<error-message name="name" class="error"></error-message>
 			<label class="form-label">Skill name</label>

@@ -1,5 +1,5 @@
 <template>
-	<v-form v-on:submit="createSkillScope">
+	<v-form v-on:submit="createUpdateSkillScope">
 		<error-message name="name" class="error"></error-message>
 		<div class="mb-2">
 			<label class="form-label">Scope name</label>
@@ -15,9 +15,7 @@ export default {
 	name: 'SkillScope',
 	data() {
 		return {
-			errorsPresent: false,
 			queryData: {
-				email: this.$store.state.loggeduser.email,
 				label: "",
 			},
 			categories: {},
@@ -28,13 +26,18 @@ export default {
 		'VField': Field,
 		ErrorMessage
 	},
+	props: {
+		chosenScope: {},
+		url: '',
+		method: ''
+	},	
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
-		createSkillScope() {
-			fetch('/api/skills/scopes', {
-				method: 'POST',
+		createUpdateSkillScope() {
+			fetch(this.url, {
+				method: this.method,
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
 				body: JSON.stringify(this.queryData)

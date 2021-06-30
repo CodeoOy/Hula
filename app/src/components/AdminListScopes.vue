@@ -37,7 +37,12 @@
 										data-bs-target="#hulaModalScopes"
 										v-on:click="formTitle = 'Add Level', chosenForm = 'Level', chosenScope = scope, url='/api/skills/scopes', method='POST'"
 									><i class="bi-plus-circle-fill me-2"></i></a>
-									<a href="#"><i class="bi-pencil-fill me-2"></i></a>
+									<a 
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalScopes"
+										v-on:click="formTitle = 'Edit Scope', chosenForm = 'Scope', chosenScope = scope, url=`/api/skills/scopes/${scope.id}`, method='PUT'"
+									><i class="bi-pencil-fill me-2"></i></a>
 									<a href="#" v-on:click.prevent="this.deleteScope(scope.id)"><i class="bi-trash-fill me-2"></i></a>
 								</div>
 							</div>
