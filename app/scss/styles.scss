@@ -35,7 +35,7 @@
 @import '../node_modules/bootstrap/scss/close';
 // @import '../node_modules/bootstrap/scss/toasts';
 @import '../node_modules/bootstrap/scss/modal';
-// @import '../node_modules/bootstrap/scss/tooltip';
+@import '../node_modules/bootstrap/scss/tooltip';
 // @import '../node_modules/bootstrap/scss/popover';
 // @import '../node_modules/bootstrap/scss/carousel';
 // @import '../node_modules/bootstrap/scss/spinners';
@@ -161,14 +161,19 @@ nav {
 	flex-direction: row;
 	align-items: flex-start;
 	justify-content: space-between;
-	width: 300px;
+	@include media-breakpoint-up(lg) {
+		width: 50%
+	}
+	&__actions {
+		opacity: 0.1;
+	}
+}
+
+.hoverable-td {
 	&:hover {
 		.title-actions__actions {
 			opacity: 1;
 		}
-	}
-	&__actions {
-		opacity: 0.1;
 	}
 }
 

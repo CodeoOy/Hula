@@ -27,17 +27,22 @@
 				</thead>
 				<tbody>
 					<tr v-for="scope in skillScopes" :key="scope.id">
-						<td>
+						<td class="hoverable-td">
 							<div class="title-actions">
-								<a href="#" class="title-actions__mainlink">{{ scope.label }}</a>
+								<span class="title-actions__maintitle">{{ scope.label }}</span>
 								<div class="title-actions__actions">
-									<a href="#"><i class="bi-plus-circle-fill me-2"></i></a>
+									<a 
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalScopes"
+										v-on:click="formTitle = 'Add Level', chosenForm = 'Level', chosenScope = scope, url='/api/skills/scopes', method='POST'"
+									><i class="bi-plus-circle-fill me-2"></i></a>
 									<a href="#"><i class="bi-pencil-fill me-2"></i></a>
-									<a href="#"><i class="bi-trash-fill me-2"></i></a>
+									<a href="#" v-on:click.prevent="this.deleteScope(scope.id)"><i class="bi-trash-fill me-2"></i></a>
 								</div>
 							</div>
 						</td>
-						<td>
+						<td class="hoverable-td">
 							<div class="title-actions" v-for="lvl in filterLevels(scope.id)" :key="lvl" :value="lvl.id">
 								<span class="title-actions__maintitle">{{ lvl.index }}: {{ lvl.label }} - {{ lvl.percentage }}</span>
 								<div class="title-actions__actions">
@@ -45,11 +50,12 @@
 										href="#"
 										:data-scope-id="scope.id" 
 										:data-scope-name="scope.label" 
-										data-bs-toggle="modal" 
-										data-bs-target="#hulaModalScopes" 
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalScopes"
+										title="Edit level" 
 										v-on:click="chosenScope=scope, formTitle=scope.label, chosenForm='CreateScope', url=`/api/skills/scopes/${scope.id}`, method='PUT'"
 									><i class="bi-pencil-fill me-2"></i></a>
-									<a href="#" v-on:click.prevent="this.deleteScope(scope.id)"><i class="bi-trash-fill me-2"></i></a>
+									<a href="#" v-on:click.prevent="this.deleteLevel(lvl.id)"><i class="bi-trash-fill me-2"></i></a>
 								</div>
 							</div>
 						</td>
@@ -115,6 +121,22 @@
 						this.$flashMessage.show({
 							type: 'success',
 							title: 'Scope removed',
+							time: 1000
+						});
+						this.$router.go()
+					}
+				})    
+				.catch((errors) => {
+					console.log(errors);
+				})
+			},
+			deleteLevel(id) {
+				fetch(`/api/skills/levels/${id}`, {method: 'DELETE'})
+				.then(response => { 
+					if (response.ok) {
+						this.$flashMessage.show({
+							type: 'success',
+							title: 'Level removed',
 							time: 1000
 						});
 						this.$router.go()

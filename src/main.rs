@@ -126,6 +126,10 @@ async fn main() -> std::io::Result<()> {
 							.route(web::post().to(handlers::skills_handler::create_skill_scope_level)),
 					)
 					.service(
+						web::resource("/skills/levels/{id}")
+							.route(web::delete().to(handlers::skills_handler::delete_skill_scope_level)),
+					)
+					.service(
 						web::resource("/skills/categories")
 							.route(web::get().to(handlers::skills_handler::get_skill_categories))
 							.route(web::post().to(handlers::skills_handler::create_skill_category)),

@@ -48,3 +48,11 @@ pub fn create_skill_scope_level(
 
 	Ok(new_scope_level.into())
 }
+
+pub fn delete_skill_scope_level(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<usize, Error> {
+	let conn: &PgConnection = &pool.get().unwrap();
+	use crate::schema::skillscopelevels::dsl::{skillscopelevels, id};
+
+	let deleted = diesel::delete(skillscopelevels.filter(id.eq(uuid_data))).execute(conn)?;
+	Ok(deleted)
+}

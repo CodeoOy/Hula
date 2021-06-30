@@ -157,6 +157,34 @@ pub async fn delete_skill_category(
 	}
 }
 
+pub async fn delete_skill_scope_level(
+	uuid_data: web::Path<String>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!("Deleting a skill scope level: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+	}
+
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || skillscopelevels_repository::delete_skill_scope_level(id, &pool)).await;
+	match res {
+		Ok(deleted) => {
+			if deleted > 0 {
+				return Ok(HttpResponse::Ok().finish());
+			}
+			Err(ServiceError::Gone)
+		},
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
 pub async fn create_skill(
 	skilldata: web::Json<SkillData>,
 	pool: web::Data<Pool>,
