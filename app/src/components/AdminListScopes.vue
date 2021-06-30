@@ -1,11 +1,12 @@
 <template>
 	<div>
-		<VModal :modalTitle="formTitle" :modalID="'Scopes'">
+		<VModal :modalTitle="formTitle" :modalID="'Scopes'" ref='hulaModalScopes'>
 			<component 
 				:is='modalComponent' 
 				:chosenScope="chosenScope" 
 				:url="url"
 				:method="method"
+				v-on:form-sent="hideModalUpdate"
 			/>
 		</VModal>
 		<div class="d-flex flex-row justify-content-between align-items-start">
@@ -35,7 +36,7 @@
 										href="#"
 										data-bs-toggle="modal"
 										data-bs-target="#hulaModalScopes"
-										v-on:click="formTitle = 'Add Level', chosenForm = 'Level', chosenScope = scope, url='/api/skills/scopes', method='POST'"
+										v-on:click="formTitle = 'Add Level', chosenForm = 'Level', chosenScope = scope, url='/api/skills/levels', method='POST'"
 									><i class="bi-plus-circle-fill me-2"></i></a>
 									<a 
 										href="#"
@@ -53,12 +54,12 @@
 								<div class="title-actions__actions">
 									<a 
 										href="#"
-										:data-scope-id="scope.id" 
-										:data-scope-name="scope.label" 
+										:data-scope-id="lvl.id" 
+										:data-scope-name="lvl.label" 
 										data-bs-toggle="modal"
 										data-bs-target="#hulaModalScopes"
 										title="Edit level" 
-										v-on:click="chosenScope=scope, formTitle=scope.label, chosenForm='CreateScope', url=`/api/skills/scopes/${scope.id}`, method='PUT'"
+										v-on:click="chosenScope=scope, formTitle=lvl.label, chosenForm='Level', url=`/api/skills/levels/${lvl.id}`, method='PUT'"
 									><i class="bi-pencil-fill me-2"></i></a>
 									<a href="#" v-on:click.prevent="this.deleteLevel(lvl.id)"><i class="bi-trash-fill me-2"></i></a>
 								</div>
@@ -128,7 +129,8 @@
 							title: 'Scope removed',
 							time: 1000
 						});
-						this.$router.go()
+						this.getAllScopes()
+						this.getAllLevels()
 					}
 				})    
 				.catch((errors) => {
@@ -144,7 +146,8 @@
 							title: 'Level removed',
 							time: 1000
 						});
-						this.$router.go()
+						this.getAllScopes()
+						this.getAllLevels()
 					}
 				})    
 				.catch((errors) => {
@@ -153,6 +156,15 @@
 			},
 			filterLevels(id) {
 				return this.skillLevels.filter(lvl => lvl.skillscope_id == id)
+			},
+			hideModalUpdate() {
+				this.getAllScopes()
+				this.getAllLevels()
+				let modalToHide = document.getElementById('hulaModalScopes') 
+				console.log(modalToHide)
+				console.log(this.$refs.hulaModalScopes)
+				this.$refs['hulaModalScopes'].hide()
+				//$('#hulaModalScopes').modal('hide');
 			}
 		},
 		computed: {

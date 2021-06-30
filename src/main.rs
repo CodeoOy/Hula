@@ -127,6 +127,7 @@ async fn main() -> std::io::Result<()> {
 					)
 					.service(
 						web::resource("/skills/levels/{id}")
+							.route(web::put().to(handlers::skills_handler::update_skill_scope_level))
 							.route(web::delete().to(handlers::skills_handler::delete_skill_scope_level)),
 					)
 					.service(
@@ -145,6 +146,7 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/skills/scopes/{id}")
 							.route(web::put().to(handlers::skills_handler::update_skill_scope))
+							.route(web::delete().to(handlers::skills_handler::delete_skill_scope)),
 					)
 					.service(
 						web::resource("/skills/{id}")

@@ -1,5 +1,5 @@
 <template>
-	<v-form v-on:submit="createSkillScopeLevel">
+	<v-form v-on:submit="createUpdateSkillScopeLevel">
 		<div class="mb-2">
 			<label class="form-label">Level name</label>
 			<error-message name="name" class="error"></error-message>
@@ -14,7 +14,7 @@
 				aria-label="Level name"
 			></v-field>
 		</div>
-		<div class="mb-2">
+		<div class="mb-2" v-if="method == 'POST'">
 			<label class="form-label">Level scope</label>
 			<error-message name="scope" class="error"></error-message>
 			<v-field
@@ -56,8 +56,8 @@ export default {
 			queryData: {
 				email: this.$store.state.loggeduser.email,
 				label: "",
-				skillscope_id: null,
-				percentage: Number,
+				skillscope_id: '00000000-0000-0000-0000-000000000000',
+				percentage: 0,
 			},
 			scopes: {}
 		};
@@ -67,19 +67,24 @@ export default {
 		'VField': Field,
 		ErrorMessage
 	},
+	props: {
+		chosenSkill: {},
+		url: '',
+		method: ''
+	},	
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
-		createSkillScopeLevel() {
-			fetch('/api/skills/levels', {
-				method: 'POST',
+		createUpdateSkillScopeLevel() {
+			fetch(this.url, {
+				method: this.method,
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
 				body: JSON.stringify(this.queryData)
 			})
 			.then(() => {
-				this.$router.go()
+				this.$emit('formSent')
 			})
 			.catch((errors) => {
 				console.log(errors);

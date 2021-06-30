@@ -56,3 +56,11 @@ pub fn update_skill_scope(
 	Ok(None)
 }
 
+pub fn delete_skill_scope(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<usize, Error> {
+	let conn: &PgConnection = &pool.get().unwrap();
+	use crate::schema::skillscopes::dsl::{skillscopes, id};
+
+	let deleted = diesel::delete(skillscopes.filter(id.eq(uuid_data))).execute(conn)?;
+	Ok(deleted)
+}
+

@@ -280,6 +280,35 @@ pub async fn create_skill_scope(
 	}
 }
 
+pub async fn delete_skill_scope(
+	uuid_data: web::Path<String>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!("Deleting a skill scope: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+	}
+
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || skillscopes_repository::delete_skill_scope(id, &pool)).await;
+	match res {
+		Ok(deleted) => {
+			if deleted > 0 {
+				return Ok(HttpResponse::Ok().finish());
+			}
+			Err(ServiceError::Gone)
+		},
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
 pub async fn create_skill_scope_level(
 	scopeleveldata: web::Json<ScopeLevelData>,
 	pool: web::Data<Pool>,
@@ -295,6 +324,31 @@ pub async fn create_skill_scope_level(
 	let res = web::block(move || skillscopelevels_repository::create_skill_scope_level(scopeleveldata.label.clone(), scopeleveldata.percentage, scopeleveldata.skillscope_id.clone(), logged_user.email, &pool)).await;
 	match res {
 		Ok(skill_scope_level) => Ok(HttpResponse::Ok().json(&skill_scope_level)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+pub async fn update_skill_scope_level(
+	uuid_data: web::Path<String>,
+	scopeleveldata: web::Json<ScopeLevelData>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!("Updating a scope level: scopeleveldata = {:#?} logged_user = {:#?}", &scopeleveldata, &logged_user);
+
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+	}
+
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || skillscopelevels_repository::update_skill_scope_level(id, scopeleveldata.label.clone(), scopeleveldata.percentage.clone(), logged_user.email, &pool)).await;
+	match res {
+		Ok(Some(scopelevel)) => Ok(HttpResponse::Ok().json(&scopelevel)),
+		Ok(None) => Err(ServiceError::Gone),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
