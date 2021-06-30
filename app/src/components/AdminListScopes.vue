@@ -28,9 +28,16 @@
 				</thead>
 				<tbody>
 					<tr v-for="scope in skillScopes" :key="scope.id">
-						<td>{{ scope.label }}</td>
+						<td class="title-actions">
+							<a href="#" class="title-actions__mainlink">{{ scope.label }}</a>
+							<div class="title-actions__actions">
+								<a href="#"><i class="bi-alarm"></i></a>
+								<a href="#">x</a>
+								<a href="#">x</a>
+							</div>
+						</td>
 						<td>
-							<p v-for="lvl in filterLevels(scope.id)" :key="lvl" :value="lvl.id">{{ lvl.label }}</p>
+							<p v-for="lvl in filterLevels(scope.id)" :key="lvl" :value="lvl.id">{{ lvl.index }}: {{ lvl.label }} - {{ lvl.percentage }}</p>
 						</td>
 						<td>
 							<a
@@ -42,6 +49,15 @@
 								v-on:click="chosenScope=scope, formTitle=scope.label, chosenForm='CreateScope', url=`/api/skills/scopes/${scope.id}`, method='PUT'"
 								class="me-2"
 							>Edit</a>
+							<a
+								href="#" 
+								:data-scope-id="scope.id" 
+								:data-scope-name="scope.label" 
+								data-bs-toggle="modal" 
+								data-bs-target="#hulaModalScopes" 
+								v-on:click="chosenScope=scope, formTitle=scope.label, chosenForm='CreateScope', url=`/api/skills/scopes/${scope.id}`, method='PUT'"
+								class="me-2"
+							>Add level</a>
 							<a href="#" v-on:click.prevent="this.deleteScope(scope.id)">Delete</a>
 						</td>
 					</tr>

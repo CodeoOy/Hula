@@ -31,6 +31,13 @@ $accordion-button-active-color: $link-color;
 }
 @import url('https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@600&family=Overpass:ital,wght@0,100;0,400;0,900;1,100;1,400;1,900&display=swap');
 
+// Bootstrap icon fonts
+@font-face {
+    font-family: "bootstrap-icons";
+    src: url("../assets/bootstrap-icons.woff2?856008caa5eb66df68595e734e59580d") format("woff2"),
+    url("../assets/bootstrap-icons.woff?856008caa5eb66df68595e734e59580d") format("woff");
+}
+
 $font-heading: 'salomeitalic', sans-serif;
 $font-family-sans-serif: 'Overpass', sans-serif;
 $font-family-monospace: 'Overpass mono', monospace; 

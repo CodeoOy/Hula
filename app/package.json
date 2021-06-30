@@ -25,7 +25,7 @@
 		"@rollup/plugin-node-resolve": "^11.0.0",
 		"@smartweb/vue-flash-message": "^1.0.0-alpha.12",
 		"bootstrap": "^5.0.0-beta3",
-		"bootstrap-icons": "^1.4.1",
+		"bootstrap-icons": "^1.5.0",
 		"dotenv": "^8.2.0",
 		"rollup": "^2.34.2",
 		"rollup-plugin-vue": "^6.0.0",

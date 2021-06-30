@@ -1,5 +1,7 @@
-
+// Variables
 @import 'variables';
+// Icons
+@import '../node_modules/bootstrap-icons/font/bootstrap-icons';
 // Configuration
 @import '../node_modules/bootstrap/scss/functions';
 @import '../node_modules/bootstrap/scss/variables';
@@ -152,6 +154,10 @@ nav {
 			}
 		}
 	}
+}
+
+.title-actions {
+
 }
 
 .matches {
