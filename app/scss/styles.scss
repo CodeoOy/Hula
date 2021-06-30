@@ -157,7 +157,19 @@ nav {
 }
 
 .title-actions {
-
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: space-between;
+	width: 300px;
+	&:hover {
+		.title-actions__actions {
+			opacity: 1;
+		}
+	}
+	&__actions {
+		opacity: 0.1;
+	}
 }
 
 .matches {
