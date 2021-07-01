@@ -1,5 +1,6 @@
 <template>
 	<v-form v-on:submit="createUpdateSkillScopeLevel">
+		{{ queryData.skillscope_id }}
 		<div class="mb-2">
 			<label class="form-label">Level name</label>
 			<error-message name="name" class="error"></error-message>
@@ -14,7 +15,7 @@
 				aria-label="Level name"
 			></v-field>
 		</div>
-		<div class="mb-2" v-if="method == 'POST'">
+		<div class="mb-2" v-if="method == 'POST' && !('id' in chosenScope)">
 			<label class="form-label">Level scope</label>
 			<error-message name="scope" class="error"></error-message>
 			<v-field
@@ -56,7 +57,8 @@ export default {
 			queryData: {
 				email: this.$store.state.loggeduser.email,
 				label: "",
-				skillscope_id: '00000000-0000-0000-0000-000000000000',
+				//skillscope_id: '00000000-0000-0000-0000-000000000000',
+				skillscope_id: this.chosenScope.id,
 				percentage: 0,
 			},
 			scopes: {}
@@ -68,7 +70,7 @@ export default {
 		ErrorMessage
 	},
 	props: {
-		chosenSkill: {},
+		chosenScope: {},
 		url: '',
 		method: ''
 	},	
@@ -103,6 +105,7 @@ export default {
 	},
 	mounted() {
 		this.getSkillScopes()
+		console.log(this.chosenScope)
 	}
 };
 </script>

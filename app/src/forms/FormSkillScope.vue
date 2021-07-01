@@ -42,6 +42,9 @@ export default {
 				credentials: 'include',
 				body: JSON.stringify(this.queryData)
 			})
+			.then(() => {
+				this.$emit('formSent')
+			})
 			.catch((errors) => {
 				console.log(errors);
 			})
