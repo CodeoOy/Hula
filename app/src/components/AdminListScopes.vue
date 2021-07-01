@@ -74,6 +74,7 @@
 
 <script>
 	import VModal from '../components/VModal.vue'
+	import { Modal } from 'bootstrap'
 	import FormSkillScope from '../forms/FormSkillScope.vue'
 	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
 	import FormGeneralRename from '../forms/FormGeneralRename.vue'
@@ -160,11 +161,8 @@
 			hideModalUpdate() {
 				this.getAllScopes()
 				this.getAllLevels()
-				let modalToHide = document.getElementById('hulaModalScopes') 
-				console.log(modalToHide)
-				console.log(this.$refs.hulaModalScopes)
-				this.$refs['hulaModalScopes'].hide()
-				//$('#hulaModalScopes').modal('hide');
+				let modal = Modal.getInstance(document.querySelector('#hulaModalScopes'))
+				modal.hide()
 			}
 		},
 		computed: {
