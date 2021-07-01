@@ -1,11 +1,12 @@
 <template>
 	<v-form v-on:submit="createUpdateSkillScopeLevel">
-		{{ queryData.skillscope_id }}
+		{{ queryData2.skillscope_id }}<br />
+		{{ chosenScope.id }}<br />
 		<div class="mb-2">
 			<label class="form-label">Level name</label>
 			<error-message name="name" class="error"></error-message>
 			<v-field
-				v-model="queryData.label"
+				v-model="getChosenScopeLabel"
 				:rules="isRequired"
 				as="input"
 				type="text"
@@ -15,11 +16,11 @@
 				aria-label="Level name"
 			></v-field>
 		</div>
-		<div class="mb-2" v-if="method == 'POST' && !('id' in chosenScope)">
+		<div class="mb-2" v-if="method == 'POST'">
 			<label class="form-label">Level scope</label>
 			<error-message name="scope" class="error"></error-message>
 			<v-field
-				v-model="queryData.skillscope_id"
+				v-model="queryData2.skillscope_id"
 				:rules="isRequired"
 				as="select"
 				name="scope"
@@ -35,7 +36,7 @@
 			<label class="form-label">Percentage</label>
 			<error-message name="percentage" class="error"></error-message>
 			<v-field
-				v-model.number="queryData.percentage"
+				v-model.number="queryData2.percentage"
 				:rules="isRequired"
 				as="input"
 				type="number"
@@ -50,17 +51,18 @@
 
 <script>
 import { Field, Form, ErrorMessage } from 'vee-validate';
+import { computed } from 'vue';
 export default {
 	name: 'SkillScopeLevel',
 	data() {
 		return {
 			queryData: {
 				email: this.$store.state.loggeduser.email,
-				label: "",
-				//skillscope_id: '00000000-0000-0000-0000-000000000000',
 				skillscope_id: this.chosenScope.id,
+				label: "",
 				percentage: 0,
 			},
+			queryData2: {},
 			scopes: {}
 		};
 	},
@@ -74,6 +76,27 @@ export default {
 		url: '',
 		method: ''
 	},	
+	setup(props, { emit }) {
+    const getChosenScopeLabel = computed({
+      get: () => {
+        if (props.chosenScope) {
+          return props.chosenScope.Customer;
+        } else {
+          return "";
+        }
+      },
+      set: (value) => {
+        emit("update:chosenScope", {
+          ...props.chosenScope,
+          Customer: value,
+        });
+      },
+    });
+
+    return {
+      getChosenScopeLabel,
+    };
+  },
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';
@@ -103,6 +126,13 @@ export default {
 			})
 		}
 	},
+	/*
+	computed: {
+		getChosenScope() {
+			return this.chosenScope
+		}
+	},
+	*/
 	mounted() {
 		this.getSkillScopes()
 		console.log(this.chosenScope)
