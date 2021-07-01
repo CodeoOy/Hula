@@ -26,7 +26,7 @@
 				aria-label="Skill category"
 			>
 				<option v-for="category in categories" :key="category" :value="category.id">
-					{{ category }}
+					{{ category.label }}
 				</option>
 			</v-field>
 		</div>

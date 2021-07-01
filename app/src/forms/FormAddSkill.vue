@@ -91,7 +91,7 @@ export default {
 			})
 			.then(() => {
 				this.$store.dispatch('setUser', this.$store.state.loggeduser.id)
-				this.$router.go()
+				this.$emit('formSent')
 			})
 			.catch((errors) => {
 				console.log(errors);

@@ -92,7 +92,7 @@ export default {
 				body: JSON.stringify(this.chosenNeed)
 			})
 			.then(() => {
-				this.$router.go()
+				this.$emit('formSent')
 			})
 			.catch((errors) => {
 				console.log(errors);

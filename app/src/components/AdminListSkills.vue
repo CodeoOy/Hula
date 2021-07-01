@@ -6,6 +6,7 @@
 				:chosenSkill="chosenSkill" 
 				:url="url"
 				:method="method"
+				v-on:form-sent="hideModalUpdate"
 			/>
 		</VModal>
 		<div class="d-flex flex-row justify-content-between align-items-start">
@@ -106,12 +107,16 @@
 							title: 'Skill removed',
 							time: 1000
 						});
-						this.$router.go()
 					}
 				})    
 				.catch((errors) => {
 					console.log(errors);
 				})
+			},
+			hideModalUpdate() {
+				this.getAllSkills()
+				let modal = Modal.getInstance(document.querySelector('#hulaModalSkills'))
+				modal.hide()
 			}
 		},
 		computed: {
