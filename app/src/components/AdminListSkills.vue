@@ -55,6 +55,7 @@
 
 <script>
 	import VModal from '../components/VModal.vue'
+	import { Modal } from 'bootstrap'
 	import FormAddSkill from '../forms/FormAddSkill.vue'
 	import FormSkill from '../forms/FormSkill.vue'
 	import FormSkillCategory from '../forms/FormSkillCategory.vue'

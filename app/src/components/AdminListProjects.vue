@@ -6,6 +6,7 @@
 				:chosenProject="chosenProject" 
 				:url="url"
 				:method="method"
+				v-on:form-sent="hideModalUpdate"
 			/>
 		</VModal>
 		<div class="d-flex flex-row justify-content-between align-items-start">
@@ -55,8 +56,9 @@
 </template>
 
 <script>
-	import FormProject from '../forms/FormProject.vue'
 	import VModal from '../components/VModal.vue'
+	import { Modal } from 'bootstrap'
+	import FormProject from '../forms/FormProject.vue'
 	export default {
 		name: 'AdminListProjects',
 		data () {
@@ -86,6 +88,10 @@
 				.catch(() => {
 					throw new Error('Project not deleted');
 				})
+			},
+			hideModalUpdate() {
+				let modal = Modal.getInstance(document.querySelector('#hulaModalProjects'))
+				modal.hide()
 			}
 		},
 		computed: {
