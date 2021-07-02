@@ -52,38 +52,6 @@ export default {
 		url: '',
 		method: ''
 	},	
-	setup(props, { emit }) {
-		const queryData = computed({
-			get: () => {
-				if (props.chosenLevel) {
-					return {
-						email: "",
-						skillscope_id: props.chosenScope.id,
-						label: props.chosenLevel.label,
-						percentage: props.chosenLevel.percentage,
-					}
-				} else {
-					return {
-						email: "",
-						skillscope_id: props.chosenScope.id,
-						label: "",
-						percentage: 0,
-					}
-				}
-			},
-			/*
-			set: (value) => {
-				emit("update:chosenScope", {
-					...props.chosenScope,
-					skillscope_id: value,
-				});
-			},
-			// This remains here for now if it's needed later */
-		});
-		return {
-			queryData,
-		};
-	},
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';
@@ -111,6 +79,27 @@ export default {
 			.catch((errors) => {
 				console.log(errors);
 			})
+		}
+	},
+	computed: {
+		queryData: {
+			get () {
+				if (this.chosenLevel) {
+					return {
+						email: "",
+						skillscope_id: this.chosenScope.id,
+						label: this.chosenLevel.label,
+						percentage: this.chosenLevel.percentage,
+					}
+				} else {
+					return {
+						email: "",
+						skillscope_id: this.chosenScope.id,
+						label: "",
+						percentage: 0,
+					}
+				}
+			}
 		}
 	},
 	mounted() {
