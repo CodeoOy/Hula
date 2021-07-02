@@ -1,12 +1,12 @@
 <template>
 	<v-form v-on:submit="createUpdateSkillScopeLevel">
-		{{ queryData2.skillscope_id }}<br />
+		{{ getChosenScopeID }}<br />
 		{{ chosenScope.id }}<br />
 		<div class="mb-2">
 			<label class="form-label">Level name</label>
 			<error-message name="name" class="error"></error-message>
 			<v-field
-				v-model="getChosenScopeLabel"
+				v-model="queryData.label"
 				:rules="isRequired"
 				as="input"
 				type="text"
@@ -20,7 +20,7 @@
 			<label class="form-label">Level scope</label>
 			<error-message name="scope" class="error"></error-message>
 			<v-field
-				v-model="queryData2.skillscope_id"
+				v-model="getChosenScopeID"
 				:rules="isRequired"
 				as="select"
 				name="scope"
@@ -36,7 +36,7 @@
 			<label class="form-label">Percentage</label>
 			<error-message name="percentage" class="error"></error-message>
 			<v-field
-				v-model.number="queryData2.percentage"
+				v-model.number="queryData.percentage"
 				:rules="isRequired"
 				as="input"
 				type="number"
@@ -62,7 +62,6 @@ export default {
 				label: "",
 				percentage: 0,
 			},
-			queryData2: {},
 			scopes: {}
 		};
 	},
@@ -77,26 +76,25 @@ export default {
 		method: ''
 	},	
 	setup(props, { emit }) {
-    const getChosenScopeLabel = computed({
-      get: () => {
-        if (props.chosenScope) {
-          return props.chosenScope.Customer;
-        } else {
-          return "";
-        }
-      },
-      set: (value) => {
-        emit("update:chosenScope", {
-          ...props.chosenScope,
-          Customer: value,
-        });
-      },
-    });
-
-    return {
-      getChosenScopeLabel,
-    };
-  },
+		const getChosenScopeID = computed({
+			get: () => {
+				if (props.chosenScope) {
+					return props.chosenScope.id;
+				} else {
+					return "00000000-0000-0000-0000-e033a6751fca";
+				}
+			},
+			set: (value) => {
+				emit("update:chosenScope", {
+					...props.chosenScope,
+					skillscope_id: value,
+				});
+			},
+		});
+		return {
+			getChosenScopeID,
+		};
+	},
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';
@@ -126,13 +124,6 @@ export default {
 			})
 		}
 	},
-	/*
-	computed: {
-		getChosenScope() {
-			return this.chosenScope
-		}
-	},
-	*/
 	mounted() {
 		this.getSkillScopes()
 		console.log(this.chosenScope)
