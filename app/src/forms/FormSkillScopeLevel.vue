@@ -1,7 +1,8 @@
 <template>
 	<v-form v-on:submit="createUpdateSkillScopeLevel">
-		{{ getChosenScopeID }}<br />
-		{{ chosenScope.id }}<br />
+		{{ queryData }}<br />
+		{{ queryData.skillscope_id}}<br />
+		{{ chosenScope.id}}<br />
 		<div class="mb-2">
 			<label class="form-label">Level name</label>
 			<error-message name="name" class="error"></error-message>
@@ -20,7 +21,7 @@
 			<label class="form-label">Level scope</label>
 			<error-message name="scope" class="error"></error-message>
 			<v-field
-				v-model="getChosenScopeID"
+				v-model="queryData.skillscope_id"
 				:rules="isRequired"
 				as="select"
 				name="scope"
@@ -56,12 +57,6 @@ export default {
 	name: 'SkillScopeLevel',
 	data() {
 		return {
-			queryData: {
-				email: this.$store.state.loggeduser.email,
-				skillscope_id: this.chosenScope.id,
-				label: "",
-				percentage: 0,
-			},
 			scopes: {}
 		};
 	},
@@ -72,16 +67,27 @@ export default {
 	},
 	props: {
 		chosenScope: {},
+		chosenLevel: {},
 		url: '',
 		method: ''
 	},	
 	setup(props, { emit }) {
-		const getChosenScopeID = computed({
+		const queryData = computed({
 			get: () => {
 				if (props.chosenScope) {
-					return props.chosenScope.id;
+					return {
+						email: "",
+						skillscope_id: props.chosenScope.id,
+						label: "",
+						percentage: 0,
+					}
 				} else {
-					return "00000000-0000-0000-0000-e033a6751fca";
+					return {
+						email: "",
+						skillscope_id: '00000000-0000-0000-0000-e033a6751fca',
+						label: "",
+						percentage: 0,
+					}
 				}
 			},
 			set: (value) => {
@@ -92,7 +98,7 @@ export default {
 			},
 		});
 		return {
-			getChosenScopeID,
+			queryData,
 		};
 	},
 	methods: {
