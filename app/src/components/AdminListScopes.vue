@@ -3,7 +3,8 @@
 		<VModal :modalTitle="formTitle" :modalID="'Scopes'" ref='hulaModalScopes'>
 			<component 
 				:is='modalComponent' 
-				:chosenScope="chosenScope" 
+				:chosenScope="chosenScope"
+				:chosenLevel="chosenLevel"
 				:url="url"
 				:method="method"
 				v-on:form-sent="hideModalUpdate"
@@ -59,7 +60,7 @@
 										data-bs-toggle="modal"
 										data-bs-target="#hulaModalScopes"
 										title="Edit level" 
-										v-on:click="chosenScope=scope, formTitle=lvl.label, chosenForm='Level', url=`/api/skills/levels/${lvl.id}`, method='PUT'"
+										v-on:click="chosenScope = scope, formTitle = lvl.label, chosenForm = 'Level', chosenLevel = lvl, url = `/api/skills/levels/${lvl.id}`, method = 'PUT'"
 									><i class="bi-pencil-fill me-2"></i></a>
 									<a href="#" v-on:click.prevent="this.deleteLevel(lvl.id)"><i class="bi-trash-fill me-2"></i></a>
 								</div>
@@ -87,6 +88,7 @@
 				url: '',
 				method: '',
 				chosenScope: {},
+				chosenLevel: {},
 				chosenScopeDefault: {
 					label: '',
 				},

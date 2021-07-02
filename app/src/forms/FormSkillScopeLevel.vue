@@ -1,8 +1,5 @@
 <template>
 	<v-form v-on:submit="createUpdateSkillScopeLevel">
-		{{ queryData }}<br />
-		{{ queryData.skillscope_id}}<br />
-		{{ chosenScope.id}}<br />
 		<div class="mb-2">
 			<label class="form-label">Level name</label>
 			<error-message name="name" class="error"></error-message>
@@ -16,22 +13,6 @@
 				placeholder="Rookie"
 				aria-label="Level name"
 			></v-field>
-		</div>
-		<div class="mb-2" v-if="method == 'POST'">
-			<label class="form-label">Level scope</label>
-			<error-message name="scope" class="error"></error-message>
-			<v-field
-				v-model="queryData.skillscope_id"
-				:rules="isRequired"
-				as="select"
-				name="scope"
-				class="form-select"
-				aria-label="Level scope"
-			>
-				<option v-for="scope in scopes" :key="scope" :value="scope.id">
-					{{ scope.label }}
-				</option>
-			</v-field>
 		</div>
 		<div class="mb-2">
 			<label class="form-label">Percentage</label>
@@ -74,28 +55,30 @@ export default {
 	setup(props, { emit }) {
 		const queryData = computed({
 			get: () => {
-				if (props.chosenScope) {
+				if (props.chosenLevel) {
+					return {
+						email: "",
+						skillscope_id: props.chosenScope.id,
+						label: props.chosenLevel.label,
+						percentage: props.chosenLevel.percentage,
+					}
+				} else {
 					return {
 						email: "",
 						skillscope_id: props.chosenScope.id,
 						label: "",
 						percentage: 0,
 					}
-				} else {
-					return {
-						email: "",
-						skillscope_id: '00000000-0000-0000-0000-e033a6751fca',
-						label: "",
-						percentage: 0,
-					}
 				}
 			},
+			/*
 			set: (value) => {
 				emit("update:chosenScope", {
 					...props.chosenScope,
 					skillscope_id: value,
 				});
 			},
+			// This remains here for now if it's needed later */
 		});
 		return {
 			queryData,
