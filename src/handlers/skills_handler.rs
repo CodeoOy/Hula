@@ -187,7 +187,7 @@ pub async fn update_skill_category(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+		return Err(ServiceError::AdminRequired);
 	}
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
