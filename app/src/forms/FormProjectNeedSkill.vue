@@ -66,7 +66,7 @@ export default {
 			})
 			.catch((errors) => {
 				this.errors.push('skill-error')
-				console.log(errors);
+				this.$store.commit('errorHandling', errors)
 			})
 		},
 		getAllSkills() {
@@ -76,7 +76,7 @@ export default {
 				this.availableSkills = response;
 			})    
 			.catch((errors) => {
-				console.log(errors);
+				this.$store.commit('errorHandling', errors)
 			})
 		},
 		getAllLevels() {
@@ -86,7 +86,7 @@ export default {
 				this.skillLevels = response
 			})    
 			.catch((errors) => {
-				console.log(errors);
+				this.$store.commit('errorHandling', errors)
 			})
 		},
 		getSkillScope(needle) {

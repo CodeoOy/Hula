@@ -149,7 +149,7 @@ export default {
 			})
 			.catch((errors) => {
 				this.errors.push('project-error')
-				console.log(errors);
+				this.$store.commit('errorHandling', errors)
 			})
 		},
 		updateProject() {
@@ -165,7 +165,7 @@ export default {
 				this.queryDataNeed.project_id = response.id
 			})
 			.catch((errors) => {
-				console.log(errors);
+				this.$store.commit('errorHandling', errors)
 			})
 		},
 		createProjectNeed() {
@@ -185,7 +185,7 @@ export default {
 				this.$store.commit('setChosenProject', this.chosenProject.id)
 			})
 			.catch((errors) => {
-				console.log(errors);
+				this.$store.commit('errorHandling', errors)
 			})
 		},
 		createProjectNeedSkill() {
@@ -202,7 +202,7 @@ export default {
 			})
 			.catch((errors) => {
 				this.errors.push('skill-error')
-				console.log(errors);
+				this.$store.commit('errorHandling', errors)
 			})
 		},
 		getAllSkills() {
@@ -212,7 +212,7 @@ export default {
 				this.availableSkills = response;
 			})    
 			.catch((errors) => {
-				console.log(errors);
+				this.$store.commit('errorHandling', errors)
 			})
 		},
 		getAllLevels() {
@@ -222,7 +222,7 @@ export default {
 				this.skillLevels = response
 			})    
 			.catch((errors) => {
-				console.log(errors);
+				this.$store.commit('errorHandling', errors)
 			})
 		},
 		getSkillScope(needle) {

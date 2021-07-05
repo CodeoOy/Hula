@@ -52,7 +52,7 @@
 				.catch((errors) => {
 					this.users = {}
 					this.$emit('usersfetched', this.users)
-					console.log(errors);
+					this.$store.commit('errorHandling', errors)
 				})
 			}
 		}

@@ -121,7 +121,7 @@
 					}
 				})    
 				.catch((errors) => {
-					console.log(errors);
+					this.$store.commit('errorHandling', errors)
 				})
 			},
 			deleteSkill(id) {
@@ -137,7 +137,7 @@
 					}
 				})    
 				.catch((errors) => {
-					console.log(errors);
+					this.$store.commit('errorHandling', errors)
 				})
 			}
 		},

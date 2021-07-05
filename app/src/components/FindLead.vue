@@ -40,7 +40,7 @@
 					this.$emit('datafetched', this.users)
 				})    
 				.catch((errors) => {    
-					console.log(errors);
+					this.$store.commit('errorHandling', errors)
 				})
 			},
 			getProjects() {
@@ -51,7 +51,7 @@
 					this.$emit('leadsfetched', this.projects)
 				})    
 				.catch((errors) => {    
-					console.log(errors);
+					this.$store.commit('errorHandling', errors)
 				})
 			}
 		},

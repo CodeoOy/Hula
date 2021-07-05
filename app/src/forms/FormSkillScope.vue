@@ -46,7 +46,7 @@ export default {
 				this.$emit('formSent')
 			})
 			.catch((errors) => {
-				console.log(errors);
+				this.$store.commit('errorHandling', errors)
 			})
 		}
 	}

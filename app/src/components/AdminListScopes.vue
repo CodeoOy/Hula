@@ -110,17 +110,17 @@
 					this.skillScopes = response;
 				})    
 				.catch((errors) => {
-					console.log(errors);
+					this.$store.commit('errorHandling', errors)
 				})
 			},
 			getAllLevels() {
 				fetch('/api/skills/levels', {method: 'GET'})
 				.then((response) => response.json())
 				.then(response => { 
-					this.skillLevels = response;
+					this.skillLevels = response; // Handle 204
 				})
 				.catch((errors) => {
-					console.log(errors);
+					this.$store.commit('errorHandling', errors)
 				})
 			},
 			deleteScope(id) {
@@ -137,7 +137,7 @@
 					}
 				})    
 				.catch((errors) => {
-					console.log(errors);
+					this.$store.commit('errorHandling', errors)
 				})
 			},
 			deleteLevel(id) {
@@ -154,7 +154,7 @@
 					}
 				})    
 				.catch((errors) => {
-					console.log(errors);
+					this.$store.commit('errorHandling', errors)
 				})
 			},
 			filterLevels(id) {

@@ -21,7 +21,7 @@
   		},
 		methods: {
 			logOut() {
-				this.$store.commit('deleteUser')
+				this.$store.commit('errorHandling')
 				this.$router.push({ name: 'page-login' })
 			}
 		}

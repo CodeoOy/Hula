@@ -28,7 +28,7 @@ export default {
 				method: 'DELETE', 
 			})
 			.catch((errors) => {
-				console.log(errors);
+				this.$store.commit('errorHandling', errors)
 			})
 		},
 		getAllUsers() {
@@ -38,7 +38,7 @@ export default {
 				this.users = response;
 			})    
 			.catch((errors) => {
-				console.log(errors);
+				this.$store.commit('errorHandling', errors)
 			})
 		}
 	},

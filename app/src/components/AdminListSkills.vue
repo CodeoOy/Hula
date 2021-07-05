@@ -116,7 +116,7 @@
 					this.skills = response;
 				})    
 				.catch((errors) => {
-					console.log(errors);
+					this.$store.commit('errorHandling', errors)
 				})
 			},
 			getSkillCategories() {
@@ -126,9 +126,7 @@
 					this.categories = response;
 				})    
 				.catch((errors) => {
-					console.log(errors);
-					this.$store.commit('deleteUser')
-					this.$router.push({ name: 'page-login' })
+					this.$store.commit('errorHandling', errors)
 				})
 			},
 			deleteSkill(id) {
@@ -144,7 +142,7 @@
 					}
 				})    
 				.catch((errors) => {
-					console.log(errors);
+					this.$store.commit('errorHandling', errors)
 				})
 			},
 			filterSkills(id) {
