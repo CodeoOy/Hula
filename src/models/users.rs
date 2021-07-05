@@ -1,9 +1,10 @@
 use super::super::schema::*;
 use crate::errors::ServiceError;
 use crate::models;
+use crate::repositories::*;
 use actix_identity::Identity;
 use actix_web::{dev::Payload, web::Data, Error, FromRequest, HttpRequest};
-use diesel::{prelude::*, r2d2::ConnectionManager, PgConnection};
+use diesel::{r2d2::ConnectionManager, PgConnection};
 use futures::future::{err, ok, Ready};
 use serde::{Deserialize, Serialize};
 use log::debug;
@@ -120,18 +121,15 @@ impl FromRequest for LoggedUser {
 		if let Ok(identity) = Identity::from_request(req, pl).into_inner() {
 			if let Some(cookie) = identity.identity() {
 				let pool = req.app_data::<Data<models::users::Pool>>().unwrap().clone();
-
-				let conn: &PgConnection = &pool.get().unwrap();
-				use crate::schema::activesessions::dsl::session_id;
-				use crate::schema::activesessions::dsl::*;
-
 				let id_res = uuid::Uuid::parse_str(&cookie);
 				match id_res {
 					Ok(id) => {
+						let session = activesessions_repository::get_session_by_id(id, &pool);
+/* 
 						let session = activesessions
 							.filter(session_id.eq(&id))
 							.get_result::<ActiveSession>(conn);
-
+*/
 						if let Ok(s) = session {
 							if s.expire_at > chrono::offset::Utc::now().naive_utc() {
 								let u: LoggedUser = s.into();
