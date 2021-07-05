@@ -11,25 +11,47 @@
 		</VModal>
 		<div class="d-flex flex-row justify-content-between align-items-start">
 			<h2>Skills</h2>
-			<button
-				class="btn btn-gradient"
-				data-bs-toggle="modal"
-				data-bs-target="#hulaModalSkills"
-				v-on:click="formTitle = 'Add skill', chosenForm = 'CreateSkill', chosenSkill = chosenSkillDefault, url='/api/skills', method='POST'"
-			>Add skill</button>
+			<div>
+				<button
+					class="btn btn-gradient me-2"
+					data-bs-toggle="modal"
+					data-bs-target="#hulaModalSkills"
+					v-on:click="formTitle = 'Add skill', chosenForm = 'CreateSkill', chosenSkill = chosenSkillDefault, url='/api/skills', method='POST'"
+				>New skill</button>
+				<button
+					class="btn btn-gradient"
+					data-bs-toggle="modal"
+					data-bs-target="#hulaModalSkills"
+					v-on:click="formTitle = 'Add category', chosenForm = 'Category', url='/api/skills/categories', method='POST'"
+				>New category</button>
+			</div>
 		</div>
 		<transition name="fadeHeight">
 			<table class="table table-dark table-striped text-light">
 				<thead>
 					<tr>
-						<th scope="col">Skill name</th>
 						<th scope="col">Category</th>
+						<th scope="col">Skills</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="skill in skills" :key="skill.id">
+					<tr v-for="category in categories" :key="category.id">
 						<td class="hoverable-td">
 							<div class="title-actions">
+								<span class="title-actions__maintitle">{{ category.label }}</span>
+								<div class="title-actions__actions">
+									<a 
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalSkills"
+										v-on:click="formTitle=category.label, chosenForm = 'Category', chosenCategory = category, url=`/api/skills/categories/${category.id}`, method='PUT'"
+									><i class="bi-pencil-fill me-2"></i></a>
+									<a href="#" v-on:click.prevent="this.deleteCategory(category.id)"><i class="bi-trash-fill me-2"></i></a>
+								</div>
+							</div>
+						</td>
+						<td class="hoverable-td">
+							<div class="title-actions" v-for="skill in filterSkills(category.id)" :key="skill" :value="skill.id">
 								<span class="title-actions__maintitle">{{ skill.label }}</span>
 								<div class="title-actions__actions">
 									<a 
@@ -42,7 +64,6 @@
 								</div>
 							</div>
 						</td>
-						<td>{{ skill.skillcategory_id }}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -68,12 +89,14 @@
 				url: '',
 				method: '',
 				chosenSkill: {},
+				chosenCategory: {},
 				chosenSkillDefault: {
 					label: '',
 					skillcategory_id: null,
 					skillscope_id: null,
 				},
 				skills: [],
+				categories: [],
 			}
 		},
 		components: {
@@ -96,6 +119,16 @@
 					console.log(errors);
 				})
 			},
+			getSkillCategories() {
+				fetch('/api/skills/categories', {method: 'GET'})
+				.then((response) => response.json())
+				.then(response => { 
+					this.categories = response;
+				})    
+				.catch((errors) => {
+					console.log(errors);
+				})
+			},
 			deleteSkill(id) {
 				fetch(`/api/skills/${id}`, {method: 'DELETE'})
 				.then(response => { 
@@ -111,6 +144,9 @@
 				.catch((errors) => {
 					console.log(errors);
 				})
+			},
+			filterSkills(id) {
+				return this.skills.filter(skill => skill.skillcategory_id == id)
 			},
 			hideModalUpdate() {
 				this.getAllSkills()
@@ -130,6 +166,7 @@
 			}
 		},
 		mounted() {
+			this.getSkillCategories()
 			this.getAllSkills()
 		}
 	}

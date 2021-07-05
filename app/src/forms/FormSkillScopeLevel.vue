@@ -33,7 +33,6 @@
 
 <script>
 import { Field, Form, ErrorMessage } from 'vee-validate';
-import { computed } from 'vue';
 export default {
 	name: 'SkillScopeLevel',
 	data() {
