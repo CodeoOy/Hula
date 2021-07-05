@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<VModal :modalTitle="formTitle" :modalID="'Scopes'" ref='hulaModalScopes'>
+		<VModal :modalTitle="formTitle" :modalID="'Scopes'">
 			<component 
 				:is='modalComponent' 
 				:chosenScope="chosenScope"

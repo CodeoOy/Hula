@@ -3,7 +3,14 @@
 		<error-message name="name" class="error"></error-message>
 		<div class="mb-2">
 			<label class="form-label">Scope name</label>
-			<v-field name="name" type="text" placeholder="One to ten" :rules="isRequired" class="form-control" v-model="queryData.label"></v-field>
+			<v-field
+				name="name" 
+				type="text" 
+				placeholder="One to ten" 
+				:rules="isRequired" 
+				class="form-control" 
+				v-model="queryData.label"
+			></v-field>
 		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 	</v-form>  

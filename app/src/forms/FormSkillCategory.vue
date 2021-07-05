@@ -1,10 +1,9 @@
 <template>
-	<v-form v-on:submit="createSkillCategory">
+	<v-form v-on:submit="createUpdateSkillCategory">
 		<div class="mb-2">
 			<label class="form-label">Category label</label>
 			<error-message name="name" class="error"></error-message>
 			<v-field
-				v-model="queryData.label"
 				:rules="isRequired"
 				as="input"
 				type="text"
@@ -12,17 +11,18 @@
 				class="form-control"
 				placeholder="Techs"
 				aria-label="Category name"
+				v-model="queryData.label"
 			></v-field>
 		</div>
 		<div class="mb-2">
 			<label class="form-label">Category parent (optional)</label>
 			<error-message name="parent" class="error"></error-message>
 			<v-field
-				v-model="queryData.parent_id"
 				as="select"
 				name="parent"
 				class="form-select"
 				aria-label="Category parent"
+				v-model="queryData.parent_id"
 			>
 				<option v-for="category in categories" :key="category" :value="category.id">
 					{{ category.label }}
@@ -39,13 +39,7 @@ export default {
 	name: 'SkillCategory',
 	data() {
 		return {
-			errorsPresent: false,
 			categories: {},
-			queryData: {
-				email: this.$store.state.loggeduser.email,
-				label: '',
-				parent_id: null,
-			}
 		};
 	},
 	components: {
@@ -53,13 +47,18 @@ export default {
 		'VField': Field,
 		ErrorMessage
 	},
+	props: {
+		chosenCategory: {},
+		url: '',
+		method: '',
+	},
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
-		createSkillCategory() {
-			fetch('/api/skills/categories', {
-				method: 'POST',
+		createUpdateSkillCategory() {
+			fetch(this.url, {
+				method: this.method,
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
 				body: JSON.stringify(this.queryData)
@@ -84,6 +83,22 @@ export default {
 	},
 	mounted() {
 		this.getSkillCategories()
+	},
+	computed: {
+		queryData: {
+			get () {
+				if (this.chosenCategory) {
+					console.log(this.chosenCategory)
+					return this.chosenCategory;
+				}
+				console.log("No chosen category")
+				return {
+					email: "",
+					label: "",
+					parent_id: null,
+				}
+			}
+		}
 	}
 };
 </script>
