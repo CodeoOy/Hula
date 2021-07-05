@@ -1,6 +1,6 @@
 <template>
 	<div class="container-fluid mt-4">
-		<VModal :modalID="'login'">
+		<VModal :modalID="'login'" :modalStatic="true">
 			<FormLogin v-if="showSignup == false" v-on:hide-modal="hideModal"/>
 			<FormRegister v-else/>
 			<a href="#" v-if="showSignup == false" v-on:click="showSignup = true">Or sign up here.</a>

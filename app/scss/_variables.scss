@@ -10,7 +10,7 @@ $danger:			#ff005e;
 $light:				#b4c3c0;
 $dark:				#210e26;
 $link-color:		#00c8a3;
-$link-hover-color:	lighten($link-color, 25%);
+$link-hover-color:	$primary;
 $separator-color:   #800da6;
 
 $input-bg:				#eee;

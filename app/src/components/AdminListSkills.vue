@@ -149,6 +149,7 @@
 				return this.skills.filter(skill => skill.skillcategory_id == id)
 			},
 			hideModalUpdate() {
+				this.getSkillCategories()
 				this.getAllSkills()
 				let modal = Modal.getInstance(document.querySelector('#hulaModalSkills'))
 				modal.hide()
