@@ -22,30 +22,27 @@
 			<table class="table table-dark table-striped text-light">
 				<thead>
 					<tr>
-						<th scope="col">#</th>
 						<th scope="col">Skill name</th>
 						<th scope="col">Category</th>
-						<th scope="col">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(skill, index) in skills" :key="skill.id">
-						<th scope="row">{{ index + 1 }}</th>
-						<td>{{ skill.label }}</td>
-						<td>{{ skill.skillcategory_id }}</td>
-						<td>
-							<a
-								href="#" 
-								:data-skill-id="skill.id" 
-								:data-skill-name="skill.label"
-								:data-skill-category="skill.skillcategory_id" 
-								data-bs-toggle="modal" 
-								data-bs-target="#hulaModalSkills" 
-								v-on:click="chosenSkill=skill, formTitle=skill.label, chosenForm='CreateSkill', url=`/api/skills/${skill.id}`, method='PUT'"
-								class="me-2"
-							>Edit</a>
-							<a href="#" v-on:click.prevent="this.deleteSkill(skill.id)">Delete</a>
+					<tr v-for="skill in skills" :key="skill.id">
+						<td class="hoverable-td">
+							<div class="title-actions">
+								<span class="title-actions__maintitle">{{ skill.label }}</span>
+								<div class="title-actions__actions">
+									<a 
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalSkills"
+										v-on:click="formTitle=skill.label, chosenForm = 'CreateSkill', chosenSkill = skill, url=`/api/skills/${skill.id}`, method='PUT'"
+									><i class="bi-pencil-fill me-2"></i></a>
+									<a href="#" v-on:click.prevent="this.deleteSkill(skill.id)"><i class="bi-trash-fill me-2"></i></a>
+								</div>
+							</div>
 						</td>
+						<td>{{ skill.skillcategory_id }}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -108,6 +105,7 @@
 							title: 'Skill removed',
 							time: 1000
 						});
+						this.getAllSkills()
 					}
 				})    
 				.catch((errors) => {

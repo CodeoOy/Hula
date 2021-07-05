@@ -4,7 +4,7 @@
 			<error-message name="name" class="error"></error-message>
 			<label class="form-label">Skill name</label>
 			<v-field
-				v-model="chosenSkill.label"
+				v-model="queryData.label"
 				:rules="isRequired"
 				as="input"
 				type="text"
@@ -17,7 +17,7 @@
 			<label class="form-label">Skill category</label>
 			<error-message name="category" class="error"></error-message>
 			<v-field
-				v-model="chosenSkill.skillcategory_id"
+				v-model="queryData.skillcategory_id"
 				:rules="isRequired"
 				as="select"
 				name="category"
@@ -34,7 +34,7 @@
 			<label class="form-label">Skill scope</label>
 			<error-message name="scope" class="error"></error-message>
 			<v-field
-				v-model="chosenSkill.skillscope_id"
+				v-model="queryData.skillscope_id"
 				:rules="isRequired"
 				as="select"
 				name="scope"
@@ -76,13 +76,13 @@ export default {
 			return value ? true : 'This field is required';
 		},
 		createSkill() {
-			delete this.chosenSkill.id
-			delete this.chosenSkill.updated_by
+			delete this.queryData.id
+			delete this.queryData.updated_by
 			fetch(this.url, {
 				method: this.method,
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.chosenSkill)
+				body: JSON.stringify(this.queryData)
 			})
 			.then(() => {
 				this.$emit('formSent')
@@ -116,6 +116,29 @@ export default {
 		console.log(this.chosenSkill)
 		this.getSkillCategories()
 		this.getSkillScopes()
+	},
+	computed: {
+		queryData: {
+			get () {
+				if (this.chosenSkill) {
+					return {
+						updated_by: "",
+						id: this.chosenSkill.id,
+						skillscope_id: this.chosenSkill.skillscope_id,
+						skillcategory_id: this.chosenSkill.skillcategory_id,
+						label: this.chosenSkill.label,
+					}
+				} else {
+					return {
+						updated_by: "",
+						id: this.chosenSkill.id,
+						skillscope_id: this.chosenSkill.skillscope_id,
+						skillcategory_id: this.chosenSkill.skillcategory_id,
+						label: "",
+					}
+				}
+			}
+		}
 	},
 };
 </script>
