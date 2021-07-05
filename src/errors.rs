@@ -7,11 +7,18 @@ use log::error;
 use serde::Serialize;
 
 #[derive(Debug, Display, Serialize)]
-#[display(fmt = "{} {} {}", table_name, field_name, description)]
+#[display(fmt = "{} {:?}", table_name, field_name)]
 pub struct ForbiddenReference {
 	pub table_name: String,
-	pub field_name: String,
-	pub description: String,
+	pub field_name: Option<String>,
+}
+
+#[derive(Debug, Display, Serialize)]
+#[display(fmt = "{} {:?} {:?}", error_type, description, details)]
+pub struct ForbiddenStruct {
+	pub error_type: ForbiddenType,
+	pub description: Option<String>,
+	pub details: Option<ForbiddenReference>,
 }
 
 #[derive(Debug, Display, Serialize)]
@@ -19,13 +26,12 @@ pub enum ForbiddenType {
 	#[display(fmt = "Admin required")]
 	AdminRequired,
 
-	#[display(fmt = "Unique violated at: {}", _0)]
-	UniqueViolation(ForbiddenReference),
+	#[display(fmt = "Unique violated at")]
+	UniqueViolation,
 
-	#[display(fmt = "Foreign key violated: {}", _0)]
-	ForeignKeyViolation(ForbiddenReference),
+	#[display(fmt = "Foreign key violated")]
+	ForeignKeyViolation,
 }
-
 
 #[derive(Debug, Display)]
 pub enum ServiceError {
@@ -36,7 +42,7 @@ pub enum ServiceError {
 	BadRequest(String),
 
 	#[display(fmt = "Forbidden: {}", _0)]
-	Forbidden(ForbiddenType),
+	Forbidden(ForbiddenStruct),
 
 	#[display(fmt = "Unauthorized")]
 	Unauthorized,
@@ -46,6 +52,9 @@ pub enum ServiceError {
 
 	#[display(fmt = "Gone")]
 	Gone,
+
+	#[display(fmt = "AdminRequired")]
+	AdminRequired,
 }
 
 // impl ResponseError trait allows to convert our errors into http responses with appropriate data
@@ -60,6 +69,11 @@ impl ResponseError for ServiceError {
 			ServiceError::Empty => HttpResponse::NoContent().finish(),
 			ServiceError::Gone => HttpResponse::Gone().finish(),
 			ServiceError::Forbidden(ref forbidden_type) => HttpResponse::Forbidden().json(forbidden_type),
+			ServiceError::AdminRequired => HttpResponse::Forbidden().json(ForbiddenStruct {
+					error_type: ForbiddenType::AdminRequired,
+					description: None,
+					details: None
+				}),
 		}
 	}
 }
@@ -83,23 +97,27 @@ impl From<DBError> for ServiceError {
 					DatabaseErrorKind::UniqueViolation => {
 						let description = format!("{} {} {}", &info.message(), &info.details().unwrap_or_default(), &info.hint().unwrap_or_default());
 						let field_name = info.constraint_name().unwrap_or_default().split('_').last().unwrap_or_default();
-						return ServiceError::Forbidden(ForbiddenType::UniqueViolation(
-							ForbiddenReference {
-								table_name: String::from(info.table_name().unwrap_or_default()), 
-								field_name: String::from(field_name), 
-								description: description, 
-							}));
+						return ServiceError::Forbidden(ForbiddenStruct {
+								error_type: ForbiddenType::UniqueViolation,
+								description: Some(description),
+								details: Some(ForbiddenReference {
+									table_name: String::from(info.table_name().unwrap_or_default()), 
+									field_name: Some(String::from(field_name)), 
+								}),
+							});
 					}
 
 					DatabaseErrorKind::ForeignKeyViolation => {
 						let description = format!("{} {} {}", &info.message(), &info.details().unwrap_or_default(), &info.hint().unwrap_or_default());
-						let field_name = info.constraint_name().unwrap_or_default().split('_').last().unwrap_or_default();
-						return ServiceError::Forbidden(ForbiddenType::ForeignKeyViolation(
-							ForbiddenReference {
+
+						return ServiceError::Forbidden(ForbiddenStruct {
+							error_type: ForbiddenType::ForeignKeyViolation,
+							description: Some(description),
+							details: Some(ForbiddenReference {
 								table_name: String::from(info.table_name().unwrap_or_default()), 
-								field_name: String::from(field_name), 
-								description: description, 
-							}));
+								field_name: None, 
+							}),
+						});
 					}
 
 					_ => {
