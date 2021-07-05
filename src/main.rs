@@ -8,13 +8,13 @@ use actix_web::http::{header, StatusCode};
 use actix_web::{get, middleware, web, App, HttpRequest, HttpResponse, HttpServer, Result};
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
-use log::{info, error, trace};
+use log::{error, info, trace};
 
 mod email_service;
 mod errors;
 mod handlers;
-mod repositories;
 mod models;
+mod repositories;
 mod schema;
 mod utils;
 
@@ -136,7 +136,9 @@ async fn main() -> std::io::Result<()> {
 							.route(web::post().to(handlers::skills_handler::create_skill_category)),
 					)
 					.service(
-						web::resource("/skills/categories/{id}").route(web::delete().to(handlers::skills_handler::delete_skill_category)),
+						web::resource("/skills/categories/{id}")
+							.route(web::delete().to(handlers::skills_handler::delete_skill_category))
+							.route(web::put().to(handlers::skills_handler::update_skill_category)),
 					)
 					.service(
 						web::resource("/skills/scopes")
