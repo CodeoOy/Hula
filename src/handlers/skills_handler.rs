@@ -2,7 +2,7 @@ use actix_web::{error::BlockingError, web, HttpResponse};
 use serde::Deserialize;
 use log::trace;
 
-use crate::errors::{ForbiddenType, ServiceError};
+use crate::errors::ServiceError;
 use crate::models::skills::Pool;
 use crate::models::users::LoggedUser;
 use crate::repositories::*;
@@ -115,7 +115,7 @@ pub async fn create_skill_category(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+		return Err(ServiceError::AdminRequired);
 	}
 
 	let res = web::block(move || skillcategories_repository::create_skill_category(categorydata.label.clone(), categorydata.parent_id, logged_user.email, &pool)).await;
@@ -137,7 +137,7 @@ pub async fn delete_skill_category(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+		return Err(ServiceError::AdminRequired);
 	}
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
@@ -165,7 +165,7 @@ pub async fn delete_skill_scope_level(
 	trace!("Deleting a skill scope level: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
 
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+		return Err(ServiceError::AdminRequired);
 	}
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
@@ -194,7 +194,7 @@ pub async fn create_skill(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+		return Err(ServiceError::AdminRequired);
 	}
 
 	let res = web::block(move || skills_repository::create_skill(skilldata.label.clone(), skilldata.skillcategory_id, skilldata.skillscope_id, logged_user.email, &pool)).await;
@@ -217,7 +217,7 @@ pub async fn update_skill(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+		return Err(ServiceError::AdminRequired);
 	}
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
@@ -242,7 +242,7 @@ pub async fn update_skill_scope(
 	trace!("Updating a scope: scopedata = {:#?} logged_user = {:#?}", &scopedata, &logged_user);
 
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+		return Err(ServiceError::AdminRequired);
 	}
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
@@ -267,7 +267,7 @@ pub async fn create_skill_scope(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+		return Err(ServiceError::AdminRequired);
 	}
 
 	let res = web::block(move || skillscopes_repository::create_skill_scope(scopedata.label.clone(), logged_user.email, &pool)).await;
@@ -289,7 +289,7 @@ pub async fn delete_skill_scope(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+		return Err(ServiceError::AdminRequired);
 	}
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
@@ -318,7 +318,7 @@ pub async fn create_skill_scope_level(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+		return Err(ServiceError::AdminRequired);
 	}
 
 	let res = web::block(move || skillscopelevels_repository::create_skill_scope_level(scopeleveldata.label.clone(), scopeleveldata.percentage, scopeleveldata.skillscope_id.clone(), logged_user.email, &pool)).await;
@@ -340,7 +340,7 @@ pub async fn update_skill_scope_level(
 	trace!("Updating a scope level: scopeleveldata = {:#?} logged_user = {:#?}", &scopeleveldata, &logged_user);
 
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+		return Err(ServiceError::AdminRequired);
 	}
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
@@ -365,7 +365,7 @@ pub async fn delete_skill(
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
-		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+		return Err(ServiceError::AdminRequired);
 	}
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
