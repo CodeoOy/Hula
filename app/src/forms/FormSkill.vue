@@ -13,7 +13,7 @@
 				aria-label="Skill name"
 			></v-field>
 		</div>
-		<div class="mb-2">
+		<div class="mb-2" v-if="chosenSkill">
 			<label class="form-label">Skill category</label>
 			<error-message name="category" class="error"></error-message>
 			<v-field
@@ -68,6 +68,7 @@ export default {
 	},
 	props: {
 		chosenSkill: {},
+		chosenCategory: {},
 		url: '',
 		method: ''
 	},	
@@ -113,7 +114,7 @@ export default {
 		}
 	},
 	mounted() {
-		console.log(this.chosenSkill)
+		console.log(this.queryData)
 		this.getSkillCategories()
 		this.getSkillScopes()
 	},
@@ -127,6 +128,14 @@ export default {
 						skillscope_id: this.chosenSkill.skillscope_id,
 						skillcategory_id: this.chosenSkill.skillcategory_id,
 						label: this.chosenSkill.label,
+					}
+				} else if (this.chosenCategory){
+					return {
+						updated_by: "",
+						id: "",
+						skillscope_id: "",
+						skillcategory_id: this.chosenCategory.id,
+						label: "",
 					}
 				} else {
 					return {

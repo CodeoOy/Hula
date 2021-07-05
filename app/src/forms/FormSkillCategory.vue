@@ -19,7 +19,6 @@
 			<error-message name="parent" class="error"></error-message>
 			<v-field
 				v-model="queryData.parent_id"
-				:rules="isRequired"
 				as="select"
 				name="parent"
 				class="form-select"

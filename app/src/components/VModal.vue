@@ -20,7 +20,10 @@ export default {
 	props: {	
 		modalTitle: String,
 		modalID: String,
-		modalStatic: false,
+		modalStatic: {
+			type: Boolean,
+			default: false
+		}
 	}
 };
 </script>

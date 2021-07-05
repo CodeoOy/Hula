@@ -4,6 +4,7 @@
 			<component 
 				:is='modalComponent' 
 				:chosenSkill="chosenSkill" 
+				:chosenCategory="chosenCategory"
 				:url="url"
 				:method="method"
 				v-on:form-sent="hideModalUpdate"
@@ -40,6 +41,12 @@
 							<div class="title-actions">
 								<span class="title-actions__maintitle">{{ category.label }}</span>
 								<div class="title-actions__actions">
+									<a 
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalSkills"
+										v-on:click="formTitle=`Add skill to ${category.label}`, chosenForm = 'CreateSkill', chosenCategory = category, chosenSkill = null, url='/api/skills', method='POST'"
+									><i class="bi-plus-circle-fill me-2"></i></a>
 									<a 
 										href="#"
 										data-bs-toggle="modal"
