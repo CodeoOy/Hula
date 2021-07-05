@@ -15,9 +15,6 @@ export default {
 	name: 'SkillScope',
 	data() {
 		return {
-			queryData: {
-				label: "",
-			},
 			categories: {},
 		};
 	},
@@ -48,6 +45,18 @@ export default {
 			.catch((errors) => {
 				this.$store.commit('errorHandling', errors)
 			})
+		}
+	},
+	computed: {
+		queryData: {
+			get () {
+				if (this.chosenScope) {
+					return this.chosenScope;
+				}
+				return {
+					label: ""
+				}
+			}
 		}
 	}
 };
