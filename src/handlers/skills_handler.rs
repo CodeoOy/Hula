@@ -1,6 +1,6 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
-use serde::Deserialize;
 use log::trace;
+use serde::Deserialize;
 
 use crate::errors::{ForbiddenType, ServiceError};
 use crate::models::skills::Pool;
@@ -41,7 +41,7 @@ pub async fn get_all_skills(pool: web::Data<Pool>, _logged_user: LoggedUser) -> 
 				return Ok(HttpResponse::Ok().json(&skills));
 			}
 			Err(ServiceError::Empty)
-		},
+		}
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -59,7 +59,7 @@ pub async fn get_skillscopes(pool: web::Data<Pool>, _logged_user: LoggedUser) ->
 				return Ok(HttpResponse::Ok().json(&skillscopes));
 			}
 			Err(ServiceError::Empty)
-		},
+		}
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -77,7 +77,7 @@ pub async fn get_skill_levels(pool: web::Data<Pool>, _logged_user: LoggedUser) -
 				return Ok(HttpResponse::Ok().json(&skill_levels));
 			}
 			Err(ServiceError::Empty)
-		},
+		}
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -98,7 +98,7 @@ pub async fn get_skill_categories(
 				return Ok(HttpResponse::Ok().json(&categories));
 			}
 			Err(ServiceError::Empty)
-		},
+		}
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -111,14 +111,26 @@ pub async fn create_skill_category(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Creating a skill category: categorydata = {:#?} logged_user = {:#?}", &categorydata, &logged_user);
+	trace!(
+		"Creating a skill category: categorydata = {:#?} logged_user = {:#?}",
+		&categorydata,
+		&logged_user
+	);
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || skillcategories_repository::create_skill_category(categorydata.label.clone(), categorydata.parent_id, logged_user.email, &pool)).await;
+	let res = web::block(move || {
+		skillcategories_repository::create_skill_category(
+			categorydata.label.clone(),
+			categorydata.parent_id,
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
@@ -133,7 +145,11 @@ pub async fn delete_skill_category(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Deleting a skill category: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+	trace!(
+		"Deleting a skill category: uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&logged_user
+	);
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
@@ -149,7 +165,46 @@ pub async fn delete_skill_category(
 				return Ok(HttpResponse::Ok().finish());
 			}
 			Err(ServiceError::Gone)
+		}
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
+	}
+}
+
+pub async fn update_skill_category(
+	uuid_data: web::Path<String>,
+	categorydata: web::Json<CategoryData>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!(
+		"Creating a skill categories: categorydata = {:#?} logged_user = {:#?}",
+		&categorydata,
+		&logged_user
+	);
+
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false {
+		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
+	}
+
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || {
+		skillcategories_repository::update_skill_categories(
+			id,
+			categorydata.label.clone(),
+			categorydata.parent_id.clone(),
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
+	match res {
+		Ok(Some(skillcategory)) => Ok(HttpResponse::Ok().json(&skillcategory)),
+		Ok(None) => Err(ServiceError::Gone),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -162,7 +217,11 @@ pub async fn delete_skill_scope_level(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Deleting a skill scope level: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+	trace!(
+		"Deleting a skill scope level: uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&logged_user
+	);
 
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
@@ -177,7 +236,7 @@ pub async fn delete_skill_scope_level(
 				return Ok(HttpResponse::Ok().finish());
 			}
 			Err(ServiceError::Gone)
-		},
+		}
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -190,14 +249,27 @@ pub async fn create_skill(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Creating a skill: skilldata = {:#?} logged_user = {:#?}", &skilldata, &logged_user);
+	trace!(
+		"Creating a skill: skilldata = {:#?} logged_user = {:#?}",
+		&skilldata,
+		&logged_user
+	);
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || skills_repository::create_skill(skilldata.label.clone(), skilldata.skillcategory_id, skilldata.skillscope_id, logged_user.email, &pool)).await;
+	let res = web::block(move || {
+		skills_repository::create_skill(
+			skilldata.label.clone(),
+			skilldata.skillcategory_id,
+			skilldata.skillscope_id,
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
@@ -213,7 +285,11 @@ pub async fn update_skill(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Creating a skill: skilldata = {:#?} logged_user = {:#?}", &skilldata, &logged_user);
+	trace!(
+		"Creating a skill: skilldata = {:#?} logged_user = {:#?}",
+		&skilldata,
+		&logged_user
+	);
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
@@ -222,7 +298,16 @@ pub async fn update_skill(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	let res = web::block(move || skills_repository::update_skill(id, skilldata.label.clone(), skilldata.skillcategory_id, logged_user.email, &pool)).await;
+	let res = web::block(move || {
+		skills_repository::update_skill(
+			id,
+			skilldata.label.clone(),
+			skilldata.skillcategory_id,
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
 	match res {
 		Ok(Some(skill)) => Ok(HttpResponse::Ok().json(&skill)),
 		Ok(None) => Err(ServiceError::Gone),
@@ -239,7 +324,11 @@ pub async fn update_skill_scope(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Updating a scope: scopedata = {:#?} logged_user = {:#?}", &scopedata, &logged_user);
+	trace!(
+		"Updating a scope: scopedata = {:#?} logged_user = {:#?}",
+		&scopedata,
+		&logged_user
+	);
 
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
@@ -247,7 +336,10 @@ pub async fn update_skill_scope(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	let res = web::block(move || skillscopes_repository::update_skill_scope(id, scopedata.label.clone(), logged_user.email, &pool)).await;
+	let res = web::block(move || {
+		skillscopes_repository::update_skill_scope(id, scopedata.label.clone(), logged_user.email, &pool)
+	})
+	.await;
 	match res {
 		Ok(Some(scope)) => Ok(HttpResponse::Ok().json(&scope)),
 		Ok(None) => Err(ServiceError::Gone),
@@ -263,14 +355,21 @@ pub async fn create_skill_scope(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Creating a skill scope: scopedata = {:#?} logged_user = {:#?}", &scopedata, &logged_user);
+	trace!(
+		"Creating a skill scope: scopedata = {:#?} logged_user = {:#?}",
+		&scopedata,
+		&logged_user
+	);
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || skillscopes_repository::create_skill_scope(scopedata.label.clone(), logged_user.email, &pool)).await;
+	let res = web::block(move || {
+		skillscopes_repository::create_skill_scope(scopedata.label.clone(), logged_user.email, &pool)
+	})
+	.await;
 	match res {
 		Ok(skill_scope) => Ok(HttpResponse::Ok().json(&skill_scope)),
 		Err(err) => match err {
@@ -285,7 +384,11 @@ pub async fn delete_skill_scope(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Deleting a skill scope: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+	trace!(
+		"Deleting a skill scope: uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&logged_user
+	);
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
@@ -301,7 +404,7 @@ pub async fn delete_skill_scope(
 				return Ok(HttpResponse::Ok().finish());
 			}
 			Err(ServiceError::Gone)
-		},
+		}
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -314,14 +417,27 @@ pub async fn create_skill_scope_level(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Creating a skill scope level: scopeleveldata = {:#?} logged_user = {:#?}", &scopeleveldata, &logged_user);
+	trace!(
+		"Creating a skill scope level: scopeleveldata = {:#?} logged_user = {:#?}",
+		&scopeleveldata,
+		&logged_user
+	);
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
 	}
 
-	let res = web::block(move || skillscopelevels_repository::create_skill_scope_level(scopeleveldata.label.clone(), scopeleveldata.percentage, scopeleveldata.skillscope_id.clone(), logged_user.email, &pool)).await;
+	let res = web::block(move || {
+		skillscopelevels_repository::create_skill_scope_level(
+			scopeleveldata.label.clone(),
+			scopeleveldata.percentage,
+			scopeleveldata.skillscope_id.clone(),
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
 	match res {
 		Ok(skill_scope_level) => Ok(HttpResponse::Ok().json(&skill_scope_level)),
 		Err(err) => match err {
@@ -337,7 +453,11 @@ pub async fn update_skill_scope_level(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Updating a scope level: scopeleveldata = {:#?} logged_user = {:#?}", &scopeleveldata, &logged_user);
+	trace!(
+		"Updating a scope level: scopeleveldata = {:#?} logged_user = {:#?}",
+		&scopeleveldata,
+		&logged_user
+	);
 
 	if logged_user.isadmin == false {
 		return Err(ServiceError::Forbidden(ForbiddenType::AdminRequired));
@@ -345,7 +465,16 @@ pub async fn update_skill_scope_level(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	let res = web::block(move || skillscopelevels_repository::update_skill_scope_level(id, scopeleveldata.label.clone(), scopeleveldata.percentage.clone(), logged_user.email, &pool)).await;
+	let res = web::block(move || {
+		skillscopelevels_repository::update_skill_scope_level(
+			id,
+			scopeleveldata.label.clone(),
+			scopeleveldata.percentage.clone(),
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
 	match res {
 		Ok(Some(scopelevel)) => Ok(HttpResponse::Ok().json(&scopelevel)),
 		Ok(None) => Err(ServiceError::Gone),
@@ -361,7 +490,11 @@ pub async fn delete_skill(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Deleting a skill: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+	trace!(
+		"Deleting a skill: uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&logged_user
+	);
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
@@ -377,11 +510,10 @@ pub async fn delete_skill(
 				return Ok(HttpResponse::Ok().finish());
 			}
 			Err(ServiceError::Gone)
-		},
+		}
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
 }
-
