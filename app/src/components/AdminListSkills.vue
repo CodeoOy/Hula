@@ -127,6 +127,8 @@
 				})    
 				.catch((errors) => {
 					console.log(errors);
+					this.$store.commit('deleteUser')
+					this.$router.push({ name: 'page-login' })
 				})
 			},
 			deleteSkill(id) {
