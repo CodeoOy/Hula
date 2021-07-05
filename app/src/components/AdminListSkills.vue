@@ -152,6 +152,22 @@
 					this.$store.commit('errorHandling', errors)
 				})
 			},
+			deleteCategory(id) {
+				fetch(`/api/skills/categories/${id}`, {method: 'DELETE'})
+				.then(response => { 
+					if (response.ok) {
+						this.$flashMessage.show({
+							type: 'success',
+							title: 'Category removed',
+							time: 1000
+						});
+						this.getSkillCategories()
+					}
+				})    
+				.catch((errors) => {
+					this.$store.commit('errorHandling', errors)
+				})
+			},
 			filterSkills(id) {
 				return this.skills.filter(skill => skill.skillcategory_id == id)
 			},
