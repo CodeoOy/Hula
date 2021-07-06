@@ -16,7 +16,6 @@
 		</div>
 		<div class="mb-2">
 			<label class="form-label">Category parent (optional)</label>
-			{{ queryData }}
 			<error-message name="parent" class="error"></error-message>
 			<v-field
 				as="select"
@@ -93,8 +92,7 @@ export default {
 		queryData: {
 			get () {
 				if (this.chosenCategory) {
-					console.log(this.chosenCategory)
-					return this.chosenCategory;
+					return this.chosenCategory
 				}
 				console.log("No chosen category")
 				return {
