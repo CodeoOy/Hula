@@ -117,7 +117,6 @@ const store = createStore({
 			state.chosenproject = {}
 		},
 		errorHandling (state, errors) {
-			console.log(errors);
 			state.loggeduser = null
 			localStorage.removeItem('user');
 			router.push({ name: 'page-login' })
