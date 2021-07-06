@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<VModal :modalTitle="formTitle" :modalID="'Scopes'" ref='hulaModalScopes'>
+		<VModal :modalTitle="formTitle" :modalID="'Scopes'">
 			<component 
 				:is='modalComponent' 
 				:chosenScope="chosenScope"
@@ -63,6 +63,8 @@
 										v-on:click="chosenScope = scope, formTitle = lvl.label, chosenForm = 'Level', chosenLevel = lvl, url = `/api/skills/levels/${lvl.id}`, method = 'PUT'"
 									><i class="bi-pencil-fill me-2"></i></a>
 									<a href="#" v-on:click.prevent="this.deleteLevel(lvl.id)"><i class="bi-trash-fill me-2"></i></a>
+									<a href="#" v-on:click.prevent=""><i class="bi-caret-up-fill me-1"></i></a>
+									<a href="#" v-on:click.prevent=""><i class="bi-caret-down-fill me-2"></i></a>
 								</div>
 							</div>
 						</td>
