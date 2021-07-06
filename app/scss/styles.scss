@@ -112,9 +112,17 @@ a {
 	transform: translate3d(0, 0, 0);
 	backface-visibility: hidden;
 	perspective: 1000px;
-	padding: 10px;
+	padding: 2px;
     font-weight: 900;
+	font-size: 0.9rem;
+	border-radius: 3px 3px 0px 0px;
+	margin-left: 4px;
+	margin-right: 4px;
     color: #fff;
+	display: block;
+	& + * {
+		background-color: lighten($danger, 20%) !important;	
+	}
 }
 
 .btn-gradient {
