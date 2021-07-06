@@ -24,6 +24,7 @@
 				aria-label="Category parent"
 				v-model="queryData.parent_id"
 			>
+				<option :value="null">No parent</option>
 				<option v-for="category in categories" :key="category" :value="category.id">
 					{{ category.label }}
 				</option>
