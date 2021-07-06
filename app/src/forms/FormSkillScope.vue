@@ -1,9 +1,16 @@
 <template>
 	<v-form v-on:submit="createUpdateSkillScope">
-		<error-message name="name" class="error"></error-message>
 		<div class="mb-2">
 			<label class="form-label">Scope name</label>
-			<v-field name="name" type="text" placeholder="One to ten" :rules="isRequired" class="form-control" v-model="queryData.label"></v-field>
+			<error-message name="name" class="error"></error-message>
+			<v-field
+				name="name" 
+				type="text" 
+				placeholder="One to ten" 
+				:rules="isRequired" 
+				class="form-control" 
+				v-model="queryData.label"
+			></v-field>
 		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 	</v-form>  
@@ -15,9 +22,6 @@ export default {
 	name: 'SkillScope',
 	data() {
 		return {
-			queryData: {
-				label: "",
-			},
 			categories: {},
 		};
 	},
@@ -48,6 +52,18 @@ export default {
 			.catch((errors) => {
 				this.$store.commit('errorHandling', errors)
 			})
+		}
+	},
+	computed: {
+		queryData: {
+			get () {
+				if (this.chosenScope) {
+					return this.chosenScope;
+				}
+				return {
+					label: ""
+				}
+			}
 		}
 	}
 };

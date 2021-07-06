@@ -51,7 +51,7 @@
 										href="#"
 										data-bs-toggle="modal"
 										data-bs-target="#hulaModalSkills"
-										v-on:click="formTitle=category.label, chosenForm = 'Category', chosenCategory = category, url=`/api/skills/categories/${category.id}`, method='PUT'"
+										v-on:click="formTitle='Edit category', chosenForm = 'Category', chosenCategory = category, url=`/api/skills/categories/${category.id}`, method='PUT'"
 									><i class="bi-pencil-fill me-2"></i></a>
 									<a href="#" v-on:click.prevent="this.deleteCategory(category.id)"><i class="bi-trash-fill me-2"></i></a>
 								</div>
@@ -146,6 +146,22 @@
 							time: 1000
 						});
 						this.getAllSkills()
+					}
+				})    
+				.catch((errors) => {
+					this.$store.commit('errorHandling', errors)
+				})
+			},
+			deleteCategory(id) {
+				fetch(`/api/skills/categories/${id}`, {method: 'DELETE'})
+				.then(response => { 
+					if (response.ok) {
+						this.$flashMessage.show({
+							type: 'success',
+							title: 'Category removed',
+							time: 1000
+						});
+						this.getSkillCategories()
 					}
 				})    
 				.catch((errors) => {
