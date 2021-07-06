@@ -1,41 +1,37 @@
-use crate::errors::ServiceError;
 use crate::models::users::{Pool, User};
+use Error::NotFound;
 use actix_web::web;
 use diesel::{prelude::*, PgConnection};
+use diesel::result::Error;
 
-pub fn query_all(pool: &web::Data<Pool>) -> Result<Vec<User>, ServiceError> {
+pub fn query_all(pool: &web::Data<Pool>) -> Result<Vec<User>, Error> {
 	use crate::schema::users::dsl::users;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let items = users.load::<User>(conn)?;
-	if items.is_empty() == false {
-		return Ok(items);
-	}
-	Err(ServiceError::Empty)
+	Ok(items)
 }
 
-pub fn get_by_email(q_email: String, pool: &web::Data<Pool>) -> Result<User, ServiceError> {
+pub fn get_by_email(q_email: String, pool: &web::Data<Pool>) -> Result<Option<User>, Error> {
 	use crate::schema::users::dsl::{email, users};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let mut items = users.filter(email.eq(&q_email)).load::<User>(conn)?;
 	if let Some(user) = items.pop() {
-		return Ok(user);
+		return Ok(Some(user));
 	}
-	Err(ServiceError::Empty)
+
+	Ok(None)
 }
 
-pub fn get(q_id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<User, ServiceError> {
+pub fn get(q_id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<User, Error> {
 	use crate::schema::users::dsl::{id, users};
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let mut items = users.filter(id.eq(&q_id)).load::<User>(conn)?;
-	if let Some(user) = items.pop() {
-		return Ok(user);
-	}
-	Err(ServiceError::Empty)
+	let user = users.filter(id.eq(&q_id)).get_result::<User>(conn)?;
+	Ok(user)
 }
 
-pub fn create(q_email: String, q_password: String, q_first_name: String, q_last_name: String, pool: &web::Data<Pool>) -> Result<User, ServiceError> {
+pub fn create(q_email: String, q_password: String, q_first_name: String, q_last_name: String, pool: &web::Data<Pool>) -> Result<User, Error> {
 	use crate::schema::users::dsl::users;
 	let conn: &PgConnection = &pool.get().unwrap();
 
@@ -47,38 +43,41 @@ pub fn create(q_email: String, q_password: String, q_first_name: String, q_last_
 }
 
 
-pub fn query_update(
-	uuid_data: String,
-	first_name: String,
-	last_name: String,
-	user_available: bool,
-	email: String,
-	pool: web::Data<Pool>,
-) -> Result<User, crate::errors::ServiceError> {
+pub fn update(
+	uuid_data: uuid::Uuid,
+	q_first_name: String,
+	q_last_name: String,
+	q_user_available: bool,
+	q_email: String,
+	pool: &web::Data<Pool>,
+) -> Result<User, Error> {
 	use crate::schema::users::dsl::{available, firstname, id, lastname, updated_by, users};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+
 	let mut items = diesel::update(users)
-		.filter(id.eq(uuid_query))
+		.filter(id.eq(uuid_data))
 		.set((
-			firstname.eq(first_name),
-			lastname.eq(last_name),
-			available.eq(user_available),
-			updated_by.eq(email),
+			firstname.eq(q_first_name),
+			lastname.eq(q_last_name),
+			available.eq(q_user_available),
+			updated_by.eq(q_email),
 		))
 		.load::<User>(conn)?;
+	
 	if let Some(user_res) = items.pop() {
 		return Ok(user_res.into());
 	}
-	Err(ServiceError::Unauthorized)
+	Err(NotFound)
 }
 
-pub fn query_delete_user(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
+pub fn delete_user(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::users::dsl::id;
 	use crate::schema::users::dsl::*;
 
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	diesel::delete(users.filter(id.eq(uuid_query))).execute(conn)?;
-	Ok(())
+	let deleted = diesel::delete(users.filter(id.eq(uuid_data))).execute(conn)?;
+	if deleted > 0 {
+		return Ok(());
+	}
+	Err(NotFound)
 }

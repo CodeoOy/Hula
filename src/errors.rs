@@ -126,7 +126,11 @@ impl From<DBError> for ServiceError {
 				}
 
 				ServiceError::InternalServerError
-			} 
+			}
+			DBError::NotFound => {
+				error!("Not found.");
+				ServiceError::Gone
+			}			 
 			error => {
 				error!("Database query (DIESEL) failed: {:#?}", error);
 				ServiceError::InternalServerError

@@ -23,7 +23,7 @@ pub fn create_projectneed(
 	q_end_time: Option<NaiveDateTime>,
 	q_email: String,
 	pool: &web::Data<Pool>,
-) -> Result<ProjectNeed, crate::errors::ServiceError> {
+) -> Result<ProjectNeed, Error> {
 	use crate::schema::projectneeds::dsl::projectneeds;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let new_projectneed = ProjectNeed {
