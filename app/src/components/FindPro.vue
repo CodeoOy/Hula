@@ -47,7 +47,9 @@
 				.then(response => {
 					this.$store.commit('errorHandling', response)
 				})  
-				.then((response) => response.json())
+				.then(response => { 
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
 				.then(response => {
 					this.users = response;
 					this.$emit('usersfetched', this.users)

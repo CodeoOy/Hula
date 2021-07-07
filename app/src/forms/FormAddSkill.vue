@@ -99,7 +99,9 @@ export default {
 		},
 		getAllSkills() {
 			fetch('/api/skills', {method: 'GET'})
-			.then((response) => response.json())
+			.then(response => { 
+				return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+			})
 			.then(response => { 
 				this.availableSkills = response;
 			})    
@@ -109,7 +111,9 @@ export default {
 		},
 		getAllLevels() {
 			fetch('/api/skills/levels', {method: 'GET'})
-			.then((response) => response.json())
+			.then(response => { 
+				return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+			})
 			.then(response => { 
 				this.skillLevels = response;
 			})    

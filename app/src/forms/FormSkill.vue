@@ -85,8 +85,12 @@ export default {
 				credentials: 'include',
 				body: JSON.stringify(this.queryData)
 			})
-			.then(() => {
-				this.$emit('formSent')
+			.then(response => {
+				if (response.status >= 200 && response.status <= 299) {
+					this.$emit('formSent')
+				} else {
+					this.$store.commit('errorHandling', response)
+				}
 			})
 			.catch((errors) => {
 				this.$store.commit('errorHandling', errors)
@@ -94,7 +98,9 @@ export default {
 		},
 		getSkillCategories() {
 			fetch('/api/skills/categories', {method: 'GET'})
-			.then((response) => response.json())
+			.then(response => { 
+				return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+			})
 			.then(response => { 
 				this.categories = response;
 			})    
@@ -104,7 +110,9 @@ export default {
 		},
 		getSkillScopes() {
 			fetch('/api/skills/scopes', {method: 'GET'})
-			.then((response) => response.json())
+			.then(response => { 
+				return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+			})
 			.then(response => { 
 				this.scopes = response;
 			})    

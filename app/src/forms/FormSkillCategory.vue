@@ -76,7 +76,9 @@ export default {
 		},
 		getSkillCategories() {
 			fetch('/api/skills/categories', {method: 'GET'})
-			.then((response) => response.json())
+			.then(response => { 
+				return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+			})
 			.then(response => { 
 				this.categories = response;
 			})    

@@ -118,7 +118,9 @@
 		methods: {
 			getAllSkills() {
 				fetch('/api/skills', {method: 'GET'})
-				.then((response) => response.json())
+				.then(response => { 
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
 				.then(response => { 
 					this.skills = response;
 				})    
@@ -132,7 +134,6 @@
 					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
 				}) 
 				.then(response => { 
-					console.log(response)
 					this.categories = response;
 				})    
 				.catch((errors) => {

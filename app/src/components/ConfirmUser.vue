@@ -21,7 +21,9 @@
 					headers: {"Content-Type": "application/json"}, 
 					body: JSON.stringify(this.registrationData)
 				})
-				.then((response) => response.json())
+				.then(response => { 
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
 				.then(() => {    
 					this.$flashMessage.show({
 						type: 'success',

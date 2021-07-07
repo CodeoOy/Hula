@@ -43,7 +43,9 @@
 					method: 'GET',
 					headers: {"Content-Type": "application/json"}
 				})
-				.then((response) => response.json())
+				.then(response => { 
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
 				.then(response => {
 					//this.$store.commit('errorHandling', response)
 					this.matches = response.slice(0,4);

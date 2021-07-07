@@ -107,7 +107,9 @@
 		methods: {
 			getAllScopes() {
 				fetch('/api/skills/scopes', {method: 'GET'})
-				.then((response) => response.json())
+				.then(response => { 
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
 				.then(response => { 
 					this.skillScopes = response;
 				})    
@@ -117,7 +119,9 @@
 			},
 			getAllLevels() {
 				fetch('/api/skills/levels', {method: 'GET'})
-				.then((response) => response.json())
+				.then(response => { 
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
 				.then(response => { 
 					this.skillLevels = response; // Handle 204
 				})

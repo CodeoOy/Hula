@@ -47,7 +47,9 @@
 						"last_name": last_name,
 					}
 					fetch('/api/invitations', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
-					.then((response) => response.json())
+					.then(response => { 
+						return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+					})
 					.then((response) => {    
 						localStorage.setItem('user', JSON.stringify(response));
 						this.$flashMessage.show({
