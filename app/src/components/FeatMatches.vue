@@ -45,10 +45,10 @@
 				})
 				.then((response) => response.json())
 				.then(response => {
+					//this.$store.commit('errorHandling', response)
 					this.matches = response.slice(0,4);
 				})    
 				.catch((errors) => {
-					console.log("Matches not found. Error data: ");
 					console.log(errors)
 				})
 			}

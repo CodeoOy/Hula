@@ -44,15 +44,17 @@
 					credentials: 'include',
 					body: JSON.stringify(this.queryData)
 				})
+				.then(response => {
+					this.$store.commit('errorHandling', response)
+				})  
 				.then((response) => response.json())
-				.then(response => { 
+				.then(response => {
 					this.users = response;
 					this.$emit('usersfetched', this.users)
+					console.log("Got to the fetching")
 				})    
 				.catch((errors) => {
-					this.users = {}
-					this.$emit('usersfetched', this.users)
-					this.$store.commit('errorHandling', errors)
+					console.log(errors)
 				})
 			}
 		}
