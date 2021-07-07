@@ -63,8 +63,8 @@
 										v-on:click="chosenScope = scope, formTitle = lvl.label, chosenForm = 'Level', chosenLevel = lvl, url = `/api/skills/levels/${lvl.id}`, method = 'PUT'"
 									><i class="bi-pencil-fill me-2"></i></a>
 									<a href="#" v-on:click.prevent="this.deleteLevel(lvl.id)"><i class="bi-trash-fill me-2"></i></a>
-									<a href="#" v-on:click.prevent=""><i class="bi-caret-up-fill me-1"></i></a>
-									<a href="#" v-on:click.prevent=""><i class="bi-caret-down-fill me-2"></i></a>
+									<a href="#" v-on:click.prevent="chosenLevel = lvl, chosenLevel.swap_direction = 'Better', this.swapLevels(lvl.id);"><i class="bi-caret-up-fill me-1"></i></a>
+									<a href="#" v-on:click.prevent="chosenLevel = lvl, chosenLevel.swap_direction = 'Worse', this.swapLevels(lvl.id);"><i class="bi-caret-down-fill me-2"></i></a>
 								</div>
 							</div>
 						</td>
@@ -105,6 +105,21 @@
 			FormGeneralRename
 		},
 		methods: {
+			swapLevels(id) {
+				fetch(`/api/skills/levels/${id}`, {
+					method: 'PUT',
+					headers: {"Content-Type": "application/json"},
+					credentials: 'include',
+					body: JSON.stringify(this.chosenLevel)
+				})
+				.then(response => { 
+					this.getAllLevels()
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
+				.catch((errors) => {
+					this.$store.commit('errorHandling', errors)
+				})
+			},
 			getAllScopes() {
 				fetch('/api/skills/scopes', {method: 'GET'})
 				.then(response => { 
