@@ -34,9 +34,9 @@ pub async fn register_user(
 fn query(user_data: UserData, pool: web::Data<Pool>) -> Result<User, crate::errors::ServiceError> {
 	let invitation_id = uuid::Uuid::parse_str(&user_data.id)?;
 
-	let invitation = invitations_repository::get_by_invitation(invitation_id.clone(), user_data.email.clone(), &pool)?;
+	let result = invitations_repository::get_by_invitation(invitation_id.clone(), user_data.email.clone(), &pool);
 
-	if let Some(invitation) = invitation {
+	if let Ok(invitation) = result {
 		if invitation.expires_at > chrono::Local::now().naive_local() {
 			let password: String = user_data.password;
 			let user = users_repository::create(invitation.email, password, invitation.first_name, invitation.last_name, &pool)?;

@@ -1,6 +1,7 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
 use serde::Deserialize;
 use log::{debug, trace};
+use diesel::result::Error::NotFound;
 
 use crate::email_service::send_invitation;
 use crate::errors::ServiceError;
@@ -53,11 +54,11 @@ fn query(
 	let res = users_repository::get_by_email(eml.clone(), &pool);
 	let password: String = hash_password(&psw)?;
 	match res {
-		Ok(Some(user)) => {
+		Ok(user) => {
 			debug!("User {} already found. Cannot process invitation.", &user.email);
 			return Err(ServiceError::Unauthorized);
 		},
-		Ok(None) => {
+		Err(NotFound) => {
 			let invitation = invitations_repository::create_invitation(eml, password, first_name, last_name, &pool)?;
 			Ok(invitation)
 		},

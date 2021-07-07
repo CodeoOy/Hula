@@ -11,16 +11,15 @@ pub fn query_all(pool: &web::Data<Pool>) -> Result<Vec<User>, Error> {
 	Ok(items)
 }
 
-pub fn get_by_email(q_email: String, pool: &web::Data<Pool>) -> Result<Option<User>, Error> {
+pub fn get_by_email(q_email: String, pool: &web::Data<Pool>) -> Result<User, Error> {
 	use crate::schema::users::dsl::{email, users};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let mut items = users.filter(email.eq(&q_email)).load::<User>(conn)?;
 	if let Some(user) = items.pop() {
-		return Ok(Some(user));
+		return Ok(user);
 	}
-
-	Ok(None)
+	Err(NotFound)
 }
 
 pub fn get(q_id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<User, Error> {
@@ -65,7 +64,7 @@ pub fn update(
 		.load::<User>(conn)?;
 	
 	if let Some(user_res) = items.pop() {
-		return Ok(user_res.into());
+		return Ok(user_res);
 	}
 	Err(NotFound)
 }

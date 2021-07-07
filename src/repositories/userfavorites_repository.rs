@@ -24,7 +24,7 @@ pub fn add_favorite_project(
 		.values(&new_favorite)
 		.execute(conn)?;
 
-	Ok(new_favorite.into())
+	Ok(new_favorite)
 }
 
 pub fn delete_favorite_project(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {

@@ -2,6 +2,7 @@ use actix_identity::Identity;
 use actix_web::{error::BlockingError, web, HttpResponse};
 use serde::Deserialize;
 use log::{debug, trace};
+use diesel::result::Error::NotFound;
 
 use crate::errors::ServiceError;
 use crate::models::users::{LoggedUser, Pool, Session};
@@ -27,7 +28,12 @@ pub async fn logout(
 			Ok(HttpResponse::Ok().finish())
 		},
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Error(service_error) =>  {
+				match service_error {
+					NotFound => Ok(HttpResponse::Ok().finish()),
+					_ => Err(service_error.into())
+				}
+			},
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -60,7 +66,7 @@ fn query(auth_data: AuthData, pool: web::Data<Pool>) -> Result<Session, ServiceE
 	let res = users_repository::get_by_email(auth_data.email.clone(), &pool);
 	
 	match res {
-		Ok(Some(user)) => { 
+		Ok(user) => { 
 			if let Ok(matching) = verify(&user.hash, &auth_data.password) {
 				if matching {
 					if let Ok(session) = sessions_repository::create_session(user.id.clone(), user.email.clone(), &pool) {
@@ -69,7 +75,7 @@ fn query(auth_data: AuthData, pool: web::Data<Pool>) -> Result<Session, ServiceE
 				}
 			}
 		}
-		Ok(None) => {
+		Err(NotFound) => {
 			debug!("User not found");
 		}
 		Err(error) => {

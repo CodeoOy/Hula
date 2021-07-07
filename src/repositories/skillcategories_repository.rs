@@ -1,5 +1,6 @@
 use actix_web::web;
 use diesel::result::Error;
+use diesel::result::Error::NotFound;
 use diesel::{prelude::*, PgConnection};
 
 use crate::models::skills::{Pool, SkillCategory};
@@ -34,21 +35,13 @@ pub fn create_skill_category(
 	Ok(new_skill_category.into())
 }
 
-pub fn delete_skill_category(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<usize, Error> {
-	let conn: &PgConnection = &pool.get().unwrap();
-	use crate::schema::skillcategories::dsl::{id, skillcategories};
-
-	let deleted = diesel::delete(skillcategories.filter(id.eq(uuid_data))).execute(conn)?;
-	Ok(deleted)
-}
-
 pub fn update_skill_categories(
 	uuid_data: uuid::Uuid,
 	q_label: String,
 	q_parent_id: Option<uuid::Uuid>,
 	q_email: String,
 	pool: &web::Data<Pool>,
-) -> Result<Option<SkillCategory>, Error> {
+) -> Result<SkillCategory, Error> {
 	use crate::schema::skillcategories::dsl::{skillcategories, *};
 	let conn: &PgConnection = &pool.get().unwrap();
 
@@ -62,8 +55,18 @@ pub fn update_skill_categories(
 		.load::<SkillCategory>(conn)?;
 
 	if let Some(skillcategory_res) = skillcategory.pop() {
-		return Ok(skillcategory_res.into());
+		return Ok(skillcategory_res);
 	}
+	Err(NotFound)
+}
 
-	Ok(None)
+pub fn delete_skill_category(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
+	let conn: &PgConnection = &pool.get().unwrap();
+	use crate::schema::skillcategories::dsl::{id, skillcategories};
+
+	let deleted = diesel::delete(skillcategories.filter(id.eq(uuid_data))).execute(conn)?;
+	if deleted > 0 {
+		return Ok(());
+	}
+	Err(NotFound)
 }

@@ -1,6 +1,7 @@
 use actix_web::web;
 use diesel::{prelude::*, PgConnection};
 use diesel::result::Error;
+use diesel::result::Error::NotFound;
 
 use crate::models::projects::{Pool, Project};
 
@@ -33,15 +34,15 @@ pub fn create_project(
 	Ok(new_project.into())
 }
 
-pub fn query_one(uuid_query: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Option<Project>, Error> {
+pub fn query_one(uuid_query: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Project, Error> {
 	use crate::schema::projects::dsl::{id, projects};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let mut items = projects.filter(id.eq(uuid_query)).load::<Project>(conn)?;
 	if let Some(project_res) = items.pop() {
-		return Ok(Some(project_res.into()));
+		return Ok(project_res);
 	}
-	Ok(None)
+	Err(NotFound)
 }
 
 pub fn update_project(
@@ -49,7 +50,7 @@ pub fn update_project(
 	q_project_name: String,
 	q_email: String,
 	pool: &web::Data<Pool>,
-) -> Result<Option<Project>, Error> {
+) -> Result<Project, Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::projects::dsl::id;
 	use crate::schema::projects::dsl::*;
@@ -60,18 +61,20 @@ pub fn update_project(
 		.load::<Project>(conn)?;
 
 	if let Some(project_res) = items.pop() {
-		return Ok(Some(project_res));
+		return Ok(project_res);
 	}
-
-	Ok(None)
+	Err(NotFound)
 }
 
-pub fn delete_project(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<usize, Error> {
+pub fn delete_project(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::projects::dsl::id;
 	use crate::schema::projects::dsl::*;
 
 	let deleted = diesel::delete(projects.filter(id.eq(uuid_data))).execute(conn)?;
-	Ok(deleted)
+	if deleted > 0 {
+		return Ok(());
+	}
+	Err(NotFound)
 }
 

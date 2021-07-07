@@ -1,6 +1,7 @@
 use actix_web::web;
 use diesel::{prelude::*, PgConnection};
 use diesel::result::Error;
+use diesel::result::Error::NotFound;
 
 use crate::models::projects::{Pool, ProjectNeedSkill};
 
@@ -46,11 +47,14 @@ pub fn create_projectneedskill(
 	Ok(new_projectneedskill.into())
 }
 
-pub fn delete_projectneedskill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<usize, Error> {
+pub fn delete_projectneedskill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::projectneedskills::dsl::id;
 	use crate::schema::projectneedskills::dsl::*;
 
 	let deleted = diesel::delete(projectneedskills.filter(id.eq(uuid_data))).execute(conn)?;
-	Ok(deleted)
+	if deleted > 0 {
+		return Ok(());
+	}
+	Err(NotFound)
 }

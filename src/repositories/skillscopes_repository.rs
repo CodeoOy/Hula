@@ -1,6 +1,7 @@
 use actix_web::web;
 use diesel::{prelude::*, PgConnection};
 use diesel::result::Error;
+use diesel::result::Error::NotFound;
 
 use crate::models::skills::{Pool, SkillScope};
 
@@ -37,7 +38,7 @@ pub fn update_skill_scope(
 	q_label: String,
 	q_email: String,
 	pool: &web::Data<Pool>,
-) -> Result<Option<SkillScope>, Error> {
+) -> Result<SkillScope, Error> {
 	use crate::schema::skillscopes::dsl::{skillscopes, *};
 	let conn: &PgConnection = &pool.get().unwrap();
 
@@ -50,17 +51,19 @@ pub fn update_skill_scope(
 		.load::<SkillScope>(conn)?;
 
 	if let Some(scope_res) = scope.pop() {
-		return Ok(scope_res.into());
+		return Ok(scope_res);
 	}
-
-	Ok(None)
+	Err(NotFound)
 }
 
-pub fn delete_skill_scope(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<usize, Error> {
+pub fn delete_skill_scope(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::skillscopes::dsl::{skillscopes, id};
 
 	let deleted = diesel::delete(skillscopes.filter(id.eq(uuid_data))).execute(conn)?;
-	Ok(deleted)
+	if deleted > 0 {
+		return Ok(());
+	}
+	Err(NotFound)
 }
 

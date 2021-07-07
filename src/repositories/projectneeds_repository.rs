@@ -1,6 +1,7 @@
 use actix_web::web;
 use diesel::{prelude::*, PgConnection};
 use diesel::result::Error;
+use diesel::result::Error::NotFound;
 use chrono::NaiveDateTime;
 
 use crate::models::projects::{Pool, ProjectNeed};
@@ -51,7 +52,7 @@ pub fn update_projectneed(
 	q_end_time: Option<NaiveDateTime>,
 	q_email: String,
 	pool: &web::Data<Pool>,
-) -> Result<Option<ProjectNeed>, Error> {
+) -> Result<ProjectNeed, Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::projectneeds::dsl::{projectneeds, *};
 
@@ -67,18 +68,20 @@ pub fn update_projectneed(
 		.load::<ProjectNeed>(conn)?;
 
 	if let Some(need_res) = items.pop() {
-		return Ok(Some(need_res));
+		return Ok(need_res);
 	}
-
-	Ok(None)
+	Err(NotFound)
 }
 
-pub fn delete_projectneed(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<usize, Error> {
+pub fn delete_projectneed(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::projectneeds::dsl::id;
 	use crate::schema::projectneeds::dsl::*;
 
 	let deleted = diesel::delete(projectneeds.filter(id.eq(uuid_data))).execute(conn)?;
-	Ok(deleted)
+	if deleted > 0 {
+		return Ok(());
+	}
+	Err(NotFound)
 }
 
