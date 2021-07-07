@@ -1,5 +1,5 @@
 <template>
-	<form v-on:submit="updateProject">
+	<form v-on:submit="createProject">
 		<div class="mb-2">
 			<p v-if="errors.length && errors.includes('project-error')" class="error">Please fill out label!</p>
 			<div class="mb-2">
