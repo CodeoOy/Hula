@@ -1,6 +1,7 @@
 use actix_web::web;
 use derive_more::Display;
 use diesel::result::Error;
+use diesel::result::Error::NotFound;
 use diesel::{prelude::*, PgConnection};
 use serde::Serialize;
 
@@ -64,7 +65,7 @@ pub fn update_skill_scope_level(
 	q_email: String,
 	q_swap_direction: Option<ScopeLevelSwapDirection>,
 	pool: &web::Data<Pool>,
-) -> Result<Option<SkillScopeLevel>, Error> {
+) -> Result<SkillScopeLevel, Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let mut scopelevel: Vec<SkillScopeLevel> = vec![];
@@ -125,16 +126,18 @@ pub fn update_skill_scope_level(
 	})?;
 
 	if let Some(scopelevel_res) = scopelevel.pop() {
-		return Ok(scopelevel_res.into());
+		return Ok(scopelevel_res);
 	}
-
-	Ok(None)
+	Err(NotFound)
 }
 
-pub fn delete_skill_scope_level(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<usize, Error> {
+pub fn delete_skill_scope_level(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::skillscopelevels::dsl::{id, skillscopelevels};
 
 	let deleted = diesel::delete(skillscopelevels.filter(id.eq(uuid_data))).execute(conn)?;
-	Ok(deleted)
+	if deleted > 0 {
+		return Ok(());
+	}
+	Err(NotFound)
 }

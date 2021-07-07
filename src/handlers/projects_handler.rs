@@ -176,8 +176,7 @@ pub async fn get_by_pid(
 
 	let res = web::block(move || projects_repository::query_one(id, &pool)).await;
 	match res {
-		Ok(Some(project)) => Ok(HttpResponse::Ok().json(&project)),
-		Ok(None) => Err(ServiceError::Gone),
+		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -203,8 +202,7 @@ pub async fn update_project(
 	let res =
 		web::block(move || projects_repository::update_project(id, projectdata.name.clone(), logged_user.email, &pool)).await;
 	match res {
-		Ok(Some(project)) => Ok(HttpResponse::Ok().json(&project)),
-		Ok(None) => Err(ServiceError::Gone),
+		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -239,8 +237,7 @@ pub async fn update_projectneed(
 			.await;
 
 	match res {
-		Ok(Some(need)) => Ok(HttpResponse::Ok().json(&need)),
-		Ok(None) => Err(ServiceError::Gone),
+		Ok(need) => Ok(HttpResponse::Ok().json(&need)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -264,12 +261,7 @@ pub async fn delete_project(
 
 	let res = web::block(move || projects_repository::delete_project(id, &pool)).await;
 	match res {
-		Ok(deleted) => {
-			if deleted > 0 {
-				return Ok(HttpResponse::Ok().finish());
-			}
-			Err(ServiceError::Gone)
-		}
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -293,12 +285,7 @@ pub async fn delete_projectneed(
 
 	let res = web::block(move || projectneeds_repository::delete_projectneed(id, &pool)).await;
 	match res {
-		Ok(deleted) => {
-			if deleted > 0 {
-				return Ok(HttpResponse::Ok().finish());
-			}
-			Err(ServiceError::Gone)
-		}
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -322,12 +309,7 @@ pub async fn delete_projectneedskill(
 
 	let res = web::block(move || projectneedskills_repository::delete_projectneedskill(id, &pool)).await;
 	match res {
-		Ok(deleted) => {
-			if deleted > 0 {
-				return Ok(HttpResponse::Ok().finish());
-			}
-			Err(ServiceError::Gone)
-		}
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),

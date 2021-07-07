@@ -1,6 +1,7 @@
 use actix_web::web;
 use diesel::{prelude::*, PgConnection};
 use diesel::result::Error;
+use diesel::result::Error::NotFound;
 use crate::models::skills::{Pool, Skill};
 
 pub fn query_all_skills(pool: &web::Data<Pool>) -> Result<Vec<Skill>, Error> {
@@ -39,7 +40,7 @@ pub fn update_skill(
 	q_skillcategory_id: uuid::Uuid,
 	q_email: String,
 	pool: &web::Data<Pool>,
-) -> Result<Option<Skill>, Error> {
+) -> Result<Skill, Error> {
 	use crate::schema::skills::dsl::{skills, *};
 	let conn: &PgConnection = &pool.get().unwrap();
 
@@ -53,17 +54,19 @@ pub fn update_skill(
 		.load::<Skill>(conn)?;
 
 	if let Some(skill_res) = skill.pop() {
-		return Ok(skill_res.into());
+		return Ok(skill_res);
 	}
-
-	Ok(None)
+	Err(NotFound)
 }
 
-pub fn delete_skill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<usize, Error> {
+pub fn delete_skill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::skills::dsl::id;
 	use crate::schema::skills::dsl::*;
 
 	let deleted = diesel::delete(skills.filter(id.eq(uuid_data))).execute(conn)?;
-	Ok(deleted)
+	if deleted > 0 {
+		return Ok(());
+	}
+	Err(NotFound)
 }

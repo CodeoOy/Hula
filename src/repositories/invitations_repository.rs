@@ -5,6 +5,7 @@ use diesel::PgConnection;
 use crate::models::users::Pool;
 use crate::models::invitations::Invitation;
 use diesel::result::Error;
+use diesel::result::Error::NotFound;
 
 pub fn create_invitation(
 	q_email: String,
@@ -24,7 +25,7 @@ pub fn create_invitation(
 	Ok(new_invitation)
 }
 
-pub fn get_by_invitation(q_invitation_id: uuid::Uuid, q_email: String, pool: &web::Data<Pool>) -> Result<Option<Invitation>, Error> {
+pub fn get_by_invitation(q_invitation_id: uuid::Uuid, q_email: String, pool: &web::Data<Pool>) -> Result<Invitation, Error> {
 	use crate::schema::invitations::dsl::{email, id, invitations};
 	let conn: &PgConnection = &pool.get().unwrap();
 
@@ -34,9 +35,9 @@ pub fn get_by_invitation(q_invitation_id: uuid::Uuid, q_email: String, pool: &we
 		.load::<Invitation>(conn)?;
 
 	if let Some(invitation) = items.pop() {
-		return Ok(Some(invitation));
+		return Ok(invitation);
 	}
-	Ok(None)
+	Err(NotFound)
 }
 
 

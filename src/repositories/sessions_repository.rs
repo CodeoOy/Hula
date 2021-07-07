@@ -4,6 +4,7 @@ use diesel::PgConnection;
 
 use crate::models::users::{Pool, Session};
 use diesel::result::Error;
+use diesel::result::Error::NotFound;
 
 pub fn create_session(
 	q_user_id: uuid::Uuid,
@@ -36,10 +37,13 @@ pub fn create_session(
 	Ok(session.into())
 }
 
-pub fn delete_session(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<usize, Error> {
+pub fn delete_session(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::sessions::dsl::*;
 
 	let deleted = diesel::delete(sessions.filter(user_id.eq(uuid_data))).execute(conn)?;
-	Ok(deleted)
+	if deleted > 0 {
+		return Ok(());
+	}
+	Err(NotFound)
 }

@@ -175,12 +175,7 @@ pub async fn delete_skill_category(
 
 	let res = web::block(move || skillcategories_repository::delete_skill_category(id, &pool)).await;
 	match res {
-		Ok(deleted) => {
-			if deleted > 0 {
-				return Ok(HttpResponse::Ok().finish());
-			}
-			Err(ServiceError::Gone)
-		}
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -218,8 +213,7 @@ pub async fn update_skill_category(
 	})
 	.await;
 	match res {
-		Ok(Some(skillcategory)) => Ok(HttpResponse::Ok().json(&skillcategory)),
-		Ok(None) => Err(ServiceError::Gone),
+		Ok(skillcategory) => Ok(HttpResponse::Ok().json(&skillcategory)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -246,12 +240,7 @@ pub async fn delete_skill_scope_level(
 
 	let res = web::block(move || skillscopelevels_repository::delete_skill_scope_level(id, &pool)).await;
 	match res {
-		Ok(deleted) => {
-			if deleted > 0 {
-				return Ok(HttpResponse::Ok().finish());
-			}
-			Err(ServiceError::Gone)
-		}
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -324,8 +313,7 @@ pub async fn update_skill(
 	})
 	.await;
 	match res {
-		Ok(Some(skill)) => Ok(HttpResponse::Ok().json(&skill)),
-		Ok(None) => Err(ServiceError::Gone),
+		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -356,8 +344,7 @@ pub async fn update_skill_scope(
 	})
 	.await;
 	match res {
-		Ok(Some(scope)) => Ok(HttpResponse::Ok().json(&scope)),
-		Ok(None) => Err(ServiceError::Gone),
+		Ok(scope) => Ok(HttpResponse::Ok().json(&scope)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -414,12 +401,7 @@ pub async fn delete_skill_scope(
 
 	let res = web::block(move || skillscopes_repository::delete_skill_scope(id, &pool)).await;
 	match res {
-		Ok(deleted) => {
-			if deleted > 0 {
-				return Ok(HttpResponse::Ok().finish());
-			}
-			Err(ServiceError::Gone)
-		}
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -496,8 +478,7 @@ pub async fn update_skill_scope_level(
 	})
 	.await;
 	match res {
-		Ok(Some(scopelevel)) => Ok(HttpResponse::Ok().json(&scopelevel)),
-		Ok(None) => Err(ServiceError::Gone),
+		Ok(scopelevel) => Ok(HttpResponse::Ok().json(&scopelevel)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -525,12 +506,7 @@ pub async fn delete_skill(
 
 	let res = web::block(move || skills_repository::delete_skill(id, &pool)).await;
 	match res {
-		Ok(deleted) => {
-			if deleted > 0 {
-				return Ok(HttpResponse::Ok().finish());
-			}
-			Err(ServiceError::Gone)
-		}
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),

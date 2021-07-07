@@ -56,7 +56,7 @@ pub fn update_year(
 		.load::<UserSkill>(conn)?;
 
 	if let Some(user_res) = items.pop() {
-		return Ok(user_res.into());
+		return Ok(user_res);
 	}
 	Err(NotFound)
 }
