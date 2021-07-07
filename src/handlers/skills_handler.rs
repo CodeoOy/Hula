@@ -1,11 +1,26 @@
-use actix_web::{error::BlockingError, web, HttpResponse};
-use log::trace;
-use serde::Deserialize;
-
 use crate::errors::ServiceError;
 use crate::models::skills::Pool;
 use crate::models::users::LoggedUser;
 use crate::repositories::*;
+use actix_web::{error::BlockingError, web, HttpResponse};
+use diesel::result::Error;
+use log::trace;
+use serde::Deserialize;
+
+#[derive(Debug, Deserialize)]
+pub enum ScopeLevelSwapDirection {
+	Better,
+	Worse,
+}
+
+impl From<&ScopeLevelSwapDirection> for skillscopelevels_repository::ScopeLevelSwapDirection {
+	fn from(e: &ScopeLevelSwapDirection) -> Self {
+		match e {
+			Better => Self::Better,
+			Worse => Self::Worse,
+		}
+	}
+}
 
 #[derive(Deserialize, Debug)]
 pub struct SkillData {
@@ -29,6 +44,7 @@ pub struct ScopeLevelData {
 	pub label: String,
 	pub skillscope_id: uuid::Uuid,
 	pub percentage: Option<i32>,
+	pub swap_direction: Option<ScopeLevelSwapDirection>,
 }
 
 pub async fn get_all_skills(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
@@ -464,6 +480,10 @@ pub async fn update_skill_scope_level(
 	}
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+	let a: Option<skillscopelevels_repository::ScopeLevelSwapDirection> = match &scopeleveldata.swap_direction {
+		Some(b) => Some(b.into()),
+		None => None,
+	};
 
 	let res = web::block(move || {
 		skillscopelevels_repository::update_skill_scope_level(
@@ -471,6 +491,7 @@ pub async fn update_skill_scope_level(
 			scopeleveldata.label.clone(),
 			scopeleveldata.percentage.clone(),
 			logged_user.email,
+			a,
 			&pool,
 		)
 	})
