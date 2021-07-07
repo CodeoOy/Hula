@@ -3,7 +3,6 @@ use crate::models::skills::Pool;
 use crate::models::users::LoggedUser;
 use crate::repositories::*;
 use actix_web::{error::BlockingError, web, HttpResponse};
-use diesel::result::Error;
 use log::trace;
 use serde::Deserialize;
 
@@ -16,8 +15,8 @@ pub enum ScopeLevelSwapDirection {
 impl From<&ScopeLevelSwapDirection> for skillscopelevels_repository::ScopeLevelSwapDirection {
 	fn from(e: &ScopeLevelSwapDirection) -> Self {
 		match e {
-			Better => Self::Better,
-			Worse => Self::Worse,
+			ScopeLevelSwapDirection::Better => Self::Better,
+			ScopeLevelSwapDirection::Worse => Self::Worse,
 		}
 	}
 }

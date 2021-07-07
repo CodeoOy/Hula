@@ -1,7 +1,5 @@
-use crate::errors::ServiceError;
 use actix_web::web;
 use derive_more::Display;
-use diesel::dsl::*;
 use diesel::result::Error;
 use diesel::{prelude::*, PgConnection};
 use serde::Serialize;
@@ -69,25 +67,52 @@ pub fn update_skill_scope_level(
 ) -> Result<Option<SkillScopeLevel>, Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	//conn.transaction(|| {
+	let mut scopelevel: Vec<SkillScopeLevel> = vec![];
+	conn.transaction::<_, Error, _>(|| {
 		use crate::schema::skillscopelevels::dsl::{skillscopelevels, *};
 
-		diesel::update(skillscopelevels)
-			.filter(id.eq(uuid_data))
-			.set((index.eq(0))
-			.load::<SkillScopeLevel>(conn)?;
-				
-		diesel::update(skillscopelevels)
-			.filter(id.eq(uuid_data))
-			.set((index.eq(0))
-			.load::<SkillScopeLevel>(conn)?;
+		if let Some(direction) = q_swap_direction {
+			let current = skillscopelevels
+				.filter(id.eq(uuid_data))
+				.get_result::<SkillScopeLevel>(conn)?;
 
-		diesel::update(skillscopelevels)
-			.filter(id.eq(uuid_data))
-			.set((index.eq(0))
-			.load::<SkillScopeLevel>(conn)?;
+			let mut levels = skillscopelevels
+				.filter(skillscope_id.eq(current.skillscope_id))
+				.order(index.asc())
+				.load::<SkillScopeLevel>(conn)?;
 
-		let mut scopelevel = diesel::update(skillscopelevels)
+			let other = match direction {
+				ScopeLevelSwapDirection::Better => {
+					levels.retain(|x| x.index > current.index);
+					levels.first()
+				}
+				ScopeLevelSwapDirection::Worse => {
+					levels.retain(|x| x.index < current.index);
+					levels.last()
+				}
+			};
+
+			println!("other = {:#?}", other);
+
+			if let Some(other) = other {
+				diesel::update(skillscopelevels)
+					.filter(id.eq(other.id))
+					.set((index.eq(0), updated_by.eq(q_email.clone())))
+					.execute(conn)?;
+						
+				diesel::update(skillscopelevels)
+					.filter(id.eq(uuid_data))
+					.set((index.eq(other.index), updated_by.eq(q_email.clone())))
+					.execute(conn)?;
+
+				diesel::update(skillscopelevels)
+					.filter(id.eq(other.id))
+					.set((index.eq(current.index), updated_by.eq(q_email.clone())))
+					.execute(conn)?;
+			}
+		}
+
+		scopelevel = diesel::update(skillscopelevels)
 			.filter(id.eq(uuid_data))
 			.set((
 				label.eq(q_label),
@@ -95,7 +120,9 @@ pub fn update_skill_scope_level(
 				updated_by.eq(q_email.clone()),
 		))
 		.load::<SkillScopeLevel>(conn)?;
-	//	});
+
+		Ok(())
+	})?;
 
 	if let Some(scopelevel_res) = scopelevel.pop() {
 		return Ok(scopelevel_res.into());
