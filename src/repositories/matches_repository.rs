@@ -1,10 +1,10 @@
 use actix_web::web;
 use diesel::{prelude::*, PgConnection};
+use diesel::result::Error;
 
-use crate::errors::ServiceError;
 use crate::models::matchcandidates::{Pool, MatchCandidate};
 
-pub fn query(pool: &web::Data<Pool>) -> Result<Vec<MatchCandidate>, ServiceError> {
+pub fn query(pool: &web::Data<Pool>) -> Result<Vec<MatchCandidate>, Error> {
 	use crate::schema::matchcandidates::dsl::matchcandidates;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let mut items = matchcandidates.load::<MatchCandidate>(conn)?;
@@ -14,16 +14,13 @@ pub fn query(pool: &web::Data<Pool>) -> Result<Vec<MatchCandidate>, ServiceError
 	items.retain(|x| x.required_maxyears >= x.user_years);
 	items.retain(|x| x.available == true);
 
-	if items.is_empty() == false {
-		return Ok(items);
-	}
-	Err(ServiceError::Empty)
+	Ok(items)
 }
 
 pub fn query_by_params(
 	q_project_name: String,
 	pool: &web::Data<Pool>,
-) -> Result<Vec<MatchCandidate>, crate::errors::ServiceError> {
+) -> Result<Vec<MatchCandidate>, Error> {
 	use crate::schema::matchcandidates::dsl::matchcandidates;
 	let conn: &PgConnection = &pool.get().unwrap();
 	let mut items = matchcandidates.load::<MatchCandidate>(conn)?;
@@ -34,8 +31,5 @@ pub fn query_by_params(
 	items.retain(|x| x.available == true);
 	items.retain(|x| x.projectname == q_project_name);
 
-	if items.is_empty() == false {
-		return Ok(items);
-	}
-	Err(ServiceError::Empty)
+	Ok(items)
 }

@@ -54,9 +54,14 @@ pub async fn get_all(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<
 	let res = web::block(move || users_repository::query_all(&pool)).await;
 
 	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Ok(users) => {
+			if users.is_empty() == false {
+				return Ok(HttpResponse::Ok().json(&users));
+			}
+			Err(ServiceError::Empty)
+		}
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -70,18 +75,18 @@ pub async fn update_user(
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Updating a user: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
 
-	let uuid = uuid_data.into_inner();
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
 	// todo: create a macro to simplify this
-	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
+	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || users_repository::query_update(uuid, payload.firstname.clone(), payload.lastname.clone(), payload.available, payload.email.clone(), pool)).await;
+	let res = web::block(move || users_repository::update(id, payload.firstname.clone(), payload.lastname.clone(), payload.available, payload.email.clone(), &pool)).await;
 	match res {
-		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
+		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -95,18 +100,25 @@ pub async fn add_skill(
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Adding a user skill: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}", &uuid_data, &payload, &logged_user);
 
-	let uuid = uuid_data.into_inner();
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
 	// todo: create a macro to simplify this
-	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
+	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || userskills_repository::query_add_skill(uuid, payload, pool, logged_user.email)).await;
+	let res = web::block(move || userskills_repository::add_skill(
+		id, 
+		payload.skill_id, 
+		payload.skillscopelevel_id, 
+		payload.years, 
+		logged_user.email, 
+		&pool)).await;
+
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -118,18 +130,18 @@ pub async fn delete_userskill(
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Deleting a user skill: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
-	let uuid = uuid_data.into_inner();
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
 	// todo: create a macro to simplify this
-	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
+	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || userskills_repository::query_delete_userskill(uuid, pool)).await;
+	let res = web::block(move || userskills_repository::delete_userskill(id, &pool)).await;
 	match res {
 		Ok(_) => Ok(HttpResponse::Ok().finish()),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -201,18 +213,18 @@ pub async fn delete_user(
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Deleting a user: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
 
-	let uuid = uuid_data.into_inner();
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
 	// todo: create a macro to simplify this
-	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
+	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || users_repository::query_delete_user(uuid, pool)).await;
+	let res = web::block(move || users_repository::delete_user(id, &pool)).await;
 	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -226,18 +238,18 @@ pub async fn update_year(
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Updating a user years: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}", &uuid_data, &payload, &logged_user);
 
-	let uuid = uuid_data.into_inner();
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
 	// todo: create a macro to simplify this
-	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
+	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || userskills_repository::query_update_year(uuid, payload.user_id.clone(), payload.years, pool, logged_user.email)).await;
+	let res = web::block(move || userskills_repository::update_year(id, payload.user_id.clone(), payload.years, logged_user.email, &pool)).await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -251,18 +263,18 @@ pub async fn add_favorite_project(
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Adding a favorite project: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}", &uuid_data, &payload, &logged_user);
 
-	let uuid = uuid_data.into_inner();
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
 	// todo: create a macro to simplify this
-	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
+	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || userfavorites_repository::query_add_favorite_project(uuid, payload.project_id.clone(), pool, logged_user.email)).await;
+	let res = web::block(move || userfavorites_repository::add_favorite_project(id, payload.project_id.clone(), logged_user.email, &pool)).await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -275,18 +287,18 @@ pub async fn delete_favorite_project(
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Delete a favorite project: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
 
-	let uuid = uuid_data.into_inner();
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
 	// todo: create a macro to simplify this
-	if logged_user.isadmin == false && logged_user.uid.to_string() != uuid.clone() {
+	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || userfavorites_repository::query_delete_favorite_project(uuid, pool)).await;
+	let res = web::block(move || userfavorites_repository::delete_favorite_project(id, &pool)).await;
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}

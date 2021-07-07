@@ -3,7 +3,7 @@ use derive_more::Display;
 use diesel::result::{DatabaseErrorKind, Error as DBError};
 use std::convert::From;
 use uuid::Error as ParseError;
-use log::error;
+use log::{error, debug};
 use serde::Serialize;
 
 #[derive(Debug, Display, Serialize)]
@@ -126,7 +126,11 @@ impl From<DBError> for ServiceError {
 				}
 
 				ServiceError::InternalServerError
-			} 
+			}
+			DBError::NotFound => {
+				debug!("Not found.");
+				ServiceError::Gone
+			}			 
 			error => {
 				error!("Database query (DIESEL) failed: {:#?}", error);
 				ServiceError::InternalServerError

@@ -60,7 +60,7 @@ fn query(auth_data: AuthData, pool: web::Data<Pool>) -> Result<Session, ServiceE
 	let res = users_repository::get_by_email(auth_data.email.clone(), &pool);
 	
 	match res {
-		Ok(user) => { 
+		Ok(Some(user)) => { 
 			if let Ok(matching) = verify(&user.hash, &auth_data.password) {
 				if matching {
 					if let Ok(session) = sessions_repository::create_session(user.id.clone(), user.email.clone(), &pool) {
@@ -69,11 +69,11 @@ fn query(auth_data: AuthData, pool: web::Data<Pool>) -> Result<Session, ServiceE
 				}
 			}
 		}
-		Err(ServiceError::Empty) => {
+		Ok(None) => {
 			debug!("User not found");
 		}
 		Err(error) => {
-			return Err(error);
+			return Err(error.into());
 		}
 	}
 	Err(ServiceError::Unauthorized)
