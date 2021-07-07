@@ -63,6 +63,11 @@
 import { Field, Form, ErrorMessage } from 'vee-validate';
 export default {
 	name: 'ProjectNeed',
+	data() {
+		return {
+			locked: false
+		}
+	},
 	components: {
 		'VForm': Form,
 		'VField': Field,
@@ -73,6 +78,7 @@ export default {
 			return value ? true : 'This field is required';
 		},
 		createUpdateProjectNeed() {
+			this.locked = true
 			let chosenMethod = 'POST'
 			let fetchPath = '/api/projectneeds'
 			if ('id' in this.queryData) {
@@ -106,11 +112,13 @@ export default {
 	computed: {
 		queryData: {
 			get () {
-				var tempBeginTime = this.chosenNeed.begin_time.toString().replace('T00:00:00', '') 
-				var tempEndTime = this.chosenNeed.end_time.toString().replace('T00:00:00', '') 
-				this.chosenNeed.begin_time = tempBeginTime
-				if (tempEndTime) {
-					this.chosenNeed.end_time = tempEndTime
+				if (!this.locked) {
+					var tempBeginTime = this.chosenNeed.begin_time.toString().replace('T00:00:00', '') 
+					var tempEndTime = this.chosenNeed.end_time.toString().replace('T00:00:00', '') 
+					this.chosenNeed.begin_time = tempBeginTime
+					if (tempEndTime) {
+						this.chosenNeed.end_time = tempEndTime
+					}
 				}
 				return this.chosenNeed
 			}
