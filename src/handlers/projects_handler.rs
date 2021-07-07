@@ -129,7 +129,7 @@ pub async fn create_projectneed(
 	match res {
 		Ok(projectneed) => Ok(HttpResponse::Ok().json(&projectneed)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}

@@ -53,11 +53,11 @@ fn query(
 	let res = users_repository::get_by_email(eml.clone(), &pool);
 	let password: String = hash_password(&psw)?;
 	match res {
-		Ok(user) => {
+		Ok(Some(user)) => {
 			debug!("User {} already found. Cannot process invitation.", &user.email);
 			return Err(ServiceError::Unauthorized);
 		},
-		Err(ServiceError::Empty) => {
+		Ok(None) => {
 			let invitation = invitations_repository::create_invitation(eml, password, first_name, last_name, &pool)?;
 			Ok(invitation)
 		},
