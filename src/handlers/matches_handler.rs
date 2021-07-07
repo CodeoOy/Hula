@@ -17,9 +17,14 @@ pub async fn get_all_matches(pool: web::Data<Pool>, _logged_user: LoggedUser) ->
 	let res = web::block(move || matches_repository::query(&pool)).await;
 
 	match res {
-		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
+		Ok(matches) => {
+			if matches.is_empty() == false {
+				return Ok(HttpResponse::Ok().json(&matches));
+			}
+			Err(ServiceError::Empty)
+		}
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -33,11 +38,15 @@ pub async fn get_matches_by_params(
 	trace!("Getting matches by params: querydata = {:#?} logged_user={:#?}", &querydata, &_logged_user);
 	let res = web::block(move || matches_repository::query_by_params(querydata.projectname.clone(), &pool)).await;
 	match res {
-		Ok(matches) => Ok(HttpResponse::Ok().json(&matches)),
+		Ok(matches) => {
+			if matches.is_empty() == false {
+				return Ok(HttpResponse::Ok().json(&matches));
+			}
+			Err(ServiceError::Empty)
+		}
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
 }
-

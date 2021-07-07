@@ -125,11 +125,6 @@ impl FromRequest for LoggedUser {
 				match id_res {
 					Ok(id) => {
 						let session = activesessions_repository::get_session_by_id(id, &pool);
-/* 
-						let session = activesessions
-							.filter(session_id.eq(&id))
-							.get_result::<ActiveSession>(conn);
-*/
 						if let Ok(s) = session {
 							if s.expire_at > chrono::offset::Utc::now().naive_utc() {
 								let u: LoggedUser = s.into();

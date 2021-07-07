@@ -1,8 +1,8 @@
 <template>
 	<v-form v-on:submit="createSkill">
 		<div class="mb-2">
-			<error-message name="name" class="error"></error-message>
 			<label class="form-label">Skill name</label>
+			<error-message name="name" class="error"></error-message>
 			<v-field
 				v-model="queryData.label"
 				:rules="isRequired"

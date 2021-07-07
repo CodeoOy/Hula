@@ -24,6 +24,7 @@
 				aria-label="Category parent"
 				v-model="queryData.parent_id"
 			>
+				<option :value="''">No parent</option>
 				<option v-for="category in categories" :key="category" :value="category.id">
 					{{ category.label }}
 				</option>
@@ -57,6 +58,9 @@ export default {
 			return value ? true : 'This field is required';
 		},
 		createUpdateSkillCategory() {
+			if (!this.queryData.parent_id.length) {
+				delete this.queryData.parent_id
+			}
 			fetch(this.url, {
 				method: this.method,
 				headers: {"Content-Type": "application/json"},
@@ -88,8 +92,7 @@ export default {
 		queryData: {
 			get () {
 				if (this.chosenCategory) {
-					console.log(this.chosenCategory)
-					return this.chosenCategory;
+					return this.chosenCategory
 				}
 				console.log("No chosen category")
 				return {

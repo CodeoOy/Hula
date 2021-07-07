@@ -19,12 +19,17 @@ pub struct ProjectData {
 
 pub async fn get_all_projects(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting all projects: logged_user={:#?}", &_logged_user);
-	let res = web::block(move || projects_repository::query_all_projects(pool)).await;
+	let res = web::block(move || projects_repository::query_all_projects(&pool)).await;
 
 	match res {
-		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
+		Ok(projects) => {
+			if projects.is_empty() == false {
+				return Ok(HttpResponse::Ok().json(&projects));
+			}
+			Err(ServiceError::Empty)
+		}
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -36,12 +41,19 @@ pub async fn get_projectneedskills(
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting project need skills: pid = {:#?} logged_user={:#?}", &pid, &_logged_user);
-	let res = web::block(move || projectneedskills_repository::query_projectneedskills(pid.into_inner(), pool)).await;
+	let id = uuid::Uuid::parse_str(&pid.into_inner())?;
+
+	let res = web::block(move || projectneedskills_repository::query_projectneedskills(id, &pool)).await;
 
 	match res {
-		Ok(projectneedskill) => Ok(HttpResponse::Ok().json(&projectneedskill)),
+		Ok(projectneedskills) => {
+			if projectneedskills.is_empty() == false {
+				return Ok(HttpResponse::Ok().json(&projectneedskills));
+			}
+			Err(ServiceError::Empty)
+		}
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -53,12 +65,19 @@ pub async fn get_project_needs(
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting project needs: pid = {:#?} logged_user={:#?}", &pid, &_logged_user);
-	let res = web::block(move || projectneeds_repository::query_project_needs(pool, pid.into_inner())).await;
+	let id = uuid::Uuid::parse_str(&pid.into_inner())?;
+	
+	let res = web::block(move || projectneeds_repository::query_project_needs(&pool, id)).await;
 
 	match res {
-		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
+		Ok(needs) => {
+			if needs.is_empty() == false {
+				return Ok(HttpResponse::Ok().json(&needs));
+			}
+			Err(ServiceError::Empty)
+		}
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -76,11 +95,11 @@ pub async fn create_project(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || projects_repository::query_create_project(projectdata.name.clone(), pool, logged_user.email)).await;
+	let res = web::block(move || projects_repository::create_project(projectdata.name.clone(), logged_user.email, &pool)).await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -98,11 +117,19 @@ pub async fn create_projectneed(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || projectneeds_repository::query_create_projectneed(projectneeddata, pool, logged_user.email)).await;
+	let res = web::block(move || projectneeds_repository::create_projectneed(
+		projectneeddata.project_id, 
+		projectneeddata.count_of_users, 
+		projectneeddata.percentage, 
+		projectneeddata.begin_time, 
+		projectneeddata.end_time, 
+		logged_user.email,
+		&pool)).await;
+
 	match res {
 		Ok(projectneed) => Ok(HttpResponse::Ok().json(&projectneed)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -120,11 +147,19 @@ pub async fn create_projectneedskill(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || projectneedskills_repository::query_create_projectneedskill(projectneedskilldata, pool, logged_user.email)).await;
+	let res = web::block(move || projectneedskills_repository::create_projectneedskill(
+		projectneedskilldata.projectneed_id, 
+		projectneedskilldata.skill_id, 
+		projectneedskilldata.skillscopelevel_id, 
+		projectneedskilldata.min_years, 
+		projectneedskilldata.max_years, 
+		logged_user.email, 
+		&pool)).await;
+
 	match res {
 		Ok(projectneedskill) => Ok(HttpResponse::Ok().json(&projectneedskill)),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -136,11 +171,15 @@ pub async fn get_by_pid(
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting project by pid: pid={:#?}", &pid);
-	let res = web::block(move || projects_repository::query_one(pid.into_inner(), pool)).await;
+
+	let id = uuid::Uuid::parse_str(&pid.into_inner())?;
+
+	let res = web::block(move || projects_repository::query_one(id, &pool)).await;
 	match res {
-		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
+		Ok(Some(project)) => Ok(HttpResponse::Ok().json(&project)),
+		Ok(None) => Err(ServiceError::Gone),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -159,12 +198,15 @@ pub async fn update_project(
 		return Err(ServiceError::AdminRequired);
 	}
 
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
 	let res =
-		web::block(move || projects_repository::query_update_project(uuid_data.into_inner(), projectdata.name.clone(), pool, logged_user.email)).await;
+		web::block(move || projects_repository::update_project(id, projectdata.name.clone(), logged_user.email, &pool)).await;
 	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Ok(Some(project)) => Ok(HttpResponse::Ok().json(&project)),
+		Ok(None) => Err(ServiceError::Gone),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -183,13 +225,24 @@ pub async fn update_projectneed(
 		return Err(ServiceError::AdminRequired);
 	}
 
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
 	let res =
-		web::block(move || projectneeds_repository::query_update_projectneed(uuid_data.into_inner(), projectneed, pool, logged_user.email))
+		web::block(move || projectneeds_repository::update_projectneed(
+			id, 
+			projectneed.count_of_users, 
+			projectneed.percentage, 
+			projectneed.begin_time, 
+			projectneed.end_time, 
+			logged_user.email, 
+			&pool))
 			.await;
+
 	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Ok(Some(need)) => Ok(HttpResponse::Ok().json(&need)),
+		Ok(None) => Err(ServiceError::Gone),
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -207,11 +260,18 @@ pub async fn delete_project(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || projects_repository::query_delete_project(uuid_data.into_inner(), pool)).await;
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || projects_repository::delete_project(id, &pool)).await;
 	match res {
-		Ok(_) => Ok(HttpResponse::Ok().finish()),
+		Ok(deleted) => {
+			if deleted > 0 {
+				return Ok(HttpResponse::Ok().finish());
+			}
+			Err(ServiceError::Gone)
+		}
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -229,11 +289,18 @@ pub async fn delete_projectneed(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || projectneeds_repository::query_delete_projectneed(uuid_data.into_inner(), pool)).await;
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || projectneeds_repository::delete_projectneed(id, &pool)).await;
 	match res {
-		Ok(_) => Ok(HttpResponse::Ok().finish()),
+		Ok(deleted) => {
+			if deleted > 0 {
+				return Ok(HttpResponse::Ok().finish());
+			}
+			Err(ServiceError::Gone)
+		}
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
@@ -251,11 +318,18 @@ pub async fn delete_projectneedskill(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || projectneedskills_repository::query_delete_projectneedskill(uuid_data.into_inner(), pool)).await;
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || projectneedskills_repository::delete_projectneedskill(id, &pool)).await;
 	match res {
-		Ok(_) => Ok(HttpResponse::Ok().finish()),
+		Ok(deleted) => {
+			if deleted > 0 {
+				return Ok(HttpResponse::Ok().finish());
+			}
+			Err(ServiceError::Gone)
+		}
 		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}

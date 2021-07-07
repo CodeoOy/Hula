@@ -1,36 +1,39 @@
-use crate::errors::ServiceError;
 use crate::models::users::{Pool, UserFavorites};
 use actix_web::web;
 use diesel::{prelude::*, PgConnection};
+use diesel::result::Error;
+use diesel::result::Error::NotFound;
 
-pub fn query_add_favorite_project(
-	uuid_data: String,
+pub fn add_favorite_project(
+	uuid_data: uuid::Uuid,
 	project_id: uuid::Uuid,
-	pool: web::Data<Pool>,
 	email: String,
-) -> Result<UserFavorites, crate::errors::ServiceError> {
+	pool: &web::Data<Pool>,
+) -> Result<UserFavorites, Error> {
 	use crate::schema::userfavorites::dsl::userfavorites;
 	let conn: &PgConnection = &pool.get().unwrap();
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+
 	let new_favorite = UserFavorites {
 		id: uuid::Uuid::new_v4(),
-		user_id: uuid_query,
+		user_id: uuid_data,
 		project_id: project_id,
 		updated_by: email,
 	};
-	let rows_inserted = diesel::insert_into(userfavorites)
+
+	diesel::insert_into(userfavorites)
 		.values(&new_favorite)
-		.get_result::<UserFavorites>(conn);
-	if rows_inserted.is_ok() {
-		return Ok(new_favorite.into());
-	}
-	Err(ServiceError::Unauthorized)
+		.execute(conn)?;
+
+	Ok(new_favorite.into())
 }
 
-pub fn query_delete_favorite_project(uuid_data: String, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
+pub fn delete_favorite_project(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::userfavorites::dsl::*;
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	diesel::delete(userfavorites.filter(id.eq(uuid_query))).execute(conn)?;
-	Ok(())
+
+	let deleted = diesel::delete(userfavorites.filter(id.eq(uuid_data))).execute(conn)?;
+	if deleted > 0 {
+		return Ok(());
+	}
+	Err(NotFound)
 }

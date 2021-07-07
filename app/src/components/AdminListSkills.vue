@@ -23,7 +23,7 @@
 					class="btn btn-gradient"
 					data-bs-toggle="modal"
 					data-bs-target="#hulaModalSkills"
-					v-on:click="formTitle = 'Add category', chosenForm = 'Category', url='/api/skills/categories', method='POST'"
+					v-on:click="formTitle = 'Add category', chosenForm = 'Category', chosenCategory.parent_id = '', url='/api/skills/categories', method='POST'"
 				>New category</button>
 			</div>
 		</div>

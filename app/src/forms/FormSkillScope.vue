@@ -1,8 +1,8 @@
 <template>
 	<v-form v-on:submit="createUpdateSkillScope">
-		<error-message name="name" class="error"></error-message>
 		<div class="mb-2">
 			<label class="form-label">Scope name</label>
+			<error-message name="name" class="error"></error-message>
 			<v-field
 				name="name" 
 				type="text" 
