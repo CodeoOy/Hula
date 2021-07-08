@@ -75,7 +75,7 @@ export default {
 				}
 			})
 			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
+				//this.$store.commit('errorHandling', errors)
 			})
 		},
 		getSkillCategories() {

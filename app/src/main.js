@@ -117,6 +117,14 @@ const store = createStore({
 			state.chosenproject = {}
 		},
 		errorHandling (state, error) {
+			let errorObject = Promise.resolve(error)
+			errorObject.then((resError) => resError.json())
+			.then(errObject => {
+				if (errObject.error_type == 'UniqueViolation') {
+					console.log("Unique violation lol")
+				}
+			})
+			//console.error(errorObject)
 			if(error.status == 401) {
 				state.loggeduser = null
 				localStorage.removeItem('user');
