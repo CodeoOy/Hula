@@ -247,7 +247,7 @@ pub async fn update_year(
 
 	let res = web::block(move || userskills_repository::update_year(id, payload.user_id.clone(), payload.years, logged_user.email, &pool)).await;
 	match res {
-		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
+		Ok(userskill) => Ok(HttpResponse::Ok().json(&userskill)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
