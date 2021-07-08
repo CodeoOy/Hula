@@ -88,9 +88,10 @@ export default {
 				this.queryData.id = '00000000-0000-0000-0000-e033a6751fca'
 			}
 			delete this.queryData.skills
-			this.queryData.begin_time = `${this.queryData.begin_time}T00:00:00` 
-			console.log(this.queryData.begin_time)// TODO: This breaks the api call if user doesn't change the dates
-			this.queryData.end_time = `${this.queryData.end_time}T00:00:00` // So maybe use moment.js?
+			this.queryData.begin_time = `${this.queryData.begin_time}T00:00:00` // TODO: Find a less hacky solution
+			if (this.queryData.end_time.length) {
+				this.queryData.end_time = `${this.queryData.end_time}T00:00:00`
+			}
 			console.log(this.queryData.begin_time)
 			fetch(fetchPath, {
 				method: chosenMethod,
@@ -118,6 +119,8 @@ export default {
 					this.chosenNeed.begin_time = tempBeginTime
 					if (tempEndTime) {
 						this.chosenNeed.end_time = tempEndTime
+					} else {
+						this.chosenNeed.end_time = null
 					}
 				}
 				return this.chosenNeed

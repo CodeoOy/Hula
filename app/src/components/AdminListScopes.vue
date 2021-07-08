@@ -179,7 +179,14 @@
 				})
 			},
 			filterLevels(id) {
-				return this.skillLevels.filter(lvl => lvl.skillscope_id == id)
+				let levels = this.skillLevels.filter(lvl => lvl.skillscope_id == id)
+				return levels.sort(function(a, b) {
+					let keyA = a.index
+					let keyB = b.index
+					if (keyA < keyB) return 1;
+  					if (keyA > keyB) return -1;
+  					return 0;
+				})
 			},
 			hideModalUpdate() {
 				this.getAllScopes()
