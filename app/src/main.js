@@ -13,7 +13,8 @@ const store = createStore({
 			loggeduser: JSON.parse(localStorage.getItem('user')),
 			chosenproject: JSON.parse(localStorage.getItem('chosenproject')),
 			projects: JSON.parse(localStorage.getItem('projects')),
-			nextpage: ''
+			nextpage: '',
+			errorObject: null,
 		}
 	},
 	actions: {
@@ -24,7 +25,7 @@ const store = createStore({
 			})
 			.then((response) => response.json())
 			context.commit('setUser', userData)
-		},
+		}
 	},
 	mutations: {
 		setUser(state, data) {
@@ -117,22 +118,33 @@ const store = createStore({
 			state.chosenproject = {}
 		},
 		errorHandling (state, error) {
-			let errorObject = Promise.resolve(error)
-			errorObject.then((resError) => resError.json())
-			.then(errObject => {
-				if (errObject.error_type == 'UniqueViolation') {
-					console.log("Unique violation lol")
-				}
-			})
-			//console.error(errorObject)
 			if(error.status == 401) {
 				state.loggeduser = null
 				localStorage.removeItem('user');
 				router.push({ name: 'page-login' })
-				return false
-			} else {
-				return error
+				return "Unauthorized"
 			}
+			let errorObject = Promise.resolve(error)
+			errorObject.then((resError) => resError.json())
+			.then(errObject => {
+				switch (errObject.error_type) {
+					case 'UniqueViolation':
+						state.errorObject = {
+							type: 'error',
+							title: 'Unique violation lol',
+							time: 1000
+						}
+						break;
+					case 'AdminRequired':
+						console.log("You're not admin lol")
+						break;
+					case 'ForeignKeyViolation':
+						console.log("Foreign key violation lol")
+						break;
+					default:
+						console.log(errObject)
+				}
+			})
 		},
 		deleteUser (state) {
 			state.loggeduser = null

@@ -5,6 +5,7 @@
 		<main>
 			<router-view />
 		</main>
+		{{ errorFlashMessage }}
 		{{ this.$store.state.loggeduser }}
 		<TheFooter />
 	</div>
@@ -23,7 +24,26 @@
 			logOut() {
 				this.$store.commit('errorHandling')
 				this.$router.push({ name: 'page-login' })
+			},
+			flashIt(errorObject) {
+				this.$flashMessage.show({
+					type: errorObject.type,
+					title: errorObject.title,
+					time: errorObject.time,
+				})
 			}
-		}
+		},
+		computed: {
+			errorObject: {
+				get () {
+					return this.$store.state.errorObject
+				}
+			}
+		},
+		watch: {
+			'errorObject'(newObject) {
+				this.flashIt(newObject)
+			}
+		},
 	}
 </script>
