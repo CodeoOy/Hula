@@ -15,7 +15,7 @@ const setupRoute = entry => ({
 export default function setupRouter() {
 	const router = createRouter({
 		routes: [
-			{ path: '/app/:pathMatch(.*)*', component: views.PageError, name: 'page-notfound' },
+			{ path: '/app/:pathMatch(.*)*', component: views.PageError, name: 'page-error' },
 			{ path: '/', component: views.Home, name: 'page-home'},
 			{ path: '/app/confirm', component: views.Confirm, name: 'page-confirm' },
 			{ path: '/app/dashboard', component: views.Dashboard, name: 'page-dashboard' },

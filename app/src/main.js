@@ -125,6 +125,11 @@ const store = createStore({
 				return "Unauthorized"
 			}
 			if(error.status == 500) {
+				state.errorObject = {
+					type: 'error',
+					title: 'Error 500',
+					time: 1000
+				}
 				router.push({ name: 'page-error' })
 				return "Unauthorized"
 			}

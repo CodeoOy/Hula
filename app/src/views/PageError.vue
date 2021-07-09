@@ -14,15 +14,21 @@
 <script>
 	export default {
 		name: 'PageError',
-		props: {
-			title: {
-				type: String,
-				default: "Page not found!"
+		computed: {
+			title () {
+				if (this.$store.state.errorObject) {
+					return this.$store.state.errorObject.title
+				} else {
+					return "Page not found."
+				}
 			},
-			message: {
-				type: String,
-				default: "Try the navigation."
-			},
-		}
+			message() {
+				if (this.$store.state.errorObject) {
+					return this.$store.state.errorObject.title
+				} else {
+					return "Try the navigation."
+				}
+			}
+		}	
 	}
 </script>
