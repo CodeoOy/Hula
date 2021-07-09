@@ -125,9 +125,7 @@ const store = createStore({
 				return "Unauthorized"
 			}
 			if(error.status == 500) {
-				state.loggeduser = null
-				localStorage.removeItem('user');
-				router.push({ name: 'page-login' })
+				router.push({ name: 'page-error' })
 				return "Unauthorized"
 			}
 			let errorObject = Promise.resolve(error)
