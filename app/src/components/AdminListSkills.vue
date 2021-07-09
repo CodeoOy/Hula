@@ -135,15 +135,12 @@
 				}) 
 				.then(response => { 
 					this.categories = response;
-				})    
-				.catch((errors) => {
-					console.log(errors)
 				})
 			},
 			deleteSkill(id) {
 				fetch(`/api/skills/${id}`, {method: 'DELETE'})
 				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+					return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
 				})
 				.then(() => { 
 					this.getAllSkills()
@@ -155,13 +152,11 @@
 			deleteCategory(id) {
 				fetch(`/api/skills/categories/${id}`, {method: 'DELETE'})
 				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+					return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
 				})
-				.then(() => { 
+				.then((response) => { 
+					console.log(response)
 					this.getSkillCategories()
-				})    
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
 				})
 			},
 			filterSkills(id) {

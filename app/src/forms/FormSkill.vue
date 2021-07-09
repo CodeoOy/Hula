@@ -57,8 +57,8 @@ export default {
 	name: 'Skill',
 	data() {
 		return {
-			categories: {},
-			scopes: {},
+			categories: [],
+			scopes: [],
 		}
 	},
 	components: {
@@ -115,6 +115,7 @@ export default {
 			})
 			.then(response => { 
 				this.scopes = response;
+				this.queryData.skillscope_id = this.scopes[0].id
 			})    
 			.catch((errors) => {
 				this.$store.commit('errorHandling', errors)

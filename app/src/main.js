@@ -128,6 +128,13 @@ const store = createStore({
 				router.push({ name: 'page-error' })
 				return "Unauthorized"
 			}
+			if(error.status == 400) {
+				state.errorObject = {
+					type: 'error',
+					title: 'Error 400',
+					time: 1000
+				}
+			}
 			let errorObject = Promise.resolve(error)
 			errorObject.then((resError) => resError.json())
 			.then(errObject => {
