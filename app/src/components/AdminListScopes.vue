@@ -149,7 +149,7 @@
 			deleteScope(id) {
 				fetch(`/api/skills/scopes/${id}`, {method: 'DELETE'})
 				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+					return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
 				})
 				.then(() => { 
 					this.getAllScopes()
@@ -162,7 +162,7 @@
 			deleteLevel(id) {
 				fetch(`/api/skills/levels/${id}`, {method: 'DELETE'})
 				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+					return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
 				})
 				.then(() => { 
 					this.getAllScopes()
