@@ -9,11 +9,12 @@ pub fn query_projectneedskills(
 	pid: uuid::Uuid,
 	pool: &web::Data<Pool>,
 ) -> Result<Vec<ProjectNeedSkill>, Error> {
-	use crate::schema::projectneedskills::dsl::{projectneed_id, projectneedskills};
+	use crate::schema::projectneedskills::dsl::{projectneed_id, projectneedskills, skill_id};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let items = projectneedskills
 		.filter(projectneed_id.eq(pid))
+		.order(skill_id.asc())
 		.load::<ProjectNeedSkill>(conn)?;
 
 	Ok(items)
@@ -30,6 +31,7 @@ pub fn create_projectneedskill(
 ) -> Result<ProjectNeedSkill, Error> {
 	use crate::schema::projectneedskills::dsl::projectneedskills;
 	let conn: &PgConnection = &pool.get().unwrap();
+	
 	let new_projectneedskill = ProjectNeedSkill {
 		id: uuid::Uuid::new_v4(),
 		projectneed_id: q_projectneed_id,
@@ -40,11 +42,11 @@ pub fn create_projectneedskill(
 		updated_by: q_email,
 	};
 
-	diesel::insert_into(projectneedskills)
+	let projectneedskill = diesel::insert_into(projectneedskills)
 		.values(&new_projectneedskill)
-		.execute(conn)?;
+		.get_result::<ProjectNeedSkill>(conn)?;
 
-	Ok(new_projectneedskill.into())
+	Ok(projectneedskill)
 }
 
 pub fn delete_projectneedskill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
@@ -53,6 +55,7 @@ pub fn delete_projectneedskill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) ->
 	use crate::schema::projectneedskills::dsl::*;
 
 	let deleted = diesel::delete(projectneedskills.filter(id.eq(uuid_data))).execute(conn)?;
+
 	if deleted > 0 {
 		return Ok(());
 	}

@@ -6,9 +6,13 @@ use diesel::result::Error::NotFound;
 use crate::models::skills::{Pool, SkillScope};
 
 pub fn query_skill_scopes(pool: &web::Data<Pool>) -> Result<Vec<SkillScope>, Error> {
-	use crate::schema::skillscopes::dsl::skillscopes;
+	use crate::schema::skillscopes::dsl::{skillscopes, label};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let items = skillscopes.load::<SkillScope>(conn)?;
+
+	let items = skillscopes
+		.order(label.asc())
+		.load::<SkillScope>(conn)?;
+
 	Ok(items)
 }
 
@@ -26,11 +30,11 @@ pub fn create_skill_scope(
 		updated_by: q_email,
 	};
 
-	diesel::insert_into(skillscopes)
+	let scope = diesel::insert_into(skillscopes)
 		.values(&new_scope)
-		.execute(conn)?;
+		.get_result::<SkillScope>(conn)?;
 
-	Ok(new_scope.into())
+	Ok(scope)
 }
 
 pub fn update_skill_scope(
@@ -42,18 +46,15 @@ pub fn update_skill_scope(
 	use crate::schema::skillscopes::dsl::{skillscopes, *};
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let mut scope = diesel::update(skillscopes)
+	let scope = diesel::update(skillscopes)
 		.filter(id.eq(uuid_data))
 		.set((
 			label.eq(q_label),
 			updated_by.eq(q_email.clone()),
 		))
-		.load::<SkillScope>(conn)?;
+		.get_result::<SkillScope>(conn)?;
 
-	if let Some(scope_res) = scope.pop() {
-		return Ok(scope_res);
-	}
-	Err(NotFound)
+	Ok(scope)
 }
 
 pub fn delete_skill_scope(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
@@ -61,6 +62,7 @@ pub fn delete_skill_scope(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Resu
 	use crate::schema::skillscopes::dsl::{skillscopes, id};
 
 	let deleted = diesel::delete(skillscopes.filter(id.eq(uuid_data))).execute(conn)?;
+	
 	if deleted > 0 {
 		return Ok(());
 	}

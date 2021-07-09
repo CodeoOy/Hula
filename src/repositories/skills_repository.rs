@@ -5,9 +5,13 @@ use diesel::result::Error::NotFound;
 use crate::models::skills::{Pool, Skill};
 
 pub fn query_all_skills(pool: &web::Data<Pool>) -> Result<Vec<Skill>, Error> {
-	use crate::schema::skills::dsl::skills;
+	use crate::schema::skills::dsl::{skills, label};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let items = skills.load::<Skill>(conn)?;
+
+	let items = skills
+		.order(label.asc())
+		.load::<Skill>(conn)?;
+
 	Ok(items)
 }
 
@@ -29,9 +33,11 @@ pub fn create_skill(
 		updated_by: q_email,
 	};
 	
-	diesel::insert_into(skills).values(&new_skill).execute(conn)?;
+	let skill = diesel::insert_into(skills)
+		.values(&new_skill)
+		.get_result::<Skill>(conn)?;
 	
-	Ok(new_skill.into())
+	Ok(skill)
 }
 
 pub fn update_skill(
@@ -44,19 +50,16 @@ pub fn update_skill(
 	use crate::schema::skills::dsl::{skills, *};
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let mut skill = diesel::update(skills)
+	let skill = diesel::update(skills)
 		.filter(id.eq(uuid_data))
 		.set((
 			label.eq(q_label),
 			skillcategory_id.eq(q_skillcategory_id),
 			updated_by.eq(q_email.clone()),
 		))
-		.load::<Skill>(conn)?;
+		.get_result::<Skill>(conn)?;
 
-	if let Some(skill_res) = skill.pop() {
-		return Ok(skill_res);
-	}
-	Err(NotFound)
+	Ok(skill)
 }
 
 pub fn delete_skill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
@@ -65,6 +68,7 @@ pub fn delete_skill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(),
 	use crate::schema::skills::dsl::*;
 
 	let deleted = diesel::delete(skills.filter(id.eq(uuid_data))).execute(conn)?;
+	
 	if deleted > 0 {
 		return Ok(());
 	}

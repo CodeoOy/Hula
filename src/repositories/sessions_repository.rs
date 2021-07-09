@@ -23,18 +23,18 @@ pub fn create_session(
 
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let session = Session {
+	let new_session = Session {
 		id: uuid::Uuid::new_v4(),
 		user_id: q_user_id,
 		expire_at: expiration.naive_utc(),
 		updated_by: q_user_email,
 	};
 
-	diesel::insert_into(sessions)
-		.values(&session)
-		.execute(conn)?;
+	let session = diesel::insert_into(sessions)
+		.values(&new_session)
+		.get_result::<Session>(conn)?;
 
-	Ok(session.into())
+	Ok(session)
 }
 
 pub fn delete_session(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
@@ -42,6 +42,7 @@ pub fn delete_session(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(
 	use crate::schema::sessions::dsl::*;
 
 	let deleted = diesel::delete(sessions.filter(user_id.eq(uuid_data))).execute(conn)?;
+
 	if deleted > 0 {
 		return Ok(());
 	}
