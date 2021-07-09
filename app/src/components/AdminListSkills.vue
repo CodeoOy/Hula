@@ -143,14 +143,10 @@
 			deleteSkill(id) {
 				fetch(`/api/skills/${id}`, {method: 'DELETE'})
 				.then(response => { 
-					if (response.ok) {
-						this.$flashMessage.show({
-							type: 'success',
-							title: 'Skill removed',
-							time: 1000
-						});
-						this.getAllSkills()
-					}
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
+				.then(() => { 
+					this.getAllSkills()
 				})    
 				.catch((errors) => {
 					this.$store.commit('errorHandling', errors)
@@ -159,14 +155,10 @@
 			deleteCategory(id) {
 				fetch(`/api/skills/categories/${id}`, {method: 'DELETE'})
 				.then(response => { 
-					if (response.ok) {
-						this.$flashMessage.show({
-							type: 'success',
-							title: 'Category removed',
-							time: 1000
-						});
-						this.getSkillCategories()
-					}
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
+				.then(() => { 
+					this.getAllSkills()
 				})    
 				.catch((errors) => {
 					this.$store.commit('errorHandling', errors)

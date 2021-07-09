@@ -131,15 +131,23 @@ const store = createStore({
 					case 'UniqueViolation':
 						state.errorObject = {
 							type: 'error',
-							title: 'Unique violation lol',
+							title: 'Item already exists.',
 							time: 1000
 						}
 						break;
 					case 'AdminRequired':
-						console.log("You're not admin lol")
+						state.errorObject = {
+							type: 'error',
+							title: 'You do not have sufficient privileges',
+							time: 1000
+						}
 						break;
 					case 'ForeignKeyViolation':
-						console.log("Foreign key violation lol")
+						state.errorObject = {
+							type: 'error',
+							title: 'Foreign key violation',
+							time: 1000
+						}
 						break;
 					default:
 						console.log(errObject)
