@@ -147,16 +147,12 @@
 			deleteScope(id) {
 				fetch(`/api/skills/scopes/${id}`, {method: 'DELETE'})
 				.then(response => { 
-					if (response.ok) {
-						this.$flashMessage.show({
-							type: 'success',
-							title: 'Scope removed',
-							time: 1000
-						});
-						this.getAllScopes()
-						this.getAllLevels()
-					}
-				})    
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
+				.then(() => { 
+					this.getAllScopes()
+					this.getAllLevels()
+				})   
 				.catch((errors) => {
 					this.$store.commit('errorHandling', errors)
 				})
@@ -164,15 +160,11 @@
 			deleteLevel(id) {
 				fetch(`/api/skills/levels/${id}`, {method: 'DELETE'})
 				.then(response => { 
-					if (response.ok) {
-						this.$flashMessage.show({
-							type: 'success',
-							title: 'Level removed',
-							time: 1000
-						});
-						this.getAllScopes()
-						this.getAllLevels()
-					}
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
+				.then(() => { 
+					this.getAllScopes()
+					this.getAllLevels()
 				})    
 				.catch((errors) => {
 					this.$store.commit('errorHandling', errors)

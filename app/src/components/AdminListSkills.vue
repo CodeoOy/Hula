@@ -158,7 +158,7 @@
 					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
 				})
 				.then(() => { 
-					this.getAllSkills()
+					this.getSkillCategories()
 				})    
 				.catch((errors) => {
 					this.$store.commit('errorHandling', errors)
