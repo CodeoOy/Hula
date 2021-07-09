@@ -50,23 +50,25 @@
 							</div>
 						</td>
 						<td class="hoverable-td">
-							<div class="title-actions" v-for="lvl in filterLevels(scope.id)" :key="lvl" :value="lvl.id">
-								<span class="title-actions__maintitle">{{ lvl.index }}: {{ lvl.label }} - {{ lvl.percentage }}</span>
-								<div class="title-actions__actions">
-									<a 
-										href="#"
-										:data-scope-id="lvl.id" 
-										:data-scope-name="lvl.label" 
-										data-bs-toggle="modal"
-										data-bs-target="#hulaModalScopes"
-										title="Edit level" 
-										v-on:click="chosenScope = scope, formTitle = lvl.label, chosenForm = 'Level', chosenLevel = lvl, url = `/api/skills/levels/${lvl.id}`, method = 'PUT'"
-									><i class="bi-pencil-fill me-2"></i></a>
-									<a href="#" v-on:click.prevent="this.deleteLevel(lvl.id)"><i class="bi-trash-fill me-2"></i></a>
-									<a href="#" v-on:click.prevent="chosenLevel = lvl, chosenLevel.swap_direction = 'Better', this.swapLevels(lvl.id);"><i class="bi-caret-up-fill me-1"></i></a>
-									<a href="#" v-on:click.prevent="chosenLevel = lvl, chosenLevel.swap_direction = 'Worse', this.swapLevels(lvl.id);"><i class="bi-caret-down-fill me-2"></i></a>
-								</div>
-							</div>
+							<transition-group name="flip-list" tag="ul">
+								<li class="title-actions" v-for="lvl in filterLevels(scope.id)" :key="lvl.id" :value="lvl.id">
+									<span class="title-actions__maintitle">{{ lvl.index }}: {{ lvl.label }} - {{ lvl.percentage }}</span>
+									<div class="title-actions__actions">
+										<a 
+											href="#"
+											:data-scope-id="lvl.id" 
+											:data-scope-name="lvl.label" 
+											data-bs-toggle="modal"
+											data-bs-target="#hulaModalScopes"
+											title="Edit level" 
+											v-on:click="chosenScope = scope, formTitle = lvl.label, chosenForm = 'Level', chosenLevel = lvl, url = `/api/skills/levels/${lvl.id}`, method = 'PUT'"
+										><i class="bi-pencil-fill me-2"></i></a>
+										<a href="#" v-on:click.prevent="this.deleteLevel(lvl.id)"><i class="bi-trash-fill me-2"></i></a>
+										<a href="#" v-on:click.prevent="chosenLevel = lvl, chosenLevel.swap_direction = 'Better', this.swapLevels(lvl.id);"><i class="bi-caret-up-fill me-1"></i></a>
+										<a href="#" v-on:click.prevent="chosenLevel = lvl, chosenLevel.swap_direction = 'Worse', this.swapLevels(lvl.id);"><i class="bi-caret-down-fill me-2"></i></a>
+									</div>
+								</li>
+							</transition-group>
 						</td>
 					</tr>
 				</tbody>
@@ -185,7 +187,7 @@
 				this.getAllLevels()
 				let modal = Modal.getInstance(document.querySelector('#hulaModalScopes'))
 				modal.hide()
-			}
+			},
 		},
 		computed: {
 			modalComponent() {

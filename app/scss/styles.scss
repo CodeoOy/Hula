@@ -177,6 +177,10 @@ nav {
 	}
 }
 
+.flip-list-move {
+	transition: transform 0.2s;
+}
+
 .hoverable-td {
 	&:hover {
 		.title-actions__actions {
