@@ -124,6 +124,12 @@ const store = createStore({
 				router.push({ name: 'page-login' })
 				return "Unauthorized"
 			}
+			if(error.status == 500) {
+				state.loggeduser = null
+				localStorage.removeItem('user');
+				router.push({ name: 'page-login' })
+				return "Unauthorized"
+			}
 			let errorObject = Promise.resolve(error)
 			errorObject.then((resError) => resError.json())
 			.then(errObject => {
@@ -136,11 +142,9 @@ const store = createStore({
 						}
 						break;
 					case 'AdminRequired':
-						state.errorObject = {
-							type: 'error',
-							title: 'You do not have sufficient privileges',
-							time: 1000
-						}
+						state.loggeduser = null
+						localStorage.removeItem('user');
+						router.push({ name: 'page-login' })
 						break;
 					case 'ForeignKeyViolation':
 						state.errorObject = {
