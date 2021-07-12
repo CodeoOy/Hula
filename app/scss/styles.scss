@@ -169,6 +169,9 @@ nav {
 	flex-direction: row;
 	align-items: flex-start;
 	justify-content: space-between;
+	&:not(:last-child) {
+		border-bottom: 1px solid lighten($dark, 11%);
+	}
 	@include media-breakpoint-up(lg) {
 		width: 50%
 	}
@@ -186,6 +189,9 @@ nav {
 		.title-actions__actions {
 			opacity: 1;
 		}
+	}
+	ul {
+		margin-bottom: 0;
 	}
 }
 

@@ -24,6 +24,9 @@ export default {
 			type: Boolean,
 			default: false
 		}
+	},
+	updated() {
+		console.log("Updated")
 	}
 };
 </script>
