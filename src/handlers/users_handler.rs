@@ -1,5 +1,5 @@
 use crate::errors::ServiceError;
-use crate::models::users::{LoggedUser, Pool, UserSkill};
+use crate::models::users::{LoggedUser, Pool};
 use crate::repositories::*;
 use actix_web::{error::BlockingError, web, HttpResponse};
 use serde::{Deserialize, Serialize};
@@ -16,13 +16,14 @@ pub struct QueryData {
 
 #[derive(Deserialize, Debug)]
 pub struct UserSkillData {
+	pub skill_id: uuid::Uuid,
+	pub skillscopelevel_id: uuid::Uuid,
 	pub years: Option<f64>,
-	pub email: String,
 	pub user_id: uuid::Uuid,
 }
 
 #[derive(Deserialize, Debug)]
-pub struct Favorite {
+pub struct FavoriteData {
 	pub email: String,
 	pub project_id: uuid::Uuid,
 	pub user_id: uuid::Uuid,
@@ -94,7 +95,7 @@ pub async fn update_user(
 
 pub async fn add_skill(
 	uuid_data: web::Path<String>,
-	payload: web::Json<UserSkill>,
+	payload: web::Json<UserSkillData>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
@@ -257,7 +258,7 @@ pub async fn update_year(
 
 pub async fn add_favorite_project(
 	uuid_data: web::Path<String>,
-	payload: web::Json<Favorite>,
+	payload: web::Json<FavoriteData>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {

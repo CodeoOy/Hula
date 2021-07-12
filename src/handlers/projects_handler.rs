@@ -3,7 +3,7 @@ use serde::Deserialize;
 use log::trace;
 
 use crate::errors::ServiceError;
-use crate::models::projects::{Pool, ProjectNeed, ProjectNeedSkill};
+use crate::models::projects::Pool;
 use crate::models::users::LoggedUser;
 use crate::repositories::*;
 
@@ -15,6 +15,24 @@ pub struct QueryData {
 #[derive(Deserialize, Debug)]
 pub struct ProjectData {
 	pub name: String,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ProjectNeedData {
+	pub project_id: uuid::Uuid,
+	pub count_of_users: i32,
+	pub begin_time: chrono::NaiveDateTime,
+	pub end_time: Option<chrono::NaiveDateTime>,
+	pub percentage: Option<i32>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ProjectNeedSkillData {
+	pub projectneed_id: uuid::Uuid,
+	pub skill_id: uuid::Uuid,
+	pub skillscopelevel_id: Option<uuid::Uuid>,
+	pub min_years: Option<f64>,
+	pub max_years: Option<f64>,
 }
 
 pub async fn get_all_projects(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
@@ -106,7 +124,7 @@ pub async fn create_project(
 }
 
 pub async fn create_projectneed(
-	projectneeddata: web::Json<ProjectNeed>,
+	projectneeddata: web::Json<ProjectNeedData>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
@@ -136,7 +154,7 @@ pub async fn create_projectneed(
 }
 
 pub async fn create_projectneedskill(
-	projectneedskilldata: web::Json<ProjectNeedSkill>,
+	projectneedskilldata: web::Json<ProjectNeedSkillData>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
@@ -212,7 +230,7 @@ pub async fn update_project(
 
 pub async fn update_projectneed(
 	uuid_data: web::Path<String>,
-	projectneed: web::Json<ProjectNeed>,
+	projectneed: web::Json<ProjectNeedData>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
