@@ -53,7 +53,12 @@
 										data-bs-target="#hulaModalSkills"
 										v-on:click="formTitle='Edit category', chosenForm = 'Category', chosenCategory = category, url=`/api/skills/categories/${category.id}`, method='PUT'"
 									><i class="bi-pencil-fill me-2"></i></a>
-									<a href="#" v-on:click.prevent="this.deleteCategory(category.id)"><i class="bi-trash-fill me-2"></i></a>
+									<a
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalSkills" 
+										v-on:click="formTitle = `Delete ${category.label}?`, chosenForm = 'Delete', url = `/api/skills/categories/${category.id}`, method = 'DELETE'"
+									><i class="bi-trash-fill me-2"></i></a>
 								</div>
 							</div>
 						</td>
@@ -67,7 +72,12 @@
 										data-bs-target="#hulaModalSkills"
 										v-on:click="formTitle=skill.label, chosenForm = 'CreateSkill', chosenSkill = skill, url=`/api/skills/${skill.id}`, method='PUT'"
 									><i class="bi-pencil-fill me-2"></i></a>
-									<a href="#" v-on:click.prevent="this.deleteSkill(skill.id)"><i class="bi-trash-fill me-2"></i></a>
+									<a
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalSkills" 
+										v-on:click="formTitle = `Delete ${skill.label}?`, chosenForm = 'Delete', url = `/api/skills/${skill.id}`, method = 'DELETE'"
+									><i class="bi-trash-fill me-2"></i></a>
 								</div>
 							</div>
 						</td>
@@ -86,7 +96,7 @@
 	import FormSkillCategory from '../forms/FormSkillCategory.vue'
 	import FormSkillScope from '../forms/FormSkillScope.vue'
 	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
-	import FormGeneralRename from '../forms/FormGeneralRename.vue'
+	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	export default {
 		name: 'AdminListSkills',
 		data () {
@@ -113,7 +123,7 @@
 			FormSkillScope,
 			FormSkillScopeLevel,
 			FormAddSkill,
-			FormGeneralRename
+			FormConfirmAction
 		},
 		methods: {
 			getAllSkills() {
@@ -175,7 +185,8 @@
 					CreateSkill: FormSkill,
 					Category: FormSkillCategory,
 					Scope: FormSkillScope,
-					Level: FormSkillScopeLevel
+					Level: FormSkillScopeLevel,
+					Delete: FormConfirmAction
 				}
 				return components[this.chosenForm]
 			}
