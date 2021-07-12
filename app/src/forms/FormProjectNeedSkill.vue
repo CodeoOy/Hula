@@ -24,13 +24,11 @@ export default {
 	data() {
 		return {
 			queryDataNeedSkill: {
-				id: '06ba4809-f20b-4687-945b-e033a6751fca',
 				projectneed_id: this.chosenNeed.id,
 				skill_id: '',
 				skillscopelevel_id: '',
 				min_years: 1,
-				max_years: 10,
-				updated_by: this.$store.state.loggeduser.email
+				max_years: 10
 			},
 			chosenSkill: {
 				type: Object,

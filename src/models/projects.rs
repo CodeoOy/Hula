@@ -13,6 +13,7 @@ pub struct Project {
 	pub name: String,
 	pub updated_by: String,
 }
+
 #[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
 #[table_name = "projectneedskills"]
 pub struct ProjectNeedSkill {
