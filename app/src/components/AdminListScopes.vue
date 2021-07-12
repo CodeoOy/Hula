@@ -63,7 +63,12 @@
 											title="Edit level" 
 											v-on:click="chosenScope = scope, formTitle = lvl.label, chosenForm = 'Level', chosenLevel = lvl, url = `/api/skills/levels/${lvl.id}`, method = 'PUT'"
 										><i class="bi-pencil-fill me-2"></i></a>
-										<a href="#" v-on:click.prevent="this.deleteLevel(lvl.id)"><i class="bi-trash-fill me-2"></i></a>
+										<a
+											href="#"
+											data-bs-toggle="modal"
+											data-bs-target="#hulaModalScopes" 
+											v-on:click="formTitle = `Delete ${lvl.label}?`, chosenForm = 'Delete', url = `/api/skills/levels/${lvl.id}`, method = 'DELETE'"
+										><i class="bi-trash-fill me-2"></i></a>
 										<a href="#" v-on:click.prevent="chosenLevel = lvl, chosenLevel.swap_direction = 'Better', this.swapLevels(lvl.id);"><i class="bi-caret-up-fill me-1"></i></a>
 										<a href="#" v-on:click.prevent="chosenLevel = lvl, chosenLevel.swap_direction = 'Worse', this.swapLevels(lvl.id);"><i class="bi-caret-down-fill me-2"></i></a>
 									</div>
@@ -82,7 +87,7 @@
 	import { Modal } from 'bootstrap'
 	import FormSkillScope from '../forms/FormSkillScope.vue'
 	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
-	import FormGeneralRename from '../forms/FormGeneralRename.vue'
+	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	export default {
 		name: 'AdminListSkills',
 		data () {
@@ -104,7 +109,7 @@
 			VModal,
 			FormSkillScope,
 			FormSkillScopeLevel,
-			FormGeneralRename
+			FormConfirmAction
 		},
 		methods: {
 			swapLevels(id) {
@@ -193,7 +198,8 @@
 			modalComponent() {
 				const components = {
 					Scope: FormSkillScope,
-					Level: FormSkillScopeLevel
+					Level: FormSkillScopeLevel,
+					Delete: FormConfirmAction
 				}
 				return components[this.chosenForm]
 			}
