@@ -25,7 +25,7 @@ const store = createStore({
 			})
 			.then((response) => response.json())
 			context.commit('setUser', userData)
-		}
+		},
 	},
 	mutations: {
 		setUser(state, data) {

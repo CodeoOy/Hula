@@ -64,7 +64,7 @@
 						</td>
 						<td class="hoverable-td">
 							<div class="title-actions" v-for="skill in filterSkills(category.id)" :key="skill" :value="skill.id">
-								<span class="title-actions__maintitle">{{ skill.label }}</span>
+								<span><span class="title-actions__maintitle">{{ skill.label }}</span><span class="title-actions__maintitle--dimmed"> ({{ getSkillScopeLabel(skill.skillscope_id) }})</span></span>
 								<div class="title-actions__actions">
 									<a 
 										href="#"
@@ -114,6 +114,7 @@
 				},
 				skills: [],
 				categories: [],
+				skillScopes: [],
 			}
 		},
 		components: {
@@ -147,30 +148,24 @@
 					this.categories = response;
 				})
 			},
-			deleteSkill(id) {
-				fetch(`/api/skills/${id}`, {method: 'DELETE'})
+			getAllScopes() {
+				fetch('/api/skills/scopes', {method: 'GET'})
 				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
 				})
-				.then(() => { 
-					this.getAllSkills()
+				.then(response => { 
+					this.skillScopes = response;
 				})    
 				.catch((errors) => {
 					this.$store.commit('errorHandling', errors)
 				})
 			},
-			deleteCategory(id) {
-				fetch(`/api/skills/categories/${id}`, {method: 'DELETE'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
-				})
-				.then((response) => { 
-					console.log(response)
-					this.getSkillCategories()
-				})
-			},
 			filterSkills(id) {
 				return this.skills.filter(skill => skill.skillcategory_id == id)
+			},
+			getSkillScopeLabel(id) {
+				var scope = this.skillScopes.find(skillScope => skillScope.id == id)
+				return scope.label
 			},
 			hideModalUpdate() {
 				this.getSkillCategories()
@@ -194,6 +189,7 @@
 		mounted() {
 			this.getSkillCategories()
 			this.getAllSkills()
+			this.getAllScopes()
 		}
 	}
 </script>

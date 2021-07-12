@@ -156,32 +156,6 @@
 					this.$store.commit('errorHandling', errors)
 				})
 			},
-			deleteScope(id) {
-				fetch(`/api/skills/scopes/${id}`, {method: 'DELETE'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
-				})
-				.then(() => { 
-					this.getAllScopes()
-					this.getAllLevels()
-				})   
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
-			},
-			deleteLevel(id) {
-				fetch(`/api/skills/levels/${id}`, {method: 'DELETE'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
-				})
-				.then(() => { 
-					this.getAllScopes()
-					this.getAllLevels()
-				})    
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
-			},
 			filterLevels(id) {
 				let levels = this.skillLevels.filter(lvl => lvl.skillscope_id == id)
 				return levels.sort(function(a, b) {
