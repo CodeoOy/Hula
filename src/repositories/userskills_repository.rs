@@ -5,9 +5,13 @@ use diesel::result::Error;
 use diesel::result::Error::NotFound;
 
 pub fn query_belong_to_user(user: &User, pool: &web::Data<Pool>) -> Result<Vec<UserSkill>, Error> {
+	use crate::schema::userskills::dsl::skill_id;
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let items = UserSkill::belonging_to(user).load::<UserSkill>(conn)?;
+	let items = UserSkill::belonging_to(user)
+		.order(skill_id.asc())
+		.load::<UserSkill>(conn)?;
+	
 	Ok(items)
 }
 
@@ -31,11 +35,11 @@ pub fn add_skill(
 		updated_by: q_email,
 	};
 
-	diesel::insert_into(userskills)
+	let user_skill = diesel::insert_into(userskills)
 		.values(&new_user_skill)
-		.execute(conn)?;
+		.get_result::<UserSkill>(conn)?;
 
-	Ok(new_user_skill.into())
+	Ok(user_skill)
 }
 
 pub fn update_year(
@@ -49,16 +53,13 @@ pub fn update_year(
 	use crate::schema::userskills::dsl::{skill_id, updated_by, years};
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let mut items = diesel::update(userskills)
+	let user_skill = diesel::update(userskills)
 		.filter(skill_id.eq(uuid_data))
 		.filter(user_id.eq(q_user_id))
 		.set((years.eq(q_years), updated_by.eq(q_email)))
-		.load::<UserSkill>(conn)?;
+		.get_result::<UserSkill>(conn)?;
 
-	if let Some(user_res) = items.pop() {
-		return Ok(user_res);
-	}
-	Err(NotFound)
+	Ok(user_skill)
 }
 
 pub fn delete_userskill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
@@ -66,9 +67,9 @@ pub fn delete_userskill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result
 	use crate::schema::userskills::dsl::{id, userskills};
 
 	let deleted = diesel::delete(userskills.filter(id.eq(uuid_data))).execute(conn)?;
+	
 	if deleted > 0 {
 		return Ok(());
 	}
 	Err(NotFound)
 }
-

@@ -5,9 +5,13 @@ use diesel::{prelude::*, PgConnection};
 use diesel::result::Error;
 
 pub fn query_all(pool: &web::Data<Pool>) -> Result<Vec<User>, Error> {
-	use crate::schema::users::dsl::users;
+	use crate::schema::users::dsl::{users, lastname, firstname};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let items = users.load::<User>(conn)?;
+	
+	let items = users
+		.order((lastname.asc(), firstname.asc()))
+		.load::<User>(conn)?;
+	
 	Ok(items)
 }
 
@@ -15,11 +19,9 @@ pub fn get_by_email(q_email: String, pool: &web::Data<Pool>) -> Result<User, Err
 	use crate::schema::users::dsl::{email, users};
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let mut items = users.filter(email.eq(&q_email)).load::<User>(conn)?;
-	if let Some(user) = items.pop() {
-		return Ok(user);
-	}
-	Err(NotFound)
+	let user = users.filter(email.eq(&q_email)).get_result::<User>(conn)?;
+
+	Ok(user)
 }
 
 pub fn get(q_id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<User, Error> {
@@ -27,6 +29,7 @@ pub fn get(q_id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<User, Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let user = users.filter(id.eq(&q_id)).get_result::<User>(conn)?;
+
 	Ok(user)
 }
 
@@ -34,13 +37,13 @@ pub fn create(q_email: String, q_password: String, q_first_name: String, q_last_
 	use crate::schema::users::dsl::users;
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let user =
+	let new_user =
 		User::from_details(q_email, q_password, q_first_name, q_last_name);
 
-	let inserted_user: User = diesel::insert_into(users).values(&user).get_result(conn)?;
-	return Ok(inserted_user);
-}
+	let user: User = diesel::insert_into(users).values(&new_user).get_result(conn)?;
 
+	Ok(user)
+}
 
 pub fn update(
 	uuid_data: uuid::Uuid,
@@ -53,7 +56,7 @@ pub fn update(
 	use crate::schema::users::dsl::{available, firstname, id, lastname, updated_by, users};
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let mut items = diesel::update(users)
+	let user = diesel::update(users)
 		.filter(id.eq(uuid_data))
 		.set((
 			firstname.eq(q_first_name),
@@ -61,12 +64,9 @@ pub fn update(
 			available.eq(q_user_available),
 			updated_by.eq(q_email),
 		))
-		.load::<User>(conn)?;
-	
-	if let Some(user_res) = items.pop() {
-		return Ok(user_res);
-	}
-	Err(NotFound)
+		.get_result::<User>(conn)?;
+
+	Ok(user)
 }
 
 pub fn delete_user(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
@@ -75,6 +75,7 @@ pub fn delete_user(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), 
 	use crate::schema::users::dsl::*;
 
 	let deleted = diesel::delete(users.filter(id.eq(uuid_data))).execute(conn)?;
+
 	if deleted > 0 {
 		return Ok(());
 	}

@@ -5,9 +5,12 @@ use diesel::result::Error;
 use crate::models::matchcandidates::{Pool, MatchCandidate};
 
 pub fn query(pool: &web::Data<Pool>) -> Result<Vec<MatchCandidate>, Error> {
-	use crate::schema::matchcandidates::dsl::matchcandidates;
+	use crate::schema::matchcandidates::dsl::{matchcandidates, projectneedskillid, userskillid};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let mut items = matchcandidates.load::<MatchCandidate>(conn)?;
+	
+	let mut items = matchcandidates
+		.order((projectneedskillid.asc(), userskillid.asc()))
+		.load::<MatchCandidate>(conn)?;
 
 	items.retain(|x| x.required_index <= x.user_index);
 	items.retain(|x| x.required_minyears <= x.user_years);
@@ -21,9 +24,12 @@ pub fn query_by_params(
 	q_project_name: String,
 	pool: &web::Data<Pool>,
 ) -> Result<Vec<MatchCandidate>, Error> {
-	use crate::schema::matchcandidates::dsl::matchcandidates;
+	use crate::schema::matchcandidates::dsl::{matchcandidates, projectneedskillid, userskillid};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let mut items = matchcandidates.load::<MatchCandidate>(conn)?;
+	
+	let mut items = matchcandidates
+		.order((projectneedskillid.asc(), userskillid.asc()))
+		.load::<MatchCandidate>(conn)?;
 
 	items.retain(|x| x.required_index <= x.user_index);
 	items.retain(|x| x.required_minyears <= x.user_years);

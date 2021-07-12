@@ -10,10 +10,15 @@ pub fn query_project_needs(
 	pool: &web::Data<Pool>,
 	pid: uuid::Uuid,
 ) -> Result<Vec<ProjectNeed>, Error> {
-	use crate::schema::projectneeds::dsl::{project_id, projectneeds};
+	use crate::schema::projectneeds::dsl::{project_id, projectneeds, begin_time};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let items = projectneeds.filter(project_id.eq(pid)).load::<ProjectNeed>(conn)?;
-	Ok(items.into())
+
+	let items = projectneeds
+		.filter(project_id.eq(pid))
+		.order(begin_time.asc())
+		.load::<ProjectNeed>(conn)?;
+
+	Ok(items)
 }
 
 pub fn create_projectneed(
@@ -27,6 +32,7 @@ pub fn create_projectneed(
 ) -> Result<ProjectNeed, Error> {
 	use crate::schema::projectneeds::dsl::projectneeds;
 	let conn: &PgConnection = &pool.get().unwrap();
+
 	let new_projectneed = ProjectNeed {
 		id: uuid::Uuid::new_v4(),
 		project_id: q_project_id,
@@ -37,11 +43,11 @@ pub fn create_projectneed(
 		updated_by: q_email,
 	};
 	
-	diesel::insert_into(projectneeds)
+	let projectneed = diesel::insert_into(projectneeds)
 		.values(&new_projectneed)
-		.execute(conn)?;
+		.get_result::<ProjectNeed>(conn)?;
 
-	Ok(new_projectneed.into())
+	Ok(projectneed)
 }
 
 pub fn update_projectneed(
@@ -56,7 +62,7 @@ pub fn update_projectneed(
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::projectneeds::dsl::{projectneeds, *};
 
-	let mut items = diesel::update(projectneeds)
+	let projectneed = diesel::update(projectneeds)
 		.filter(id.eq(uuid_data))
 		.set((
 			count_of_users.eq(q_count_of_users),
@@ -65,12 +71,9 @@ pub fn update_projectneed(
 			end_time.eq(q_end_time),
 			updated_by.eq(q_email),
 		))
-		.load::<ProjectNeed>(conn)?;
+		.get_result::<ProjectNeed>(conn)?;
 
-	if let Some(need_res) = items.pop() {
-		return Ok(need_res);
-	}
-	Err(NotFound)
+	Ok(projectneed)
 }
 
 pub fn delete_projectneed(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
@@ -79,6 +82,7 @@ pub fn delete_projectneed(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Resu
 	use crate::schema::projectneeds::dsl::*;
 
 	let deleted = diesel::delete(projectneeds.filter(id.eq(uuid_data))).execute(conn)?;
+	
 	if deleted > 0 {
 		return Ok(());
 	}

@@ -6,9 +6,13 @@ use diesel::{prelude::*, PgConnection};
 use crate::models::skills::{Pool, SkillCategory};
 
 pub fn query_skill_categories(pool: web::Data<Pool>) -> Result<Vec<SkillCategory>, Error> {
-	use crate::schema::skillcategories::dsl::skillcategories;
+	use crate::schema::skillcategories::dsl::{skillcategories, *};
 	let conn: &PgConnection = &pool.get().unwrap();
-	let items = skillcategories.load::<SkillCategory>(conn)?;
+	
+	let items = skillcategories
+		.order(label.asc())
+		.load::<SkillCategory>(conn)?;
+
 	Ok(items)
 }
 
@@ -28,11 +32,11 @@ pub fn create_skill_category(
 		updated_by: q_email,
 	};
 
-	diesel::insert_into(skillcategories)
+	let skillcategory = diesel::insert_into(skillcategories)
 		.values(&new_skill_category)
-		.execute(conn)?;
+		.get_result::<SkillCategory>(conn)?;
 
-	Ok(new_skill_category.into())
+	Ok(skillcategory)
 }
 
 pub fn update_skill_categories(
@@ -45,19 +49,16 @@ pub fn update_skill_categories(
 	use crate::schema::skillcategories::dsl::{skillcategories, *};
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let mut skillcategory = diesel::update(skillcategories)
+	let skillcategory = diesel::update(skillcategories)
 		.filter(id.eq(uuid_data))
 		.set((
 			label.eq(q_label),
 			parent_id.eq(q_parent_id),
 			updated_by.eq(q_email.clone()),
 		))
-		.load::<SkillCategory>(conn)?;
+		.get_result::<SkillCategory>(conn)?;
 
-	if let Some(skillcategory_res) = skillcategory.pop() {
-		return Ok(skillcategory_res);
-	}
-	Err(NotFound)
+	Ok(skillcategory)
 }
 
 pub fn delete_skill_category(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
@@ -65,6 +66,7 @@ pub fn delete_skill_category(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> R
 	use crate::schema::skillcategories::dsl::{id, skillcategories};
 
 	let deleted = diesel::delete(skillcategories.filter(id.eq(uuid_data))).execute(conn)?;
+	
 	if deleted > 0 {
 		return Ok(());
 	}
