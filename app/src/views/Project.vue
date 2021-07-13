@@ -1,7 +1,15 @@
 <template>
 	<div class="container mt-4">
 		<VModal :modalTitle="formTitle" :modalID="'SingleProject'">
-			<component :is='modalComponent' :chosenNeed="chosenNeed"/>
+			<component 
+				:is='modalComponent' 
+				:chosenProject="chosenProject"
+				:chosenNeed="chosenNeed"
+				:chosenSkill="chosenSkill"
+				:url="url"
+				:method="method"
+				v-on:form-sent="hideModalUpdate"
+			/>
 		</VModal>
 		<div class="row gx-4">
 			<div class="col-md-4">
@@ -17,7 +25,7 @@
 							class="btn btn-gradient"
 							data-bs-toggle="modal"
 							data-bs-target="#hulaModalSingleProject"
-							v-on:click="formTitle = 'Add need', chosenForm = 'need', chosenNeed = chosenNeedDefault"
+							v-on:click="formTitle = 'Add need', chosenForm = 'Need', chosenNeed = chosenNeedDefault"
 						>Add need</button>
 					</div>
 					<div class="mt-3" v-for="need in project.needs" :key="need.id">
@@ -29,15 +37,20 @@
 									href="#"
 									data-bs-toggle="modal" 
 									data-bs-target="#hulaModalSingleProject" 
-									v-on:click="chosenNeed = need, formTitle = 'New skill', chosenForm = 'skill'"
+									v-on:click="chosenNeed = need, formTitle = 'New skill', chosenForm = 'Skill'"
 								><i class="bi-plus-circle-fill me-2"></i></a>
 								<a
 									href="#"
 									data-bs-toggle="modal" 
 									data-bs-target="#hulaModalSingleProject" 
-									v-on:click="chosenNeed = need, formTitle = 'Edit need', chosenForm = 'need'"
+									v-on:click="chosenNeed = need, formTitle = 'Edit need', chosenForm = 'Need'"
 								><i class="bi-pencil-fill me-2"></i></a>
-								<a href="#" v-on:click="deleteNeed(need.id)"><i class="bi-trash-fill me-2"></i></a>
+								<a
+									href="#"
+									data-bs-toggle="modal"
+									data-bs-target="#hulaModalSingleProject" 
+									v-on:click="formTitle = `Delete ${need.id}?`, chosenForm = 'Delete', url = `/api/projectneeds/${need.id}`, method = 'DELETE'"
+								><i class="bi-trash-fill me-2"></i></a>
 							</div>
 						</div>
 						<table class="table table-dark table-striped text-light mb-4">
@@ -57,7 +70,12 @@
 									<td>{{ skill.min_years }}</td>
 									<td>{{ skill.max_years }}</td>
 									<td class="hoverable-td">
-										<a href="#" v-on:click="deleteSkill(skill.id)"><i class="bi-trash-fill me-2"></i></a>
+										<a
+											href="#"
+											data-bs-toggle="modal"
+											data-bs-target="#hulaModalSingleProject" 
+											v-on:click="formTitle = `Delete ${skill.label}?`, chosenForm = 'Delete', url = `/api/projectskills/${need.id}`, method = 'DELETE'"
+										><i class="bi-trash-fill me-2"></i></a>
 									</td>
 								</tr>
 							</tbody>
@@ -73,6 +91,7 @@
 	import VModal from '../components/VModal.vue'
 	import FormProjectNeed from '../forms/FormProjectNeed.vue'
 	import FormProjectNeedSkill from '../forms/FormProjectNeedSkill.vue'
+	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	export default {
 		name: 'Project',
 		data() {
@@ -94,6 +113,7 @@
 			VModal,
 			FormProjectNeed,
 			FormProjectNeedSkill,
+			FormConfirmAction,
 		},
 		computed: {
 			project() {
@@ -101,44 +121,19 @@
 			},
 			modalComponent() {
 				const components = {
-					need: FormProjectNeed,
-					skill: FormProjectNeedSkill,
+					Need: FormProjectNeed,
+					Skill: FormProjectNeedSkill,
+					Delete: FormConfirmAction
 				}
 				return components[this.chosenForm]
 			}
 		},
 		methods: {
-			deleteNeed(id) {
-				fetch(`/api/projectneeds/${id}`, {method: 'DELETE'})
-				.then(response => { 
-					if (response.ok) {
-						this.$flashMessage.show({
-							type: 'success',
-							title: 'Need removed',
-							time: 1000
-						});
-						this.$store.commit('setChosenProject', this.$route.params.id)
-					}
-				})    
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
-			},
-			deleteSkill(id) {
-				fetch(`/api/projectskills/${id}`, {method: 'DELETE'})
-				.then(response => { 
-					if (response.ok) {
-						this.$flashMessage.show({
-							type: 'success',
-							title: 'Skill removed',
-							time: 1000
-						});
-						this.$store.commit('setChosenProject', this.$route.params.id)
-					}
-				})    
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
+			hideModalUpdate() {
+				//this.getAllScopes()
+				//this.getAllLevels()
+				let modal = Modal.getInstance(document.querySelector('#hulaModalScopes'))
+				modal.hide()
 			}
 		},
 		mounted () {

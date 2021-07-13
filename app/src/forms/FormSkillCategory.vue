@@ -25,7 +25,7 @@
 				v-model="queryData.parent_id"
 			>
 				<option :value="''">No parent</option>
-				<option v-for="category in categories" :key="category" :value="category.id">
+				<option v-for="category in categories" :key="category.label" :value="category.id">
 					{{ category.label }}
 				</option>
 			</v-field>

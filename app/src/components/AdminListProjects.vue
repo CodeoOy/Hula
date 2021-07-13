@@ -22,15 +22,14 @@
 			<table class="table table-dark table-striped text-light">
 				<thead>
 					<tr>
-						<th scope="col">#</th>
 						<th scope="col">Project name</th>
-						<th scope="col">needs</th>
+						<th scope="col">Needs</th>
+						<th scope="col">Matches</th>
 						<th scope="col">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(project, index) in this.$store.state.projects" :key="project.id">
-						<th scope="row">{{ index + 1 }}</th>
+					<tr v-for="project, in this.$store.state.projects" :key="project.id">
 						<td><router-link
 							:to="{ name: 'page-project', params: { id: project.id}}"
 							v-on:click="this.chooseProject(project)"
@@ -39,14 +38,15 @@
 							<p v-for="need in project.needs" :key="need.id">{{ need.id }}</p>
 						</td>
 						<td>
-							<!--<a href="#" 
-								:data-project-id="project.id" 
-								:data-project-name="project.name" 
-								data-bs-toggle="modal" 
-								data-bs-target="#hulaModal" 
-								v-on:click.prevent="this.chooseProject(project)"
-							>Edit</a>-->
-							<a href="#" v-on:click.prevent="this.deleteProject(project.id)">Delete</a>
+							<p>Matches here</p>
+						</td>
+						<td>
+							<a
+								href="#"
+								data-bs-toggle="modal"
+								data-bs-target="#hulaModalProjects" 
+								v-on:click="formTitle = `Delete ${project.label}?`, chosenForm = 'Delete', url = `/api/skills/${project.id}`, method = 'DELETE'"
+							><i class="bi-trash-fill me-2"></i></a>
 						</td>
 					</tr>
 				</tbody>

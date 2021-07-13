@@ -25,7 +25,7 @@
 				id="AddNewSkill"
 				aria-label="Skill category"
 			>
-				<option v-for="category in categories" :key="category" :value="category.id">
+				<option v-for="category in categories" :key="category.label" :value="category.id">
 					{{ category.label }}
 				</option>
 			</v-field>
@@ -42,7 +42,7 @@
 				id="AddExistingSkillScope"
 				aria-label="Pick scope"
 			>
-				<option v-for="scope in scopes" :key="scope" :value="scope.id">
+				<option v-for="scope in scopes" :key="scope.label" :value="scope.id">
 					{{ scope.label }}
 				</option>
 			</v-field>
