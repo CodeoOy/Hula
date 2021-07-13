@@ -53,7 +53,7 @@
 								><i class="bi-trash-fill me-2"></i></a>
 							</div>
 						</div>
-						<table class="table table-dark table-striped text-light mb-4">
+						<table v-if="skills.length" class="table table-dark table-striped text-light mb-4">
 							<thead>
 								<tr>
 									<th scope="col">Skill</th>
@@ -65,7 +65,7 @@
 							</thead>
 							<tbody>
 								<tr v-for="skill in need.skills" :key="skill.id">
-									<td>{{ skill.id }}</td>
+									<td>{{ getSkillLabel(skill.skill_id) }}</td>
 									<td>{{ skill.level }}</td>
 									<td>{{ skill.min_years }}</td>
 									<td>{{ skill.max_years }}</td>
@@ -133,14 +133,33 @@
 		},
 		methods: {
 			hideModalUpdate() {
-				//this.getAllScopes()
-				//this.getAllLevels()
+				this.$store.commit('setChosenProject', this.$route.params.id)
 				let modal = Modal.getInstance(document.querySelector('#hulaModalSingleProject'))
 				modal.hide()
+			},
+			getAllSkills() {
+				fetch('/api/skills', {method: 'GET'})
+				.then(response => { 
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
+				.then(response => { 
+					this.skills = response;
+				})    
+				.catch((errors) => {
+					this.$store.commit('errorHandling', errors)
+				})
+			},
+			getSkillLabel(id) {
+				//console.log(id)
+				//console.log(this.skills)
+				//console.log(this.skills.find(skill => skill.id == id))
+				var returnedSkill = this.skills.find(skill => skill.id == id)
+				return returnedSkill.label
 			}
 		},
 		mounted () {
-			this.$store.commit('setChosenProject', this.$route.params.id)
+			this.getAllSkills()
+			this.$store.dispatch('setChosenProject', this.$route.params.id)
 		}
 	}
 </script>
