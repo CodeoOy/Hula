@@ -15,7 +15,6 @@ const setupRoute = entry => ({
 export default function setupRouter() {
 	const router = createRouter({
 		routes: [
-			{ path: '/app/:pathMatch(.*)*', component: views.PageError, name: 'page-error' },
 			{ path: '/', component: views.Home, name: 'page-home'},
 			{ path: '/app/confirm', component: views.Confirm, name: 'page-confirm' },
 			{ path: '/app/dashboard', component: views.Dashboard, name: 'page-dashboard' },
@@ -24,6 +23,7 @@ export default function setupRouter() {
 			{ path: '/app/gdpr', component: views.Gdpr, name: 'page-gdpr' },
 			{ path: '/app/login', component: views.Login, name: 'page-login' },
 			{ path: '/app/project/:id', component: views.Project, name: 'page-project' },
+			{ path: '/app/:pathMatch(.*)*', component: views.PageError, name: 'page-error' },
 		],
 		history: createWebHistory(),
 		linkActiveClass: 'active',
