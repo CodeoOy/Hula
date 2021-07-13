@@ -133,7 +133,7 @@
 		},
 		methods: {
 			hideModalUpdate() {
-				this.$store.commit('setChosenProject', this.$route.params.id)
+				this.$store.dispatch('setChosenProject', this.$route.params.id)
 				let modal = Modal.getInstance(document.querySelector('#hulaModalSingleProject'))
 				modal.hide()
 			},
