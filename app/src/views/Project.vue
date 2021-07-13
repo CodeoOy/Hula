@@ -99,6 +99,7 @@
 			return {
 				chosenNeed: {},
 				chosenNeedDefault: {
+					isNew: true,
 					project_id: this.$store.state.chosenproject.id,
 					count_of_users: Number,
 					begin_time: String,
@@ -107,7 +108,8 @@
 					updated_by: this.$store.state.loggeduser.email
 				},
 				formTitle: '',
-				chosenForm: ''
+				chosenForm: '',
+				skills: [],
 			}
 		},
 		components: {
