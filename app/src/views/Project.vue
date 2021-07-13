@@ -74,7 +74,7 @@
 											href="#"
 											data-bs-toggle="modal"
 											data-bs-target="#hulaModalSingleProject" 
-											v-on:click="formTitle = `Delete ${skill.label}?`, chosenForm = 'Delete', url = `/api/projectskills/${need.id}`, method = 'DELETE'"
+											v-on:click="formTitle = `Delete ${skill.id}?`, chosenForm = 'Delete', url = `/api/projectskills/${skill.id}`, method = 'DELETE'"
 										><i class="bi-trash-fill me-2"></i></a>
 									</td>
 								</tr>
@@ -89,6 +89,7 @@
 
 <script>
 	import VModal from '../components/VModal.vue'
+	import { Modal } from 'bootstrap'
 	import FormProjectNeed from '../forms/FormProjectNeed.vue'
 	import FormProjectNeedSkill from '../forms/FormProjectNeedSkill.vue'
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
@@ -132,7 +133,7 @@
 			hideModalUpdate() {
 				//this.getAllScopes()
 				//this.getAllLevels()
-				let modal = Modal.getInstance(document.querySelector('#hulaModalScopes'))
+				let modal = Modal.getInstance(document.querySelector('#hulaModalSingleProject'))
 				modal.hide()
 			}
 		},
