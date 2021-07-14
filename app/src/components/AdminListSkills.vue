@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<VModal :modalTitle="formTitle" :modalID="'Skills'">
+		<VModal :modalTitle="formTitle" :modalID="'Skills'" v-on:updated-modal="chosenForm = '', chosenCategory = {}">
 			<component 
 				:is='modalComponent' 
 				:chosenSkill="chosenSkill" 
@@ -17,7 +17,7 @@
 					class="btn btn-gradient me-2"
 					data-bs-toggle="modal"
 					data-bs-target="#hulaModalSkills"
-					v-on:click="formTitle = 'Add skill', chosenForm = 'CreateSkill', chosenSkill = chosenSkillDefault, url='/api/skills', method='POST'"
+					v-on:click="formTitle = 'Add skill', chosenForm = 'CreateSkill', chosenSkill = {}, url='/api/skills', method='POST'"
 				>New skill</button>
 				<button
 					class="btn btn-gradient"
@@ -45,7 +45,7 @@
 										href="#"
 										data-bs-toggle="modal"
 										data-bs-target="#hulaModalSkills"
-										v-on:click="formTitle=`Add skill to ${category.label}`, chosenForm = 'CreateSkill', chosenCategory = category, chosenSkill = null, url='/api/skills', method='POST'"
+										v-on:click="formTitle=`Add skill to ${category.label}`, chosenForm = 'CreateSkill', chosenCategory = category, chosenSkill = {}, url='/api/skills', method='POST'"
 									><i class="bi-plus-circle-fill me-2"></i></a>
 									<a 
 										href="#"
@@ -105,13 +105,8 @@
 				chosenForm: '',
 				url: '',
 				method: '',
-				chosenSkill: {},
-				chosenCategory: {},
-				chosenSkillDefault: {
-					label: '',
-					skillcategory_id: null,
-					skillscope_id: null,
-				},
+				//chosenSkill: {},
+				//chosenCategory: {},
 				skills: [],
 				categories: [],
 				skillScopes: [],

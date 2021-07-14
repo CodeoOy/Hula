@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<VModal :modalTitle="formTitle" :modalID="'Scopes'">
+		<VModal :modalTitle="formTitle" :modalID="'Scopes'" v-on:updated-modal="chosenForm = ''">
 			<component 
 				:is='modalComponent' 
 				:chosenScope="chosenScope"
@@ -165,6 +165,11 @@
   					if (keyA > keyB) return -1;
   					return 0;
 				})
+			},
+			hideModalUpdate() {
+				this.$store.dispatch('setChosenProject', this.$route.params.id)
+				let modal = Modal.getInstance(document.querySelector('#hulaModalSingleProject'))
+				modal.hide()
 			},
 			hideModalUpdate() {
 				this.getAllScopes()

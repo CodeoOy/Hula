@@ -4,7 +4,7 @@
 			<label class="form-label">Skill name</label>
 			<error-message name="name" class="error"></error-message>
 			<v-field
-				v-model="queryData.label"
+				v-model="formData.label"
 				:rules="isRequired"
 				as="input"
 				type="text"
@@ -13,11 +13,11 @@
 				aria-label="Skill name"
 			></v-field>
 		</div>
-		<div class="mb-2" v-if="chosenSkill">
+		<div class="mb-2" v-if="!('id' in chosenCategory)">
 			<label class="form-label">Skill category</label>
 			<error-message name="category" class="error"></error-message>
 			<v-field
-				v-model="queryData.skillcategory_id"
+				v-model="formData.skillcategory_id"
 				:rules="isRequired"
 				as="select"
 				name="category"
@@ -34,7 +34,7 @@
 			<label class="form-label">Skill scope</label>
 			<error-message name="scope" class="error"></error-message>
 			<v-field
-				v-model="queryData.skillscope_id"
+				v-model="formData.skillscope_id"
 				:rules="isRequired"
 				as="select"
 				name="scope"
@@ -59,6 +59,11 @@ export default {
 		return {
 			categories: [],
 			scopes: [],
+			formData: {
+				label: this.chosenSkill.label || '',
+				skillcategory_id: this.chosenSkill.skillcategory_id || this.chosenCategory.id,
+				skillscope_id: this.chosenSkill.skillscope_id || null,
+			},
 		}
 	},
 	components: {
@@ -77,13 +82,11 @@ export default {
 			return value ? true : 'This field is required';
 		},
 		createSkill() {
-			delete this.queryData.id
-			delete this.queryData.updated_by
 			fetch(this.url, {
 				method: this.method,
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.queryData)
+				body: JSON.stringify(this.formData)
 			})
 			.then(response => {
 				if (response.status >= 200 && response.status <= 299) {
@@ -115,7 +118,7 @@ export default {
 			})
 			.then(response => { 
 				this.scopes = response;
-				this.queryData.skillscope_id = this.scopes[0].id
+				this.formData.skillscope_id = this.scopes[0].id
 			})    
 			.catch((errors) => {
 				this.$store.commit('errorHandling', errors)
@@ -125,37 +128,6 @@ export default {
 	mounted() {
 		this.getSkillCategories()
 		this.getSkillScopes()
-	},
-	computed: {
-		queryData: {
-			get () {
-				if (this.chosenSkill) {
-					return {
-						updated_by: "",
-						id: this.chosenSkill.id,
-						skillscope_id: this.chosenSkill.skillscope_id,
-						skillcategory_id: this.chosenSkill.skillcategory_id,
-						label: this.chosenSkill.label,
-					}
-				} else if (this.chosenCategory){
-					return {
-						updated_by: "",
-						id: "",
-						skillscope_id: "",
-						skillcategory_id: this.chosenCategory.id,
-						label: "",
-					}
-				} else {
-					return {
-						updated_by: "",
-						id: this.chosenSkill.id,
-						skillscope_id: this.chosenSkill.skillscope_id,
-						skillcategory_id: this.chosenSkill.skillcategory_id,
-						label: "",
-					}
-				}
-			}
-		}
 	},
 };
 </script>

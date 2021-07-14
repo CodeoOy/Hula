@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<VModal :modalTitle="formTitle" :modalID="'Projects'">
+		<VModal :modalTitle="formTitle" :modalID="'Projects'" v-on:updated-modal="chosenForm = ''">
 			<component 
 				:is='modalComponent' 
 				:chosenProject="chosenProject" 
@@ -92,7 +92,7 @@
 			hideModalUpdate() {
 				let modal = Modal.getInstance(document.querySelector('#hulaModalProjects'))
 				modal.hide()
-			}
+			},
 		},
 		computed: {
 			modalComponent() {
