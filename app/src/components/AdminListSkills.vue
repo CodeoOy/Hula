@@ -91,11 +91,8 @@
 <script>
 	import VModal from '../components/VModal.vue'
 	import { Modal } from 'bootstrap'
-	import FormAddSkill from '../forms/FormAddSkill.vue'
 	import FormSkill from '../forms/FormSkill.vue'
 	import FormSkillCategory from '../forms/FormSkillCategory.vue'
-	import FormSkillScope from '../forms/FormSkillScope.vue'
-	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	export default {
 		name: 'AdminListSkills',
@@ -116,9 +113,6 @@
 			VModal,
 			FormSkill,
 			FormSkillCategory,
-			FormSkillScope,
-			FormSkillScopeLevel,
-			FormAddSkill,
 			FormConfirmAction
 		},
 		methods: {
@@ -174,8 +168,6 @@
 				const components = {
 					CreateSkill: FormSkill,
 					Category: FormSkillCategory,
-					Scope: FormSkillScope,
-					Level: FormSkillScopeLevel,
 					Delete: FormConfirmAction
 				}
 				return components[this.chosenForm]
