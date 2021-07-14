@@ -5,8 +5,6 @@
 		<main>
 			<router-view />
 		</main>
-		{{ errorFlashMessage }}
-		{{ this.$store.state.loggeduser }}
 		<TheFooter />
 	</div>
 </template>

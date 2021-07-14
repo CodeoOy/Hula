@@ -23,7 +23,7 @@
 				<thead>
 					<tr>
 						<th scope="col">Project name</th>
-						<th scope="col">Needs</th>
+						<th scope="col">Skills</th>
 						<th scope="col">Matches</th>
 						<th scope="col">Actions</th>
 					</tr>

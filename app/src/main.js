@@ -42,13 +42,10 @@ const store = createStore({
 				})
 				.then((response) => response.json())
 				.catch((errors) => {
-					console.log("No needs for project: " + project.id)
 					console.log(errors)
 					project.needs = {}
 					hasProjects = false
 				})
-				console.log("Project from state:")
-				console.log(project)
 				if (hasProjects === true) {
 					await Promise.all(project.needs.map(need =>
 						fetch(`/api/projectskills/${need.id}`, {
@@ -61,7 +58,6 @@ const store = createStore({
 							need.skills = response
 						})
 						.catch((errors) => {
-							console.log("No skills for need" + need.id)
 							console.log(errors)
 							need.skills = {}
 						})
@@ -105,7 +101,6 @@ const store = createStore({
 						})
 						.then((response) => response.json())
 						.catch((errors) => {
-							console.log("No needs for project: " + project.id)
 							console.log(errors)
 							project.needs = {}
 						})

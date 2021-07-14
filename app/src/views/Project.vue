@@ -1,9 +1,8 @@
 <template>
-	<div class="container mt-4">
-		<VModal :modalTitle="formTitle" :modalID="'SingleProject'">
+	<div class="container mt-4" ref="lol">
+		<VModal :modalTitle="formTitle" :modalID="'SingleProject'" v-on:updated-modal="updateModal">
 			<component 
-				:is='modalComponent' 
-				:chosenProject="chosenProject"
+				:is='modalComponent'
 				:chosenNeed="chosenNeed"
 				:chosenSkill="chosenSkill"
 				:url="url"
@@ -109,7 +108,11 @@
 				},
 				formTitle: '',
 				chosenForm: '',
+				chosenSkill: {},
+				url: '',
+				method: '',
 				skills: [],
+				modal: null
 			}
 		},
 		components: {
@@ -129,13 +132,22 @@
 					Delete: FormConfirmAction
 				}
 				return components[this.chosenForm]
-			}
+			},
 		},
 		methods: {
 			hideModalUpdate() {
 				this.$store.dispatch('setChosenProject', this.$route.params.id)
-				let modal = Modal.getInstance(document.querySelector('#hulaModalSingleProject'))
-				modal.hide()
+				//let modal = Modal.getInstance(document.querySelector('#hulaModalSingleProject'))
+				this.modal.hide()
+			},
+			updateModal(value) {
+				console.log("HIDDEN")
+				this.chosenForm = ''
+				this.modal = value
+				/*
+				this.modal.addEventListener('hidden.bs.modal', function (event) {
+					console.log(event)
+				})*/
 			},
 			getAllSkills() {
 				fetch('/api/skills', {method: 'GET'})
@@ -150,14 +162,11 @@
 				})
 			},
 			getSkillLabel(id) {
-				//console.log(id)
-				//console.log(this.skills)
-				//console.log(this.skills.find(skill => skill.id == id))
 				var returnedSkill = this.skills.find(skill => skill.id == id)
 				return returnedSkill.label
-			}
+			},
 		},
-		mounted () {
+		mounted() {
 			this.getAllSkills()
 			this.$store.dispatch('setChosenProject', this.$route.params.id)
 		}

@@ -84,7 +84,6 @@ export default {
 			return value ? true : 'This field is required';
 		},
 		createUpdateProjectNeed() {
-			this.locked = true
 			let chosenMethod = 'PUT'
 			let fetchPath = '/api/projectneeds/' + this.chosenNeed.id
 			if ('isNew' in this.chosenNeed) {
@@ -96,7 +95,6 @@ export default {
 			if (this.formData.end_time.length) {
 				this.formData.end_time = `${this.formData.end_time}T00:00:00`
 			}
-			console.log(this.formData.begin_time)
 			fetch(fetchPath, {
 				method: chosenMethod,
 				headers: {"Content-Type": "application/json"},
@@ -112,25 +110,7 @@ export default {
 		},
 	},
 	props: {
-		chosenNeed: {}
+		chosenNeed: {},
 	},
-	/*
-	computed: {
-		queryData: {
-			get () {
-				if (!this.locked) {
-					var tempBeginTime = this.chosenNeed.begin_time.toString().replace('T00:00:00', '') 
-					var tempEndTime = this.chosenNeed.end_time.toString().replace('T00:00:00', '') 
-					this.chosenNeed.begin_time = tempBeginTime
-					if (tempEndTime) {
-						this.chosenNeed.end_time = tempEndTime
-					} else {
-						this.chosenNeed.end_time = null
-					}
-				}
-				return this.chosenNeed
-			}
-		}
-	}*/
 };
 </script>

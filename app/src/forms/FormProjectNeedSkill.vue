@@ -62,6 +62,9 @@ export default {
 				credentials: 'include',
 				body: JSON.stringify(this.queryDataNeedSkill)
 			})
+			.then(() => {
+				this.$emit('formSent')
+			})
 			.catch((errors) => {
 				this.errors.push('skill-error')
 				this.$store.commit('errorHandling', errors)

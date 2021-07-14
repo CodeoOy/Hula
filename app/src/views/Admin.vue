@@ -51,7 +51,6 @@
 		},
 		methods: {
 			updateProject(value) {
-				console.log("update project emit fired")
 				this.chosenForm = 'project'
 				//this.chosenProject = this.$store.state.chosenproject
 				this.form_title = value
