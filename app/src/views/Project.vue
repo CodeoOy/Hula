@@ -1,6 +1,6 @@
 <template>
 	<div class="container mt-4" ref="lol">
-		<VModal :modalTitle="formTitle" :modalID="'SingleProject'" v-on:updated-modal="updateModal">
+		<VModal :modalTitle="formTitle" :modalID="'SingleProject'" v-on:updated-modal="chosenForm = ''">
 			<component 
 				:is='modalComponent'
 				:chosenNeed="chosenNeed"
@@ -112,7 +112,6 @@
 				url: '',
 				method: '',
 				skills: [],
-				modal: null
 			}
 		},
 		components: {
@@ -137,17 +136,8 @@
 		methods: {
 			hideModalUpdate() {
 				this.$store.dispatch('setChosenProject', this.$route.params.id)
-				//let modal = Modal.getInstance(document.querySelector('#hulaModalSingleProject'))
-				this.modal.hide()
-			},
-			updateModal(value) {
-				console.log("HIDDEN")
-				this.chosenForm = ''
-				this.modal = value
-				/*
-				this.modal.addEventListener('hidden.bs.modal', function (event) {
-					console.log(event)
-				})*/
+				let modal = Modal.getInstance(document.querySelector('#hulaModalSingleProject'))
+				modal.hide()
 			},
 			getAllSkills() {
 				fetch('/api/skills', {method: 'GET'})

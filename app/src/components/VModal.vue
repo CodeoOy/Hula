@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import { Modal } from 'bootstrap'
 export default {
 	name: 'VModal',
 	props: {	
@@ -26,18 +25,9 @@ export default {
 			default: false
 		}
 	},
-	methods: {
-		sendTheFreakingMessage() {
-			console.log("Sending message")
-			this.$emit('updatedModal')
-		}
-	},
 	updated() {
-		let modal = Modal.getInstance(this.$refs.hulaModal)
-		//let modal = Modal.getInstance(document.getElementById('hulaModalSingleProject'))
-		//this.$emit('updatedModal', modal)
-		modal._element.addEventListener('hidden.bs.modal', function (event) {
-			this.sendTheFreakingMessage()
+		this.$refs.hulaModal.addEventListener('hidden.bs.modal', () => {
+			this.$emit('updatedModal')
 		})
 	}
 };
