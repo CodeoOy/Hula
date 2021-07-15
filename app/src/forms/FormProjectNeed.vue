@@ -68,8 +68,8 @@ export default {
 			formData: {
 				project_id: this.$route.params.id,
 				count_of_users: this.chosenNeed.count_of_users || '',
-				begin_time: this.chosenNeed.begin_time.toString().replace('T00:00:00', '')  || '',
-				end_time: this.chosenNeed.end_time.toString().replace('T00:00:00', '')  || '',
+				begin_time: this.chosenNeed.begin_time || '',
+				end_time: this.chosenNeed.end_time || '',
 				percentage: this.chosenNeed.percentage || '',
 			}
 		}
@@ -91,10 +91,6 @@ export default {
 				fetchPath = '/api/projectneeds'
 			}
 			delete this.formData.skills
-			this.formData.begin_time = `${this.formData.begin_time}T00:00:00` // TODO: Find a less hacky solution
-			if (this.formData.end_time.length) {
-				this.formData.end_time = `${this.formData.end_time}T00:00:00`
-			}
 			fetch(fetchPath, {
 				method: chosenMethod,
 				headers: {"Content-Type": "application/json"},
