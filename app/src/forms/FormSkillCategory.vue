@@ -14,7 +14,6 @@
 				v-model="formData.label"
 			></v-field>
 		</div>
-		{{ categories.length }}
 		<div class="mb-2" v-if="categories.length">
 			<label class="form-label">Category parent (optional)</label>
 			<error-message name="parent" class="error"></error-message>

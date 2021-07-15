@@ -4,7 +4,7 @@
 		<p v-if="errors.length && errors.includes('skill-error')" class="error">Error in adding skill. Maybe it's already added?</p>
 		<label class="form-label">Skill</label>
 		<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which skill" v-model="queryDataNeedSkill.skill_id">
-			<option v-for="avskill in availableSkills" :key="avskill" :value="avskill.id">
+			<option v-for="avskill in filterSkills" :key="avskill" :value="avskill.id">
 				{{ avskill.label }}
 			</option>
 		</select>
@@ -97,7 +97,7 @@ export default {
 		getSkillScope(needle) {
 			var scope = this.availableSkills.find(x => x.id == needle).skillscope_id;
 			this.chosenSkill.skillscope_id = scope;
-		}
+		},
 	},
 	watch: {
 		'queryDataNeedSkill.skill_id'(newID) {
@@ -111,6 +111,12 @@ export default {
 		filterLevels() {
 			if ('skillscope_id' in this.chosenSkill) {
 				return this.skillLevels.filter(lvl => lvl.skillscope_id == this.chosenSkill.skillscope_id)
+			}
+		},
+		// get skills from availableSkills that are not listed in chosenNeed.skills
+		filterSkills() {
+			if (this.availableSkills.length) {
+				return this.availableSkills.filter(x => !this.chosenNeed.skills.find(y => y.skill_id == x.id));
 			}
 		}
 	},
