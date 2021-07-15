@@ -11,7 +11,7 @@
 				class="form-control"
 				placeholder="Techs"
 				aria-label="Category name"
-				v-model="queryData.label"
+				v-model="formData.label"
 			></v-field>
 		</div>
 		<div class="mb-2">
@@ -22,9 +22,9 @@
 				name="parent"
 				class="form-select"
 				aria-label="Category parent"
-				v-model="queryData.parent_id"
+				v-model="formData.parent_id"
 			>
-				<option :value="''">No parent</option>
+				<option :value="null">No parent</option>
 				<option v-for="category in categories" :key="category.label" :value="category.id">
 					{{ category.label }}
 				</option>
@@ -41,6 +41,11 @@ export default {
 	data() {
 		return {
 			categories: {},
+			formData: {
+				email: this.chosenCategory.email || '',
+				label: this.chosenCategory.label || '',
+				parent_id: this.chosenCategory.parent_id || null,
+			}
 		};
 	},
 	components: {
@@ -58,15 +63,11 @@ export default {
 			return value ? true : 'This field is required';
 		},
 		createUpdateSkillCategory() {
-			if (this.queryData.parent_id == "") {
-				console.log("category parent was null")
-				delete this.queryData.parent_id
-			}
 			fetch(this.url, {
 				method: this.method,
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.queryData)
+				body: JSON.stringify(this.formData)
 			})
 			.then(response => {
 				if (response.status >= 200 && response.status <= 299) {
@@ -76,7 +77,7 @@ export default {
 				}
 			})
 			.catch((errors) => {
-				//this.$store.commit('errorHandling', errors)
+				this.$store.commit('errorHandling', errors)
 			})
 		},
 		getSkillCategories() {
@@ -95,20 +96,5 @@ export default {
 	mounted() {
 		this.getSkillCategories()
 	},
-	computed: {
-		queryData: {
-			get () {
-				if (this.chosenCategory) {
-					return this.chosenCategory
-				}
-				console.log("No chosen category")
-				return {
-					email: "",
-					label: "",
-					parent_id: null,
-				}
-			}
-		}
-	}
 };
 </script>
