@@ -13,7 +13,7 @@
 				aria-label="Skill name"
 			></v-field>
 		</div>
-		<div class="mb-2" v-if="!('id' in chosenCategory)">
+		<div class="mb-2" v-if="!('id' in chosenCategory) && categories.length">
 			<label class="form-label">Skill category</label>
 			<error-message name="category" class="error"></error-message>
 			<v-field
