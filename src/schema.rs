@@ -15,8 +15,8 @@ table! {
 		id -> Uuid,
 		project_id -> Uuid,
 		count_of_users -> Int4,
-		begin_time -> Timestamp,
-		end_time -> Nullable<Timestamp>,
+		begin_time -> Date,
+		end_time -> Nullable<Date>,
 		percentage -> Nullable<Int4>,
 		updated_by -> Varchar,
 	}
@@ -104,8 +104,8 @@ table! {
 		id -> Uuid,
 		user_id -> Uuid,
 		description -> Varchar,
-		begin_time -> Nullable<Timestamp>,
-		end_time -> Nullable<Timestamp>,
+		begin_time -> Nullable<Date>,
+		end_time -> Nullable<Date>,
 		percentage -> Nullable<Int4>,
 		updated_by -> Varchar,
 	}

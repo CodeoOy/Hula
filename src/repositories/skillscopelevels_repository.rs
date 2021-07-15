@@ -14,13 +14,11 @@ pub enum ScopeLevelSwapDirection {
 }
 
 pub fn query_skill_levels(pool: &web::Data<Pool>) -> Result<Vec<SkillScopeLevel>, Error> {
-	use crate::schema::skillscopelevels::dsl::{skillscopelevels, index};
+	use crate::schema::skillscopelevels::dsl::{index, skillscopelevels};
 	let conn: &PgConnection = &pool.get().unwrap();
-	
-	let items = skillscopelevels
-		.order(index.desc())
-		.load::<SkillScopeLevel>(conn)?;
-	
+
+	let items = skillscopelevels.order(index.desc()).load::<SkillScopeLevel>(conn)?;
+
 	Ok(items)
 }
 
@@ -41,14 +39,14 @@ pub fn create_skill_scope_level(
 		.order_by(index.desc())
 		.limit(1)
 		.load::<SkillScopeLevel>(conn)?;
-	
+
 	if latestlevel.len() > 0 {
 		currentindex = latestlevel[0].index;
 	}
 
 	let new_scope_level = SkillScopeLevel {
 		id: uuid::Uuid::new_v4(),
-		label: q_label, // TODO: This is unique, sanitize field or handle error more gracefully
+		label: q_label,
 		skillscope_id: q_skillscope_id,
 		index: currentindex + 1,
 		percentage: q_percentage,
@@ -104,7 +102,7 @@ pub fn update_skill_scope_level(
 					.filter(id.eq(other.id))
 					.set((index.eq(0), updated_by.eq(q_email.clone())))
 					.execute(conn)?;
-						
+
 				diesel::update(skillscopelevels)
 					.filter(id.eq(uuid_data))
 					.set((index.eq(other.index), updated_by.eq(q_email.clone())))
@@ -117,14 +115,16 @@ pub fn update_skill_scope_level(
 			}
 		}
 
-		scopelevel = Some(diesel::update(skillscopelevels)
-			.filter(id.eq(uuid_data))
-			.set((
-				label.eq(q_label),
-				percentage.eq(q_percentage),
-				updated_by.eq(q_email.clone()),
-			))
-			.get_result::<SkillScopeLevel>(conn)?);
+		scopelevel = Some(
+			diesel::update(skillscopelevels)
+				.filter(id.eq(uuid_data))
+				.set((
+					label.eq(q_label),
+					percentage.eq(q_percentage),
+					updated_by.eq(q_email.clone()),
+				))
+				.get_result::<SkillScopeLevel>(conn)?,
+		);
 
 		Ok(())
 	})?;
@@ -137,7 +137,7 @@ pub fn delete_skill_scope_level(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -
 	use crate::schema::skillscopelevels::dsl::{id, skillscopelevels};
 
 	let deleted = diesel::delete(skillscopelevels.filter(id.eq(uuid_data))).execute(conn)?;
-	
+
 	if deleted > 0 {
 		return Ok(());
 	}

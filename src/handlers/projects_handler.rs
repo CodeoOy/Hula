@@ -1,6 +1,6 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
-use serde::Deserialize;
 use log::trace;
+use serde::Deserialize;
 
 use crate::errors::ServiceError;
 use crate::models::projects::Pool;
@@ -21,8 +21,8 @@ pub struct ProjectData {
 pub struct ProjectNeedData {
 	pub project_id: uuid::Uuid,
 	pub count_of_users: i32,
-	pub begin_time: chrono::NaiveDateTime,
-	pub end_time: Option<chrono::NaiveDateTime>,
+	pub begin_time: chrono::NaiveDate,
+	pub end_time: Option<chrono::NaiveDate>,
 	pub percentage: Option<i32>,
 }
 
@@ -58,7 +58,11 @@ pub async fn get_projectneedskills(
 	pool: web::Data<Pool>,
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Getting project need skills: pid = {:#?} logged_user={:#?}", &pid, &_logged_user);
+	trace!(
+		"Getting project need skills: pid = {:#?} logged_user={:#?}",
+		&pid,
+		&_logged_user
+	);
 	let id = uuid::Uuid::parse_str(&pid.into_inner())?;
 
 	let res = web::block(move || projectneedskills_repository::query_projectneedskills(id, &pool)).await;
@@ -82,9 +86,13 @@ pub async fn get_project_needs(
 	pool: web::Data<Pool>,
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Getting project needs: pid = {:#?} logged_user={:#?}", &pid, &_logged_user);
+	trace!(
+		"Getting project needs: pid = {:#?} logged_user={:#?}",
+		&pid,
+		&_logged_user
+	);
 	let id = uuid::Uuid::parse_str(&pid.into_inner())?;
-	
+
 	let res = web::block(move || projectneeds_repository::query_project_needs(&pool, id)).await;
 
 	match res {
@@ -106,14 +114,19 @@ pub async fn create_project(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Create project: projectdata = {:#?} logged_user={:#?}", &projectdata, &logged_user);
+	trace!(
+		"Create project: projectdata = {:#?} logged_user={:#?}",
+		&projectdata,
+		&logged_user
+	);
 
-	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || projects_repository::create_project(projectdata.name.clone(), logged_user.email, &pool)).await;
+	let res =
+		web::block(move || projects_repository::create_project(projectdata.name.clone(), logged_user.email, &pool))
+			.await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
@@ -128,21 +141,28 @@ pub async fn create_projectneed(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Create project need: projectneeddata = {:#?} logged_user={:#?}", &projectneeddata, &logged_user);
+	trace!(
+		"Create project need: projectneeddata = {:#?} logged_user={:#?}",
+		&projectneeddata,
+		&logged_user
+	);
 
-	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || projectneeds_repository::create_projectneed(
-		projectneeddata.project_id, 
-		projectneeddata.count_of_users, 
-		projectneeddata.percentage, 
-		projectneeddata.begin_time, 
-		projectneeddata.end_time, 
-		logged_user.email,
-		&pool)).await;
+	let res = web::block(move || {
+		projectneeds_repository::create_projectneed(
+			projectneeddata.project_id,
+			projectneeddata.count_of_users,
+			projectneeddata.percentage,
+			projectneeddata.begin_time,
+			projectneeddata.end_time,
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
 
 	match res {
 		Ok(projectneed) => Ok(HttpResponse::Ok().json(&projectneed)),
@@ -158,21 +178,28 @@ pub async fn create_projectneedskill(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Create project need skill: projectneedskilldata = {:#?} logged_user={:#?}", &projectneedskilldata, &logged_user);
+	trace!(
+		"Create project need skill: projectneedskilldata = {:#?} logged_user={:#?}",
+		&projectneedskilldata,
+		&logged_user
+	);
 
-	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || projectneedskills_repository::create_projectneedskill(
-		projectneedskilldata.projectneed_id, 
-		projectneedskilldata.skill_id, 
-		projectneedskilldata.skillscopelevel_id, 
-		projectneedskilldata.min_years, 
-		projectneedskilldata.max_years, 
-		logged_user.email, 
-		&pool)).await;
+	let res = web::block(move || {
+		projectneedskills_repository::create_projectneedskill(
+			projectneedskilldata.projectneed_id,
+			projectneedskilldata.skill_id,
+			projectneedskilldata.skillscopelevel_id,
+			projectneedskilldata.min_years,
+			projectneedskilldata.max_years,
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
 
 	match res {
 		Ok(projectneedskill) => Ok(HttpResponse::Ok().json(&projectneedskill)),
@@ -208,9 +235,13 @@ pub async fn update_project(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Update project: uuid_data = {:#?} projectdata = {:#?} logged_user={:#?}", &uuid_data, &projectdata, &logged_user);
+	trace!(
+		"Update project: uuid_data = {:#?} projectdata = {:#?} logged_user={:#?}",
+		&uuid_data,
+		&projectdata,
+		&logged_user
+	);
 
-	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
 		return Err(ServiceError::AdminRequired);
 	}
@@ -218,7 +249,8 @@ pub async fn update_project(
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
 	let res =
-		web::block(move || projects_repository::update_project(id, projectdata.name.clone(), logged_user.email, &pool)).await;
+		web::block(move || projects_repository::update_project(id, projectdata.name.clone(), logged_user.email, &pool))
+			.await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
@@ -234,7 +266,12 @@ pub async fn update_projectneed(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Update project need: uuid_data = {:#?} projectneed = {:#?} logged_user={:#?}", &uuid_data, &projectneed, &logged_user);
+	trace!(
+		"Update project need: uuid_data = {:#?} projectneed = {:#?} logged_user={:#?}",
+		&uuid_data,
+		&projectneed,
+		&logged_user
+	);
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
@@ -243,16 +280,18 @@ pub async fn update_projectneed(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	let res =
-		web::block(move || projectneeds_repository::update_projectneed(
-			id, 
-			projectneed.count_of_users, 
-			projectneed.percentage, 
-			projectneed.begin_time, 
-			projectneed.end_time, 
-			logged_user.email, 
-			&pool))
-			.await;
+	let res = web::block(move || {
+		projectneeds_repository::update_projectneed(
+			id,
+			projectneed.count_of_users,
+			projectneed.percentage,
+			projectneed.begin_time,
+			projectneed.end_time,
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
 
 	match res {
 		Ok(need) => Ok(HttpResponse::Ok().json(&need)),
@@ -268,7 +307,11 @@ pub async fn delete_project(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Delete project: uuid_data = {:#?} logged_user={:#?}", &uuid_data, &logged_user);
+	trace!(
+		"Delete project: uuid_data = {:#?} logged_user={:#?}",
+		&uuid_data,
+		&logged_user
+	);
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
@@ -292,7 +335,11 @@ pub async fn delete_projectneed(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Deleting project need: uuid_data = {:#?} logged_user={:#?}", &uuid_data, &logged_user);
+	trace!(
+		"Deleting project need: uuid_data = {:#?} logged_user={:#?}",
+		&uuid_data,
+		&logged_user
+	);
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
@@ -316,7 +363,11 @@ pub async fn delete_projectneedskill(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Delete project need skill: uuid_data = {:#?} logged_user={:#?}", &uuid_data, &logged_user);
+	trace!(
+		"Delete project need skill: uuid_data = {:#?} logged_user={:#?}",
+		&uuid_data,
+		&logged_user
+	);
 
 	// todo: create a macro to simplify this
 	if logged_user.isadmin == false {
@@ -334,4 +385,3 @@ pub async fn delete_projectneedskill(
 		},
 	}
 }
-

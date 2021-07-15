@@ -1,16 +1,13 @@
 use actix_web::web;
-use diesel::{prelude::*, PgConnection};
+use chrono::NaiveDate;
 use diesel::result::Error;
 use diesel::result::Error::NotFound;
-use chrono::NaiveDateTime;
+use diesel::{prelude::*, PgConnection};
 
 use crate::models::projects::{Pool, ProjectNeed};
 
-pub fn query_project_needs(
-	pool: &web::Data<Pool>,
-	pid: uuid::Uuid,
-) -> Result<Vec<ProjectNeed>, Error> {
-	use crate::schema::projectneeds::dsl::{project_id, projectneeds, begin_time};
+pub fn query_project_needs(pool: &web::Data<Pool>, pid: uuid::Uuid) -> Result<Vec<ProjectNeed>, Error> {
+	use crate::schema::projectneeds::dsl::{begin_time, project_id, projectneeds};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let items = projectneeds
@@ -25,8 +22,8 @@ pub fn create_projectneed(
 	q_project_id: uuid::Uuid,
 	q_count_of_users: i32,
 	q_percentage: Option<i32>,
-	q_begin_time: NaiveDateTime,
-	q_end_time: Option<NaiveDateTime>,
+	q_begin_time: NaiveDate,
+	q_end_time: Option<NaiveDate>,
 	q_email: String,
 	pool: &web::Data<Pool>,
 ) -> Result<ProjectNeed, Error> {
@@ -42,7 +39,7 @@ pub fn create_projectneed(
 		end_time: q_end_time,
 		updated_by: q_email,
 	};
-	
+
 	let projectneed = diesel::insert_into(projectneeds)
 		.values(&new_projectneed)
 		.get_result::<ProjectNeed>(conn)?;
@@ -54,8 +51,8 @@ pub fn update_projectneed(
 	uuid_data: uuid::Uuid,
 	q_count_of_users: i32,
 	q_percentage: Option<i32>,
-	q_begin_time: NaiveDateTime,
-	q_end_time: Option<NaiveDateTime>,
+	q_begin_time: NaiveDate,
+	q_end_time: Option<NaiveDate>,
 	q_email: String,
 	pool: &web::Data<Pool>,
 ) -> Result<ProjectNeed, Error> {
@@ -82,10 +79,9 @@ pub fn delete_projectneed(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Resu
 	use crate::schema::projectneeds::dsl::*;
 
 	let deleted = diesel::delete(projectneeds.filter(id.eq(uuid_data))).execute(conn)?;
-	
+
 	if deleted > 0 {
 		return Ok(());
 	}
 	Err(NotFound)
 }
-
