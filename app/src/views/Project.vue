@@ -21,6 +21,12 @@
 						data-bs-target="#hulaModalSingleProject" 
 						v-on:click="formTitle = 'Edit project', chosenForm = 'Project', chosenProject = project, url=`/api/projects/${project.id}`, method='PUT'"
 					><i class="bi-pencil-fill me-2"></i></a>
+					<a 
+						href="#"
+						data-bs-toggle="modal" 
+						data-bs-target="#hulaModalSingleProject" 
+						v-on:click="formTitle = 'Delete project', chosenForm = 'Delete', chosenProject = project, url=`/api/projects/${project.id}`, method='DELETE'"
+					><i class="bi-trash-fill me-2"></i></a>
                 </div>
 			</div>
 			<div class="col-md-8">
