@@ -1,24 +1,46 @@
 <template>
-	<form v-on:submit="createProjectNeedSkill">
-		<h3>Add skill to this need</h3>
-		<p v-if="errors.length && errors.includes('skill-error')" class="error">Error in adding skill. Maybe it's already added?</p>
-		<label class="form-label">Skill</label>
-		<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which skill" v-model="queryDataNeedSkill.skill_id">
-			<option v-for="avskill in filterSkills" :key="avskill" :value="avskill.id">
-				{{ avskill.label }}
-			</option>
-		</select>
-		<label class="form-label">Minimum level</label>
-		<select class="form-select mb-2" id="AddExistingSkill" aria-label="Which level" v-model="queryDataNeedSkill.skillscopelevel_id">
-			<option v-for="lvl in filterLevels" :key="lvl" :value="lvl.id">
-				{{ lvl.label }}
-			</option>
-		</select>
+	<v-form v-on:submit="createProjectNeedSkill">
+		<h2>Add skill to this need</h2>
+		<div class="mb-2">
+			<label class="form-label">Skill</label>
+			<error-message name="name" class="error"></error-message>
+			<v-field
+				v-model="queryDataNeedSkill.skill_id"
+				:rules="isRequired"
+				as="select"
+				name="skill"
+				class="form-select"
+				id="AddExistingSkill"
+				aria-label="Pick skill"
+			>
+				<option v-for="avskill in filterSkills" :key="avskill" :value="avskill.id">
+					{{ avskill.label }}
+				</option>
+			</v-field>
+		</div>
+		<div class="mb-2">
+			<label class="form-label">Minimum level</label>
+			<error-message name="name" class="error"></error-message>
+			<v-field
+				v-model="queryDataNeedSkill.skillscopelevel_id"
+				:rules="isRequired"
+				as="select"
+				name="skillscope"
+				class="form-select"
+				id="AddLevel"
+				aria-label="Pick minimum level"
+			>
+				<option v-for="lvl in filterLevels" :key="lvl" :value="lvl.id">
+					{{ lvl.label }}
+				</option>
+			</v-field>
+		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Save</button>
-	</form>
+	</v-form>
 </template>
 
 <script>
+import { Field, Form, ErrorMessage } from 'vee-validate';
 export default {
 	name: 'ProjectNeedSkill',
 	data() {
@@ -44,6 +66,11 @@ export default {
 			errors: []
 		}
 	},
+	components: {
+		'VForm': Form,
+		'VField': Field,
+		ErrorMessage
+	},
 	props: {
 		chosenNeed: {
 			type: Object,
@@ -55,6 +82,9 @@ export default {
 		},
 	},
 	methods: {
+		isRequired(value) {
+			return value ? true : 'This field is required';
+		},
 		createProjectNeedSkill() {
 			fetch('/api/projectskills', {
 				method: 'POST',
