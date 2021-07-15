@@ -45,7 +45,7 @@
 								href="#"
 								data-bs-toggle="modal"
 								data-bs-target="#hulaModalProjects" 
-								v-on:click="formTitle = `Delete ${project.label}?`, chosenForm = 'Delete', url = `/api/skills/${project.id}`, method = 'DELETE'"
+								v-on:click="formTitle = `Delete ${project.name}?`, chosenForm = 'Delete', url = `/api/projects/${project.id}`, method = 'DELETE'"
 							><i class="bi-trash-fill me-2"></i></a>
 						</td>
 					</tr>
@@ -59,6 +59,7 @@
 	import VModal from '../components/VModal.vue'
 	import { Modal } from 'bootstrap'
 	import FormProject from '../forms/FormProject.vue'
+	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	export default {
 		name: 'AdminListProjects',
 		data () {
@@ -73,6 +74,7 @@
 		components: {
 			VModal,
 			FormProject,
+			FormConfirmAction,
 		},
 		methods: {
 			chooseProject(project) {
@@ -90,6 +92,7 @@
 				})
 			},
 			hideModalUpdate() {
+				this.$store.commit('getProjects')
 				let modal = Modal.getInstance(document.querySelector('#hulaModalProjects'))
 				modal.hide()
 			},
@@ -98,6 +101,7 @@
 			modalComponent() {
 				const components = {
 					CreateProject: FormProject,
+					Delete: FormConfirmAction,
 				}
 				return components[this.chosenForm]
 			}
