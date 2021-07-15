@@ -15,7 +15,7 @@
 				class="btn btn-gradient"
 				data-bs-toggle="modal"
 				data-bs-target="#hulaModalProjects"
-				v-on:click="formTitle = 'New project', chosenForm = 'CreateProject', chosenProject = chosenProjectDefault, url='/api/projects', method='POST'"
+				v-on:click="formTitle = 'New project', chosenForm = 'CreateProject', chosenProject = {}, url='/api/projects', method='POST'"
 			>New project</button>
 		</div>
 		<transition name="fadeHeight">

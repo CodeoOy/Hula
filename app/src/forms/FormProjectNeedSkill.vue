@@ -1,7 +1,7 @@
 <template>
 	<v-form v-on:submit="createProjectNeedSkill">
 		<h2>Add skill to this need</h2>
-		{{ formData }}
+		{{ this.chosenSkill }}
 		<div class="mb-2" v-if="this.method == 'POST'">
 			<label class="form-label">Skill</label>
 			<error-message name="name" class="error"></error-message>
@@ -157,7 +157,7 @@ export default {
 	},
 	computed: {
 		filterLevels() {
-			if ('skillscope_id' in this.chosenSkill) {
+			if ('skillscope_id' in this.chosenSkill) { // Projectneedskills would need to have the skillscope_id too
 				return this.skillLevels.filter(lvl => lvl.skillscope_id == this.chosenSkill.skillscope_id)
 			}
 		},
@@ -171,6 +171,7 @@ export default {
 	mounted() {
 		this.getAllSkills()
 		this.getAllLevels()
+		console.log(this.chosenSkill)
 	}
 };
 </script>

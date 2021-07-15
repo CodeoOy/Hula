@@ -5,6 +5,7 @@
 				:is='modalComponent'
 				:chosenNeed="chosenNeed"
 				:chosenSkill="chosenSkill"
+				:chosenProject="chosenProject"
 				:url="url"
 				:method="method"
 				v-on:form-sent="hideModalUpdate"
@@ -14,6 +15,12 @@
 			<div class="col-md-4">
                 <div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
                 	<h2>{{ project.name }}</h2>
+					<a 
+						href="#"
+						data-bs-toggle="modal" 
+						data-bs-target="#hulaModalSingleProject" 
+						v-on:click="formTitle = 'Edit project', chosenForm = 'Project', chosenProject = project, url=`/api/projects/${project.id}`, method='PUT'"
+					><i class="bi-pencil-fill me-2"></i></a>
                 </div>
 			</div>
 			<div class="col-md-8">
@@ -98,6 +105,7 @@
 	import FormProjectNeed from '../forms/FormProjectNeed.vue'
 	import FormProjectNeedSkill from '../forms/FormProjectNeedSkill.vue'
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
+	import FormProject from '../forms/FormProject.vue'
 	export default {
 		name: 'Project',
 		data() {
@@ -125,6 +133,7 @@
 			FormProjectNeed,
 			FormProjectNeedSkill,
 			FormConfirmAction,
+			FormProject,
 		},
 		computed: {
 			project() {
@@ -134,7 +143,8 @@
 				const components = {
 					Need: FormProjectNeed,
 					Skill: FormProjectNeedSkill,
-					Delete: FormConfirmAction
+					Delete: FormConfirmAction,
+					Project: FormProject,
 				}
 				return components[this.chosenForm]
 			},
