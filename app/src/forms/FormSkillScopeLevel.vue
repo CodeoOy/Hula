@@ -4,7 +4,7 @@
 			<label class="form-label">Level name</label>
 			<error-message name="name" class="error"></error-message>
 			<v-field
-				v-model="queryData.label"
+				v-model="formData.label"
 				:rules="isRequired"
 				as="input"
 				type="text"
@@ -18,7 +18,7 @@
 			<label class="form-label">Percentage</label>
 			<error-message name="percentage" class="error"></error-message>
 			<v-field
-				v-model.number="queryData.percentage"
+				v-model.number="formData.percentage"
 				:rules="isRequired"
 				as="input"
 				type="number"
@@ -37,7 +37,13 @@ export default {
 	name: 'SkillScopeLevel',
 	data() {
 		return {
-			scopes: {}
+			scopes: {},
+			formData: {
+				label: this.chosenLevel.label || '',
+				percentage: this.chosenLevel.percentage || 0,
+				skillscope_id: this.chosenScope.id,
+				email: '',
+			}
 		};
 	},
 	components: {
@@ -60,7 +66,7 @@ export default {
 				method: this.method,
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.queryData)
+				body: JSON.stringify(this.formData)
 			})
 			.then(() => {
 				this.$emit('formSent')
@@ -80,27 +86,6 @@ export default {
 			.catch((errors) => {
 				this.$store.commit('errorHandling', errors)
 			})
-		}
-	},
-	computed: {
-		queryData: {
-			get () {
-				if (this.chosenLevel) {
-					return {
-						email: "",
-						skillscope_id: this.chosenScope.id,
-						label: this.chosenLevel.label,
-						percentage: this.chosenLevel.percentage,
-					}
-				} else {
-					return {
-						email: "",
-						skillscope_id: this.chosenScope.id,
-						label: "",
-						percentage: 0,
-					}
-				}
-			}
 		}
 	},
 	mounted() {

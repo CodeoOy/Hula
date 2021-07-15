@@ -9,7 +9,7 @@
 				placeholder="One to ten" 
 				:rules="isRequired" 
 				class="form-control" 
-				v-model="queryData.label"
+				v-model="formData.label"
 			></v-field>
 		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
@@ -23,6 +23,9 @@ export default {
 	data() {
 		return {
 			categories: {},
+			formData: {
+				label: this.chosenScope.label || ''
+			}
 		};
 	},
 	components: {
@@ -44,7 +47,7 @@ export default {
 				method: this.method,
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.queryData)
+				body: JSON.stringify(this.formData)
 			})
 			.then(() => {
 				this.$emit('formSent')
@@ -53,18 +56,6 @@ export default {
 				this.$store.commit('errorHandling', errors)
 			})
 		}
-	},
-	computed: {
-		queryData: {
-			get () {
-				if (this.chosenScope) {
-					return this.chosenScope;
-				}
-				return {
-					label: ""
-				}
-			}
-		}
-	},
+	}
 };
 </script>
