@@ -63,6 +63,10 @@ export default {
 			return value ? true : 'This field is required';
 		},
 		createUpdateSkillCategory() {
+			if (this.formData.parent_id == '') {
+				console.log("no parent")
+				delete this.formData.parent_id;
+			}
 			fetch(this.url, {
 				method: this.method,
 				headers: {"Content-Type": "application/json"},
