@@ -1,11 +1,12 @@
 <template>
 	<v-form v-on:submit="createProjectNeedSkill">
 		<h2>Add skill to this need</h2>
-		<div class="mb-2">
+		{{ formData }}
+		<div class="mb-2" v-if="this.method == 'POST'">
 			<label class="form-label">Skill</label>
 			<error-message name="name" class="error"></error-message>
 			<v-field
-				v-model="queryDataNeedSkill.skill_id"
+				v-model="formData.skill_id"
 				:rules="isRequired"
 				as="select"
 				name="skill"
@@ -22,7 +23,7 @@
 			<label class="form-label">Minimum level</label>
 			<error-message name="name" class="error"></error-message>
 			<v-field
-				v-model="queryDataNeedSkill.skillscopelevel_id"
+				v-model="formData.skillscopelevel_id"
 				:rules="isRequired"
 				as="select"
 				name="skillscope"
@@ -35,6 +36,32 @@
 				</option>
 			</v-field>
 		</div>
+		<div class="mb-2">
+			<label class="form-label">Min years</label>
+			<error-message name="min years" class="error"></error-message>
+			<v-field
+				v-model.number="formData.min_years"
+				:rules="isRequired"
+				as="input"
+				type="number"
+				name="min years"
+				class="form-control"
+				aria-label="Min years"
+			></v-field>
+		</div>
+		<div class="mb-2">
+			<label class="form-label">Max years</label>
+			<error-message name="max years" class="error"></error-message>
+			<v-field
+				v-model.number="formData.max_years"
+				:rules="isRequired"
+				as="input"
+				type="number"
+				name="max years"
+				class="form-control"
+				aria-label="Max years"
+			></v-field>
+		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Save</button>
 	</v-form>
 </template>
@@ -45,25 +72,17 @@ export default {
 	name: 'ProjectNeedSkill',
 	data() {
 		return {
-			queryDataNeedSkill: {
+			formData: {
+				id: this.chosenSkill.id || null,
 				projectneed_id: this.chosenNeed.id,
-				skill_id: '',
-				skillscopelevel_id: '',
-				min_years: 1,
-				max_years: 10
-			},
-			chosenSkill: {
-				type: Object,
-				default() {
-					return { 
-						id: '',
-						skillscope_id: '',
-					}
-				}
+				skill_id: this.chosenSkill.skill_id || '', // id or skill_id?
+				skillscopelevel_id: this.chosenSkill.skillscopelevel_id || '',
+				min_years: this.chosenSkill.min_years || '',
+				max_years: this.chosenSkill.max_years || '',	
 			},
 			availableSkills: {},
 			skillLevels: {},
-			errors: []
+			errors: [],
 		}
 	},
 	components: {
@@ -72,25 +91,24 @@ export default {
 		ErrorMessage
 	},
 	props: {
-		chosenNeed: {
-			type: Object,
-			default() {
-				return { 
-					id: '',
-				}
-			}
-		},
+		chosenNeed: {},
+		chosenSkill: {},
+		method: '',
+		url: '',
 	},
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
 		createProjectNeedSkill() {
-			fetch('/api/projectskills', {
-				method: 'POST',
+			if (this.method == 'POST') {
+				delete this.formData.id
+			}
+			fetch(this.url, {
+				method: this.method,
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.queryDataNeedSkill)
+				body: JSON.stringify(this.formData)
 			})
 			.then(() => {
 				this.$emit('formSent')
@@ -130,11 +148,11 @@ export default {
 		},
 	},
 	watch: {
-		'queryDataNeedSkill.skill_id'(newID) {
+		'formData.skill_id'(newID) {
 			this.getSkillScope(newID)
 		},
 		'chosenNeed.id'(newID) {
-			this.queryDataNeedSkill.projectneed_id = newID
+			this.formData.projectneed_id = newID
 		},
 	},
 	computed: {

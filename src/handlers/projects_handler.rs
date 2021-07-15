@@ -210,6 +210,47 @@ pub async fn create_projectneedskill(
 	}
 }
 
+
+pub async fn update_projectneedskill(
+	pid: web::Path<String>,
+	projectneedskilldata: web::Json<ProjectNeedSkillData>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!(
+		"Update project need skill: projectneedskilldata = {:#?} logged_user={:#?}",
+		&projectneedskilldata,
+		&logged_user
+	);
+
+	if logged_user.isadmin == false {
+		return Err(ServiceError::AdminRequired);
+	}
+	let id = uuid::Uuid::parse_str(&pid.into_inner())?;
+	
+	let res = web::block(move || {
+		projectneedskills_repository::update_projectneedskill(
+			id,
+			projectneedskilldata.projectneed_id,
+			projectneedskilldata.skill_id,
+			projectneedskilldata.skillscopelevel_id,
+			projectneedskilldata.min_years,
+			projectneedskilldata.max_years,
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
+
+	match res {
+		Ok(projectneedskill) => Ok(HttpResponse::Ok().json(&projectneedskill)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
 pub async fn get_by_pid(
 	pid: web::Path<String>,
 	pool: web::Data<Pool>,

@@ -49,6 +49,34 @@ pub fn create_projectneedskill(
 	Ok(projectneedskill)
 }
 
+pub fn update_projectneedskill(
+	q_id: uuid::Uuid,
+	q_projectneed_id: uuid::Uuid,
+	q_skill_id: uuid::Uuid,
+	q_skillscopelevel_id: Option<uuid::Uuid>,
+	q_min_years: Option<f64>,
+	q_max_years: Option<f64>,
+	q_email: String,
+	pool: &web::Data<Pool>,
+) -> Result<ProjectNeedSkill, Error> {
+	use crate::schema::projectneedskills::dsl::{projectneedskills, *};
+	let conn: &PgConnection = &pool.get().unwrap();
+	
+	let projectneedskill = diesel::update(projectneedskills)
+		.filter(id.eq(q_id))
+		.set((
+			projectneed_id.eq(q_projectneed_id),
+			skill_id.eq(q_skill_id),
+			skillscopelevel_id.eq(q_skillscopelevel_id),
+			min_years.eq(q_min_years),
+			max_years.eq(q_max_years),
+			updated_by.eq(q_email),
+		))
+		.get_result::<ProjectNeedSkill>(conn)?;
+
+	Ok(projectneedskill)
+}
+
 pub fn delete_projectneedskill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::projectneedskills::dsl::id;

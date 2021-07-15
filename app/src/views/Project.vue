@@ -36,7 +36,7 @@
 									href="#"
 									data-bs-toggle="modal" 
 									data-bs-target="#hulaModalSingleProject" 
-									v-on:click="chosenNeed = need, formTitle = 'New skill', chosenForm = 'Skill'"
+									v-on:click="chosenNeed = need, formTitle = 'New skill', chosenForm = 'Skill', url=`/api/projectskills`, method='POST'"
 								><i class="bi-plus-circle-fill me-2"></i></a>
 								<a
 									href="#"
@@ -69,6 +69,12 @@
 									<td>{{ skill.min_years }}</td>
 									<td>{{ skill.max_years }}</td>
 									<td class="hoverable-td">
+										<a 
+											href="#"
+											data-bs-toggle="modal"
+											data-bs-target="#hulaModalSingleProject"
+											v-on:click="formTitle='Edit skill', chosenForm = 'Skill', chosenSkill = skill, chosenNeed = need, url=`/api/projectskills/${skill.id}`, method='PUT'"
+										><i class="bi-pencil-fill me-2"></i></a>
 										<a
 											href="#"
 											data-bs-toggle="modal"
