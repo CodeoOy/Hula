@@ -158,18 +158,14 @@ export default {
 	computed: {
 		filterLevels() {
 			if ('skillscope_id' in this.chosenSkill) { // Projectneedskills would need to have the skillscope_id too
-				console.log(this.skillLevels)
-				var filteredLevels = this.skillLevels.filter(lvl => lvl.skillscope_id == this.chosenSkill.skillscope_id)
-				return filteredLevels;
+				return this.skillLevels.filter(lvl => lvl.skillscope_id == this.chosenSkill.skillscope_id)
 			}
 		},
 		// get skills from availableSkills that are not listed in chosenNeed.skills
 		filterSkills() {
 			if (this.availableSkills.length) {
 				if (this.chosenNeed.skills.length) {
-					console.log(this.availableSkills)
-					var filteredSkills = this.availableSkills.filter(x => !this.chosenNeed.skills.find(y => y.skill_id == x.id));
-					return filteredSkills;
+					return this.availableSkills.filter(x => !this.chosenNeed.skills.find(y => y.skill_id == x.id));
 				}
 				return this.availableSkills
 			}
@@ -178,7 +174,6 @@ export default {
 	mounted() {
 		this.getAllSkills()
 		this.getAllLevels()
-		console.log(this.chosenSkill)
 	}
 };
 </script>

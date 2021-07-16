@@ -158,7 +158,7 @@
 		},
 		methods: {
 			hideModalUpdate() {
-				this.$store.dispatch('setChosenProject', this.$route.params.id)
+				this.checkProject(this.$route.params.id)
 				let modal = Modal.getInstance(document.querySelector('#hulaModalSingleProject'))
 				modal.hide()
 			},
@@ -178,10 +178,20 @@
 				var returnedSkill = this.skills.find(skill => skill.id == id)
 				return returnedSkill.label
 			},
+			checkProject(id) {
+				fetch(`/api/projects/${id}`, {method: 'GET'})
+				.then(response => { 
+					if (!response.ok) {
+						this.$router.push({name: 'page-error'})
+					} else {
+						this.$store.dispatch('setChosenProject', this.$route.params.id)
+					}
+				})
+			}
 		},
 		mounted() {
+			this.checkProject(this.$route.params.id)
 			this.getAllSkills()
-			this.$store.dispatch('setChosenProject', this.$route.params.id)
 		}
 	}
 </script>
