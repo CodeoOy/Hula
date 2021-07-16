@@ -156,11 +156,13 @@ export default {
 		},
 	},
 	computed: {
+		/*
 		filterLevels() {
 			if ('skillscope_id' in this.chosenSkill) { // Projectneedskills would need to have the skillscope_id too
 				return this.skillLevels.filter(lvl => lvl.skillscope_id == this.chosenSkill.skillscope_id)
 			}
 		},
+		*/
 		// get skills from availableSkills that are not listed in chosenNeed.skills
 		filterSkills() {
 			if (this.availableSkills.length) {
