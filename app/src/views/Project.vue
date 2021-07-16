@@ -49,7 +49,7 @@
 									href="#"
 									data-bs-toggle="modal" 
 									data-bs-target="#hulaModalSingleProject" 
-									v-on:click="chosenNeed = need, formTitle = 'New skill', chosenForm = 'Skill', url=`/api/projectskills`, method='POST'"
+									v-on:click="chosenNeed = need, formTitle = 'New skill', chosenSkill = {}, chosenForm = 'Skill', url=`/api/projectskills`, method='POST'"
 								><i class="bi-plus-circle-fill me-2"></i></a>
 								<a
 									href="#"
@@ -128,6 +128,7 @@
 				},
 				formTitle: '',
 				chosenForm: '',
+				chosenProject: {},
 				chosenSkill: {},
 				url: '',
 				method: '',

@@ -28,7 +28,7 @@ const store = createStore({
 		},
 		async setChosenProject (context, data) {
 			try {
-				let hasProjects = true
+				let hasNeeds = true
 				let project = await fetch(`/api/projects/${data}`, {
 					method: 'GET',
 					headers: {"Content-Type": "application/json"},
@@ -44,9 +44,9 @@ const store = createStore({
 				.catch((errors) => {
 					console.log(errors)
 					project.needs = {}
-					hasProjects = false
+					hasNeeds = false
 				})
-				if (hasProjects === true) {
+				if (hasNeeds === true) {
 					await Promise.all(project.needs.map(need =>
 						fetch(`/api/projectskills/${need.id}`, {
 							method: 'GET',
