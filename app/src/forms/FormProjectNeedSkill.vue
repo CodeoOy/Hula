@@ -14,6 +14,7 @@
 				id="AddExistingSkill"
 				aria-label="Pick skill"
 			>
+				<option :value="null" disabled selected>Pick a skill</option>
 				<option v-for="avskill in filterSkills" :key="avskill" :value="avskill.id">
 					{{ avskill.label }}
 				</option>
