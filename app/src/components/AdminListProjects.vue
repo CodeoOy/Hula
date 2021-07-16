@@ -12,7 +12,7 @@
 		<div class="d-flex flex-row justify-content-between align-items-start">
 			<h2>Projects</h2>
 			<div>
-				<AutoComplete :suggestions="projectsArray" :selection.sync="projectName"></AutoComplete>
+				<!--<AutoComplete :suggestions="projectsArray" :selection.sync="projectName"></AutoComplete>-->
 				<button
 					class="btn btn-gradient"
 					data-bs-toggle="modal"
@@ -112,9 +112,11 @@
 				return components[this.chosenForm]
 			},
 			// Get project names from this.$store.state.projects
+			/*
 			projectsArray() {
 				return this.$store.state.projects.map(project => project.name)
 			}
+			*/
 		},
 		mounted() {
 			this.$store.commit('getProjects')
