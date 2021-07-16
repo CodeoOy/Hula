@@ -90,7 +90,7 @@ export default {
 				chosenMethod = 'POST'
 				fetchPath = '/api/projectneeds'
 			}
-			if (this.formData.end_time = '') {
+			if (this.formData.end_time == '') {
 				delete this.formData.end_time
 			}
 			delete this.formData.skills
