@@ -32,7 +32,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="project, in this.$store.state.projects" :key="project.id">
+					<tr v-for="project in this.$store.state.projects" :key="project.id">
 						<td><router-link
 							:to="{ name: 'page-project', params: { id: project.id}}"
 							v-on:click="this.chooseProject(project)"
