@@ -166,7 +166,10 @@ export default {
 		// get skills from availableSkills that are not listed in chosenNeed.skills
 		filterSkills() {
 			if (this.availableSkills.length) {
-				return this.availableSkills.filter(x => !this.chosenNeed.skills.find(y => y.skill_id == x.id));
+				if (this.chosenNeed.skills.length) {
+					return this.availableSkills.filter(x => !this.chosenNeed.skills.find(y => y.skill_id == x.id));
+				}
+				return this.availableSkills
 			}
 		}
 	},
