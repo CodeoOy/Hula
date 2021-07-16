@@ -11,12 +11,15 @@
 		</VModal>
 		<div class="d-flex flex-row justify-content-between align-items-start">
 			<h2>Projects</h2>
-			<button
-				class="btn btn-gradient"
-				data-bs-toggle="modal"
-				data-bs-target="#hulaModalProjects"
-				v-on:click="formTitle = 'New project', chosenForm = 'CreateProject', chosenProject = {}, url='/api/projects', method='POST'"
-			>New project</button>
+			<div>
+				<AutoComplete :suggestions="projectsArray" :selection.sync="projectName"></AutoComplete>
+				<button
+					class="btn btn-gradient"
+					data-bs-toggle="modal"
+					data-bs-target="#hulaModalProjects"
+					v-on:click="formTitle = 'New project', chosenForm = 'CreateProject', chosenProject = {}, url='/api/projects', method='POST'"
+				>New project</button>
+			</div>
 		</div>
 		<transition name="fadeHeight">
 			<table class="table table-dark table-striped text-light">
@@ -60,6 +63,7 @@
 	import { Modal } from 'bootstrap'
 	import FormProject from '../forms/FormProject.vue'
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
+	import AutoComplete from '../components/AutoComplete.vue'
 	export default {
 		name: 'AdminListProjects',
 		data () {
@@ -69,12 +73,14 @@
 				chosenProject: {},
 				url: '',
 				method: '',
+				projectName: '',
 			}
 		},
 		components: {
 			VModal,
 			FormProject,
 			FormConfirmAction,
+			AutoComplete,
 		},
 		methods: {
 			chooseProject(project) {
@@ -104,6 +110,10 @@
 					Delete: FormConfirmAction,
 				}
 				return components[this.chosenForm]
+			},
+			// Get project names from this.$store.state.projects
+			projectsArray() {
+				return this.$store.state.projects.map(project => project.name)
 			}
 		},
 		mounted() {
