@@ -39,8 +39,13 @@
         },
         computed: {
             matches() {
+                /*
                 return this.suggestions.filter((str) => {
                     return str.indexOf(this.selection) >= 0;
+                });
+                */
+                return this.suggestions.filter(project => {
+                    return project.name.indexOf(this.selection) >= 0;
                 });
             },
             openSuggestion() {

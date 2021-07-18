@@ -42,7 +42,7 @@ const store = createStore({
 				})
 				.then((response) => response.json())
 				.catch((errors) => {
-					console.log(errors)
+					//console.log(errors)
 					project.needs = {}
 					hasNeeds = false
 				})
@@ -58,7 +58,7 @@ const store = createStore({
 							need.skills = response
 						})
 						.catch((errors) => {
-							console.log(errors)
+							//console.log(errors)
 							need.skills = {}
 						})
 					))
@@ -86,7 +86,7 @@ const store = createStore({
 			})
 			.then((response) => response.json())
 			.catch((errors) => {
-				console.log(errors);
+				//console.log(errors);
 				state.projects = {}
 				projectsExist = false
 			})
@@ -101,7 +101,7 @@ const store = createStore({
 						})
 						.then((response) => response.json())
 						.catch((errors) => {
-							console.log(errors)
+							//console.log(errors)
 							project.needs = {}
 						})
 						.then((response) => {

@@ -81,7 +81,7 @@
 						})
 						.then(() => {
 							this.$emit('hideModal')
-							console.log(this.$store.state.loggeduser)
+							this.$store.commit('getProjects')
 							if (this.$store.state.nextpage.length) {
 								this.$router.push({ name: this.$store.state.nextpage })
 							} else {
@@ -98,13 +98,6 @@
 					}
 				})
 			},
-			/*
-			login: async function(e) { 
-				e.preventDefault()    
-				let email = e.target.elements.email.value
-				let password = e.target.elements.password.value 
-				this.loginUser(email, password);
-			}*/
 		}
 	}
 </script>
