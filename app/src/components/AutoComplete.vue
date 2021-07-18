@@ -12,7 +12,7 @@
             @click="suggestionClick(index)"
             v-bind:key="suggestion"
         >
-            <a href="#">{{ suggestion }}</a>
+            <a :href="`/app/project/${suggestion.id}`">{{ suggestion.name }}</a>
         </li>
     </ul>
 </div>
@@ -39,11 +39,6 @@
         },
         computed: {
             matches() {
-                /*
-                return this.suggestions.filter((str) => {
-                    return str.indexOf(this.selection) >= 0;
-                });
-                */
                 return this.suggestions.filter(project => {
                     return project.name.indexOf(this.selection) >= 0;
                 });

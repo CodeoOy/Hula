@@ -8,7 +8,7 @@
 			<button type="submit" class="btn btn-gradient mb-1">Search</button>
 		</form>
 		<p>Form below is a demo of autocomplete. It doesn't do anything yet.</p>
-		<AutoComplete :suggestions="testprojects" :selection.sync="value"></AutoComplete>
+		<AutoComplete :suggestions="this.$store.state.projects" :selection.sync="value"></AutoComplete>
 	</div>
 </template>
 
@@ -18,11 +18,6 @@
 		name: 'FindPro',
 		data() {
 			return {
-				testprojects: [
-					"mansikka",
-					"mustikka",
-					"vadelma"
-				],
 				value: '',
 				projects: this.$store.state.projects,
 				user: {},
