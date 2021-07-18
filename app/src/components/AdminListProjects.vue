@@ -12,7 +12,7 @@
 		<div class="d-flex flex-row justify-content-between align-items-start">
 			<h2>Projects</h2>
 			<div>
-				<AutoComplete :suggestions="this.$store.state.projects" :selection.sync="projectName"></AutoComplete>
+				<AutoComplete :suggestions="this.$store.state.projects" :selection.sync="projectName" :placeholder="'filter projects'"></AutoComplete>
 				<button
 					class="btn btn-gradient"
 					data-bs-toggle="modal"

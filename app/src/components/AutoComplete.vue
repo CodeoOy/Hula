@@ -1,6 +1,6 @@
 <template>
-<div style="position:relative">
-    <input class="form-control" type="text" v-model="selection"
+<div class="autocomplete me-2">
+    <input class="form-control" type="text" v-model="selection" :placeholder="placeholder"
         @keydown.enter = 'enter'
         @keydown.down = 'down'
         @keydown.up = 'up'
@@ -35,7 +35,8 @@
                 type: String,
                 required: true,
                 twoWay: true
-            }
+            },
+			placeholder: String,
         },
         computed: {
             matches() {
