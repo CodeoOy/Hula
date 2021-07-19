@@ -15,6 +15,7 @@ pub struct QueryData {
 #[derive(Deserialize, Debug)]
 pub struct ProjectData {
 	pub name: String,
+	pub available: bool,
 }
 
 #[derive(Deserialize, Debug)]
@@ -290,7 +291,7 @@ pub async fn update_project(
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
 	let res =
-		web::block(move || projects_repository::update_project(id, projectdata.name.clone(), logged_user.email, &pool))
+		web::block(move || projects_repository::update_project(id, projectdata.name.clone(), projectdata.available, logged_user.email, &pool))
 			.await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),

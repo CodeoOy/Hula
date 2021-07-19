@@ -25,7 +25,6 @@
 			<error-message name="name" class="error"></error-message>
 			<v-field
 				v-model="formData.skillscopelevel_id"
-				:rules="isRequired"
 				as="select"
 				name="skillscope"
 				class="form-select"
@@ -42,7 +41,6 @@
 			<error-message name="min years" class="error"></error-message>
 			<v-field
 				v-model.number="formData.min_years"
-				:rules="isRequired"
 				as="input"
 				type="number"
 				name="min years"
@@ -55,7 +53,6 @@
 			<error-message name="max years" class="error"></error-message>
 			<v-field
 				v-model.number="formData.max_years"
-				:rules="isRequired"
 				as="input"
 				type="number"
 				name="max years"
@@ -76,7 +73,7 @@ export default {
 			formData: {
 				id: this.chosenSkill.id || null,
 				projectneed_id: this.chosenNeed.id,
-				skill_id: this.chosenSkill.skill_id || '', // id or skill_id?
+				skill_id: this.chosenSkill.skill_id || '',
 				skillscopelevel_id: this.chosenSkill.skillscopelevel_id || '',
 				min_years: this.chosenSkill.min_years || '',
 				max_years: this.chosenSkill.max_years || '',	

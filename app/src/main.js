@@ -146,7 +146,7 @@ const store = createStore({
 						state.errorObject = {
 							type: 'error',
 							title: 'Item already exists.',
-							time: 1000
+							time: 5000
 						}
 						break;
 					case 'AdminRequired':
@@ -158,7 +158,7 @@ const store = createStore({
 						state.errorObject = {
 							type: 'error',
 							title: 'Foreign key violation',
-							time: 1000
+							time: 5000
 						}
 						break;
 					default:

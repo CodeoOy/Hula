@@ -49,6 +49,7 @@ pub fn create_project(
 pub fn update_project(
 	uuid_data: uuid::Uuid,
 	q_project_name: String,
+	q_project_available: bool,
 	q_email: String,
 	pool: &web::Data<Pool>,
 ) -> Result<Project, Error> {
@@ -58,7 +59,11 @@ pub fn update_project(
 
 	let project = diesel::update(projects)
 		.filter(id.eq(uuid_data))
-		.set((name.eq(q_project_name), updated_by.eq(q_email.clone())))
+		.set((
+			name.eq(q_project_name), 
+			available.eq(q_project_available),
+			updated_by.eq(q_email.clone())
+		))
 		.get_result::<Project>(conn)?;
 
 	Ok(project)

@@ -1,6 +1,7 @@
 <template>
 	<v-form v-on:submit="createUpdateProject">
 		<div class="mb-2">
+			{{ formData.available }}
 			<label class="form-label">Project name</label>
 			<error-message name="name" class="error"></error-message>
 			<v-field
@@ -13,17 +14,10 @@
 				aria-label="Project name"
 			></v-field>
 		</div>
-		<div class="mb-2">
+		<div class="mb-2 form-check" v-if="'available' in chosenProject">
 			<label class="form-label">Is the project available?</label>
 			<error-message name="category" class="error"></error-message>
-			<v-field
-				v-model="formData.available"
-				:rules="isRequired"
-				as="checkbox"
-				name="available"
-				class="form-checkbox"
-				aria-label="Skill category"
-			></v-field>
+			<input type="checkbox" class="form-check-input" name="available" v-model="formData.available" />
 		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 	</v-form> 
@@ -37,7 +31,7 @@ export default {
 		return {
 			formData: {
 				name: this.chosenProject.name || '',
-				available: this.chosenProject.available || true,
+				available: this.chosenProject.available,
 			},
 		}
 	},
@@ -73,6 +67,6 @@ export default {
 				this.$store.commit('errorHandling', errors)
 			})
 		},
-	},
+	}
 };
 </script>

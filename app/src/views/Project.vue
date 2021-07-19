@@ -15,6 +15,7 @@
 			<div class="col-md-4">
                 <div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
                 	<h2>{{ project.name }}</h2>
+					{{ project.available}}
 					<a 
 						href="#"
 						data-bs-toggle="modal" 
