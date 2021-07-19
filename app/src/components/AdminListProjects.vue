@@ -12,7 +12,13 @@
 		<div class="d-flex flex-row justify-content-between align-items-start">
 			<h2>Projects</h2>
 			<div>
-				<AutoComplete :suggestions="this.$store.state.projects" :selection.sync="projectName" :placeholder="'filter projects'"></AutoComplete>
+				<AutoComplete
+					v-if="this.$store.state.projects.length" 
+					:suggestions="this.$store.state.projects" 
+					:selection.sync="projectName" 
+					:placeholder="'filter projects'"
+					v-on:auto-complete-picked="this.chooseProject($event)"
+				></AutoComplete>
 				<button
 					class="btn btn-gradient"
 					data-bs-toggle="modal"
@@ -38,7 +44,7 @@
 							v-on:click="this.chooseProject(project)"
 						>{{ project.name }}</router-link></td>
 						<td>
-							<p v-for="need in project.needs" :key="need.id">{{ need.id }}</p>
+							<p>Too expensive?</p>
 						</td>
 						<td>
 							<p>Matches here</p>
@@ -114,7 +120,22 @@
 			// Get project names from this.$store.state.projects
 			projectsArray() {
 				return this.$store.state.projects.map(project => project.name)
-			}
+			},
+			// Get all skills from all needs from one project
+			/*
+			allProjectSkills(id) {
+				project.needs = fetch(`/api/projectneeds/${id}`, {
+					method: 'GET',
+					headers: {"Content-Type": "application/json"},
+					credentials: 'include'
+				})
+				.then((response) => response.json())
+				.then
+				let skills = []
+				project.needs.forEach(need => {
+					skills = skills.concat(need.skills)
+				})
+			}*/
 		},
 		mounted() {
 			this.$store.commit('getProjects')

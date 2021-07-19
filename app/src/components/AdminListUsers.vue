@@ -12,7 +12,7 @@
 		<div class="d-flex flex-row justify-content-between align-items-start">
 			<h2>Users</h2>
 			<div>
-				<AutoComplete :suggestions="this.$store.state.users" :selection.sync="userName" :placeholder="'filter Users'"></AutoComplete>
+				<!--<AutoComplete :suggestions="this.$store.state.users" :selection.sync="userName" :placeholder="'filter Users'"></AutoComplete>-->
 				<button
 					class="btn btn-gradient"
 					data-bs-toggle="modal"

@@ -9,7 +9,7 @@
     <ul class="dropdown-menu" style="width:100%" v-bind:class="{'show':openSuggestion}">
         <li v-for="(suggestion, index) in matches"
             v-bind:class="{'active': isActive(index)}"
-            @click="suggestionClick(index)"
+            @click="suggestionClick(suggestion)"
             v-bind:key="suggestion"
         >
             <a :href="`/app/project/${suggestion.id}`">{{ suggestion.name }}</a>
@@ -72,8 +72,9 @@
                     this.current = 0;
                 }
             },
-            suggestionClick(index) {
-                this.selection = this.matches[index];
+            suggestionClick(project) {
+                this.$emit('autoCompletePicked', project)
+                //this.selection = this.matches[index];
                 this.open = false;
             },
         }
