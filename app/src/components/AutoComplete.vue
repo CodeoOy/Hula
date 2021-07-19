@@ -41,7 +41,7 @@
         computed: {
             matches() {
                 return this.suggestions.filter(project => {
-                    return project.name.indexOf(this.selection) >= 0;
+                    return project.name.toUpperCase().indexOf(this.selection.toUpperCase()) >= 0;
                 });
             },
             openSuggestion() {
