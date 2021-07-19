@@ -1,5 +1,5 @@
 <template>
-<div class="autocomplete me-2">
+<div class="autocomplete me-2 w-100">
     <input class="form-control" type="text" v-model="selection" :placeholder="placeholder"
         @keydown.enter = 'enter'
         @keydown.down = 'down'
@@ -10,9 +10,9 @@
         <li v-for="(suggestion, index) in matches"
             v-bind:class="{'active': isActive(index)}"
             @click="suggestionClick(suggestion)"
-            v-bind:key="suggestion"
+            v-bind:key="suggestion.id"
         >
-            <a :href="`/app/project/${suggestion.id}`">{{ suggestion.name }}</a>
+            {{ suggestion.name }}
         </li>
     </ul>
 </div>
@@ -37,14 +37,16 @@
                 twoWay: true
             },
 			placeholder: String,
+            dropdown: Boolean
         },
         computed: {
             matches() {
                 var matches = this.suggestions.filter(project => {
                     return project.name.toUpperCase().indexOf(this.selection.toUpperCase()) >= 0;
                 });
-                console.log(matches)
-                this.$emit('autoComplete', matches)
+                if (!this.dropdown) {
+                    this.$emit('autoComplete', matches)
+                }
                 return matches;
             },
             openSuggestion() {
@@ -55,9 +57,8 @@
         },
         methods: {
             enter() {
-                this.selection = this.matches[this.current];
+                this.$emit('autoComplete', this.matches[this.current]);
                 this.open = false;
-                console.log(this.selection)
             },
             up() {
                 if(this.current > 0)

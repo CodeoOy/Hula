@@ -17,6 +17,7 @@
 					:suggestions="this.$store.state.projects" 
 					:selection.sync="projectName" 
 					:placeholder="'filter projects'"
+					:dropdown="false"
 					v-on:auto-complete="autoCompleteAction"
 				></AutoComplete>
 				<button

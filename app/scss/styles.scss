@@ -105,6 +105,9 @@ a {
 	position: relative;
 	display: inline-block;
 	vertical-align: middle;
+	.active {
+		background-color: $primary;
+	}
 }
 
 .text-white {
