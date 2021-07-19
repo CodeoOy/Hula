@@ -40,9 +40,12 @@
         },
         computed: {
             matches() {
-                return this.suggestions.filter(project => {
+                var matches = this.suggestions.filter(project => {
                     return project.name.toUpperCase().indexOf(this.selection.toUpperCase()) >= 0;
                 });
+                console.log(matches)
+                this.$emit('autoComplete', matches)
+                return matches;
             },
             openSuggestion() {
                 return this.selection !== "" &&
@@ -54,6 +57,7 @@
             enter() {
                 this.selection = this.matches[this.current];
                 this.open = false;
+                console.log(this.selection)
             },
             up() {
                 if(this.current > 0)
@@ -73,7 +77,7 @@
                 }
             },
             suggestionClick(project) {
-                this.$emit('autoCompletePicked', project)
+                this.$emit('autoComplete', project)
                 //this.selection = this.matches[index];
                 this.open = false;
             },

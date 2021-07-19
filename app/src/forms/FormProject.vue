@@ -1,7 +1,6 @@
 <template>
 	<v-form v-on:submit="createUpdateProject">
 		<div class="mb-2">
-			{{ formData.available }}
 			<label class="form-label">Project name</label>
 			<error-message name="name" class="error"></error-message>
 			<v-field
@@ -15,7 +14,7 @@
 			></v-field>
 		</div>
 		<div class="mb-2 form-check" v-if="'available' in chosenProject">
-			<label class="form-label">Is the project available?</label>
+			<label class="form-label">Published and visible</label>
 			<error-message name="category" class="error"></error-message>
 			<input type="checkbox" class="form-check-input" name="available" v-model="formData.available" />
 		</div>

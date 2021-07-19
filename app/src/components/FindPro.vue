@@ -8,7 +8,11 @@
 			<button type="submit" class="btn btn-gradient mb-1">Search</button>
 		</form>
 		<p>Form below is a demo of autocomplete. It doesn't do anything yet.</p>
-		<AutoComplete v-if="this.$store.state.projects.length" :suggestions="this.$store.state.projects" :selection.sync="value"></AutoComplete>
+		<AutoComplete 
+			v-if="this.$store.state.projects.length" 
+			:suggestions="this.$store.state.projects" 
+			:selection.sync="value"
+		></AutoComplete>
 	</div>
 </template>
 

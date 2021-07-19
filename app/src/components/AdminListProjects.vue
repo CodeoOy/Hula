@@ -17,7 +17,7 @@
 					:suggestions="this.$store.state.projects" 
 					:selection.sync="projectName" 
 					:placeholder="'filter projects'"
-					v-on:auto-complete-picked="this.chooseProject($event)"
+					v-on:auto-complete="autoCompleteAction"
 				></AutoComplete>
 				<button
 					class="btn btn-gradient"
@@ -38,7 +38,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="project in this.$store.state.projects" :key="project.id">
+					<tr v-for="project in filteredProjects" :key="project.id">
 						<td><router-link
 							:to="{ name: 'page-project', params: { id: project.id}}"
 							v-on:click="this.chooseProject(project)"
@@ -80,6 +80,7 @@
 				url: '',
 				method: '',
 				projectName: '',
+				filteredProjects: []
 			}
 		},
 		components: {
@@ -108,6 +109,9 @@
 				let modal = Modal.getInstance(document.querySelector('#hulaModalProjects'))
 				modal.hide()
 			},
+			autoCompleteAction(value) {
+				this.filteredProjects = value
+			}
 		},
 		computed: {
 			modalComponent() {
@@ -117,25 +121,6 @@
 				}
 				return components[this.chosenForm]
 			},
-			// Get project names from this.$store.state.projects
-			projectsArray() {
-				return this.$store.state.projects.map(project => project.name)
-			},
-			// Get all skills from all needs from one project
-			/*
-			allProjectSkills(id) {
-				project.needs = fetch(`/api/projectneeds/${id}`, {
-					method: 'GET',
-					headers: {"Content-Type": "application/json"},
-					credentials: 'include'
-				})
-				.then((response) => response.json())
-				.then
-				let skills = []
-				project.needs.forEach(need => {
-					skills = skills.concat(need.skills)
-				})
-			}*/
 		},
 		mounted() {
 			this.$store.commit('getProjects')
