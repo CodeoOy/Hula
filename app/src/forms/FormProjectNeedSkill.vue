@@ -111,8 +111,12 @@ export default {
 				credentials: 'include',
 				body: JSON.stringify(this.formData)
 			})
-			.then(() => {
-				this.$emit('formSent')
+			.then(response => {
+				if (response.status >= 200 && response.status <= 299) {
+					this.$emit('formSent')
+				} else {
+					this.$store.commit('errorHandling', response)
+				}
 			})
 			.catch((errors) => {
 				this.errors.push('skill-error')

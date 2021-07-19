@@ -89,9 +89,13 @@ export default {
 				credentials: 'include',
 				body: JSON.stringify(this.queryData)
 			})
-			.then(() => {
-				this.$store.dispatch('setUser', this.$store.state.loggeduser.id)
-				this.$emit('formSent')
+			.then(response => {
+				if (response.status >= 200 && response.status <= 299) {
+					this.$store.dispatch('setUser', this.$store.state.loggeduser.id)
+					this.$emit('formSent')
+				} else {
+					this.$store.commit('errorHandling', response)
+				}
 			})
 			.catch((errors) => {
 				this.$store.commit('errorHandling', errors)
