@@ -1,5 +1,6 @@
 <template>
 	<div>
+		<h2 v-if="queryData.projectname.length">{{ queryData.projectname }}</h2>
 		<AutoComplete 
 			v-if="this.$store.state.projects.length" 
 			:suggestions="this.$store.state.projects"
@@ -48,10 +49,11 @@
 				.then(response => {
 					this.users = response;
 					this.$emit('usersfetched', this.users)
-					console.log("Got to the fetching")
 				})    
 				.catch((errors) => {
 					console.log(errors)
+					this.users = {}
+					this.$emit('usersfetched', this.users)
 				})
 			}
 		}

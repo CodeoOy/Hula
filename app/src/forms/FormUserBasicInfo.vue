@@ -1,40 +1,65 @@
 <template>
-	<form action="#" @submit.prevent="onSubmit" v-if="'lastname' in user">
-		<p v-if="errorsPresent" class="error">Please fill out all fields!</p>
-		<div class="mb-2">
-			<label class="form-label">First name</label>
-			<input class="form-control" type="text" placeholder="Firstname" name="name" v-model="user.firstname" />
-		</div>
-		<div class="mb-2">
-			<label class="form-label">Last name</label>
-			<input class="form-control" type="text" placeholder="Lastname" name="name" v-model="user.lastname" />
-		</div>
+	<v-form v-on:submit="onSubmit">
 		<div class="mb-2 form-check">
 			<label class="form-label">Available for work</label>
 			<input type="checkbox" class="form-check-input" name="available" v-model="user.available" />
 		</div>
+		<div class="mb-2">
+			<label class="form-label">First name</label>
+			<error-message name="firstname" class="error"></error-message>
+			<v-field
+				name="firstname" 
+				type="text" 
+				placeholder="Mikki" 
+				:rules="isRequired" 
+				class="form-control" 
+				v-model="user.firstname"
+			></v-field>
+		</div>
+		<div class="mb-2">
+			<label class="form-label">Last name</label>
+			<error-message name="lastname" class="error"></error-message>
+			<v-field
+				name="lastname" 
+				type="text" 
+				placeholder="Hiiri" 
+				:rules="isRequired" 
+				class="form-control" 
+				v-model="user.lastname"
+			></v-field>
+		</div>
+		<div class="mb-2">
+			<label class="form-label">CV</label>
+			<error-message name="cv" class="error"></error-message>
+			<v-field
+				name="cv"
+				type="file"
+				class="form-control" 
+				v-model="user.file"
+			></v-field>
+		</div>
 		<button type="submit" class="btn btn-gradient">Save</button>
-	</form>   
+	</v-form>   
 </template>
 
 <script>
+import { Field, Form, ErrorMessage } from 'vee-validate';
 export default {
 	name: 'UserBasicInfo',
 	props: {	
 		user: {}
 	},
-	data() {
-		return {
-			errorsPresent: false
-		};
+	components: {
+		'VForm': Form,
+		'VField': Field,
+		ErrorMessage
 	},
 	methods: {
+		isRequired(value) {
+			return value ? true : 'This field is required';
+		},
 		onSubmit() {
-			if (this.user.lastname === '') {
-				this.errorsPresent = true;
-			} else {
-				this.$emit('formsent', this.user);
-			}
+			this.$emit('formsent', this.user);
 		},
 	}
 };

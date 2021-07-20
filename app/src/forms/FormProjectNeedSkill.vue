@@ -1,6 +1,5 @@
 <template>
 	<v-form v-on:submit="createProjectNeedSkill">
-		<h2>Add skill to this need</h2>
 		{{ this.chosenSkill }}
 		<div class="mb-2" v-if="this.method == 'POST'">
 			<label class="form-label">Skill</label>
@@ -91,6 +90,7 @@ export default {
 	props: {
 		chosenNeed: {},
 		chosenSkill: {},
+		chosenScope: '',
 		method: '',
 		url: '',
 	},
@@ -163,6 +163,14 @@ export default {
 				return this.skillLevels.filter(lvl => lvl.skillscope_id == this.chosenSkill.skillscope_id)
 			}
 		},
+		/*
+		filterLevels() {
+			if (this.skillLevels.length) {
+				var levelID = this.chosenSkill.skillscopelevel_id
+				var scope = this.skillLevels.find(x => x.id == levelID)
+				return this.skillLevels.filter(lvl => lvl.skillscope_id == scope.skillscope_id)
+			}
+		},*/
 		// get skills from availableSkills that are not listed in chosenNeed.skills
 		filterSkills() {
 			if (this.availableSkills.length) {

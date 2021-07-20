@@ -78,7 +78,7 @@
 							<tbody>
 								<tr v-for="skill in need.skills" :key="skill.id">
 									<td>{{ getSkillLabel(skill.skill_id) }}</td>
-									<td>{{ skill.level }}</td>
+									<td>{{ skill.skillscopelevel_id }}</td>
 									<td>{{ skill.min_years }}</td>
 									<td>{{ skill.max_years }}</td>
 									<td class="hoverable-td">
@@ -86,7 +86,7 @@
 											href="#"
 											data-bs-toggle="modal"
 											data-bs-target="#hulaModalSingleProject"
-											v-on:click="formTitle='Edit skill', chosenForm = 'Skill', chosenSkill = skill, chosenNeed = need, url=`/api/projectskills/${skill.id}`, method='PUT'"
+											v-on:click="formTitle =`${getSkillLabel(skill.skill_id)}`, chosenForm = 'Skill', chosenSkill = skill, chosenNeed = need, url=`/api/projectskills/${skill.id}`, method='PUT'"
 										><i class="bi-pencil-fill me-2"></i></a>
 										<a
 											href="#"
