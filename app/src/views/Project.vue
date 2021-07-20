@@ -1,6 +1,6 @@
 <template>
 	<div class="container mt-4" ref="lol">
-		<VModal :modalTitle="formTitle" :modalID="'SingleProject'" v-on:updated-modal="chosenForm = ''">
+		<VModal :modalTitle="formTitle" :modalID="'SingleProject'" v-on:updated-modal="chosenForm = '', chosenSkill = {}">
 			<component 
 				:is='modalComponent'
 				:chosenNeed="chosenNeed"
@@ -78,7 +78,7 @@
 							<tbody>
 								<tr v-for="skill in need.skills" :key="skill.id">
 									<td>{{ getSkillLabel(skill.skill_id) }}</td>
-									<td>{{ skill.skillscopelevel_id }}</td>
+									<td>{{ getLevelLabel(skill.skillscopelevel_id) }}</td>
 									<td>{{ skill.min_years }}</td>
 									<td>{{ skill.max_years }}</td>
 									<td class="hoverable-td">
@@ -133,6 +133,7 @@
 				url: '',
 				method: '',
 				skills: [],
+				skillLevels: [],
 			}
 		},
 		components: {
@@ -178,6 +179,22 @@
 				var returnedSkill = this.skills.find(skill => skill.id == id)
 				return returnedSkill.label
 			},
+			getAllLevels() {
+				fetch('/api/skills/levels', {method: 'GET'})
+				.then(response => { 
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
+				.then(response => { 
+					this.skillLevels = response
+				})    
+				.catch((errors) => {
+					this.$store.commit('errorHandling', errors)
+				})
+			},
+			getLevelLabel(id) {
+				var returnedLevel = this.skillLevels.find(level => level.id == id)
+				return returnedLevel.label
+			},
 			checkProject(id) {
 				fetch(`/api/projects/${id}`, {method: 'GET'})
 				.then(response => { 
@@ -192,6 +209,7 @@
 		mounted() {
 			this.checkProject(this.$route.params.id)
 			this.getAllSkills()
+			this.getAllLevels()
 		}
 	}
 </script>
