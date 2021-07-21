@@ -18,7 +18,7 @@ export default function setupRouter() {
 			{ path: '/', component: views.Home, name: 'page-home'},
 			{ path: '/app/confirm', component: views.Confirm, name: 'page-confirm' },
 			{ path: '/app/dashboard', component: views.Dashboard, name: 'page-dashboard' },
-			{ path: '/app/profile', component: views.Profile, name: 'page-profile' },
+			{ path: '/app/user/:id', component: views.Profile, name: 'page-profile' },
 			{ path: '/app/admin', component: views.Admin, name: 'page-admin' },
 			{ path: '/app/gdpr', component: views.Gdpr, name: 'page-gdpr' },
 			{ path: '/app/login', component: views.Login, name: 'page-login' },

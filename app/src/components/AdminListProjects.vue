@@ -18,6 +18,7 @@
 					:selection.sync="projectName" 
 					:placeholder="'filter projects'"
 					:dropdown="false"
+					:filterProperties="'name'"
 					v-on:auto-complete="autoCompleteAction"
 				></AutoComplete>
 				<button

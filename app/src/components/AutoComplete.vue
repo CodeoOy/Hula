@@ -37,12 +37,13 @@
                 twoWay: true
             },
 			placeholder: String,
-            dropdown: Boolean
+            dropdown: Boolean,
+            filterProperties: '',
         },
         computed: {
             matches() {
-                var matches = this.suggestions.filter(project => {
-                    return project.name.toUpperCase().indexOf(this.selection.toUpperCase()) >= 0;
+                var matches = this.suggestions.filter(item => {
+                    return item[this.filterProperties].toUpperCase().indexOf(this.selection.toUpperCase()) >= 0;
                 });
                 if (!this.dropdown) {
                     this.$emit('autoComplete', matches)
