@@ -1,8 +1,8 @@
 use crate::models::users::{Pool, User, UserSkill};
 use actix_web::web;
-use diesel::{prelude::*, PgConnection};
 use diesel::result::Error;
 use diesel::result::Error::NotFound;
+use diesel::{prelude::*, PgConnection};
 
 pub fn query_belong_to_user(user: &User, pool: &web::Data<Pool>) -> Result<Vec<UserSkill>, Error> {
 	use crate::schema::userskills::dsl::skill_id;
@@ -11,7 +11,7 @@ pub fn query_belong_to_user(user: &User, pool: &web::Data<Pool>) -> Result<Vec<U
 	let items = UserSkill::belonging_to(user)
 		.order(skill_id.asc())
 		.load::<UserSkill>(conn)?;
-	
+
 	Ok(items)
 }
 
@@ -67,7 +67,7 @@ pub fn delete_userskill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result
 	use crate::schema::userskills::dsl::{id, userskills};
 
 	let deleted = diesel::delete(userskills.filter(id.eq(uuid_data))).execute(conn)?;
-	
+
 	if deleted > 0 {
 		return Ok(());
 	}

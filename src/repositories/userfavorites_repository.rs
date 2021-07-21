@@ -1,8 +1,8 @@
 use crate::models::users::{Pool, UserFavorite};
 use actix_web::web;
-use diesel::{prelude::*, PgConnection};
 use diesel::result::Error;
 use diesel::result::Error::NotFound;
+use diesel::{prelude::*, PgConnection};
 
 pub fn add_favorite_project(
 	uuid_data: uuid::Uuid,
@@ -32,7 +32,7 @@ pub fn delete_favorite_project(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) ->
 	use crate::schema::userfavorites::dsl::*;
 
 	let deleted = diesel::delete(userfavorites.filter(id.eq(uuid_data))).execute(conn)?;
-	
+
 	if deleted > 0 {
 		return Ok(());
 	}

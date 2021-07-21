@@ -15,7 +15,7 @@ pub struct QueryData {
 #[derive(Deserialize, Debug)]
 pub struct ProjectData {
 	pub name: String,
-	pub available: bool,
+	pub is_hidden: bool,
 }
 
 #[derive(Deserialize, Debug)]
@@ -211,7 +211,6 @@ pub async fn create_projectneedskill(
 	}
 }
 
-
 pub async fn update_projectneedskill(
 	pid: web::Path<String>,
 	projectneedskilldata: web::Json<ProjectNeedSkillData>,
@@ -228,7 +227,7 @@ pub async fn update_projectneedskill(
 		return Err(ServiceError::AdminRequired);
 	}
 	let id = uuid::Uuid::parse_str(&pid.into_inner())?;
-	
+
 	let res = web::block(move || {
 		projectneedskills_repository::update_projectneedskill(
 			id,
@@ -290,9 +289,16 @@ pub async fn update_project(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	let res =
-		web::block(move || projects_repository::update_project(id, projectdata.name.clone(), projectdata.available, logged_user.email, &pool))
-			.await;
+	let res = web::block(move || {
+		projects_repository::update_project(
+			id,
+			projectdata.name.clone(),
+			projectdata.is_hidden,
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {

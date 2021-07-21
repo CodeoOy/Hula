@@ -6,8 +6,8 @@ use actix_identity::Identity;
 use actix_web::{dev::Payload, web::Data, Error, FromRequest, HttpRequest};
 use diesel::{r2d2::ConnectionManager, PgConnection};
 use futures::future::{err, ok, Ready};
-use serde::{Deserialize, Serialize};
 use log::debug;
+use serde::{Deserialize, Serialize};
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
@@ -16,8 +16,7 @@ pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 pub struct User {
 	pub id: uuid::Uuid,
 	pub isadmin: bool,
-	pub ispro: bool,
-	pub available: bool,
+	pub is_hidden: bool,
 	pub email: String,
 	pub firstname: String,
 	pub lastname: String,
@@ -80,8 +79,7 @@ impl User {
 		User {
 			id: uuid::Uuid::new_v4(),
 			isadmin: false,
-			ispro: true,
-			available: true,
+			is_hidden: true,
 			email: String::from(&emailstr),
 			firstname: first_name.into(),
 			lastname: last_name.into(),
