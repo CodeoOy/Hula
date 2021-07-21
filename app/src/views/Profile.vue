@@ -80,7 +80,20 @@
 					credentials: 'include',
 					body: JSON.stringify(this.user)
 				})
+			},
+			checkProfile(id) {
+				fetch(`/api/users/${id}`, {method: 'GET'})
+				.then(response => { 
+					if (!response.ok) {
+						this.$router.push({name: 'page-error'})
+					} else {
+						this.$store.dispatch('setChosenProfile', this.$route.params.id)
+					}
+				})
 			}
+		},
+		mounted() {
+			this.checkProfile(this.$route.params.id)
 		}
 	}
 </script>

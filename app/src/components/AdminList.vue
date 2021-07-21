@@ -9,12 +9,12 @@
 					<a class="nav-link" v-bind:class="{ active: !tabToggle }" href="#" v-on:click="tabToggle = false">Find a lead</a>
 				</li>
 			</ul>
-			<div class="p-3 rounded-2 content-box bg-dark text-light">
+			<div class="p-3 rounded-2 content-box bg-dark text-light" v-if="this.$store.state.projects">
 				<FindLead v-on:leadsfetched="passLeads" v-if="tabToggle == false" />
 				<FindPro v-on:usersfetched="passUsers" v-else />
 			</div>
 		</div>
-		<div class="col-md-8">
+		<div class="col-md-8" v-if="this.$store.state.projects">
 			<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 				<h2>Matches from teh algorithm</h2>
 				<FeatMatches />
