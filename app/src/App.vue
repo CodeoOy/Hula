@@ -5,6 +5,7 @@
 		<main>
 			<router-view />
 		</main>
+		{{ this.$store.state.projects }}
 		<TheFooter />
 	</div>
 </template>
