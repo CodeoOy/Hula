@@ -50,9 +50,11 @@
                 return matches;
             },
             openSuggestion() {
-                return this.selection !== "" &&
-                    this.matches.length != 0 &&
-                    this.open === true;
+                if (this.dropdown) {
+                    return this.selection !== "" && this.matches.length != 0 && this.open === true;
+                } else {
+                    return false
+                }
             }
         },
         methods: {
