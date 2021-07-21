@@ -66,7 +66,7 @@
 		},
 		methods: {
 			updateUser() { // This is not working. Make the user update happen in some other way.
-				fetch(`/api/users/${this.$store.state.loggeduser}`, {
+				fetch(`/api/users/${this.user.id}`, {
 					method: 'PUT',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
@@ -84,16 +84,21 @@
 			checkProfile(id) {
 				fetch(`/api/users/${id}`, {method: 'GET'})
 				.then(response => { 
-					if (!response.ok) {
-						this.$router.push({name: 'page-error'})
-					} else {
-						this.$store.dispatch('setChosenProfile', this.$route.params.id)
-					}
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
 				})
+				.then(response => { 
+					this.user = response;
+				}) 
 			}
 		},
 		mounted() {
-			this.checkProfile(this.$route.params.id)
+			if (this.$route.params.id != this.$store.state.loggeduser.id) {
+				if (this.$store.state.loggeduser.isadmin === true) {
+					this.checkProfile(this.$route.params.id)
+				} else {
+					this.$router.push({name: 'page-error'})
+				}
+			}
 		}
 	}
 </script>

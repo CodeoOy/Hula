@@ -42,7 +42,6 @@
 					<tr v-for="user in filteredUsers" :key="user.id">
 						<td><router-link
 							:to="{ name: 'page-profile', params: { id: user.id}}"
-							v-on:click="this.chooseUser(user)"
 						>{{ user.firstname }} {{ user.lastname }}</router-link></td>
 						<td>{{ user.email }}</td>
 						<td class="hoverable-td">
