@@ -1,14 +1,15 @@
 <template>
 	<div>
 		<h2 v-if="queryData.projectname.length">{{ queryData.projectname }}</h2>
-		<AutoComplete 
+		<!-- <AutoComplete 
 			v-if="this.$store.state.projects.length" 
 			:suggestions="this.$store.state.projects"
 			:placeholder="'Start typing the name of project..'" 
 			:dropdown="true"
+			:filterProperties="'name'"
 			:selection.sync="value"
 			v-on:auto-complete="getMatchedUsers($event)"
-		></AutoComplete>
+		></AutoComplete> -->
 	</div>
 </template>
 
