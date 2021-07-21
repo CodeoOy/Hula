@@ -14,7 +14,7 @@
 				<a class="nav-link" v-bind:class="{ 'active': tab == 4, '': tab != 4 }" @click="tab = 4" href="#">Scopes & Levels</a>
 			</li>
 		</ul>
-		<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+		<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light" v-if="this.$store.state.projects">
 			<AdminListProjects @project-chosen="updateProject" v-if="tab == 1" />
 			<AdminListUsers v-if="tab == 2" />
 			<AdminListSkills v-if="tab == 3" />
