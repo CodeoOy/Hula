@@ -1,7 +1,5 @@
 <template>
-	<v-form v-on:submit="createProjectNeedSkill">
-		{{ this.chosenSkill }}<br /><br />
-		{{ this.chosenSkill.skillscope_id}}
+	<v-form v-on:submit="createProjectNeedSkill" v-if="availableSkills.length && skillLevels.length">
 		<div class="mb-2" v-if="this.method == 'POST'">
 			<label class="form-label">Skill</label>
 			<error-message name="name" class="error"></error-message>
@@ -20,7 +18,7 @@
 				</option>
 			</v-field>
 		</div>
-		<div class="mb-2" v-if="availableSkills.length">
+		<div class="mb-2">
 			<label class="form-label">Minimum level</label>
 			<error-message name="name" class="error"></error-message>
 			<v-field
@@ -146,12 +144,15 @@ export default {
 			})
 		},
 		getSkillScope(needle) {
-			var scope = this.availableSkills.find(x => x.id == needle).skillscope_id;
-			this.chosenSkill.skillscope_id = scope;
+			if (needle) {
+				var scope = this.availableSkills.find(x => x.id == needle).skillscope_id;
+				this.chosenSkill.skillscope_id = scope;
+			}
 		},
 	},
 	watch: {
 		'formData.skill_id'(newID) {
+			console.log("watch calling getSkillScope")
 			this.getSkillScope(newID)
 		},
 		'chosenNeed.id'(newID) {
@@ -160,14 +161,11 @@ export default {
 	},
 	computed: {
 		filterLevels() {
-			if (this.availableSkills.length && this.skillLevels.length) {
+			if (!('skillscope_id' in this.chosenSkill)) { // Projectneedskills would need to have the skillscope_id too
 				this.getSkillScope(this.chosenSkill.skill_id)
-				if ('skillscope_id' in this.chosenSkill) { // Projectneedskills would need to have the skillscope_id too
-					return this.skillLevels.filter(lvl => lvl.skillscope_id == this.chosenSkill.skillscope_id)
-				}
 			}
+			return this.skillLevels.filter(lvl => lvl.skillscope_id == this.chosenSkill.skillscope_id)
 		},
-		// get skills from availableSkills that are not listed in chosenNeed.skills
 		filterSkills() {
 			if (this.availableSkills.length) {
 				console.log(this.availableSkills)
