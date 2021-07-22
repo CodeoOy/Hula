@@ -47,13 +47,13 @@
 										href="#"
 										data-bs-toggle="modal"
 										data-bs-target="#hulaModalProfile"
-										v-on:click="formTitle = skill.skill_label, chosenForm = 'Skill', chosenSkill = skill, url=`/api/userskills/${skill.id}`, method='PUT'"
+										v-on:click="formTitle = skill.skill_label, chosenForm = 'Skill', chosenSkill = skill, url=`/api/userskills/${user.id}`, method='PUT'"
 									><i class="bi-pencil-fill me-2"></i></a>
 									<a
 										href="#"
 										data-bs-toggle="modal"
 										data-bs-target="#hulaModalProfile" 
-										v-on:click="formTitle = `Delete ${skill.skill_label}?`, chosenForm = 'Delete', url = `/api/userskills/${skill.id}`, method = 'DELETE'"
+										v-on:click="formTitle = `Delete ${skill.skill_label}?`, chosenForm = 'Delete', url = `/api/userskills/${user.id}`, method = 'DELETE'"
 									><i class="bi-trash-fill me-2"></i></a>
 								</td>
 							</tr>

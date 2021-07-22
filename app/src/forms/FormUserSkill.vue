@@ -1,10 +1,11 @@
 <template>
 	<v-form v-on:submit="addExistingSkill">
+		{{ chosenSkill }}
 		<div class="mb-2">
 			<label class="form-label">Skill</label>
 			<error-message name="skill" class="error"></error-message>
 			<v-field
-				v-model="queryData.skill_id"
+				v-model="formData.skill_id"
 				:rules="isRequired"
 				as="select"
 				name="skill"
@@ -17,11 +18,11 @@
 				</option>
 			</v-field>
 		</div>
-		<div class="mb-2" v-if="chosenSkill.skillscope_id">
+		<div class="mb-2">
 			<label class="form-label">Level of skill</label>
 			<error-message name="level" class="error"></error-message>
 			<v-field
-				v-model="queryData.skillscopelevel_id"
+				v-model="formData.skillscopelevel_id"
 				:rules="isRequired"
 				as="select"
 				name="level"
@@ -34,11 +35,11 @@
 				</option>
 			</v-field>
 		</div>
-		<div class="mb-2" v-if="chosenSkill.skillscope_id">
+		<div class="mb-2">
 			<label class="form-label">Years</label>
 			<error-message name="years" class="error"></error-message>
 			<v-field
-				v-model.number="queryData.years"
+				v-model.number="formData.years"
 				:rules="isRequired"
 				as="input"
 				type="number"
@@ -57,16 +58,12 @@ export default {
 	name: 'UserSkill',
 	data() {
 		return {
-			chosenSkill: {
-				id: '',
-				skillscope_id: '',
-			},
-			queryData: {
+			formData: {
 				id: '83d7a553-2e53-47cc-8c16-a8a10c0cadd0', // TODO: This is here only to satisfy UserSkill struct. Remove somehow.
 				user_id: this.userID,
-				skill_id: '',
-				skillscopelevel_id: '',
-				years: Number,
+				skill_id: this.chosenSkill.skill_id || '',
+				skillscopelevel_id: this.chosenSkill.skillscopelevel_id || '',
+				years: this.chosenSkill.years || '',
 				updated_by: this.$store.state.loggeduser.email,
 			},
 			availableSkills: {},
@@ -77,6 +74,7 @@ export default {
 		url: '',
 		method: '',
 		userID: '',
+		chosenSkill: {},
 	},
 	components: {
 		'VForm': Form,
@@ -92,7 +90,7 @@ export default {
 				method: this.method,
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
-				body: JSON.stringify(this.queryData)
+				body: JSON.stringify(this.formData)
 			})
 			.then(response => {
 				if (response.status >= 200 && response.status <= 299) {
@@ -136,7 +134,7 @@ export default {
 		}
 	},
 	watch: {
-		'queryData.skill_id'(newID) {
+		'formData.skill_id'(newID) {
 			this.getSkillScope(newID)
 		}
 	},
