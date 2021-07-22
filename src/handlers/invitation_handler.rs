@@ -1,13 +1,13 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
-use serde::Deserialize;
-use log::{debug, trace};
 use diesel::result::Error::NotFound;
+use log::{debug, trace};
+use serde::Deserialize;
 
 use crate::email_service::send_invitation;
 use crate::errors::ServiceError;
 use crate::models::invitations::{Invitation, Pool};
-use crate::utils::hash_password;
 use crate::repositories::*;
+use crate::utils::hash_password;
 
 #[derive(Deserialize, Debug)]
 pub struct InvitationData {
@@ -21,7 +21,12 @@ pub async fn post_invitation(
 	invitation_data: web::Json<InvitationData>,
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Posting invitation: invitation_data = {} {} {}", &invitation_data.email, &invitation_data.first_name, &invitation_data.last_name);
+	trace!(
+		"Posting invitation: invitation_data = {} {} {}",
+		&invitation_data.email,
+		&invitation_data.first_name,
+		&invitation_data.last_name
+	);
 	let res = web::block(move || create_invitation(invitation_data.into_inner(), pool)).await;
 
 	match res {
@@ -39,7 +44,7 @@ fn create_invitation(invdata: InvitationData, pool: web::Data<Pool>) -> Result<(
 		invdata.password_plain,
 		invdata.first_name,
 		invdata.last_name,
-		pool
+		pool,
 	)?;
 	send_invitation(&invitation)
 }
@@ -57,13 +62,11 @@ fn query(
 		Ok(user) => {
 			debug!("User {} already found. Cannot process invitation.", &user.email);
 			return Err(ServiceError::Unauthorized);
-		},
+		}
 		Err(NotFound) => {
 			let invitation = invitations_repository::create_invitation(eml, password, first_name, last_name, &pool)?;
 			Ok(invitation)
-		},
-		Err(error) => {
-			Err(error.into())
 		}
+		Err(error) => Err(error.into()),
 	}
 }

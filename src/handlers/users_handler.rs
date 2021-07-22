@@ -2,8 +2,8 @@ use crate::errors::ServiceError;
 use crate::models::users::{LoggedUser, Pool};
 use crate::repositories::*;
 use actix_web::{error::BlockingError, web, HttpResponse};
-use serde::{Deserialize, Serialize};
 use log::trace;
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
@@ -74,7 +74,11 @@ pub async fn update_user(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Updating a user: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+	trace!(
+		"Updating a user: uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&logged_user
+	);
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
@@ -83,7 +87,17 @@ pub async fn update_user(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || users_repository::update(id, payload.firstname.clone(), payload.lastname.clone(), payload.available, payload.email.clone(), &pool)).await;
+	let res = web::block(move || {
+		users_repository::update(
+			id,
+			payload.firstname.clone(),
+			payload.lastname.clone(),
+			payload.available,
+			payload.email.clone(),
+			&pool,
+		)
+	})
+	.await;
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
@@ -99,7 +113,12 @@ pub async fn add_skill(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Adding a user skill: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}", &uuid_data, &payload, &logged_user);
+	trace!(
+		"Adding a user skill: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&payload,
+		&logged_user
+	);
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
@@ -108,13 +127,17 @@ pub async fn add_skill(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || userskills_repository::add_skill(
-		id, 
-		payload.skill_id, 
-		payload.skillscopelevel_id, 
-		payload.years, 
-		logged_user.email, 
-		&pool)).await;
+	let res = web::block(move || {
+		userskills_repository::add_skill(
+			id,
+			payload.skill_id,
+			payload.skillscopelevel_id,
+			payload.years,
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
 
 	match res {
 		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
@@ -130,7 +153,11 @@ pub async fn delete_userskill(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Deleting a user skill: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+	trace!(
+		"Deleting a user skill: uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&logged_user
+	);
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
 	// todo: create a macro to simplify this
@@ -153,7 +180,11 @@ pub async fn get_by_uuid(
 	pool: web::Data<Pool>,
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Getting a user by uuid: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &_logged_user);
+	trace!(
+		"Getting a user by uuid: uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&_logged_user
+	);
 	let res = web::block(move || query_one(uuid_data.into_inner(), pool)).await;
 
 	match res {
@@ -212,7 +243,11 @@ pub async fn delete_user(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Deleting a user: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+	trace!(
+		"Deleting a user: uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&logged_user
+	);
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
@@ -231,22 +266,36 @@ pub async fn delete_user(
 	}
 }
 
-pub async fn update_year(
+pub async fn update_skill(
 	uuid_data: web::Path<String>,
 	payload: web::Json<UserSkillData>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Updating a user years: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}", &uuid_data, &payload, &logged_user);
+	trace!(
+		"Updating user skills: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&payload,
+		&logged_user
+	);
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || userskills_repository::update_year(id, payload.user_id.clone(), payload.years, logged_user.email, &pool)).await;
+	let res = web::block(move || {
+		userskills_repository::update_skill(
+			id,
+			payload.user_id.clone(),
+			payload.skillscopelevel_id,
+			payload.years,
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
 	match res {
 		Ok(userskill) => Ok(HttpResponse::Ok().json(&userskill)),
 		Err(err) => match err {
@@ -262,16 +311,23 @@ pub async fn add_favorite_project(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Adding a favorite project: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}", &uuid_data, &payload, &logged_user);
+	trace!(
+		"Adding a favorite project: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&payload,
+		&logged_user
+	);
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || userfavorites_repository::add_favorite_project(id, payload.project_id.clone(), logged_user.email, &pool)).await;
+	let res = web::block(move || {
+		userfavorites_repository::add_favorite_project(id, payload.project_id.clone(), logged_user.email, &pool)
+	})
+	.await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
@@ -286,7 +342,11 @@ pub async fn delete_favorite_project(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Delete a favorite project: uuid_data = {:#?} logged_user = {:#?}", &uuid_data, &logged_user);
+	trace!(
+		"Delete a favorite project: uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&logged_user
+	);
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
@@ -304,4 +364,3 @@ pub async fn delete_favorite_project(
 		},
 	}
 }
-

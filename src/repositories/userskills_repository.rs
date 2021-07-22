@@ -1,8 +1,8 @@
 use crate::models::users::{Pool, User, UserSkill};
 use actix_web::web;
-use diesel::{prelude::*, PgConnection};
 use diesel::result::Error;
 use diesel::result::Error::NotFound;
+use diesel::{prelude::*, PgConnection};
 
 pub fn query_belong_to_user(user: &User, pool: &web::Data<Pool>) -> Result<Vec<UserSkill>, Error> {
 	use crate::schema::userskills::dsl::skill_id;
@@ -11,7 +11,7 @@ pub fn query_belong_to_user(user: &User, pool: &web::Data<Pool>) -> Result<Vec<U
 	let items = UserSkill::belonging_to(user)
 		.order(skill_id.asc())
 		.load::<UserSkill>(conn)?;
-	
+
 	Ok(items)
 }
 
@@ -42,21 +42,26 @@ pub fn add_skill(
 	Ok(user_skill)
 }
 
-pub fn update_year(
+pub fn update_skill(
 	uuid_data: uuid::Uuid,
 	q_user_id: uuid::Uuid,
+	q_skillscopelevel_id: uuid::Uuid,
 	q_years: Option<f64>,
 	q_email: String,
 	pool: &web::Data<Pool>,
 ) -> Result<UserSkill, Error> {
 	use crate::schema::userskills::dsl::*;
-	use crate::schema::userskills::dsl::{skill_id, updated_by, years};
+	use crate::schema::userskills::dsl::{skill_id, skillscopelevel_id, updated_by, years};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let user_skill = diesel::update(userskills)
 		.filter(skill_id.eq(uuid_data))
 		.filter(user_id.eq(q_user_id))
-		.set((years.eq(q_years), updated_by.eq(q_email)))
+		.set((
+			years.eq(q_years),
+			skillscopelevel_id.eq(q_skillscopelevel_id),
+			updated_by.eq(q_email),
+		))
 		.get_result::<UserSkill>(conn)?;
 
 	Ok(user_skill)
@@ -67,7 +72,7 @@ pub fn delete_userskill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result
 	use crate::schema::userskills::dsl::{id, userskills};
 
 	let deleted = diesel::delete(userskills.filter(id.eq(uuid_data))).execute(conn)?;
-	
+
 	if deleted > 0 {
 		return Ok(());
 	}

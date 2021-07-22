@@ -2,13 +2,10 @@ use actix_web::web;
 use diesel::prelude::*;
 use diesel::PgConnection;
 
-use crate::models::users::{Pool, ActiveSession};
+use crate::models::users::{ActiveSession, Pool};
 use diesel::result::Error;
 
-pub fn get_session_by_id(
-	q_id: uuid::Uuid,
-	pool: &web::Data<Pool>,
-) -> Result<ActiveSession, Error> {
+pub fn get_session_by_id(q_id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<ActiveSession, Error> {
 	use crate::schema::activesessions::dsl::session_id;
 	use crate::schema::activesessions::dsl::*;
 
@@ -20,4 +17,3 @@ pub fn get_session_by_id(
 
 	Ok(session)
 }
-
