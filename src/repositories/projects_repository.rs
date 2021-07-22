@@ -28,7 +28,7 @@ pub fn create_project(q_project_name: String, q_email: String, pool: &web::Data<
 
 	let new_project = Project {
 		id: uuid::Uuid::new_v4(),
-		is_hidden: true,
+		is_hidden: false,
 		name: q_project_name,
 		updated_by: q_email,
 	};

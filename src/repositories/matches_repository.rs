@@ -15,7 +15,7 @@ pub fn query(pool: &web::Data<Pool>) -> Result<Vec<MatchCandidate>, Error> {
 	items.retain(|x| x.required_index <= x.user_index);
 	items.retain(|x| x.required_minyears <= x.user_years);
 	items.retain(|x| x.required_maxyears >= x.user_years);
-	items.retain(|x| x.is_hidden == true);
+	items.retain(|x| x.is_hidden == false);
 
 	Ok(items)
 }
@@ -31,7 +31,7 @@ pub fn query_by_params(q_project_name: String, pool: &web::Data<Pool>) -> Result
 	items.retain(|x| x.required_index <= x.user_index);
 	items.retain(|x| x.required_minyears <= x.user_years);
 	items.retain(|x| x.required_maxyears >= x.user_years);
-	items.retain(|x| x.is_hidden == true);
+	items.retain(|x| x.is_hidden == false);
 	items.retain(|x| x.projectname == q_project_name);
 
 	Ok(items)

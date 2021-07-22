@@ -79,7 +79,7 @@ impl User {
 		User {
 			id: uuid::Uuid::new_v4(),
 			isadmin: false,
-			is_hidden: true,
+			is_hidden: false,
 			email: String::from(&emailstr),
 			firstname: first_name.into(),
 			lastname: last_name.into(),
