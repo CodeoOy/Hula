@@ -1,13 +1,13 @@
 use actix_web::web;
-use diesel::{prelude::*, PgConnection};
 use diesel::result::Error;
+use diesel::{prelude::*, PgConnection};
 
-use crate::models::matchcandidates::{Pool, MatchCandidate};
+use crate::models::matchcandidates::{MatchCandidate, Pool};
 
 pub fn query(pool: &web::Data<Pool>) -> Result<Vec<MatchCandidate>, Error> {
 	use crate::schema::matchcandidates::dsl::{matchcandidates, projectneedskillid, userskillid};
 	let conn: &PgConnection = &pool.get().unwrap();
-	
+
 	let mut items = matchcandidates
 		.order((projectneedskillid.asc(), userskillid.asc()))
 		.load::<MatchCandidate>(conn)?;
@@ -20,13 +20,10 @@ pub fn query(pool: &web::Data<Pool>) -> Result<Vec<MatchCandidate>, Error> {
 	Ok(items)
 }
 
-pub fn query_by_params(
-	q_project_name: String,
-	pool: &web::Data<Pool>,
-) -> Result<Vec<MatchCandidate>, Error> {
+pub fn query_by_params(q_project_name: String, pool: &web::Data<Pool>) -> Result<Vec<MatchCandidate>, Error> {
 	use crate::schema::matchcandidates::dsl::{matchcandidates, projectneedskillid, userskillid};
 	let conn: &PgConnection = &pool.get().unwrap();
-	
+
 	let mut items = matchcandidates
 		.order((projectneedskillid.asc(), userskillid.asc()))
 		.load::<MatchCandidate>(conn)?;

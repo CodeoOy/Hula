@@ -1,16 +1,14 @@
+use crate::models::skills::{Pool, Skill};
 use actix_web::web;
-use diesel::{prelude::*, PgConnection};
 use diesel::result::Error;
 use diesel::result::Error::NotFound;
-use crate::models::skills::{Pool, Skill};
+use diesel::{prelude::*, PgConnection};
 
 pub fn query_all_skills(pool: &web::Data<Pool>) -> Result<Vec<Skill>, Error> {
-	use crate::schema::skills::dsl::{skills, label};
+	use crate::schema::skills::dsl::{label, skills};
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let items = skills
-		.order(label.asc())
-		.load::<Skill>(conn)?;
+	let items = skills.order(label.asc()).load::<Skill>(conn)?;
 
 	Ok(items)
 }
@@ -32,11 +30,11 @@ pub fn create_skill(
 		skillscope_id: q_skillscope_id,
 		updated_by: q_email,
 	};
-	
+
 	let skill = diesel::insert_into(skills)
 		.values(&new_skill)
 		.get_result::<Skill>(conn)?;
-	
+
 	Ok(skill)
 }
 
@@ -68,7 +66,7 @@ pub fn delete_skill(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(),
 	use crate::schema::skills::dsl::*;
 
 	let deleted = diesel::delete(skills.filter(id.eq(uuid_data))).execute(conn)?;
-	
+
 	if deleted > 0 {
 		return Ok(());
 	}

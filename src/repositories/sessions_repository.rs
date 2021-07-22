@@ -6,11 +6,7 @@ use crate::models::users::{Pool, Session};
 use diesel::result::Error;
 use diesel::result::Error::NotFound;
 
-pub fn create_session(
-	q_user_id: uuid::Uuid,
-	q_user_email: String,
-	pool: &web::Data<Pool>,
-) -> Result<Session, Error> {
+pub fn create_session(q_user_id: uuid::Uuid, q_user_email: String, pool: &web::Data<Pool>) -> Result<Session, Error> {
 	use crate::schema::sessions::dsl::sessions;
 
 	let expiry_mins = std::env::var("SESSION_EXPIRY_MINS").unwrap_or_else(|_| "60".to_string());

@@ -1,6 +1,6 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
-use serde::Deserialize;
 use log::trace;
+use serde::Deserialize;
 
 use crate::errors::ServiceError;
 use crate::models::matchcandidates::Pool;
@@ -35,7 +35,11 @@ pub async fn get_matches_by_params(
 	pool: web::Data<Pool>,
 	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Getting matches by params: querydata = {:#?} logged_user={:#?}", &querydata, &_logged_user);
+	trace!(
+		"Getting matches by params: querydata = {:#?} logged_user={:#?}",
+		&querydata,
+		&_logged_user
+	);
 	let res = web::block(move || matches_repository::query_by_params(querydata.projectname.clone(), &pool)).await;
 	match res {
 		Ok(matches) => {
