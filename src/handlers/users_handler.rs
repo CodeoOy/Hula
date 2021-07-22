@@ -269,7 +269,7 @@ pub async fn update_skill(
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!(
-		"Updating a user years: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}",
+		"Updating user skills: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}",
 		&uuid_data,
 		&payload,
 		&logged_user
