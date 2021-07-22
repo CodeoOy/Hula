@@ -5,6 +5,7 @@
 				:is='modalComponent' 
 				:url="url"
 				:method="method"
+				:chosenSkill="chosenSkill"
 				:userID="user.id"
 				v-on:form-sent="hideModalUpdate"
 			/>
@@ -41,12 +42,19 @@
 							<tr v-for="skill in user.skills" :key="skill.id">
 								<td>{{ skill.skill_label }}</td>
 								<td>{{ skill.years }}</td>
-								<td><a
-									href="#"
-									data-bs-toggle="modal"
-									data-bs-target="#hulaModalProfile" 
-									v-on:click="formTitle = `Delete ${skill.skill_label}?`, chosenForm = 'Delete', url = `/api/userskills/${skill.id}`, method = 'DELETE'"
-								><i class="bi-trash-fill me-2"></i></a>
+								<td>
+									<a 
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalProfile"
+										v-on:click="formTitle = skill.skill_label, chosenForm = 'Skill', chosenSkill = skill, url=`/api/userskills/${skill.id}`, method='PUT'"
+									><i class="bi-pencil-fill me-2"></i></a>
+									<a
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalProfile" 
+										v-on:click="formTitle = `Delete ${skill.skill_label}?`, chosenForm = 'Delete', url = `/api/userskills/${skill.id}`, method = 'DELETE'"
+									><i class="bi-trash-fill me-2"></i></a>
 								</td>
 							</tr>
 						</tbody>
@@ -65,7 +73,8 @@
 <script>
 	import VModal from '../components/VModal.vue'
 	import { Modal } from 'bootstrap'
-	import FormAddSkill from '../forms/FormAddSkill.vue'
+	import FormUserSkill from '../forms/FormUserSkill.vue'
+	import FormSkill from '../forms/FormSkill.vue'
 	import FormUserBasicInfo from '../forms/FormUserBasicInfo.vue'
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	export default {
@@ -74,6 +83,7 @@
 			return {
 				formTitle: '',
 				chosenForm: '',
+				chosenSkill: {},
 				editingInfo: false,
 				user: this.$store.state.loggeduser,
 				url: '',
@@ -82,7 +92,8 @@
 		},
 		components: {
 			FormUserBasicInfo,
-			FormAddSkill,
+			FormUserSkill,
+			FormSkill,
 			FormConfirmAction,
 			VModal,
 		},
@@ -122,7 +133,7 @@
 			modalComponent() {
 				const components = {
 					Delete: FormConfirmAction,
-					Skill: FormAddSkill,
+					Skill: FormUserSkill,
 				}
 				return components[this.chosenForm]
 			},
