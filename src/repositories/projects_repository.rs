@@ -28,7 +28,7 @@ pub fn create_project(q_project_name: String, q_email: String, pool: &web::Data<
 
 	let new_project = Project {
 		id: uuid::Uuid::new_v4(),
-		available: true,
+		is_hidden: false,
 		name: q_project_name,
 		updated_by: q_email,
 	};
@@ -43,7 +43,7 @@ pub fn create_project(q_project_name: String, q_email: String, pool: &web::Data<
 pub fn update_project(
 	uuid_data: uuid::Uuid,
 	q_project_name: String,
-	q_project_available: bool,
+	q_project_is_hidden: bool,
 	q_email: String,
 	pool: &web::Data<Pool>,
 ) -> Result<Project, Error> {
@@ -55,7 +55,7 @@ pub fn update_project(
 		.filter(id.eq(uuid_data))
 		.set((
 			name.eq(q_project_name),
-			available.eq(q_project_available),
+			is_hidden.eq(q_project_is_hidden),
 			updated_by.eq(q_email.clone()),
 		))
 		.get_result::<Project>(conn)?;

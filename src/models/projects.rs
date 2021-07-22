@@ -9,7 +9,7 @@ pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 #[table_name = "projects"]
 pub struct Project {
 	pub id: uuid::Uuid,
-	pub available: bool,
+	pub is_hidden: bool,
 	pub name: String,
 	pub updated_by: String,
 }

@@ -15,7 +15,7 @@ pub struct QueryData {
 #[derive(Deserialize, Debug)]
 pub struct ProjectData {
 	pub name: String,
-	pub available: bool,
+	pub is_hidden: bool,
 }
 
 #[derive(Deserialize, Debug)]
@@ -293,7 +293,7 @@ pub async fn update_project(
 		projects_repository::update_project(
 			id,
 			projectdata.name.clone(),
-			projectdata.available,
+			projectdata.is_hidden,
 			logged_user.email,
 			&pool,
 		)

@@ -10,7 +10,7 @@ pub struct QueryData {
 	pub id: String,
 	pub firstname: String,
 	pub lastname: String,
-	pub available: bool,
+	pub is_hidden: bool,
 	pub email: String,
 }
 
@@ -33,8 +33,7 @@ pub struct FavoriteData {
 pub struct UserDTO {
 	pub id: uuid::Uuid,
 	pub isadmin: bool,
-	pub ispro: bool,
-	pub available: bool,
+	pub is_hidden: bool,
 	pub email: String,
 	pub firstname: String,
 	pub lastname: String,
@@ -92,7 +91,7 @@ pub async fn update_user(
 			id,
 			payload.firstname.clone(),
 			payload.lastname.clone(),
-			payload.available,
+			payload.is_hidden,
 			payload.email.clone(),
 			&pool,
 		)
@@ -160,7 +159,6 @@ pub async fn delete_userskill(
 	);
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}
@@ -225,8 +223,7 @@ fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, Servic
 	let data = UserDTO {
 		id: user.id,
 		isadmin: user.isadmin,
-		ispro: user.ispro,
-		available: user.available,
+		is_hidden: user.is_hidden,
 		email: user.email,
 		firstname: user.firstname,
 		lastname: user.lastname,
@@ -251,7 +248,6 @@ pub async fn delete_user(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}
@@ -350,7 +346,6 @@ pub async fn delete_favorite_project(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}
