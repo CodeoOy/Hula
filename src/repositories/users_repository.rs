@@ -1,17 +1,15 @@
 use crate::models::users::{Pool, User};
-use Error::NotFound;
 use actix_web::web;
-use diesel::{prelude::*, PgConnection};
 use diesel::result::Error;
+use diesel::{prelude::*, PgConnection};
+use Error::NotFound;
 
 pub fn query_all(pool: &web::Data<Pool>) -> Result<Vec<User>, Error> {
-	use crate::schema::users::dsl::{users, lastname, firstname};
+	use crate::schema::users::dsl::{firstname, lastname, users};
 	let conn: &PgConnection = &pool.get().unwrap();
-	
-	let items = users
-		.order((lastname.asc(), firstname.asc()))
-		.load::<User>(conn)?;
-	
+
+	let items = users.order((lastname.asc(), firstname.asc())).load::<User>(conn)?;
+
 	Ok(items)
 }
 
@@ -33,12 +31,17 @@ pub fn get(q_id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<User, Error> {
 	Ok(user)
 }
 
-pub fn create(q_email: String, q_password: String, q_first_name: String, q_last_name: String, pool: &web::Data<Pool>) -> Result<User, Error> {
+pub fn create(
+	q_email: String,
+	q_password: String,
+	q_first_name: String,
+	q_last_name: String,
+	pool: &web::Data<Pool>,
+) -> Result<User, Error> {
 	use crate::schema::users::dsl::users;
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let new_user =
-		User::from_details(q_email, q_password, q_first_name, q_last_name);
+	let new_user = User::from_details(q_email, q_password, q_first_name, q_last_name);
 
 	let user: User = diesel::insert_into(users).values(&new_user).get_result(conn)?;
 

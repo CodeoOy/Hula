@@ -8,10 +8,8 @@ use crate::models::skills::{Pool, SkillCategory};
 pub fn query_skill_categories(pool: web::Data<Pool>) -> Result<Vec<SkillCategory>, Error> {
 	use crate::schema::skillcategories::dsl::{skillcategories, *};
 	let conn: &PgConnection = &pool.get().unwrap();
-	
-	let items = skillcategories
-		.order(label.asc())
-		.load::<SkillCategory>(conn)?;
+
+	let items = skillcategories.order(label.asc()).load::<SkillCategory>(conn)?;
 
 	Ok(items)
 }
@@ -66,7 +64,7 @@ pub fn delete_skill_category(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> R
 	use crate::schema::skillcategories::dsl::{id, skillcategories};
 
 	let deleted = diesel::delete(skillcategories.filter(id.eq(uuid_data))).execute(conn)?;
-	
+
 	if deleted > 0 {
 		return Ok(());
 	}

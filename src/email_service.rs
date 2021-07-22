@@ -1,8 +1,8 @@
 use crate::errors::ServiceError;
 use crate::models::invitations::Invitation;
+use log::{error, trace};
 use sparkpost::transmission::{EmailAddress, Message, Options, Recipient, Transmission, TransmissionResponse};
 use url::Url;
-use log::{error, trace};
 
 lazy_static::lazy_static! {
 static ref API_KEY: String = std::env::var("SPARKPOST_API_KEY").expect("SPARKPOST_API_KEY must be set");

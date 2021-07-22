@@ -1,14 +1,11 @@
 use actix_web::web;
-use diesel::{prelude::*, PgConnection};
 use diesel::result::Error;
 use diesel::result::Error::NotFound;
+use diesel::{prelude::*, PgConnection};
 
 use crate::models::projects::{Pool, ProjectNeedSkill};
 
-pub fn query_projectneedskills(
-	pid: uuid::Uuid,
-	pool: &web::Data<Pool>,
-) -> Result<Vec<ProjectNeedSkill>, Error> {
+pub fn query_projectneedskills(pid: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Vec<ProjectNeedSkill>, Error> {
 	use crate::schema::projectneedskills::dsl::{projectneed_id, projectneedskills, skill_id};
 	let conn: &PgConnection = &pool.get().unwrap();
 
@@ -31,7 +28,7 @@ pub fn create_projectneedskill(
 ) -> Result<ProjectNeedSkill, Error> {
 	use crate::schema::projectneedskills::dsl::projectneedskills;
 	let conn: &PgConnection = &pool.get().unwrap();
-	
+
 	let new_projectneedskill = ProjectNeedSkill {
 		id: uuid::Uuid::new_v4(),
 		projectneed_id: q_projectneed_id,
@@ -61,7 +58,7 @@ pub fn update_projectneedskill(
 ) -> Result<ProjectNeedSkill, Error> {
 	use crate::schema::projectneedskills::dsl::{projectneedskills, *};
 	let conn: &PgConnection = &pool.get().unwrap();
-	
+
 	let projectneedskill = diesel::update(projectneedskills)
 		.filter(id.eq(q_id))
 		.set((

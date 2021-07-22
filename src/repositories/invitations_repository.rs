@@ -2,8 +2,8 @@ use actix_web::web;
 use diesel::prelude::*;
 use diesel::PgConnection;
 
-use crate::models::users::Pool;
 use crate::models::invitations::Invitation;
+use crate::models::users::Pool;
 use diesel::result::Error;
 
 pub fn create_invitation(
@@ -17,7 +17,7 @@ pub fn create_invitation(
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let new_invitation = Invitation::from_details(q_email, q_password, q_first_name, q_last_name);
-	
+
 	let invitation = diesel::insert_into(invitations)
 		.values(&new_invitation)
 		.get_result::<Invitation>(conn)?;
@@ -25,7 +25,11 @@ pub fn create_invitation(
 	Ok(invitation)
 }
 
-pub fn get_by_invitation(q_invitation_id: uuid::Uuid, q_email: String, pool: &web::Data<Pool>) -> Result<Invitation, Error> {
+pub fn get_by_invitation(
+	q_invitation_id: uuid::Uuid,
+	q_email: String,
+	pool: &web::Data<Pool>,
+) -> Result<Invitation, Error> {
 	use crate::schema::invitations::dsl::{email, id, invitations};
 	let conn: &PgConnection = &pool.get().unwrap();
 

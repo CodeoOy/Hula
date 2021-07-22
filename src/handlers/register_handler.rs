@@ -1,6 +1,6 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
-use serde::Deserialize;
 use log::trace;
+use serde::Deserialize;
 
 use crate::errors::ServiceError;
 use crate::models::invitations::Pool;
@@ -39,7 +39,13 @@ fn query(user_data: UserData, pool: web::Data<Pool>) -> Result<User, crate::erro
 	if let Ok(invitation) = result {
 		if invitation.expires_at > chrono::Local::now().naive_local() {
 			let password: String = user_data.password;
-			let user = users_repository::create(invitation.email, password, invitation.first_name, invitation.last_name, &pool)?;
+			let user = users_repository::create(
+				invitation.email,
+				password,
+				invitation.first_name,
+				invitation.last_name,
+				&pool,
+			)?;
 
 			return Ok(user);
 		}

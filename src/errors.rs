@@ -1,10 +1,10 @@
 use actix_web::{error::ResponseError, HttpResponse};
 use derive_more::Display;
 use diesel::result::{DatabaseErrorKind, Error as DBError};
+use log::{debug, error};
+use serde::Serialize;
 use std::convert::From;
 use uuid::Error as ParseError;
-use log::{error, debug};
-use serde::Serialize;
 
 #[derive(Debug, Display, Serialize)]
 #[display(fmt = "{} {:?}", table_name, field_name)]
@@ -70,10 +70,10 @@ impl ResponseError for ServiceError {
 			ServiceError::Gone => HttpResponse::Gone().finish(),
 			ServiceError::Forbidden(ref forbidden_type) => HttpResponse::Forbidden().json(forbidden_type),
 			ServiceError::AdminRequired => HttpResponse::Forbidden().json(ForbiddenStruct {
-					error_type: ForbiddenType::AdminRequired,
-					description: None,
-					details: None
-				}),
+				error_type: ForbiddenType::AdminRequired,
+				description: None,
+				details: None,
+			}),
 		}
 	}
 }
@@ -88,34 +88,48 @@ impl From<ParseError> for ServiceError {
 
 impl From<DBError> for ServiceError {
 	fn from(error: DBError) -> ServiceError {
-
 		// Right now we just care about UniqueViolation from diesel
 		// But this would be helpful to easily map errors as our app grows
 		match error {
 			DBError::DatabaseError(kind, info) => {
 				match kind {
 					DatabaseErrorKind::UniqueViolation => {
-						let description = format!("{} {} {}", &info.message(), &info.details().unwrap_or_default(), &info.hint().unwrap_or_default());
-						let field_name = info.constraint_name().unwrap_or_default().split('_').last().unwrap_or_default();
+						let description = format!(
+							"{} {} {}",
+							&info.message(),
+							&info.details().unwrap_or_default(),
+							&info.hint().unwrap_or_default()
+						);
+						let field_name = info
+							.constraint_name()
+							.unwrap_or_default()
+							.split('_')
+							.last()
+							.unwrap_or_default();
 						return ServiceError::Forbidden(ForbiddenStruct {
-								error_type: ForbiddenType::UniqueViolation,
-								description: Some(description),
-								details: Some(ForbiddenReference {
-									table_name: String::from(info.table_name().unwrap_or_default()), 
-									field_name: Some(String::from(field_name)), 
-								}),
-							});
+							error_type: ForbiddenType::UniqueViolation,
+							description: Some(description),
+							details: Some(ForbiddenReference {
+								table_name: String::from(info.table_name().unwrap_or_default()),
+								field_name: Some(String::from(field_name)),
+							}),
+						});
 					}
 
 					DatabaseErrorKind::ForeignKeyViolation => {
-						let description = format!("{} {} {}", &info.message(), &info.details().unwrap_or_default(), &info.hint().unwrap_or_default());
+						let description = format!(
+							"{} {} {}",
+							&info.message(),
+							&info.details().unwrap_or_default(),
+							&info.hint().unwrap_or_default()
+						);
 
 						return ServiceError::Forbidden(ForbiddenStruct {
 							error_type: ForbiddenType::ForeignKeyViolation,
 							description: Some(description),
 							details: Some(ForbiddenReference {
-								table_name: String::from(info.table_name().unwrap_or_default()), 
-								field_name: None, 
+								table_name: String::from(info.table_name().unwrap_or_default()),
+								field_name: None,
 							}),
 						});
 					}
@@ -130,7 +144,7 @@ impl From<DBError> for ServiceError {
 			DBError::NotFound => {
 				debug!("Not found.");
 				ServiceError::Gone
-			}			 
+			}
 			error => {
 				error!("Database query (DIESEL) failed: {:#?}", error);
 				ServiceError::InternalServerError
