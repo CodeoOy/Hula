@@ -13,7 +13,7 @@
 			<h2>Projects</h2>
 			<div>
 				<AutoComplete
-					v-if="this.$store.state.projects.length" 
+					v-if="this.$store.state.projects" 
 					:suggestions="this.$store.state.projects" 
 					:selection.sync="projectName" 
 					:placeholder="'filter projects'"

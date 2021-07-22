@@ -87,11 +87,13 @@ const store = createStore({
 			.then((response) => response.json())
 			.catch((errors) => {
 				console.log(errors);
+				console.log("Projects set to empty")
 				state.projects = {}
 				projectsExist = false
 			})
 			.then(response => {
 				if (projectsExist === true) {
+					console.log(state.projects)
 					state.projects = response
 					state.projects.forEach(function (project) {
 						fetch(`/api/projectneeds/${project.id}`, {

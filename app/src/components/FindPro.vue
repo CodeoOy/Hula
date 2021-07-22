@@ -2,7 +2,7 @@
 	<div>
 		<h2 v-if="queryData.projectname.length">{{ queryData.projectname }}</h2>
 		<AutoComplete 
-			v-if="this.$store.state.projects.length" 
+			v-if="this.$store.state.projects" 
 			:suggestions="this.$store.state.projects"
 			:placeholder="'Start typing the name of project..'" 
 			:dropdown="true"

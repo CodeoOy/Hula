@@ -63,7 +63,7 @@ export default {
 			},
 			queryData: {
 				id: '83d7a553-2e53-47cc-8c16-a8a10c0cadd0', // TODO: This is here only to satisfy UserSkill struct. Remove somehow.
-				user_id: this.$store.state.loggeduser.id,
+				user_id: this.userID,
 				skill_id: '',
 				skillscopelevel_id: '',
 				years: Number,
@@ -72,6 +72,11 @@ export default {
 			availableSkills: {},
 			skillLevels: [],
 		}
+	},
+	props: {
+		url: '',
+		method: '',
+		userID: '',
 	},
 	components: {
 		'VForm': Form,
@@ -83,15 +88,15 @@ export default {
 			return value ? true : 'This field is required';
 		},
 		addExistingSkill() {
-			fetch(`/api/userskills/${this.$store.state.loggeduser.id}`, {
-				method: 'POST',
+			fetch(this.url, {
+				method: this.method,
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
 				body: JSON.stringify(this.queryData)
 			})
 			.then(response => {
 				if (response.status >= 200 && response.status <= 299) {
-					this.$store.dispatch('setUser', this.$store.state.loggeduser.id)
+					this.$store.dispatch('setUser', this.userID)
 					this.$emit('formSent')
 				} else {
 					this.$store.commit('errorHandling', response)
@@ -141,7 +146,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.user = this.$store.state.loggeduser
+		this.user = this.userID
 		this.getAllSkills()
 		this.getAllLevels()
 	}

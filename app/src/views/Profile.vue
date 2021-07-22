@@ -1,7 +1,13 @@
 <template>
 	<div class="container mt-4">
 		<VModal :modalTitle="formTitle" :modalID="'Profile'">
-			<FormAddSkill v-if="formTitle == 'Add Skill'"/>
+			<component 
+				:is='modalComponent' 
+				:url="url"
+				:method="method"
+				:userID="user.id"
+				v-on:form-sent="hideModalUpdate"
+			/>
 		</VModal>
 		<div class="row gx-4">
 			<div class="col-md-4">
@@ -35,11 +41,21 @@
 							<tr v-for="skill in user.skills" :key="skill.id">
 								<td>{{ skill.skill_label }}</td>
 								<td>{{ skill.years }}</td>
-								<td><a href="#" v-on:click.prevent="this.deleteSkill(skill.id)">Delete</a></td>
+								<td><a
+									href="#"
+									data-bs-toggle="modal"
+									data-bs-target="#hulaModalProfile" 
+									v-on:click="formTitle = `Delete ${skill.skill_label}?`, chosenForm = 'Delete', url = `/api/userskills/${skill.id}`, method = 'DELETE'"
+								><i class="bi-trash-fill me-2"></i></a>
+								</td>
 							</tr>
 						</tbody>
 					</table>
-					<p><a href="#" v-on:click="formTitle = 'Add Skill'" data-bs-toggle="modal" data-bs-target="#hulaModalProfile">Add skill</a></p>
+					<p><a href="#" 
+						v-on:click="formTitle = 'Add Skill', chosenForm = 'Skill', url = `/api/userskills/${user.id}`, method = 'POST'" 
+						data-bs-toggle="modal" 
+						data-bs-target="#hulaModalProfile"
+					>Add skill</a></p>
 				</div>
 			</div>
 		</div>
@@ -48,20 +64,26 @@
 
 <script>
 	import VModal from '../components/VModal.vue'
+	import { Modal } from 'bootstrap'
 	import FormAddSkill from '../forms/FormAddSkill.vue'
 	import FormUserBasicInfo from '../forms/FormUserBasicInfo.vue'
+	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	export default {
 		name: 'Profile',
 		data() {
 			return {
 				formTitle: '',
+				chosenForm: '',
 				editingInfo: false,
-				user: this.$store.state.loggeduser
+				user: this.$store.state.loggeduser,
+				url: '',
+				method: '',
 			}
 		},
 		components: {
 			FormUserBasicInfo,
 			FormAddSkill,
+			FormConfirmAction,
 			VModal,
 		},
 		methods: {
@@ -72,6 +94,11 @@
 					credentials: 'include',
 					body: JSON.stringify(this.user)
 				})
+			},
+			hideModalUpdate() {
+				this.checkProfile(this.$route.params.id)
+				let modal = Modal.getInstance(document.querySelector('#hulaModalProfile'))
+				modal.hide()
 			},
 			deleteSkill(id) {
 				fetch(`/api/userskills/${id}`, {
@@ -90,6 +117,15 @@
 					this.user = response;
 				}) 
 			}
+		},
+		computed: {
+			modalComponent() {
+				const components = {
+					Delete: FormConfirmAction,
+					Skill: FormAddSkill,
+				}
+				return components[this.chosenForm]
+			},
 		},
 		mounted() {
 			if (this.$route.params.id != this.$store.state.loggeduser.id) {
