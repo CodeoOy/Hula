@@ -38,7 +38,7 @@
 						<a href="/app/admin" class="dropdown-item">Admin</a>
 					</li>
 					<li>
-						<a href="/app/profile" class="dropdown-item">Profile</a>
+						<a :href="`/app/user/${loggedUser.id}`" class="dropdown-item">Profile</a>
 					</li>
 					<li>
 						<a href="#" v-on:click="logOut()" class="dropdown-item">Log out</a>

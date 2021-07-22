@@ -42,21 +42,26 @@ pub fn add_skill(
 	Ok(user_skill)
 }
 
-pub fn update_year(
+pub fn update_skill(
 	uuid_data: uuid::Uuid,
 	q_user_id: uuid::Uuid,
+	q_skillscopelevel_id: uuid::Uuid,
 	q_years: Option<f64>,
 	q_email: String,
 	pool: &web::Data<Pool>,
 ) -> Result<UserSkill, Error> {
 	use crate::schema::userskills::dsl::*;
-	use crate::schema::userskills::dsl::{skill_id, updated_by, years};
+	use crate::schema::userskills::dsl::{skill_id, skillscopelevel_id, updated_by, years};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let user_skill = diesel::update(userskills)
 		.filter(skill_id.eq(uuid_data))
 		.filter(user_id.eq(q_user_id))
-		.set((years.eq(q_years), updated_by.eq(q_email)))
+		.set((
+			years.eq(q_years),
+			skillscopelevel_id.eq(q_skillscopelevel_id),
+			updated_by.eq(q_email),
+		))
 		.get_result::<UserSkill>(conn)?;
 
 	Ok(user_skill)

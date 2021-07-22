@@ -262,7 +262,7 @@ pub async fn delete_user(
 	}
 }
 
-pub async fn update_year(
+pub async fn update_skill(
 	uuid_data: web::Path<String>,
 	payload: web::Json<UserSkillData>,
 	pool: web::Data<Pool>,
@@ -282,7 +282,14 @@ pub async fn update_year(
 	}
 
 	let res = web::block(move || {
-		userskills_repository::update_year(id, payload.user_id.clone(), payload.years, logged_user.email, &pool)
+		userskills_repository::update_skill(
+			id,
+			payload.user_id.clone(),
+			payload.skillscopelevel_id,
+			payload.years,
+			logged_user.email,
+			&pool,
+		)
 	})
 	.await;
 	match res {
