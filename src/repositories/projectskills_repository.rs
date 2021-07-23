@@ -1,19 +1,17 @@
 use actix_web::web;
 use diesel::result::Error;
 use diesel::{prelude::*, PgConnection};
+use crate::models::users::Pool;
 
-use crate::models::projectskills::{Pool, Projectskills};
+use crate::models::projectskills::ProjectSkill;
+use crate::models::projects::Project;
 
-pub fn query_by_params(q_project_id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Vec<Projectskills>, Error> {
-	use crate::schema::projectskills::dsl::*;
-	use crate::schema::projectskills::dsl::{pn_id, project_id, projectskills};
+pub fn find_by_projects(projects: &Vec<Project>, pool: &web::Data<Pool>) -> Result<Vec<Vec<ProjectSkill>>, Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let mut items = projectskills
-		.order((project_id.asc(), pn_id.asc()))
-		.load::<Projectskills>(conn)?;
-
-	items.retain(|x| x.project_id == q_project_id);
-
-	Ok(items)
+	let posts = ProjectSkill::belonging_to(projects)
+		.load::<ProjectSkill>(conn)?
+		.grouped_by(&projects);
+	
+	Ok(posts)
 }

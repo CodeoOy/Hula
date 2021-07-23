@@ -59,7 +59,7 @@ pub struct MatchDTO {
 
 pub async fn get_all_projects(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting all projects: logged_user={:#?}", &_logged_user);
-	let res = web::block(move || projects_repository::query_all_projects(&pool)).await;
+	let res = web::block(move || query_projects_dto(true, true, &pool)).await;
 
 	match res {
 		Ok(projects) => {
@@ -451,61 +451,47 @@ pub async fn delete_projectneedskill(
 	}
 }
 
-pub async fn get_project_table(
-	uuid_data: web::Path<String>,
-	pool: web::Data<Pool>,
-	_logged_user: LoggedUser,
-) -> Result<HttpResponse, ServiceError> {
-	trace!(
-		"Getting a project by uuid: uuid_data = {:#?} logged_user = {:#?}",
-		&uuid_data,
-		&_logged_user
-	);
-	let res = web::block(move || project_table(uuid_data.into_inner(), pool)).await;
+fn query_projects_dto(include_skills: bool, include_matches: bool, pool: &web::Data<Pool>) -> Result<Vec<ProjectDTO>, ServiceError> {
+	use crate::models::projectmatches::ProjectMatch;
+	use crate::models::projectskills::ProjectSkill;
 
-	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
-		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error),
-			BlockingError::Canceled => Err(ServiceError::InternalServerError),
-		},
+	let projects = projects_repository::query_all_projects(&pool)?;
+	let mut skills: Vec<Vec<ProjectSkill>> = vec![];
+	let mut matches: Vec<Vec<ProjectMatch>> = vec![];
+
+	if include_skills {
+		skills = projectskills_repository::find_by_projects(&projects, &pool)?;
 	}
-}
 
-fn project_table(uuid_data: String, pool: web::Data<Pool>) -> Result<ProjectDTO, ServiceError> {
-	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-	let project = projects_repository::query_one(uuid_query, &pool)?;
-	let projects_skills = projectskills_repository::query_by_params(uuid_query, &pool)?;
-	let projects_matches = projectmatches_repository::query_by_params(uuid_query, &pool)?;
-	let mut skills_dto: Vec<SkillDTO> = Vec::new();
-	let mut matches_dto: Vec<MatchDTO> = Vec::new();
+	if include_matches {
+		matches = projectmatches_repository::find_by_projects(&projects, &pool)?;
+	}
 
-	for projects_skill in projects_skills.iter() {
-		let skilldata = SkillDTO {
-			skill_label: projects_skill.skill_label.clone(),
-			min_years: projects_skill.required_minyears,
-			max_years: projects_skill.required_maxyears,
+	let mut dtos: Vec<ProjectDTO> = vec![];
+
+	for idx in 0..projects.len() {
+		let project = &projects[idx];
+
+		let mut skills_vec: Vec<SkillDTO> = vec![];
+		for s in &skills[idx] {
+			let ss = SkillDTO { skill_label: s.skill_label.clone(), min_years: s.required_minyears, max_years: s.required_maxyears };
+			skills_vec.push(ss);
+		}
+
+		let mut matches_vec: Vec<MatchDTO> = vec![];
+		for s in &matches[idx] {
+			let ss2 = MatchDTO { user_first_name: s.user_first_name.clone(), user_last_name: s.user_last_name.clone() };
+			matches_vec.push(ss2);
+		}
+
+		let project_dto = ProjectDTO {
+			project_id: project.id.clone(),
+			name: project.name.clone(),
+			skills: skills_vec,
+			matches: matches_vec,
 		};
-		skills_dto.push(skilldata);
+		dtos.push(project_dto);
 	}
 
-	for projects_match in projects_matches.iter() {
-		let matchdata = MatchDTO {
-			user_first_name: projects_match.user_first_name.clone(),
-			user_last_name: projects_match.user_last_name.clone(),
-		};
-		matches_dto.push(matchdata);
-	}
-
-	let data = ProjectDTO {
-		project_id: project.id,
-		name: project.name,
-		skills: skills_dto,
-		matches: matches_dto,
-	};
-	if data.project_id.is_nil() == false {
-		return Ok(data.into());
-	}
-
-	Err(ServiceError::Empty)
+	Ok(dtos)
 }
