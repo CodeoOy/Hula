@@ -1,7 +1,7 @@
 <template>
 	<v-form v-on:submit="createUpdateUserSkill">
 		{{ chosenSkill }}
-		<div class="mb-2" v-if="!formData.skill_id.length">
+		<div class="mb-2">
 			<label class="form-label">Skill</label>
 			<error-message name="skill" class="error"></error-message>
 			<v-field
