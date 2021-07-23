@@ -166,6 +166,35 @@ table! {
 	}
 }
 
+table! {
+	projectmatches(project_id) {
+		project_id -> Uuid,
+		skill_label -> Varchar,
+		pn_id -> Uuid,
+		required_index -> Integer,
+		required_minyears -> Nullable<Double>,
+		required_maxyears -> Nullable<Double>,
+		user_id -> Uuid,
+		user_first_name -> Varchar,
+		user_last_name -> Varchar,
+		user_is_hidden -> Bool,
+		user_load -> Int4,
+		user_index -> Int4,
+		user_years -> Nullable<Double>,
+	}
+}
+
+table! {
+	projectskills(project_id){
+		project_id -> Uuid,
+		skill_label -> Varchar,
+		pn_id -> Uuid,
+		required_index -> Integer,
+		required_minyears -> Nullable<Double>,
+		required_maxyears -> Nullable<Double>,
+	}
+}
+
 joinable!(projectneeds -> projects (project_id));
 joinable!(projectneedskills -> projectneeds (projectneed_id));
 joinable!(projectneedskills -> skills (skill_id));
