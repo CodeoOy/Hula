@@ -34,6 +34,7 @@
 						<thead>
 							<tr>
 								<th scope="col">Skill</th>
+								<th scope="col">Level</th>
 								<th scope="col">Years</th>
 								<th scope="col">Actions</th>
 							</tr>
@@ -41,26 +42,27 @@
 						<tbody>
 							<tr v-for="skill in user.skills" :key="skill.id">
 								<td>{{ skill.skill_label }}</td>
+								<td>{{ skill.skillscopelevel_id }}</td>
 								<td>{{ skill.years }}</td>
 								<td>
 									<a 
 										href="#"
 										data-bs-toggle="modal"
 										data-bs-target="#hulaModalProfile"
-										v-on:click="formTitle = skill.skill_label, chosenForm = 'Skill', chosenSkill = skill, url=`/api/userskills/${user.id}`, method='PUT'"
+										v-on:click="formTitle = skill.skill_label, chosenForm = 'Skill', chosenSkill = skill, url=`/api/userskills/${skill.id}`, method='PUT'"
 									><i class="bi-pencil-fill me-2"></i></a>
 									<a
 										href="#"
 										data-bs-toggle="modal"
 										data-bs-target="#hulaModalProfile" 
-										v-on:click="formTitle = `Delete ${skill.skill_label}?`, chosenForm = 'Delete', url = `/api/userskills/${user.id}`, method = 'DELETE'"
+										v-on:click="formTitle = `Delete ${skill.skill_label}?`, chosenForm = 'Delete', url = `/api/userskills/${skill.id}`, method = 'DELETE'"
 									><i class="bi-trash-fill me-2"></i></a>
 								</td>
 							</tr>
 						</tbody>
 					</table>
 					<p><a href="#" 
-						v-on:click="formTitle = 'Add Skill', chosenForm = 'Skill', url = `/api/userskills/${user.id}`, method = 'POST'" 
+						v-on:click="formTitle = 'Add Skill', chosenSkill = {}, chosenForm = 'Skill', url = `/api/userskills/${user.id}`, method = 'POST'" 
 						data-bs-toggle="modal" 
 						data-bs-target="#hulaModalProfile"
 					>Add skill</a></p>

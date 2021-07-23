@@ -267,27 +267,27 @@ pub async fn delete_user(
 }
 
 pub async fn update_skill(
-	uuid_data: web::Path<String>,
+	id: web::Path<String>,
 	payload: web::Json<UserSkillData>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!(
-		"Updating user skills: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}",
-		&uuid_data,
+		"Updating user skills: id = {:#?} payload = {:#?} logged_user = {:#?}",
+		&id,
 		&payload,
 		&logged_user
 	);
 
-	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+	let skill_id = uuid::Uuid::parse_str(&id.into_inner())?;
 
-	if logged_user.isadmin == false && logged_user.uid != id {
+	if logged_user.isadmin == false && logged_user.uid != payload.user_id {
 		return Err(ServiceError::AdminRequired);
 	}
 
 	let res = web::block(move || {
 		userskills_repository::update_skill(
-			id,
+			skill_id,
 			payload.user_id.clone(),
 			payload.skillscopelevel_id,
 			payload.years,

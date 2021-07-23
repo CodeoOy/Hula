@@ -1,7 +1,7 @@
 <template>
-	<v-form v-on:submit="addExistingSkill">
+	<v-form v-on:submit="createUpdateUserSkill">
 		{{ chosenSkill }}
-		<div class="mb-2">
+		<div class="mb-2" v-if="!formData.skill_id.length">
 			<label class="form-label">Skill</label>
 			<error-message name="skill" class="error"></error-message>
 			<v-field
@@ -10,7 +10,6 @@
 				as="select"
 				name="skill"
 				class="form-select"
-				id="AddExistingSkill"
 				aria-label="Example select with button addon" 
 			>
 				<option v-for="avskill in availableSkills" :key="avskill" :value="avskill.id">
@@ -27,7 +26,6 @@
 				as="select"
 				name="level"
 				class="form-select"
-				id="AddExistingSkill"
 				aria-label="Example select with button addon"
 			>
 				<option v-for="lvl in filterLevels" :key="lvl" :value="lvl.id">
@@ -85,7 +83,7 @@ export default {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
-		addExistingSkill() {
+		createUpdateUserSkill() {
 			fetch(this.url, {
 				method: this.method,
 				headers: {"Content-Type": "application/json"},
@@ -129,8 +127,10 @@ export default {
 			})
 		},
 		getSkillScope(needle) {
-			var scope = this.availableSkills.find(x => x.id == needle).skillscope_id;
-			this.chosenSkill.skillscope_id = scope;
+			if (needle) {
+				var scope = this.availableSkills.find(x => x.id == needle).skillscope_id;
+				this.chosenSkill.skillscope_id = scope;
+			}
 		}
 	},
 	watch: {
