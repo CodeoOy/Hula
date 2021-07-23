@@ -18,7 +18,7 @@ pub struct MatchCandidate {
 	pub required_maxyears: Option<f64>,
 	pub firstname: String,
 	pub lastname: String,
-	pub available: bool,
+	pub is_hidden: bool,
 	pub user_level: String,
 	pub user_index: i32,
 	pub user_years: Option<f64>,

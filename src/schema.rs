@@ -37,7 +37,7 @@ table! {
 table! {
 	projects (id) {
 		id -> Uuid,
-		available -> Bool,
+		is_hidden-> Bool,
 		name -> Varchar,
 		updated_by -> Varchar,
 	}
@@ -115,8 +115,7 @@ table! {
 	users (id) {
 		id -> Uuid,
 		isadmin -> Bool,
-		ispro -> Bool,
-		available -> Bool,
+		is_hidden -> Bool,
 		email -> Varchar,
 		firstname -> Varchar,
 		lastname -> Varchar,
@@ -132,7 +131,7 @@ table! {
 		id -> Uuid,
 		user_id -> Uuid,
 		skill_id -> Uuid,
-		skillscopelevel_id -> Uuid, // TODO: Check if this needs to be nullable
+		skillscopelevel_id -> Uuid,
 		years -> Nullable<Double>,
 		updated_by -> Varchar,
 	}
@@ -150,7 +149,7 @@ table! {
 		required_maxyears -> Nullable<Double>,
 		firstname -> Varchar,
 		lastname -> Varchar,
-		available -> Bool,
+		is_hidden -> Bool,
 		user_level -> Varchar,
 		user_index -> Integer,
 		user_years -> Nullable<Double>,
