@@ -25,7 +25,7 @@
 					<h2>Professional profile</h2>
 					<h3>Basic info</h3>
 					<a href="#" v-on:click="editingInfo = true">Edit your info</a>
-					<p>Available: {{ user.available }}</p>
+					<p>Available: {{ user.is_hidden }}</p>
 					<transition name="fadeHeight">
 						<FormUserBasicInfo :user='user' v-if="editingInfo == true" v-on:formsent="editingInfo = false, updateUser()"/>
 					</transition>

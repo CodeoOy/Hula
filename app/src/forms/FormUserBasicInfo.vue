@@ -1,8 +1,8 @@
 <template>
 	<v-form v-on:submit="onSubmit">
 		<div class="mb-2 form-check">
-			<label class="form-label">Available for work</label>
-			<input type="checkbox" class="form-check-input" name="available" v-model="user.available" />
+			<label class="form-label">Hide me</label>
+			<input type="checkbox" class="form-check-input" name="is_hidden" v-model="user.is_hidden" />
 		</div>
 		<div class="mb-2">
 			<label class="form-label">First name</label>

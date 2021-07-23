@@ -16,7 +16,7 @@
 						<th scope="row">{{ index + 1 }}</th>
 						<td>{{ user.firstname }} {{ user.lastname }}</td>
 						<td>{{ user.email }}</td>
-						<td>{{ user.available }}</td>
+						<td>{{ user.is_hidden }}</td>
 						<!--<a href="#" v-on:click="getUserData(user.uid)">{{user.firstname}} {{ user.lastname }}</a>-->
 					</tr>
 				</tbody>

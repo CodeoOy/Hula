@@ -13,10 +13,10 @@
 				aria-label="Project name"
 			></v-field>
 		</div>
-		<div class="mb-2 form-check" v-if="'available' in chosenProject">
+		<div class="mb-2 form-check" v-if="'is_hidden' in chosenProject">
 			<label class="form-label">Hidden</label>
 			<error-message name="category" class="error"></error-message>
-			<input type="checkbox" class="form-check-input" name="available" v-model="formData.available" />
+			<input type="checkbox" class="form-check-input" name="is_hidden" v-model="formData.is_hidden" />
 		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
 	</v-form> 
@@ -30,7 +30,7 @@ export default {
 		return {
 			formData: {
 				name: this.chosenProject.name || '',
-				available: this.chosenProject.available || false, // TODO: Does this work in both edit and new?
+				is_hidden: this.chosenProject.is_hidden || false, // TODO: Does this work in both edit and new?
 			},
 		}
 	},

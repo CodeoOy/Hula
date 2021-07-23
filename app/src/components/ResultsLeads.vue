@@ -14,7 +14,7 @@
 					<tr v-for="(lead, index) in leads" :key="lead.pid">
 						<th scope="row">{{ index + 1 }}</th>
 						<td>{{ lead.name }}</td>
-						<td>{{ lead.available }}</td>
+						<td>{{ lead.is_hidden }}</td>
 					</tr>
 				</tbody>
 			</table>
