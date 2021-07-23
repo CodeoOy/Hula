@@ -1,7 +1,9 @@
 -- Your SQL goes here
+DROP VIEW projectmatches;
+DROP VIEW projectskills;
 
 -- projectmatches view
-create or replace view projectmatches as
+create view projectmatches as
   select 
     row_number() OVER ()::integer AS idx,
     p.id as project_id,
@@ -13,7 +15,7 @@ create or replace view projectmatches as
     u.id as user_id,
     u.firstname as user_first_name,
     u.lastname as user_last_name,
-    u.available as user_available,
+    u.is_hidden as user_is_hidden,
     "hula_get_user_reservation"(u.id, pn.begin_time, pn.end_time) as user_load,
     up.index as user_index,
     uk.years as user_years
