@@ -42,7 +42,7 @@
 					<tr v-for="user in filteredUsers" :key="user.id">
 						<td>
 							<span>
-								<VAvatar :user="user" />
+								<VAvatar :user="user"/>
 								<router-link :to="{ name: 'page-profile', params: { id: user.id}}">
 									{{ user.firstname }} {{ user.lastname }}
 								</router-link>

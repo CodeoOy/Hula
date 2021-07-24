@@ -48,15 +48,17 @@
 					}
 					fetch('/api/invitations', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
 					.then(response => { 
-						return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+						return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
 					})
-					.then((response) => {    
-						localStorage.setItem('user', JSON.stringify(response));
-						this.$flashMessage.show({
-							type: 'success',
-							title: 'Invitation sent',
-							time: 1000
-						});
+					.then((response) => {
+						if (response.ok) {								
+							localStorage.setItem('user', JSON.stringify(response));
+							this.$flashMessage.show({
+								type: 'success',
+								title: 'Invitation sent',
+								time: 1000
+							});
+						}
 					})
 					.catch((errors) => {
 						console.log("Error data: " + errors);

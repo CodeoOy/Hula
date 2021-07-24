@@ -35,12 +35,13 @@ export default {
             var g = parseInt(color.substr(4, 2), 16);
             var b = parseInt(color.substr(6, 2), 16);
             var brightness = (r * 299 + g * 587 + b * 114) / 1000;
-            return brightness < 128 ? '#fff' : '#000';
+            return brightness < 128 ? '#97ffcb' : '#210e26';
         },
         color() {
             var colorhex = this.user.id.substring(0,6)
             return '#' + colorhex
         }
+        // TODO: Tint the hue towards the theme colors
     }
 };
 </script>
