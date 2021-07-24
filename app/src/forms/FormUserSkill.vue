@@ -1,6 +1,5 @@
 <template>
-	<v-form v-on:submit="createUpdateUserSkill">
-		{{ chosenSkill }}
+	<v-form v-on:submit="createUpdateUserSkill" v-if="availableSkills.length && skillLevels.length">
 		<div class="mb-2">
 			<label class="form-label">Skill</label>
 			<error-message name="skill" class="error"></error-message>
