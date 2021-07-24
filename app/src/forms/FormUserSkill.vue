@@ -12,6 +12,7 @@
 				class="form-select"
 				aria-label="Example select with button addon" 
 			>
+				<option :value="null" disabled selected>Pick a skill</option>
 				<option v-for="avskill in availableSkills" :key="avskill" :value="avskill.id">
 					{{ avskill.label }}
 				</option>
