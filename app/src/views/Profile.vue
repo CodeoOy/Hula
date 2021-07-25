@@ -6,6 +6,7 @@
 				:url="url"
 				:method="method"
 				:chosenSkill="chosenSkill"
+				:chosenReservation="chosenReservation"
 				:userID="user.id"
 				v-on:form-sent="hideModalUpdate"
 			/>
@@ -97,13 +98,13 @@
 										href="#"
 										data-bs-toggle="modal"
 										data-bs-target="#hulaModalProfile"
-										v-on:click="formTitle = reservation.reservation_label, chosenForm = 'reservation', chosenreservation = reservation, url=`/api/userreservations/${reservation.id}`, method='PUT'"
+										v-on:click="formTitle = reservation.reservation_label, chosenForm = 'reservation', chosenReservation = reservation, url=`/api/userreservations/${reservation.id}`, method='PUT'"
 									><i class="bi-pencil-fill me-2"></i></a>
 									<a
 										href="#"
 										data-bs-toggle="modal"
 										data-bs-target="#hulaModalProfile" 
-										v-on:click="formTitle = `Delete ${reservation.reservation_label}?`, chosenreservation = reservation, chosenForm = 'Delete', url = `/api/userreservations/${reservation.id}`, method = 'DELETE'"
+										v-on:click="formTitle = `Delete ${reservation.reservation_label}?`, chosenReservation = reservation, chosenForm = 'Delete', url = `/api/userreservations/${reservation.id}`, method = 'DELETE'"
 									><i class="bi-trash-fill me-2"></i></a>
 								</td>
 							</tr>
@@ -130,7 +131,7 @@
 				formTitle: '',
 				chosenForm: '',
 				chosenSkill: {},
-				chosenRservation: {},
+				chosenReservation: {},
 				editingInfo: false,
 				user: this.$store.state.loggeduser,
 				url: '',
@@ -146,7 +147,7 @@
 			VModal,
 		},
 		methods: {
-			updateUser() { // This is not working. Make the user update happen in some other way.
+			updateUser() {
 				fetch(`/api/users/${this.user.id}`, {
 					method: 'PUT',
 					headers: {"Content-Type": "application/json"},

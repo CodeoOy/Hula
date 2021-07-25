@@ -1,7 +1,5 @@
 <template>
 	<v-form v-on:submit="createUpdateUserReservation">
-		<h2 v-if="'id' in this.chosenReservation">{{ chosenReservation.id }}</h2>
-		<h2 v-else>New reservation</h2>
 		<div class="mb-2">
 			<label class="form-label">When does this reservation start?</label>
 			{{ formData.begin_time }}<br />
