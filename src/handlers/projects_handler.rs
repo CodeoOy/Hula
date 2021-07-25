@@ -7,7 +7,7 @@ use crate::models::projects::Pool;
 use crate::models::users::LoggedUser;
 use crate::repositories::*;
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Debug)]
 pub struct QueryData {
 	#[serde(default)] // default = 0
 	pub is_include_skills_and_matches: bool,

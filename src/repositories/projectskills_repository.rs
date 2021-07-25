@@ -11,10 +11,10 @@ pub fn find_by_projects(projects: &Vec<Project>, pool: &web::Data<Pool>) -> Resu
 
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let posts = ProjectSkill::belonging_to(projects)
+	let skills = ProjectSkill::belonging_to(projects)
 		.order(skill_label.asc())
 		.load::<ProjectSkill>(conn)?
 		.grouped_by(&projects);
 
-	Ok(posts)
+	Ok(skills)
 }
