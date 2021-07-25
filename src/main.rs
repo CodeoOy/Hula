@@ -116,6 +116,12 @@ async fn main() -> std::io::Result<()> {
 							.route(web::delete().to(handlers::users_handler::delete_userskill)),
 					)
 					.service(
+						web::resource("/userreservations/{id}")
+							.route(web::post().to(handlers::users_handler::add_reservation))
+							.route(web::put().to(handlers::users_handler::update_reservation))
+							.route(web::delete().to(handlers::users_handler::delete_reservation)),
+					)
+					.service(
 						web::resource("/skills")
 							.route(web::post().to(handlers::skills_handler::create_skill))
 							.route(web::get().to(handlers::skills_handler::get_all_skills)),

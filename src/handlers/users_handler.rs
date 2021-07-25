@@ -23,6 +23,15 @@ pub struct UserSkillData {
 }
 
 #[derive(Deserialize, Debug)]
+pub struct UserReservationData {
+	pub description: String,
+	pub begin_time: Option<chrono::NaiveDate>,
+	pub end_time: Option<chrono::NaiveDate>,
+	pub percentage: Option<i32>,
+	pub user_id: uuid::Uuid,
+}
+
+#[derive(Deserialize, Debug)]
 pub struct FavoriteData {
 	pub email: String,
 	pub project_id: uuid::Uuid,
@@ -173,6 +182,153 @@ pub async fn delete_userskill(
 	}
 }
 
+pub async fn update_skill(
+	id: web::Path<String>,
+	payload: web::Json<UserSkillData>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!(
+		"Updating user skills: id = {:#?} payload = {:#?} logged_user = {:#?}",
+		&id,
+		&payload,
+		&logged_user
+	);
+
+	let skill_id = uuid::Uuid::parse_str(&id.into_inner())?;
+
+	if logged_user.isadmin == false && logged_user.uid != payload.user_id {
+		return Err(ServiceError::AdminRequired);
+	}
+
+	let res = web::block(move || {
+		userskills_repository::update_skill(
+			skill_id,
+			payload.user_id.clone(),
+			payload.skillscopelevel_id,
+			payload.years,
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
+	match res {
+		Ok(userskill) => Ok(HttpResponse::Ok().json(&userskill)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+pub async fn add_reservation(
+	uuid_data: web::Path<String>,
+	payload: web::Json<UserReservationData>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!(
+		"Adding a user reservation: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&payload,
+		&logged_user
+	);
+
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	// todo: create a macro to simplify this
+	if logged_user.isadmin == false && logged_user.uid != id {
+		return Err(ServiceError::AdminRequired);
+	}
+
+	let res = web::block(move || {
+		userreservations_repository::add_skill(
+			id,
+			payload.description.clone(),
+			payload.begin_time,
+			payload.end_time,
+			payload.percentage,
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
+
+	match res {
+		Ok(skill) => Ok(HttpResponse::Ok().json(&skill)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+pub async fn delete_reservation(
+	uuid_data: web::Path<String>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!(
+		"Deleting a user reservation: uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&logged_user
+	);
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	if logged_user.isadmin == false && logged_user.uid != id {
+		return Err(ServiceError::AdminRequired);
+	}
+
+	let res = web::block(move || userreservations_repository::delete_reservation(id, &pool)).await;
+	match res {
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+pub async fn update_reservation(
+	id: web::Path<String>,
+	payload: web::Json<UserReservationData>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!(
+		"Updating user skills: id = {:#?} payload = {:#?} logged_user = {:#?}",
+		&id,
+		&payload,
+		&logged_user
+	);
+
+	let reservation_id = uuid::Uuid::parse_str(&id.into_inner())?;
+
+	if logged_user.isadmin == false && logged_user.uid != payload.user_id {
+		return Err(ServiceError::AdminRequired);
+	}
+
+	let res = web::block(move || {
+		userreservations_repository::update_reservation(
+			reservation_id,
+			payload.description.clone(),
+			payload.begin_time,
+			payload.end_time,
+			payload.percentage,
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
+	match res {
+		Ok(userreservation) => Ok(HttpResponse::Ok().json(&userreservation)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
 pub async fn get_by_uuid(
 	uuid_data: web::Path<String>,
 	pool: web::Data<Pool>,
@@ -255,45 +411,6 @@ pub async fn delete_user(
 	let res = web::block(move || users_repository::delete_user(id, &pool)).await;
 	match res {
 		Ok(_) => Ok(HttpResponse::Ok().finish()),
-		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error.into()),
-			BlockingError::Canceled => Err(ServiceError::InternalServerError),
-		},
-	}
-}
-
-pub async fn update_skill(
-	id: web::Path<String>,
-	payload: web::Json<UserSkillData>,
-	pool: web::Data<Pool>,
-	logged_user: LoggedUser,
-) -> Result<HttpResponse, ServiceError> {
-	trace!(
-		"Updating user skills: id = {:#?} payload = {:#?} logged_user = {:#?}",
-		&id,
-		&payload,
-		&logged_user
-	);
-
-	let skill_id = uuid::Uuid::parse_str(&id.into_inner())?;
-
-	if logged_user.isadmin == false && logged_user.uid != payload.user_id {
-		return Err(ServiceError::AdminRequired);
-	}
-
-	let res = web::block(move || {
-		userskills_repository::update_skill(
-			skill_id,
-			payload.user_id.clone(),
-			payload.skillscopelevel_id,
-			payload.years,
-			logged_user.email,
-			&pool,
-		)
-	})
-	.await;
-	match res {
-		Ok(userskill) => Ok(HttpResponse::Ok().json(&userskill)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),

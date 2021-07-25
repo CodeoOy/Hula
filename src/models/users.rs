@@ -40,6 +40,19 @@ pub struct UserSkill {
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
 #[belongs_to(User, foreign_key = "user_id")]
+#[table_name = "userreservations"]
+pub struct UserReservation {
+	pub id: uuid::Uuid,
+	pub user_id: uuid::Uuid,
+	pub description: String,
+	pub begin_time: Option<chrono::NaiveDate>,
+	pub end_time: Option<chrono::NaiveDate>,
+	pub percentage: Option<i32>,
+	pub updated_by: String,
+}
+
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
+#[belongs_to(User, foreign_key = "user_id")]
 #[table_name = "userfavorites"]
 pub struct UserFavorite {
 	pub id: uuid::Uuid,
