@@ -1,6 +1,6 @@
 <template>
 	<div class="container mt-4">
-		<VModal :modalTitle="formTitle" :modalID="'Profile'">
+		<VModal :modalTitle="formTitle" :modalID="'Profile'" v-on:updated-modal="chosenForm = '', chosenSkill = {}">
 			<component 
 				:is='modalComponent' 
 				:url="url"
@@ -25,7 +25,7 @@
 					<h2>Professional profile</h2>
 					<h3>Basic info</h3>
 					<a href="#" v-on:click="editingInfo = true">Edit your info</a>
-					<p>Available: {{ user.is_hidden }}</p>
+					<p>Hidden: {{ user.is_hidden }}</p>
 					<transition name="fadeHeight">
 						<FormUserBasicInfo :user='user' v-if="editingInfo == true" v-on:formsent="editingInfo = false, updateUser()"/>
 					</transition>

@@ -40,9 +40,14 @@
 				</thead>
 				<tbody>
 					<tr v-for="user in filteredUsers" :key="user.id">
-						<td><router-link
-							:to="{ name: 'page-profile', params: { id: user.id}}"
-						>{{ user.firstname }} {{ user.lastname }}</router-link></td>
+						<td>
+							<span>
+								<VAvatar :user="user"/>
+								<router-link :to="{ name: 'page-profile', params: { id: user.id}}">
+									{{ user.firstname }} {{ user.lastname }}
+								</router-link>
+							</span>
+						</td>
 						<td>{{ user.email }}</td>
 						<td class="hoverable-td">
 							<a
@@ -60,6 +65,7 @@
 </template>
 
 <script>
+	import VAvatar from '../components/VAvatar.vue'
 	import VModal from '../components/VModal.vue'
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	import AutoComplete from '../components/AutoComplete.vue'
@@ -80,6 +86,7 @@
 		},
 		components: {
 			VModal,
+			VAvatar,
 			FormConfirmAction,
 			AutoComplete,
 		},

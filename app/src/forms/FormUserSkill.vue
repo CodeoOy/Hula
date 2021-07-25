@@ -1,6 +1,5 @@
 <template>
-	<v-form v-on:submit="createUpdateUserSkill">
-		{{ chosenSkill }}
+	<v-form v-on:submit="createUpdateUserSkill" v-if="availableSkills.length && skillLevels.length">
 		<div class="mb-2">
 			<label class="form-label">Skill</label>
 			<error-message name="skill" class="error"></error-message>
@@ -12,6 +11,7 @@
 				class="form-select"
 				aria-label="Example select with button addon" 
 			>
+				<option :value="null" disabled selected>Pick a skill</option>
 				<option v-for="avskill in availableSkills" :key="avskill" :value="avskill.id">
 					{{ avskill.label }}
 				</option>
