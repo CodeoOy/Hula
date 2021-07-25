@@ -55,8 +55,8 @@
 							localStorage.setItem('user', JSON.stringify(response));
 							this.$flashMessage.show({
 								type: 'success',
-								title: 'Invitation sent',
-								time: 1000
+								title: 'Invitation sent. Check your email',
+								time: 5000
 							});
 						}
 					})
