@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
-#[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
+#[derive(Debug, Serialize, Deserialize, Queryable, Insertable, Identifiable)]
 #[table_name = "projects"]
 pub struct Project {
 	pub id: uuid::Uuid,
