@@ -69,6 +69,46 @@
 							</tr>
 						</tbody>
 					</table>
+					<div class="d-flex flex-row justify-content-between align-items-start">
+						<h3>Reservations</h3>
+						<button
+							class="btn btn-gradient"
+							v-on:click="formTitle = 'Add Reservation', chosenReservation = {}, chosenForm = 'Reservation', url = `/api/userreservations/${user.id}`, method = 'POST'" 
+							data-bs-toggle="modal" 
+							data-bs-target="#hulaModalProfile"
+						>Add reservation</button>
+					</div>
+					<table class="table table-dark table-striped text-light">
+						<thead>
+							<tr>
+								<th scope="col">Reservation id</th>
+								<th scope="col">From</th>
+								<th scope="col">To</th>
+								<th scope="col">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="reservation in user.reservations" :key="reservation.id">
+								<td>{{ reservation.id }}</td>
+								<td>{{ reservation.begin_time}}</td>
+								<td>{{ reservation.end_time }}</td>
+								<td>
+									<a 
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalProfile"
+										v-on:click="formTitle = reservation.reservation_label, chosenForm = 'reservation', chosenreservation = reservation, url=`/api/userreservations/${reservation.id}`, method='PUT'"
+									><i class="bi-pencil-fill me-2"></i></a>
+									<a
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalProfile" 
+										v-on:click="formTitle = `Delete ${reservation.reservation_label}?`, chosenreservation = reservation, chosenForm = 'Delete', url = `/api/userreservations/${reservation.id}`, method = 'DELETE'"
+									><i class="bi-trash-fill me-2"></i></a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -79,6 +119,7 @@
 	import VModal from '../components/VModal.vue'
 	import { Modal } from 'bootstrap'
 	import FormUserSkill from '../forms/FormUserSkill.vue'
+	import FormUserReservation from '../forms/FormUserReservation.vue'
 	import FormSkill from '../forms/FormSkill.vue'
 	import FormUserBasicInfo from '../forms/FormUserBasicInfo.vue'
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
@@ -89,6 +130,7 @@
 				formTitle: '',
 				chosenForm: '',
 				chosenSkill: {},
+				chosenRservation: {},
 				editingInfo: false,
 				user: this.$store.state.loggeduser,
 				url: '',
@@ -98,6 +140,7 @@
 		components: {
 			FormUserBasicInfo,
 			FormUserSkill,
+			FormUserReservation,
 			FormSkill,
 			FormConfirmAction,
 			VModal,
@@ -139,6 +182,7 @@
 				const components = {
 					Delete: FormConfirmAction,
 					Skill: FormUserSkill,
+					Reservation: FormUserReservation,
 				}
 				return components[this.chosenForm]
 			},
