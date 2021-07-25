@@ -108,7 +108,8 @@ export default {
 				return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
 			})
 			.then(response => { 
-				this.availableSkills = response;
+				this.availableSkills = response
+				this.getSkillScope(this.chosenSkill.skill_id)
 			})    
 			.catch((errors) => {
 				this.$store.commit('errorHandling', errors)
