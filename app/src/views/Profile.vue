@@ -29,7 +29,15 @@
 					<transition name="fadeHeight">
 						<FormUserBasicInfo :user='user' v-if="editingInfo == true" v-on:formsent="editingInfo = false, updateUser()"/>
 					</transition>
-					<h3>Skills</h3>
+					<div class="d-flex flex-row justify-content-between align-items-start">
+						<h3>Skills</h3>
+						<button
+							class="btn btn-gradient"
+							v-on:click="formTitle = 'Add Skill', chosenSkill = {}, chosenForm = 'Skill', url = `/api/userskills/${user.id}`, method = 'POST'" 
+							data-bs-toggle="modal" 
+							data-bs-target="#hulaModalProfile"
+						>Add skill</button>
+					</div>
 					<table class="table table-dark table-striped text-light">
 						<thead>
 							<tr>
@@ -61,11 +69,6 @@
 							</tr>
 						</tbody>
 					</table>
-					<p><a href="#" 
-						v-on:click="formTitle = 'Add Skill', chosenSkill = {}, chosenForm = 'Skill', url = `/api/userskills/${user.id}`, method = 'POST'" 
-						data-bs-toggle="modal" 
-						data-bs-target="#hulaModalProfile"
-					>Add skill</a></p>
 				</div>
 			</div>
 		</div>
