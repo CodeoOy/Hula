@@ -62,19 +62,18 @@ pub struct MatchDTO {
 
 pub async fn get_all_projects(
 	web::Query(q_query_data): web::Query<QueryData>,
-	pool: web::Data<Pool>, 
-	_logged_user: LoggedUser
+	pool: web::Data<Pool>,
+	_logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting all projects: logged_user={:#?}", &_logged_user);
-
 
 	let mut is_include = false;
 
 	//if let Some(query_data) = q_query_data {
-		if q_query_data.is_include_skills_and_matches {
-			trace!("IS INCLUDE");
-			is_include = true;
-		}
+	if q_query_data.is_include_skills_and_matches {
+		trace!("IS INCLUDE");
+		is_include = true;
+	}
 	//}
 
 	let res = web::block(move || query_projects_dto(is_include, &pool)).await;
@@ -469,7 +468,10 @@ pub async fn delete_projectneedskill(
 	}
 }
 
-fn query_projects_dto(include_matches_and_skills: bool, pool: &web::Data<Pool>) -> Result<Vec<ProjectDTO>, ServiceError> {
+fn query_projects_dto(
+	include_matches_and_skills: bool,
+	pool: &web::Data<Pool>,
+) -> Result<Vec<ProjectDTO>, ServiceError> {
 	use crate::models::projectmatches::ProjectMatch;
 	use crate::models::projectskills::ProjectSkill;
 
@@ -492,7 +494,9 @@ fn query_projects_dto(include_matches_and_skills: bool, pool: &web::Data<Pool>) 
 
 		if include_matches_and_skills {
 			for s in &skills[idx] {
-				let ss = SkillDTO { skill_label: s.skill_label.clone() };
+				let ss = SkillDTO {
+					skill_label: s.skill_label.clone(),
+				};
 				skills_vec.push(ss);
 			}
 
@@ -504,12 +508,16 @@ fn query_projects_dto(include_matches_and_skills: bool, pool: &web::Data<Pool>) 
 				}
 
 				let user_matches = matches.iter().filter(|x| x.user_id == s.user_id);
-				let is_all_skills = skills_vec.iter().all(|x| user_matches.clone().any(|y| x.skill_label == y.skill_label));
-				let is_user_available = user_matches.clone().any(|x| x.required_load.unwrap_or_default() >= x.user_load );
+				let is_all_skills = skills_vec
+					.iter()
+					.all(|x| user_matches.clone().any(|y| x.skill_label == y.skill_label));
+				let is_user_available = user_matches
+					.clone()
+					.any(|x| x.required_load.unwrap_or_default() >= x.user_load);
 
-				let ss2 = MatchDTO { 
-					user_id: s.user_id.clone(), 
-					first_name: s.user_first_name.clone(), 
+				let ss2 = MatchDTO {
+					user_id: s.user_id.clone(),
+					first_name: s.user_first_name.clone(),
 					last_name: s.user_last_name.clone(),
 					is_all_skills: is_all_skills,
 					is_available: is_user_available,

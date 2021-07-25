@@ -1,6 +1,6 @@
 use super::super::schema::*;
-use serde::{Deserialize, Serialize};
 use crate::models::projects::*;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Queryable, Associations, Insertable, Identifiable)]
 #[belongs_to(Project, foreign_key = "project_id")]
