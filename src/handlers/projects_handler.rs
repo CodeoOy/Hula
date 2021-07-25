@@ -7,9 +7,10 @@ use crate::models::projects::Pool;
 use crate::models::users::LoggedUser;
 use crate::repositories::*;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct QueryData {
-	pub id: String,
+	#[serde(default)] // default = 0
+	pub is_include_skills_and_matches: bool,
 }
 
 #[derive(Deserialize, Debug)]
@@ -38,8 +39,9 @@ pub struct ProjectNeedSkillData {
 
 #[derive(Serialize, Debug)]
 pub struct ProjectDTO {
-	pub project_id: uuid::Uuid,
+	pub id: uuid::Uuid,
 	pub name: String,
+	pub is_hidden: bool,
 	pub skills: Vec<SkillDTO>,
 	pub matches: Vec<MatchDTO>,
 }
@@ -58,9 +60,24 @@ pub struct MatchDTO {
 	pub is_available: bool,
 }
 
-pub async fn get_all_projects(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
+pub async fn get_all_projects(
+	web::Query(q_query_data): web::Query<QueryData>,
+	pool: web::Data<Pool>, 
+	_logged_user: LoggedUser
+) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting all projects: logged_user={:#?}", &_logged_user);
-	let res = web::block(move || query_projects_dto(true, true, &pool)).await;
+
+
+	let mut is_include = false;
+
+	//if let Some(query_data) = q_query_data {
+		if q_query_data.is_include_skills_and_matches {
+			trace!("IS INCLUDE");
+			is_include = true;
+		}
+	//}
+
+	let res = web::block(move || query_projects_dto(is_include, &pool)).await;
 
 	match res {
 		Ok(projects) => {
@@ -452,7 +469,7 @@ pub async fn delete_projectneedskill(
 	}
 }
 
-fn query_projects_dto(include_skills: bool, include_matches: bool, pool: &web::Data<Pool>) -> Result<Vec<ProjectDTO>, ServiceError> {
+fn query_projects_dto(include_matches_and_skills: bool, pool: &web::Data<Pool>) -> Result<Vec<ProjectDTO>, ServiceError> {
 	use crate::models::projectmatches::ProjectMatch;
 	use crate::models::projectskills::ProjectSkill;
 
@@ -460,11 +477,8 @@ fn query_projects_dto(include_skills: bool, include_matches: bool, pool: &web::D
 	let mut skills: Vec<Vec<ProjectSkill>> = vec![];
 	let mut matches: Vec<Vec<ProjectMatch>> = vec![];
 
-	if include_skills {
+	if include_matches_and_skills {
 		skills = projectskills_repository::find_by_projects(&projects, &pool)?;
-	}
-
-	if include_matches {
 		matches = projectmatches_repository::find_by_projects(&projects, &pool)?;
 	}
 
@@ -474,40 +488,44 @@ fn query_projects_dto(include_skills: bool, include_matches: bool, pool: &web::D
 		let project = &projects[idx];
 
 		let mut skills_vec: Vec<SkillDTO> = vec![];
-		for s in &skills[idx] {
-			let ss = SkillDTO { skill_label: s.skill_label.clone() };
-			skills_vec.push(ss);
-		}
-
 		let mut matches_vec: Vec<MatchDTO> = vec![];
-		let matches = &matches[idx];
 
-		for s in matches {
-			if matches_vec.iter().any(|x| x.user_id == s.user_id) {
-				continue;
+		if include_matches_and_skills {
+			for s in &skills[idx] {
+				let ss = SkillDTO { skill_label: s.skill_label.clone() };
+				skills_vec.push(ss);
 			}
 
-			let user_matches = matches.iter().filter(|x| x.user_id == s.user_id);
-			let is_all_skills = skills_vec.iter().all(|x| user_matches.clone().any(|y| x.skill_label == y.skill_label));
-			let is_user_available = user_matches.clone().any(|x| x.required_load.unwrap_or_default() >= x.user_load );
+			let matches = &matches[idx];
 
-			let ss2 = MatchDTO { 
-				user_id: s.user_id.clone(), 
-				first_name: s.user_first_name.clone(), 
-				last_name: s.user_last_name.clone(),
-				is_all_skills: is_all_skills,
-				is_available: is_user_available,
-			};
-			matches_vec.push(ss2);
+			for s in matches {
+				if matches_vec.iter().any(|x| x.user_id == s.user_id) {
+					continue;
+				}
+
+				let user_matches = matches.iter().filter(|x| x.user_id == s.user_id);
+				let is_all_skills = skills_vec.iter().all(|x| user_matches.clone().any(|y| x.skill_label == y.skill_label));
+				let is_user_available = user_matches.clone().any(|x| x.required_load.unwrap_or_default() >= x.user_load );
+
+				let ss2 = MatchDTO { 
+					user_id: s.user_id.clone(), 
+					first_name: s.user_first_name.clone(), 
+					last_name: s.user_last_name.clone(),
+					is_all_skills: is_all_skills,
+					is_available: is_user_available,
+				};
+				matches_vec.push(ss2);
+			}
+
+			// Sort matches
+			matches_vec.sort_by(|a, b| b.is_all_skills.cmp(&a.is_all_skills));
+			matches_vec.sort_by(|a, b| b.is_available.cmp(&a.is_available));
 		}
 
-		// Sort matches
-		matches_vec.sort_by(|a, b| b.is_all_skills.cmp(&a.is_all_skills));
-		matches_vec.sort_by(|a, b| b.is_available.cmp(&a.is_available));
-
 		let project_dto = ProjectDTO {
-			project_id: project.id.clone(),
+			id: project.id.clone(),
 			name: project.name.clone(),
+			is_hidden: project.is_hidden,
 			skills: skills_vec,
 			matches: matches_vec,
 		};
