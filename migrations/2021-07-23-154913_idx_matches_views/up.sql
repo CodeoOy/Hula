@@ -9,6 +9,7 @@ create view projectmatches as
     p.id as project_id,
     s.label as skill_label,
     pn.id as pn_id,
+    pn.percentage AS required_load,
     lp.index as required_index,
     pns.min_years as required_minyears,
     pns.max_years as required_maxyears,
@@ -35,7 +36,11 @@ create view projectmatches as
     and pns.projectneed_id = pn.id 
     and pn.project_id = p.id 
     and pns.skill_id = s.id 
-    and uk.user_id = u.id;
+    and uk.user_id = u.id
+    and coalesce(lp.index, 0) <= coalesce(up.index, 0) 
+    and coalesce(pns.min_years, 0::double precision) <= coalesce(uk.years, 0::double precision) 
+    and coalesce(pns.max_years, 100::double precision) >= coalesce(uk.years, 0::double precision) 
+    and u.is_hidden = false;
 
 -- projectskills view
 create or replace view projectskills as

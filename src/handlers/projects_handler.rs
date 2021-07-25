@@ -47,14 +47,15 @@ pub struct ProjectDTO {
 #[derive(Serialize, Debug)]
 pub struct SkillDTO {
 	pub skill_label: String,
-	pub min_years: Option<f64>,
-	pub max_years: Option<f64>,
 }
 
 #[derive(Serialize, Debug)]
 pub struct MatchDTO {
-	pub user_first_name: String,
-	pub user_last_name: String,
+	pub user_id: uuid::Uuid,
+	pub first_name: String,
+	pub last_name: String,
+	pub is_all_skills: bool,
+	pub is_available: bool,
 }
 
 pub async fn get_all_projects(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
@@ -474,15 +475,35 @@ fn query_projects_dto(include_skills: bool, include_matches: bool, pool: &web::D
 
 		let mut skills_vec: Vec<SkillDTO> = vec![];
 		for s in &skills[idx] {
-			let ss = SkillDTO { skill_label: s.skill_label.clone(), min_years: s.required_minyears, max_years: s.required_maxyears };
+			let ss = SkillDTO { skill_label: s.skill_label.clone() };
 			skills_vec.push(ss);
 		}
 
 		let mut matches_vec: Vec<MatchDTO> = vec![];
-		for s in &matches[idx] {
-			let ss2 = MatchDTO { user_first_name: s.user_first_name.clone(), user_last_name: s.user_last_name.clone() };
+		let matches = &matches[idx];
+
+		for s in matches {
+			if matches_vec.iter().any(|x| x.user_id == s.user_id) {
+				continue;
+			}
+
+			let user_matches = matches.iter().filter(|x| x.user_id == s.user_id);
+			let is_all_skills = skills_vec.iter().all(|x| user_matches.clone().any(|y| x.skill_label == y.skill_label));
+			let is_user_available = user_matches.clone().any(|x| x.required_load.unwrap_or_default() >= x.user_load );
+
+			let ss2 = MatchDTO { 
+				user_id: s.user_id.clone(), 
+				first_name: s.user_first_name.clone(), 
+				last_name: s.user_last_name.clone(),
+				is_all_skills: is_all_skills,
+				is_available: is_user_available,
+			};
 			matches_vec.push(ss2);
 		}
+
+		// Sort matches
+		matches_vec.sort_by(|a, b| b.is_all_skills.cmp(&a.is_all_skills));
+		matches_vec.sort_by(|a, b| b.is_available.cmp(&a.is_available));
 
 		let project_dto = ProjectDTO {
 			project_id: project.id.clone(),

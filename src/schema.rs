@@ -172,6 +172,7 @@ table! {
 		project_id -> Uuid,
 		skill_label -> Varchar,
 		pn_id -> Uuid,
+		required_load -> Nullable<Int4>,
 		required_index -> Nullable<Integer>,
 		required_minyears -> Nullable<Double>,
 		required_maxyears -> Nullable<Double>,
