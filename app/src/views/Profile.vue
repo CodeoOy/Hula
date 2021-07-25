@@ -63,7 +63,7 @@
 										href="#"
 										data-bs-toggle="modal"
 										data-bs-target="#hulaModalProfile" 
-										v-on:click="formTitle = `Delete ${skill.skill_label}?`, chosenForm = 'Delete', url = `/api/userskills/${skill.id}`, method = 'DELETE'"
+										v-on:click="formTitle = `Delete ${skill.skill_label}?`, chosenSkill = skill, chosenForm = 'Delete', url = `/api/userskills/${skill.id}`, method = 'DELETE'"
 									><i class="bi-trash-fill me-2"></i></a>
 								</td>
 							</tr>
