@@ -221,6 +221,34 @@ pub async fn update_skill(
 	}
 }
 
+pub async fn get_reservations(
+	uuid_data: web::Path<String>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!(
+		"Getting user reservations by their id uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&logged_user
+	);
+	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+	let user = users_repository::get(uuid_query, &pool)?;
+	let res = web::block(move || userreservations_repository::query_belong_to_user(&user.into(), &pool)).await;
+
+	match res {
+		Ok(userreservations) => {
+			if userreservations.is_empty() == false {
+				return Ok(HttpResponse::Ok().json(&userreservations));
+			}
+			Err(ServiceError::Empty)
+		}
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
 pub async fn add_reservation(
 	uuid_data: web::Path<String>,
 	payload: web::Json<UserReservationData>,

@@ -176,6 +176,15 @@
 				.then(response => { 
 					this.user = response;
 				}) 
+			},
+			getUserReservations(id) {
+				fetch(`/api/userreservations/${id}`, {method: 'GET'})
+				.then(response => {
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
+				.then(response => {
+					this.user.reservations = response;
+				})
 			}
 		},
 		computed: {
