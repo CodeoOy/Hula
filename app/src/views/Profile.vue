@@ -16,20 +16,22 @@
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h1>{{ user.firstname }} {{ user.lastname }}</h1>
 					<p>{{ user.email }}</p>
-					<p>{{ user.telephone }}</p>
-					<p>{{ user.id }}</p>
-					<img src="" alt="">
+					<a 
+						href="#"
+						data-bs-toggle="modal" 
+						data-bs-target="#hulaModalProfile" 
+						v-on:click="formTitle = 'Edit user info', chosenForm = 'User', chosenUser = user, url=`/api/users/${user.id}`, method='PUT'"
+					><i class="bi-pencil-fill me-2"></i></a>
+					<a 
+						href="#"
+						data-bs-toggle="modal" 
+						data-bs-target="#hulaModalProfile" 
+						v-on:click="formTitle = 'Delete my profile', chosenForm = 'Delete', chosenUser = user, url=`/api/users/${user.id}`, method='DELETE'"
+					><i class="bi-trash-fill me-2"></i></a>
 				</div>
 			</div>
 			<div class="col-md-8">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					<h2>Professional profile</h2>
-					<h3>Basic info</h3>
-					<a href="#" v-on:click="editingInfo = true">Edit your info</a>
-					<p>Hidden: {{ user.is_hidden }}</p>
-					<transition name="fadeHeight">
-						<FormUserBasicInfo :user='user' v-if="editingInfo == true" v-on:formsent="editingInfo = false, updateUser()"/>
-					</transition>
 					<div class="d-flex flex-row justify-content-between align-items-start">
 						<h3>Skills</h3>
 						<button
@@ -104,7 +106,7 @@
 										href="#"
 										data-bs-toggle="modal"
 										data-bs-target="#hulaModalProfile" 
-										v-on:click="formTitle = `Delete ${reservation.reservation_label}?`, chosenReservation = reservation, chosenForm = 'Delete', url = `/api/userreservations/${reservation.id}`, method = 'DELETE'"
+										v-on:click="formTitle = `Delete reservation?`, chosenReservation = reservation, chosenForm = 'Delete', url = `/api/userreservations/${reservation.id}`, method = 'DELETE'"
 									><i class="bi-trash-fill me-2"></i></a>
 								</td>
 							</tr>
@@ -130,6 +132,7 @@
 			return {
 				formTitle: '',
 				chosenForm: '',
+				chosenUser: {},
 				chosenSkill: {},
 				chosenReservation: {},
 				editingInfo: false,
@@ -157,6 +160,7 @@
 			},
 			hideModalUpdate() {
 				this.checkProfile(this.$route.params.id)
+				this.getUserReservations(this.$route.params.id)
 				let modal = Modal.getInstance(document.querySelector('#hulaModalProfile'))
 				modal.hide()
 			},
@@ -191,6 +195,7 @@
 			modalComponent() {
 				const components = {
 					Delete: FormConfirmAction,
+					User: FormUserBasicInfo,
 					Skill: FormUserSkill,
 					Reservation: FormUserReservation,
 				}
