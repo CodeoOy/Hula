@@ -1,6 +1,19 @@
 <template>
 	<v-form v-on:submit="createUpdateUserReservation">
 		<div class="mb-2">
+			<label class="form-label">Description</label>
+			<error-message name="description" class="error"></error-message>
+			<v-field
+				v-model="formData.description"
+				:rules="isRequired"
+				as="input"
+				type="text"
+				name="description"
+				class="form-control"
+				aria-label="description" 
+			></v-field>
+		</div>
+		<div class="mb-2">
 			<label class="form-label">When does this reservation start?</label>
 			{{ formData.begin_time }}<br />
 			<error-message name="begintime" class="error"></error-message>
@@ -51,9 +64,11 @@ export default {
 	data() {
 		return {
 			formData: {
+				description: this.chosenReservation.description || '',
 				begin_time: this.chosenReservation.begin_time || '',
 				end_time: this.chosenReservation.end_time || '',
 				percentage: this.chosenReservation.percentage || '',
+				user_id: this.userID,
 			}
 		}
 	},
@@ -62,23 +77,19 @@ export default {
 		'VField': Field,
 		ErrorMessage
 	},
+	props: {
+		url: '',
+		method: '',
+		userID: '',
+		chosenReservation: {},
+	},
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
 		createUpdateUserReservation() {
-			let chosenMethod = 'PUT'
-			let fetchPath = '/api/userreservations/' + this.chosenReservation.id
-			if ('isNew' in this.chosenReservation) {
-				chosenMethod = 'POST'
-				fetchPath = '/api/userreservations'
-			}
-			if (this.formData.end_time == '') {
-				delete this.formData.end_time
-			}
-			delete this.formData.skills
-			fetch(fetchPath, {
-				method: chosenMethod,
+			fetch(this.url, {
+				method: this.method,
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
 				body: JSON.stringify(this.formData)
@@ -94,9 +105,6 @@ export default {
 				this.$store.commit('errorHandling', errors)
 			})
 		},
-	},
-	props: {
-		chosenReservation: {},
 	},
 };
 </script>
