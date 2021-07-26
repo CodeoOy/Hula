@@ -85,17 +85,19 @@
 					<table class="table table-dark table-striped text-light" v-if="'reservations' in user">
 						<thead>
 							<tr>
-								<th scope="col">Reservation id</th>
+								<th scope="col">Description</th>
 								<th scope="col">From</th>
 								<th scope="col">To</th>
+								<th scope="col">Percentage</th>
 								<th scope="col">Actions</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr v-for="reservation in user.reservations" :key="reservation.id">
-								<td>{{ reservation.id }}</td>
-								<td>{{ reservation.begin_time}}</td>
+								<td>{{ reservation.description }}</td>
+								<td>{{ reservation.begin_time }}</td>
 								<td>{{ reservation.end_time }}</td>
+								<td>{{ reservation.percentage }}</td>
 								<td>
 									<a 
 										href="#"
@@ -172,6 +174,7 @@
 				})
 				.then(response => { 
 					this.user = response;
+					this.getUserReservations(this.$route.params.id)
 				}) 
 			},
 			getUserReservations(id) {
