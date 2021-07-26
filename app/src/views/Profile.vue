@@ -5,6 +5,7 @@
 				:is='modalComponent' 
 				:url="url"
 				:method="method"
+				:chosenUser="user"
 				:chosenSkill="chosenSkill"
 				:chosenReservation="chosenReservation"
 				:userID="user.id"
@@ -150,14 +151,6 @@
 			VModal,
 		},
 		methods: {
-			updateUser() {
-				fetch(`/api/users/${this.user.id}`, {
-					method: 'PUT',
-					headers: {"Content-Type": "application/json"},
-					credentials: 'include',
-					body: JSON.stringify(this.user)
-				})
-			},
 			hideModalUpdate() {
 				this.checkProfile(this.$route.params.id)
 				this.getUserReservations(this.$route.params.id)

@@ -1,8 +1,9 @@
-<template>
-	<v-form v-on:submit="onSubmit">
-		<div class="mb-2 form-check">
+<template>	
+	<v-form v-on:submit="editUserInfo">
+		{{ chosenUser }}
+		<div class="mb-2 form-check" v-if="'is_hidden' in chosenUser">
 			<label class="form-label">Hide me</label>
-			<input type="checkbox" class="form-check-input" name="is_hidden" v-model="user.is_hidden" />
+			<input type="checkbox" class="form-check-input" name="is_hidden" v-model="formData.is_hidden" />
 		</div>
 		<div class="mb-2">
 			<label class="form-label">First name</label>
@@ -13,7 +14,7 @@
 				placeholder="Mikki" 
 				:rules="isRequired" 
 				class="form-control" 
-				v-model="user.firstname"
+				v-model="formData.firstname"
 			></v-field>
 		</div>
 		<div class="mb-2">
@@ -25,7 +26,18 @@
 				placeholder="Hiiri" 
 				:rules="isRequired" 
 				class="form-control" 
-				v-model="user.lastname"
+				v-model="formData.lastname"
+			></v-field>
+		</div>
+		<div class="mb-2">
+			<label class="form-label">Email</label>
+			<error-message name="email" class="error"></error-message>
+			<v-field
+				name="email" 
+				type="text"
+				:rules="isRequired" 
+				class="form-control" 
+				v-model="formData.email"
 			></v-field>
 		</div>
 		<div class="mb-2">
@@ -35,7 +47,7 @@
 				name="cv"
 				type="file"
 				class="form-control" 
-				v-model="user.file"
+				v-model="formData.file"
 			></v-field>
 		</div>
 		<button type="submit" class="btn btn-gradient">Save</button>
@@ -46,8 +58,19 @@
 import { Field, Form, ErrorMessage } from 'vee-validate';
 export default {
 	name: 'UserBasicInfo',
+	data() {
+		return {
+			formData: {
+				id: this.chosenUser.id,
+				email: this.chosenUser.email || '',
+				is_hidden: this.chosenUser.is_hidden || false,
+				firstname: this.chosenUser.firstname || '',
+				lastname: this.chosenUser.lastname || '',
+			}
+		}
+	},
 	props: {	
-		user: {}
+		chosenUser: {}
 	},
 	components: {
 		'VForm': Form,
@@ -58,8 +81,23 @@ export default {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
-		onSubmit() {
-			this.$emit('formsent', this.user);
+		editUserInfo() {
+			fetch(`/api/users/${this.chosenUser.id}`, {
+				method: 'PUT',
+				headers: {"Content-Type": "application/json"},
+				credentials: 'include',
+				body: JSON.stringify(this.formData)
+			})
+			.then(response => {
+				if (response.status >= 200 && response.status <= 299) {
+					this.$emit('formSent')
+				} else {
+					this.$store.commit('errorHandling', response)
+				}
+			})
+			.catch((errors) => {
+				this.$store.commit('errorHandling', errors)
+			})
 		},
 	}
 };
