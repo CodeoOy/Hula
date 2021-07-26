@@ -61,6 +61,8 @@ pub fn update_reservation(
 		.filter(id.eq(q_uuid_data))
 		.set((
 			percentage.eq(q_percentage),
+			begin_time.eq(q_begin_time),
+			end_time.eq(q_end_time),
 			description.eq(q_description),
 			updated_by.eq(q_email),
 		))

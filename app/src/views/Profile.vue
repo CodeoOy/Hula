@@ -82,7 +82,7 @@
 							data-bs-target="#hulaModalProfile"
 						>Add reservation</button>
 					</div>
-					<table class="table table-dark table-striped text-light">
+					<table class="table table-dark table-striped text-light" v-if="'reservations' in user">
 						<thead>
 							<tr>
 								<th scope="col">Reservation id</th>
@@ -101,7 +101,7 @@
 										href="#"
 										data-bs-toggle="modal"
 										data-bs-target="#hulaModalProfile"
-										v-on:click="formTitle = reservation.reservation_label, chosenForm = 'reservation', chosenReservation = reservation, url=`/api/userreservations/${reservation.id}`, method='PUT'"
+										v-on:click="formTitle = reservation.id, chosenForm = 'Reservation', chosenReservation = reservation, url=`/api/userreservations/${reservation.id}`, method='PUT'"
 									><i class="bi-pencil-fill me-2"></i></a>
 									<a
 										href="#"

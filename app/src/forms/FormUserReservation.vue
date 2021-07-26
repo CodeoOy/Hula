@@ -15,7 +15,6 @@
 		</div>
 		<div class="mb-2">
 			<label class="form-label">When does this reservation start?</label>
-			{{ formData.begin_time }}<br />
 			<error-message name="begintime" class="error"></error-message>
 			<v-field
 				v-model="formData.begin_time"
@@ -29,7 +28,6 @@
 		</div>
 		<div class="mb-2">
 			<label class="form-label">When does this reservation end?</label>
-			{{ formData.end_time }}<br />
 			<error-message name="endtime" class="error"></error-message>
 			<v-field
 				v-model="formData.end_time"

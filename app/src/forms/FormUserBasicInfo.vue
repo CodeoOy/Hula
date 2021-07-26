@@ -1,9 +1,12 @@
 <template>	
 	<v-form v-on:submit="editUserInfo">
-		{{ chosenUser }}
 		<div class="mb-2 form-check" v-if="'is_hidden' in chosenUser">
 			<label class="form-label">Hide me</label>
 			<input type="checkbox" class="form-check-input" name="is_hidden" v-model="formData.is_hidden" />
+		</div>
+		<div class="mb-2 form-check" v-if="this.$store.state.loggeduser.isadmin === true">
+			<label class="form-label">Admin</label>
+			<input type="checkbox" class="form-check-input" name="is_hidden" v-model="formData.is_admin" />
 		</div>
 		<div class="mb-2">
 			<label class="form-label">First name</label>
@@ -64,6 +67,7 @@ export default {
 				id: this.chosenUser.id,
 				email: this.chosenUser.email || '',
 				is_hidden: this.chosenUser.is_hidden || false,
+				is_admin: this.chosenUser.is_admin || false,
 				firstname: this.chosenUser.firstname || '',
 				lastname: this.chosenUser.lastname || '',
 			}
