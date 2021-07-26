@@ -205,6 +205,7 @@
 					this.$router.push({name: 'page-error'})
 				}
 			}
+			this.getUserReservations(this.$route.params.id)
 		}
 	}
 </script>
