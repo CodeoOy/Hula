@@ -46,14 +46,18 @@
 							v-on:click="this.chooseProject(project)"
 						>{{ project.name }}</router-link></td>
 						<td>
-							<p>Too expensive?</p>
+							<span
+								v-for="skill in project.skills" 
+								:key="skill.skill_label"
+								class="badge"
+							>{{ skill.skill_label }}</span>
 						</td>
 						<td>
-							<div
+							<span
 								v-for="match in project.matches"
 								:key="match.user_id"
 							><VAvatar :id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" />
-							</div>
+							</span>
 						</td>
 						<td>
 							<a
