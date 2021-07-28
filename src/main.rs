@@ -97,7 +97,11 @@ async fn main() -> std::io::Result<()> {
 						web::resource("/invitations")
 							.route(web::post().to(handlers::invitation_handler::post_invitation)),
 					)
-					.service(web::resource("/users").route(web::get().to(handlers::users_handler::get_all)))
+					.service(
+						web::resource("/users")
+							.route(web::get().to(handlers::users_handler::get_all))
+							.route(web::post().to(handlers::users_handler::create_user)),
+					)
 					.service(
 						web::resource("/users/{user_id}")
 							.route(web::get().to(handlers::users_handler::get_by_uuid))
