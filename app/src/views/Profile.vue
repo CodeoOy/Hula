@@ -8,6 +8,7 @@
 				:chosenUser="user"
 				:chosenSkill="chosenSkill"
 				:chosenReservation="chosenReservation"
+				:userSkills="userSkills"
 				:userID="user.id"
 				v-on:form-sent="hideModalUpdate"
 			/>
@@ -197,6 +198,9 @@
 				}
 				return components[this.chosenForm]
 			},
+			userSkills () {
+				return this.user.skills
+			}
 		},
 		mounted() {
 			if (this.$route.params.id != this.$store.state.loggeduser.id) {

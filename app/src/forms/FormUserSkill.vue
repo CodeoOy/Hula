@@ -12,8 +12,8 @@
 				aria-label="Example select with button addon" 
 			>
 				<option :value="null" disabled selected>Pick a skill</option>
-				<option v-for="avskill in availableSkills" :key="avskill" :value="avskill.id">
-					{{ avskill.label }}
+				<option v-for="skill in availableSkills" :key="skill" :value="skill.id">
+					{{ skill.label }}
 				</option>
 			</v-field>
 		</div>
@@ -22,7 +22,6 @@
 			<error-message name="level" class="error"></error-message>
 			<v-field
 				v-model="formData.skillscopelevel_id"
-				:rules="isRequired"
 				as="select"
 				name="level"
 				class="form-select"
@@ -38,7 +37,6 @@
 			<error-message name="years" class="error"></error-message>
 			<v-field
 				v-model.number="formData.years"
-				:rules="isRequired"
 				as="input"
 				type="number"
 				name="years"
@@ -73,6 +71,7 @@ export default {
 		method: '',
 		userID: '',
 		chosenSkill: {},
+		userSkills: {},
 	},
 	components: {
 		'VForm': Form,
@@ -84,6 +83,11 @@ export default {
 			return value ? true : 'This field is required';
 		},
 		createUpdateUserSkill() {
+			for (let prop in this.formData) {
+				if (this.formData[prop] === '') {
+					delete this.formData[prop]
+				}
+			}
 			fetch(this.url, {
 				method: this.method,
 				headers: {"Content-Type": "application/json"},
@@ -108,7 +112,16 @@ export default {
 				return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
 			})
 			.then(response => { 
-				this.availableSkills = response
+				// return skills from availableSkills that are not in userSkills
+				if (this.method == 'POST') {
+					this.availableSkills = response.filter(skill => {
+						return !this.userSkills.find(userSkill => {
+							return userSkill.skill_id === skill.id
+						})
+					})
+				} else {
+					this.availableSkills = response
+				}
 				this.getSkillScope(this.chosenSkill.skill_id)
 			})    
 			.catch((errors) => {
@@ -132,7 +145,7 @@ export default {
 				var scope = this.availableSkills.find(x => x.id == needle).skillscope_id;
 				this.chosenSkill.skillscope_id = scope;
 			}
-		}
+		},
 	},
 	watch: {
 		'formData.skill_id'(newID) {
