@@ -8,6 +8,10 @@
 			<label class="form-label">Admin</label>
 			<input type="checkbox" class="form-check-input" name="is_hidden" v-model="formData.is_admin" />
 		</div>
+		<div class="mb-2 form-check" v-if="this.$store.state.loggeduser.isadmin === true">
+			<label class="form-label">Is employee</label>
+			<input type="checkbox" class="form-check-input" name="is_hidden" v-model="formData.is_admin" />
+		</div>
 		<div class="mb-2">
 			<label class="form-label">First name</label>
 			<error-message name="firstname" class="error"></error-message>

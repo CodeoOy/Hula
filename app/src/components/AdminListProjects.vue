@@ -49,7 +49,11 @@
 							<p>Too expensive?</p>
 						</td>
 						<td>
-							<p>Matches here</p>
+							<div
+								v-for="match in project.matches"
+								:key="match.user_id"
+							><VAvatar :id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" />
+							</div>
 						</td>
 						<td>
 							<a
@@ -72,6 +76,7 @@
 	import FormProject from '../forms/FormProject.vue'
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	import AutoComplete from '../components/AutoComplete.vue'
+	import VAvatar from '../components/VAvatar.vue'
 	export default {
 		name: 'AdminListProjects',
 		data () {
@@ -87,6 +92,7 @@
 		},
 		components: {
 			VModal,
+			VAvatar,
 			FormProject,
 			FormConfirmAction,
 			AutoComplete,

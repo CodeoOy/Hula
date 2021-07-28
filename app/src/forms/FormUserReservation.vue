@@ -86,6 +86,9 @@ export default {
 			return value ? true : 'This field is required';
 		},
 		createUpdateUserReservation() {
+			if (this.formData.end_time == '') {
+				delete this.formData.end_time
+			}
 			fetch(this.url, {
 				method: this.method,
 				headers: {"Content-Type": "application/json"},

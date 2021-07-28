@@ -8,12 +8,14 @@
 export default {
 	name: 'VAvatar',
 	props: {
-        user: {},
+        id: '',
+        firstname: '',
+        lastname: '',
         size: Number
 	},
     computed: {
         initials() {
-            return this.user.firstname[0] + this.user.lastname[0];
+            return this.firstname[0] + this.lastname[0];
         },
         avatarStyle() {
             return {
@@ -38,7 +40,7 @@ export default {
             return brightness < 128 ? '#97ffcb' : '#210e26';
         },
         color() {
-            var colorhex = this.user.id.substring(0,6)
+            var colorhex = this.id.substring(0,6)
             return '#' + colorhex
         }
         // TODO: Tint the hue towards the theme colors

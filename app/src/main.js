@@ -80,7 +80,7 @@ const store = createStore({
 		},
 		getProjects (state) {
 			let projectsExist = true
-			fetch('/api/projects', {
+			fetch('/api/projects?is_include_skills_and_matches=true', {
 				method: 'GET',
 				headers: {"Content-Type": "application/json"}
 			})
