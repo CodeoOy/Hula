@@ -98,6 +98,12 @@ export default {
 			return value ? true : 'This field is required';
 		},
 		createProjectNeedSkill() {
+			// iterate object properties and change empty values to null
+			for (let prop in this.formData) {
+				if (this.formData[prop] === '') {
+					this.formData[prop] = null;
+				}
+			}
 			if (this.method == 'POST') {
 				delete this.formData.id
 			}
