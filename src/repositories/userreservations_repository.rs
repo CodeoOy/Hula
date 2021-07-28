@@ -54,7 +54,7 @@ pub fn update_reservation(
 	pool: &web::Data<Pool>,
 ) -> Result<UserReservation, Error> {
 	use crate::schema::userreservations::dsl::*;
-	use crate::schema::userreservations::dsl::{id, updated_by, percentage};
+	use crate::schema::userreservations::dsl::{id, percentage, updated_by};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let user_reservation = diesel::update(userreservations)

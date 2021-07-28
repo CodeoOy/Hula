@@ -84,39 +84,6 @@ pub async fn get_all(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<
 	}
 }
 
-pub async fn create_user(
-	payload: web::Json<NewUserData>,
-	pool: web::Data<Pool>,
-	logged_user: LoggedUser,
-) -> Result<HttpResponse, ServiceError> {
-	trace!(
-		"Creating a user: payload = {:#?} logged_user = {:#?}",
-		&payload,
-		&logged_user
-	);
-	if logged_user.isadmin == false {
-		return Err(ServiceError::AdminRequired);
-	}
-
-	let res = web::block(move || {
-		users_repository::create(
-			payload.email.clone(),
-			payload.password.clone(),
-			payload.firstname.clone(),
-			payload.lastname.clone(),
-			&pool,
-		)
-	})
-	.await;
-	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
-		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error.into()),
-			BlockingError::Canceled => Err(ServiceError::InternalServerError),
-		},
-	}
-}
-
 pub async fn update_user(
 	uuid_data: web::Path<String>,
 	payload: web::Json<QueryData>,
