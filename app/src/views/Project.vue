@@ -192,8 +192,10 @@
 				})
 			},
 			getLevelLabel(id) {
-				var returnedLevel = this.skillLevels.find(level => level.id == id)
-				return returnedLevel.label
+				if (id) {
+					var returnedLevel = this.skillLevels.find(level => level.id == id)
+					return returnedLevel.label
+				}
 			},
 			checkProject(id) {
 				fetch(`/api/projects/${id}`, {method: 'GET'})
