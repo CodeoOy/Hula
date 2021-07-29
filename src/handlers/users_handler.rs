@@ -531,12 +531,13 @@ pub async fn delete_favorite_project(
 	}
 }
 
-pub async fn save_file(mut payload: Multipart, logged_user: LoggedUser) -> Result<HttpResponse, Error> {
+pub async fn save_file(mut payload: Multipart) -> Result<HttpResponse, Error> {
 	dotenv::dotenv().ok();
 	let mut filename = "".to_string();
 	while let Ok(Some(mut field)) = payload.try_next().await {
 		let cv_path = env::var("CV_PATH").expect("path must be set.");
-		filename = format!("{}.pdf", logged_user.uid.to_string());
+		filename = format!(".pdf");
+	//	filename = format!("{}.pdf", logged_user.uid.to_string());
 		let filepath = format!("{}/{}", cv_path, filename);
 		let mut file = web::block(|| std::fs::File::create(filepath)).await.unwrap();
 		while let Some(chunk) = field.next().await {
@@ -549,7 +550,7 @@ pub async fn save_file(mut payload: Multipart, logged_user: LoggedUser) -> Resul
 
 pub async fn download(info: web::Path<Download>) -> HttpResponse {
 	dotenv().ok();
-	let cv_path = env::var("CV_PATH").expect("CV_PATH NOT FOUND");
+	let cv_path = env::var("CV_PATH").expect("cv_path not found");
 	let path = format!("{}/{}", cv_path, info.name.to_string());
 	if !Path::new(path.as_str()).exists() {
 		return HttpResponse::NotFound().json(&File {
