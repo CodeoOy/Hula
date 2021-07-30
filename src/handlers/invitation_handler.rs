@@ -60,26 +60,7 @@ fn query(
 	pool: web::Data<Pool>,
 ) -> Result<Invitation, ServiceError> {
 	let res = users_repository::get_by_email(eml.clone(), &pool);
-
-	// get the unwrapped value of password_plain
-	//let password_value: String = password_plain.into();
-	//let password_hashed_value: String = utils::hash_password(&password_value);
-	/*
-	let mut password_hashed = String::new();
-	if password.chars().count() > 0 {
-		password_hashed = utils::hash_password(&password).unwrap();
-	}*/
-	/*
-	if password_plain.is_some() {
-		let password_hashed_value: String = utils::hash_password(&password_plain.unwrap());
-	} else {
-		let password_hashed_value: String = "";
-	}*/
-	//let password = psw.unwrap_or("".to_owned());
-	//let maybe_some_string = Some(String::from("Hello, World!"));
 	let password_hashed = psw.map(|s| hash_password(&s).unwrap());
-	//let password = psw.unwrap();
-	//let password_value: String = hash_password(&psw)?;
 	match res {
 		Ok(user) => {
 			debug!("User {} already found. Cannot process invitation.", &user.email);
