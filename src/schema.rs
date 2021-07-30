@@ -2,10 +2,11 @@ table! {
 	invitations (id) {
 		id -> Uuid,
 		email -> Varchar,
-		password_plain -> Varchar,
+		password_plain -> Nullable<Varchar>,
 		first_name -> Varchar,
 		last_name -> Varchar,
 		expires_at -> Timestamp,
+		password_pending -> Bool,
 		updated_by -> Varchar,
 	}
 }
@@ -123,6 +124,7 @@ table! {
 		inserted_at -> Timestamp,
 		updated_by -> Varchar,
 		is_employee -> Bool,
+		password_pending -> Bool,
 	}
 }
 

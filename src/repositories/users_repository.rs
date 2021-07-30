@@ -36,12 +36,13 @@ pub fn create(
 	q_password: String,
 	q_first_name: String,
 	q_last_name: String,
+	q_password_pending: bool,
 	pool: &web::Data<Pool>,
 ) -> Result<User, Error> {
 	use crate::schema::users::dsl::users;
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let new_user = User::from_details(q_email, q_password, q_first_name, q_last_name);
+	let new_user = User::from_details(q_email, q_password, q_first_name, q_last_name, q_password_pending);
 
 	let user: User = diesel::insert_into(users).values(&new_user).get_result(conn)?;
 

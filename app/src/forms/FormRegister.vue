@@ -1,76 +1,112 @@
 <template>
-<div>
-	<h2>Register</h2>
-	<form v-on:submit="register">
-		<div class="mb-3">
-			<label for="inputEmail" class="form-label">Email</label>
-			<input type="text" class="form-control" id="inputEmail" aria-describedby="emailHelp" name="email">
-			<div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+	<v-form v-on:submit="inviteUser">
+		<div class="mb-2">
+			<label class="form-label">Email</label>
+			<error-message name="email" class="error"></error-message>
+			<v-field
+				v-model="formData.email"
+				:rules="isRequired"
+				as="input"
+				type="text"
+				name="email"
+				class="form-control"
+				aria-label="email"
+			></v-field>
 		</div>
-		<div class="mb-3">
-			<label for="inputFirstName" class="form-label">First name</label>
-			<input type="text" class="form-control" id="inputFirstName" name="first_name">
+		<div class="mb-2">
+			<label class="form-label">First name</label>
+			<error-message name="first_name" class="error"></error-message>
+			<v-field
+				v-model="formData.first_name"
+				:rules="isRequired"
+				as="input"
+				type="text"
+				name="first_name"
+				class="form-control"
+				aria-label="first_name"
+			></v-field>
 		</div>
-		<div class="mb-3">
-			<label for="inputLastName" class="form-label">Last name</label>
-			<input type="text" class="form-control" id="inputLastName" name="last_name">
+		<div class="mb-2">
+			<label class="form-label">Last name</label>
+			<error-message name="last_name" class="error"></error-message>
+			<v-field
+				v-model="formData.last_name"
+				:rules="isRequired"
+				as="input"
+				type="text"
+				name="last_name"
+				class="form-control"
+				aria-label="last_name"
+			></v-field>
 		</div>
-		<div class="mb-3">
-			<label for="inputPassword" class="form-label">Password</label>
-			<input type="password" class="form-control" id="inputPassword" name="password_plain">
+		<div class="mb-2">
+			<label class="form-label">Password</label>
+			<error-message name="password_plain" class="error"></error-message>
+			<v-field
+				v-model="formData.password_plain"
+				as="input"
+				type="text"
+				name="password_plain"
+				class="form-control"
+				aria-label="password_plain"
+			></v-field>
 		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Register</button>
-	</form>
-</div>
+	</v-form>
 </template>
 
 <script>
-	export default {
-		name: 'FormRegister',
-		data() {
-			return {
-				user: {}
-			}
-		},
-		methods: {
-			register: async function(e) { 
-				e.preventDefault()    
-				let email = e.target.elements.email.value
-				let first_name = e.target.elements.first_name.value 
-				let last_name = e.target.elements.last_name.value 
-				let password_plain = e.target.elements.password_plain.value 
-				let getUserData = () => {   
-					let data = {    
-						"email": email,
-						"password_plain": password_plain,
-						"first_name": first_name,
-						"last_name": last_name,
-					}
-					fetch('/api/invitations', {method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
-					.then(response => { 
-						return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
-					})
-					.then((response) => {
-						if (response.ok) {								
-							localStorage.setItem('user', JSON.stringify(response));
-							this.$flashMessage.show({
-								type: 'success',
-								title: 'Invitation sent. Check your email',
-								time: 5000
-							});
-						}
-					})
-					.catch((errors) => {
-						console.log("Error data: " + errors);
-						this.$flashMessage.show({
-							type: 'error',
-							title: 'Invitation not sent',
-							time: 1000
-						});
-					})    
-				}    
-				getUserData()    
+import { Field, Form, ErrorMessage } from 'vee-validate';
+export default {
+	name: 'FormRegister',
+	data() {
+		return {
+			user: {},
+			formData: {
+				email: '',
+				first_name: '',
+				last_name: '',
+				password_plain: '',
+				password_pending: false,
 			}
 		}
+	},
+	components: {
+		'VForm': Form,
+		'VField': Field,
+		ErrorMessage
+	},
+	methods: {
+		isRequired(value) {
+			return value ? true : 'This field is required';
+		},
+		inviteUser() {
+			if (this.formData.password_plain.length == 0) {
+				delete this.formData.password_plain;
+			}
+			fetch('/api/invitations', {
+				method: 'POST',
+				headers: {"Content-Type": "application/json"},
+				credentials: 'include',
+				body: JSON.stringify(this.formData)
+			})
+			.then(response => {
+				if (response.status >= 200 && response.status <= 299) {
+					this.$emit('formSent')
+					// localStorage.setItem('user', JSON.stringify(response)); // Is this actualy needed?
+					this.$flashMessage.show({
+						type: 'success',
+						title: 'Invitation sent. Check your email',
+						time: 5000
+					});
+				} else {
+					this.$store.commit('errorHandling', response)
+				}
+			})
+			.catch((errors) => {
+				this.$store.commit('errorHandling', errors)
+			})
+		}
 	}
+}
 </script>

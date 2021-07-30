@@ -12,9 +12,10 @@ use crate::utils::hash_password;
 #[derive(Deserialize, Debug)]
 pub struct InvitationData {
 	pub email: String,
-	pub password_plain: String,
+	pub password_plain: Option<String>,
 	pub first_name: String,
 	pub last_name: String,
+	pub password_pending: bool,
 }
 
 pub async fn post_invitation(
@@ -44,6 +45,7 @@ fn create_invitation(invdata: InvitationData, pool: web::Data<Pool>) -> Result<(
 		invdata.password_plain,
 		invdata.first_name,
 		invdata.last_name,
+		invdata.password_pending,
 		pool,
 	)?;
 	send_invitation(&invitation)
@@ -51,20 +53,40 @@ fn create_invitation(invdata: InvitationData, pool: web::Data<Pool>) -> Result<(
 
 fn query(
 	eml: String,
-	psw: String,
+	psw: Option<String>,
 	first_name: String,
 	last_name: String,
+	password_pending: bool,
 	pool: web::Data<Pool>,
 ) -> Result<Invitation, ServiceError> {
 	let res = users_repository::get_by_email(eml.clone(), &pool);
-	let password: String = hash_password(&psw)?;
+
+	// get the unwrapped value of password_plain
+	//let password_value: String = password_plain.into();
+	//let password_hashed_value: String = utils::hash_password(&password_value);
+	/*
+	let mut password_hashed = String::new();
+	if password.chars().count() > 0 {
+		password_hashed = utils::hash_password(&password).unwrap();
+	}*/
+	/*
+	if password_plain.is_some() {
+		let password_hashed_value: String = utils::hash_password(&password_plain.unwrap());
+	} else {
+		let password_hashed_value: String = "";
+	}*/
+	//let password = psw.unwrap_or("".to_owned());
+	//let maybe_some_string = Some(String::from("Hello, World!"));
+	let password_hashed = psw.map(|s| hash_password(&s).unwrap());
+	//let password = psw.unwrap();
+	//let password_value: String = hash_password(&psw)?;
 	match res {
 		Ok(user) => {
 			debug!("User {} already found. Cannot process invitation.", &user.email);
 			return Err(ServiceError::Unauthorized);
 		}
 		Err(NotFound) => {
-			let invitation = invitations_repository::create_invitation(eml, password, first_name, last_name, &pool)?;
+			let invitation = invitations_repository::create_invitation(eml, password_hashed, first_name, last_name, password_pending, &pool)?;
 			Ok(invitation)
 		}
 		Err(error) => Err(error.into()),

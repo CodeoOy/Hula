@@ -34,7 +34,7 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
 		&[
 			("id", invitation.id.to_string()),
 			("email", invitation.email.clone()),
-			("password", invitation.password_plain.clone()),
+			("password", invitation.password_plain.clone().unwrap_or_else(|| "".to_string())),
 		],
 	)
 	.expect("failed to construct URL. Check your PUBLIC_URL parameter.");

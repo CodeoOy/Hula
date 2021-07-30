@@ -44,6 +44,7 @@ fn query(user_data: UserData, pool: web::Data<Pool>) -> Result<User, crate::erro
 				password,
 				invitation.first_name,
 				invitation.last_name,
+				false,
 				&pool,
 			)?;
 
