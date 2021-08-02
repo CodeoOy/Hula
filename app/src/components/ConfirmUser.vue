@@ -27,9 +27,7 @@
 		},
 		methods: {
 			hideModalUpdate() {
-				this.checkProfile(this.$route.params.id)
-				this.getUserReservations(this.$route.params.id)
-				let modal = Modal.getInstance(document.querySelector('#hulaModalProfile'))
+				let modal = Modal.getInstance(document.querySelector('#hulaModalPassword'))
 				modal.hide()
 			},
 			confirmRegistration: function() {  
@@ -56,6 +54,9 @@
 						time: 2000
 					});
 				})      
+			},
+			changePassword () {
+
 			}
 		},
 		mounted() {

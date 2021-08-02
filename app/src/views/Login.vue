@@ -5,6 +5,7 @@
 			<FormRegister v-else/>
 			<a href="#" v-if="showSignup == false" v-on:click="showSignup = true">Or sign up here.</a>
 			<a href="#" v-else v-on:click="showSignup = false">Already a user? Log in here.</a>
+			<a href="/app/forgotpassword">Forgot password?</a>
 		</VModal>
 	</div>
 </template>

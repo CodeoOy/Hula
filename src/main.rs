@@ -200,8 +200,11 @@ async fn main() -> std::io::Result<()> {
 					)
 					.service(
 						web::resource("/register/{invitation_id}")
-							.route(web::put().to(handlers::register_handler::forgot_password))
 							.route(web::post().to(handlers::register_handler::register_user)),
+					)
+					.service(
+						web::resource("/forgotpassword/{invitation_id}")
+							.route(web::put().to(handlers::register_handler::forgot_password)),
 					)
 					.service(
 						web::resource("/auth")

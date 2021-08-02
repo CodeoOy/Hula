@@ -17,6 +17,7 @@ export default function setupRouter() {
 		routes: [
 			{ path: '/', component: views.Home, name: 'page-home'},
 			{ path: '/app/confirm', component: views.Confirm, name: 'page-confirm' },
+			{ path: '/app/forgotpassword', component: views.ForgotPassword, name: 'page-forgot-password' },
 			{ path: '/app/dashboard', component: views.Dashboard, name: 'page-dashboard' },
 			{ path: '/app/user/:id', component: views.Profile, name: 'page-profile' },
 			{ path: '/app/admin', component: views.Admin, name: 'page-admin' },
