@@ -1,20 +1,37 @@
 <template>
 	<div class="p-3 rounded-2 content-box bg-dark text-light">
+		<VModal :modalTitle="'Enter new password'" :modalID="'Password'" v-if="noPassword">
+			<FormResetPassword v-on:form-sent="hideModalUpdate" />
+		</VModal>
 		<h2>Raw registration data:</h2>
 		<pre>{{ registrationData }}</pre>
 	</div>
 </template>
 
 <script>
+	import VModal from '../components/VModal.vue'
+	import { Modal } from 'bootstrap'
+	import FormResetPassword from '../forms/FormResetPassword.vue'
 	import { useRoute } from 'vue-router'
 	export default {
 		name: 'ConfirmUser',
 		data: function() {
 			return {
 				registrationData: {},
+				noPassword: false,
 			};
 		},
+		components: {
+			VModal,
+			FormResetPassword,
+		},
 		methods: {
+			hideModalUpdate() {
+				this.checkProfile(this.$route.params.id)
+				this.getUserReservations(this.$route.params.id)
+				let modal = Modal.getInstance(document.querySelector('#hulaModalProfile'))
+				modal.hide()
+			},
 			confirmRegistration: function() {  
 				fetch(`/api/register/${this.registrationData.id}`, {
 					method: 'POST', 
@@ -44,6 +61,9 @@
 		mounted() {
 			const route = useRoute()
 			this.registrationData = route.query
+			if (this.registrationData.password == '') {
+				this.noPassword = true
+			}
 			this.confirmRegistration();
 		}
 	}
