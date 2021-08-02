@@ -1,5 +1,5 @@
 <template>
-	<v-form v-on:submit="inviteUser">
+	<v-form v-on:submit="setPassword">
 		<div class="mb-2">
 			<label class="form-label">Password</label>
 			<error-message name="password" class="error"></error-message>
@@ -18,7 +18,7 @@
 			<error-message name="passwordAgain" class="error"></error-message>
 			<v-field
 				v-model="formData.passwordAgain"
-				:rules="isRequired"
+				:rules="doubleCheck"
 				as="input"
 				type="text"
 				name="passwordAgain"
@@ -48,10 +48,23 @@ export default {
 		'VField': Field,
 		ErrorMessage
 	},
+	props: {
+
+	},
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
+		doubleCheck(value) {
+			if (this.formData.password === value) {
+				return true;
+			} else {
+				return 'Passwords do not match';
+			}
+		},
+		setPassword() {
+			this.$emit('resetPassword', this.formData.password);
+		}
 	}
 }
 </script>
