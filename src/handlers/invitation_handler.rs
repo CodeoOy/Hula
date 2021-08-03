@@ -3,9 +3,9 @@ use diesel::result::Error::NotFound;
 use log::{debug, trace};
 use serde::Deserialize;
 
-use crate::email_service::send_invitation;
+use crate::email_service::{send_invitation, send_reset_request};
 use crate::errors::ServiceError;
-use crate::models::invitations::{Invitation, Pool};
+use crate::models::invitations::{Invitation, Pool, ResetPasswordRequest};
 use crate::repositories::*;
 use crate::utils::hash_password;
 
@@ -16,6 +16,11 @@ pub struct InvitationData {
 	pub first_name: String,
 	pub last_name: String,
 	pub password_pending: bool,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ResetRequestData {
+	pub email: String,
 }
 
 pub async fn post_invitation(
@@ -40,7 +45,7 @@ pub async fn post_invitation(
 }
 
 fn create_invitation(invdata: InvitationData, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
-	let invitation = query(
+	let invitation = query_invitation(
 		invdata.email,
 		invdata.password_plain,
 		invdata.first_name,
@@ -51,7 +56,34 @@ fn create_invitation(invdata: InvitationData, pool: web::Data<Pool>) -> Result<(
 	send_invitation(&invitation)
 }
 
-fn query(
+pub async fn post_reset_request(
+	reset_request_data: web::Json<ResetRequestData>,
+	pool: web::Data<Pool>,
+) -> Result<HttpResponse, ServiceError> {
+	trace!("Posting reset_request: reset_request_data = {}", &reset_request_data.email);
+	let res = web::block(move || create_reset_request(reset_request_data.into_inner(), pool)).await;
+
+	match res {
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+fn create_reset_request(
+	invdata: ResetRequestData, 
+	pool: web::Data<Pool>
+) -> Result<(), crate::errors::ServiceError> {
+	let reset_request = query_reset_request(
+		invdata.email,
+		pool,
+	)?;
+	send_reset_request(&reset_request)
+}
+
+fn query_invitation(
 	eml: String,
 	psw: Option<String>,
 	first_name: String,
@@ -76,6 +108,27 @@ fn query(
 				&pool,
 			)?;
 			Ok(invitation)
+		}
+		Err(error) => Err(error.into()),
+	}
+}
+
+fn query_reset_request(
+	eml: String,
+	pool: web::Data<Pool>,
+) -> Result<ResetPasswordRequest, ServiceError> {
+	let res = users_repository::get_by_email(eml.clone(), &pool);
+	match res {
+		Ok(_) => {
+			let reset_request = reset_requests_repository::create_reset_request(
+				eml,
+				&pool,
+			)?;
+			Ok(reset_request)
+		}
+		Err(NotFound) => {
+			debug!("User ({}) not found. Cannot process reset request.", eml.clone());
+			return Err(ServiceError::Unauthorized);
 		}
 		Err(error) => Err(error.into()),
 	}

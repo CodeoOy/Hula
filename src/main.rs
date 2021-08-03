@@ -124,7 +124,7 @@ async fn main() -> std::io::Result<()> {
 					)
 					.service(
 						web::resource("/resetpassword")
-							.route(web::put().to(handlers::users_handler::forgotten_password)),
+							.route(web::post().to(handlers::invitation_handler::post_reset_request)),
 					)
 					.service(
 						web::resource("/skills")
