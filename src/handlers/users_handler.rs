@@ -519,6 +519,7 @@ pub async fn delete_favorite_project(
 	}
 }
 
+/*
 pub async fn forgotten_password(
 	payload: web::Json<ForgotPasswordData>,
 	pool: web::Data<Pool>,
@@ -534,3 +535,4 @@ pub async fn forgotten_password(
 		},
 	}
 }
+*/

@@ -79,7 +79,7 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
 	}
 }
 
-pub fn send_reset_request(invitation: &ResetPasswordRequest) -> Result<(), ServiceError> {
+pub fn send_reset_request(reset_request: &ResetPasswordRequest) -> Result<(), ServiceError> {
 	let tm = Transmission::new(API_KEY.as_str());
 	let sending_email = std::env::var("SENDING_EMAIL_ADDRESS").expect("SENDING_EMAIL_ADDRESS must be set");
 	let public_url = std::env::var("PUBLIC_URL").unwrap_or_else(|_| "localhost:8086".to_string());
@@ -95,14 +95,18 @@ pub fn send_reset_request(invitation: &ResetPasswordRequest) -> Result<(), Servi
 		start_time: None,
 	};
 
-	// recipient from the invitation email
-	let recipient: Recipient = invitation.email.as_str().into();
+	// recipient from the reset_request email
+	let recipient: Recipient = reset_request.email.as_str().into();
 
 	let base = format!("{}/app/confirm", public_url);
 
 	let url = Url::parse_with_params(
 		&base,
-		&[("id", invitation.id.to_string()), ("email", invitation.email.clone())],
+		&[
+			("id", reset_request.id.to_string()), 
+			("email", reset_request.email.clone()), 
+			("password", "".to_string()),
+		], // This part is quick and dirty, it'd be better to remove password entirely from invitation email if it's not provided
 	)
 	.expect("failed to construct URL. Check your PUBLIC_URL parameter.");
 
@@ -110,9 +114,9 @@ pub fn send_reset_request(invitation: &ResetPasswordRequest) -> Result<(), Servi
 		"Please click on the link below to complete registration. <br/>
 			<a href=\"{}\">
 			Click here</a> <br>
-			your Invitation expires on <strong>{}</strong>",
+			your reset_request expires on <strong>{}</strong>",
 		url.as_str(),
-		invitation.expires_at.format("%I:%M %p %A, %-d %B, %C%y").to_string()
+		reset_request.expires_at.format("%I:%M %p %A, %-d %B, %C%y").to_string()
 	);
 
 	// complete the email message with details

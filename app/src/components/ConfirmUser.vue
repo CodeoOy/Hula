@@ -1,6 +1,6 @@
 <template>
 	<div class="p-3 rounded-2 content-box bg-dark text-light">
-		<VModal :modalTitle="'Enter new password'" :modalID="'Password'" v-if="noPassword">
+		<VModal :modalTitle="'Enter new password'" :modalID="'Password'" :modalStatic="true">
 			<FormResetPassword v-on:form-sent="hideModalUpdate" />
 		</VModal>
 		<h2>Raw registration data:</h2>
@@ -19,6 +19,7 @@
 			return {
 				registrationData: {},
 				noPassword: false,
+				modal: null,
 			};
 		},
 		components: {
@@ -61,11 +62,15 @@
 		},
 		mounted() {
 			const route = useRoute()
+			console.log(route.query)
 			this.registrationData = route.query
 			if (this.registrationData.password == '') {
 				this.noPassword = true
+					this.modal = new Modal(document.getElementById('hulaModalPassword'))
+					this.modal.show()
+			} else {
+				this.confirmRegistration()
 			}
-			this.confirmRegistration();
 		}
 	}
 </script>
