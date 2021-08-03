@@ -18,12 +18,12 @@ pub struct Invitation {
 	pub updated_by: String,
 }
 
-pub struct ResetPasswordEmail {
+#[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
+#[table_name = "reset_requests"]
+pub struct ResetPasswordRequest {
 	pub id: uuid::Uuid,
 	pub email: String,
 	pub expires_at: chrono::NaiveDateTime,
-	pub password_pending: bool,
-	pub updated_by: String,
 }
 
 impl Invitation {
@@ -48,17 +48,13 @@ impl Invitation {
 	}
 }
 
-impl ResetPasswordEmail {
-	pub fn from_details<S: Into<String>>(
-		email: S,
-	) -> Self {
+impl ResetPasswordRequest {
+	pub fn from_details<S: Into<String>>(email: S) -> Self {
 		let emailstr: String = email.into();
-		ResetPasswordEmail {
+		ResetPasswordRequest {
 			id: uuid::Uuid::new_v4(),
 			email: String::from(&emailstr),
-			password_pending: true,
 			expires_at: chrono::Local::now().naive_local() + chrono::Duration::hours(24),
-			updated_by: emailstr,
 		}
 	}
 }

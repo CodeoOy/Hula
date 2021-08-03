@@ -67,7 +67,14 @@ fn query(
 			return Err(ServiceError::Unauthorized);
 		}
 		Err(NotFound) => {
-			let invitation = invitations_repository::create_invitation(eml, password_hashed, first_name, last_name, password_pending, &pool)?;
+			let invitation = invitations_repository::create_invitation(
+				eml,
+				password_hashed,
+				first_name,
+				last_name,
+				password_pending,
+				&pool,
+			)?;
 			Ok(invitation)
 		}
 		Err(error) => Err(error.into()),

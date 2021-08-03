@@ -523,18 +523,9 @@ pub async fn forgotten_password(
 	payload: web::Json<ForgotPasswordData>,
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!(
-		"Resetting password for: email = {:#?}",
-		&payload.email,
-	);
+	trace!("Resetting password for: email = {:#?}", &payload.email,);
 
-	let res = web::block(move || {
-		users_repository::set_pending(
-			payload.email.clone(),
-			&pool,
-		)
-	})
-	.await;
+	let res = web::block(move || users_repository::set_pending(payload.email.clone(), &pool)).await;
 	match res {
 		Ok(userskill) => Ok(HttpResponse::Ok().json(&userskill)),
 		Err(err) => match err {

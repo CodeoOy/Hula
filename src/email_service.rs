@@ -1,5 +1,5 @@
 use crate::errors::ServiceError;
-use crate::models::invitations::{Invitation, ResetPasswordEmail};
+use crate::models::invitations::{Invitation, ResetPasswordRequest};
 use log::{error, trace};
 use sparkpost::transmission::{EmailAddress, Message, Options, Recipient, Transmission, TransmissionResponse};
 use url::Url;
@@ -34,7 +34,10 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
 		&[
 			("id", invitation.id.to_string()),
 			("email", invitation.email.clone()),
-			("password", invitation.password_plain.clone().unwrap_or_else(|| "".to_string())),
+			(
+				"password",
+				invitation.password_plain.clone().unwrap_or_else(|| "".to_string()),
+			),
 		],
 	)
 	.expect("failed to construct URL. Check your PUBLIC_URL parameter.");
@@ -76,7 +79,7 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
 	}
 }
 
-pub fn send_passwordreset(invitation: &ResetPasswordEmail) -> Result<(), ServiceError> {
+pub fn send_passwordreset(invitation: &ResetPasswordRequest) -> Result<(), ServiceError> {
 	let tm = Transmission::new(API_KEY.as_str());
 	let sending_email = std::env::var("SENDING_EMAIL_ADDRESS").expect("SENDING_EMAIL_ADDRESS must be set");
 	let public_url = std::env::var("PUBLIC_URL").unwrap_or_else(|_| "localhost:8086".to_string());
@@ -99,10 +102,7 @@ pub fn send_passwordreset(invitation: &ResetPasswordEmail) -> Result<(), Service
 
 	let url = Url::parse_with_params(
 		&base,
-		&[
-			("id", invitation.id.to_string()),
-			("email", invitation.email.clone()),
-		],
+		&[("id", invitation.id.to_string()), ("email", invitation.email.clone())],
 	)
 	.expect("failed to construct URL. Check your PUBLIC_URL parameter.");
 

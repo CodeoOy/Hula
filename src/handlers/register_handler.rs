@@ -1,7 +1,7 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
+use diesel::{prelude::*, PgConnection};
 use log::trace;
 use serde::Deserialize;
-use diesel::{prelude::*, PgConnection};
 
 use crate::errors::ServiceError;
 use crate::models::invitations::Pool;
@@ -43,9 +43,7 @@ pub fn query_forgot(user_data: UserData, pool: web::Data<Pool>) -> Result<User, 
 		if invitation.expires_at > chrono::Local::now().naive_local() {
 			let user = diesel::update(users)
 				.filter(email.eq(user_data.email))
-				.set((
-					hash.eq(password_hashed),
-				))
+				.set((hash.eq(password_hashed),))
 				.get_result::<User>(conn)?;
 
 			return Ok(user);
