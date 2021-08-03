@@ -3,9 +3,11 @@
 		<VModal :modalID="'login'" :modalStatic="true">
 			<FormLogin v-if="showSignup == false" v-on:hide-modal="hideModal"/>
 			<FormRegister v-else/>
-			<a href="#" v-if="showSignup == false" v-on:click="showSignup = true">Or sign up here.</a>
-			<a href="#" v-else v-on:click="showSignup = false">Already a user? Log in here.</a>
-			<a href="/app/forgotpassword">Forgot password?</a>
+			<p>
+				<a href="#" v-if="showSignup == false" v-on:click="showSignup = true">Or sign up here.</a>
+				<a href="#" v-else v-on:click="showSignup = false">Already a user? Log in here.</a>
+			</p>
+			<p><a href="/app/forgotpassword">Forgot password?</a></p>
 		</VModal>
 	</div>
 </template>

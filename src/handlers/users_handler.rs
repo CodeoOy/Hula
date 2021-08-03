@@ -512,3 +512,42 @@ pub async fn delete_favorite_project(
 		},
 	}
 }
+
+pub async fn forgotten_password(
+	id: web::Path<String>,
+	payload: web::Json<UserSkillData>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!(
+		"Updating user skills: id = {:#?} payload = {:#?} logged_user = {:#?}",
+		&id,
+		&payload,
+		&logged_user
+	);
+
+	let skill_id = uuid::Uuid::parse_str(&id.into_inner())?;
+
+	if logged_user.isadmin == false && logged_user.uid != payload.user_id {
+		return Err(ServiceError::AdminRequired);
+	}
+
+	let res = web::block(move || {
+		userskills_repository::update_skill(
+			skill_id,
+			payload.user_id.clone(),
+			payload.skillscopelevel_id,
+			payload.years,
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
+	match res {
+		Ok(userskill) => Ok(HttpResponse::Ok().json(&userskill)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}

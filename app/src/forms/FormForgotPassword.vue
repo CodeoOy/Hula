@@ -21,10 +21,13 @@
 import { Field, Form, ErrorMessage } from 'vee-validate';
 export default {
 	name: 'FormForgotPassword',
-	props: {
-		url: '',
-		method: '',
-	},
+	data () {
+        return {
+            formData: {
+				email: ''
+			},
+        }
+    },
 	components: {
 		'VForm': Form,
 		'VField': Field,
@@ -32,7 +35,12 @@ export default {
 	},
 	methods: {
 		resetPassword() {
-			fetch(this.url, {method: this.method})
+			fetch('/api/resetpassword', {
+				method: 'POST',
+				headers: {"Content-Type": "application/json"},
+				credentials: 'include',
+				body: JSON.stringify(this.formData)
+			})
 			.then(response => { 
 				return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
 			})
