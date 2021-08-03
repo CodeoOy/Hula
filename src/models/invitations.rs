@@ -51,7 +51,6 @@ impl Invitation {
 impl ResetPasswordEmail {
 	pub fn from_details<S: Into<String>>(
 		email: S,
-		password_pending: bool,
 	) -> Self {
 		let emailstr: String = email.into();
 		ResetPasswordEmail {
