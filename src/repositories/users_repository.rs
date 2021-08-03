@@ -73,6 +73,24 @@ pub fn update(
 	Ok(user)
 }
 
+pub fn set_pending(
+	q_email: String,
+	pool: &web::Data<Pool>,
+) -> Result<User, Error> {
+	use crate::schema::users::dsl::{email, password_pending, updated_by, users};
+	let conn: &PgConnection = &pool.get().unwrap();
+
+	let user = diesel::update(users)
+		.filter(email.eq(q_email.clone()))
+		.set((
+			password_pending.eq(true),
+			updated_by.eq(q_email),
+		))
+		.get_result::<User>(conn)?;
+
+	Ok(user)
+}
+
 pub fn delete_user(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::users::dsl::id;

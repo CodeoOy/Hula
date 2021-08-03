@@ -123,7 +123,7 @@ async fn main() -> std::io::Result<()> {
 							.route(web::delete().to(handlers::users_handler::delete_reservation)),
 					)
 					.service(
-						web::resource("/resetpassword/{id}")
+						web::resource("/resetpassword")
 							.route(web::put().to(handlers::users_handler::forgotten_password)),
 					)
 					.service(

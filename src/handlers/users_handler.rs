@@ -56,6 +56,7 @@ pub struct UserDTO {
 	pub lastname: String,
 	pub skills: Vec<SkillDTO>,
 }
+
 #[derive(Serialize, Debug)]
 pub struct SkillDTO {
 	pub id: uuid::Uuid,
@@ -64,6 +65,11 @@ pub struct SkillDTO {
 	pub skillscopelevel_id: uuid::Uuid,
 	pub years: Option<f64>,
 	pub skill_label: String,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ForgotPasswordData {
+	pub email: String,
 }
 
 pub async fn get_all(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
@@ -514,31 +520,17 @@ pub async fn delete_favorite_project(
 }
 
 pub async fn forgotten_password(
-	id: web::Path<String>,
-	payload: web::Json<UserSkillData>,
+	payload: web::Json<ForgotPasswordData>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!(
-		"Updating user skills: id = {:#?} payload = {:#?} logged_user = {:#?}",
-		&id,
-		&payload,
-		&logged_user
+		"Resetting password for: email = {:#?}",
+		&payload.email,
 	);
 
-	let skill_id = uuid::Uuid::parse_str(&id.into_inner())?;
-
-	if logged_user.isadmin == false && logged_user.uid != payload.user_id {
-		return Err(ServiceError::AdminRequired);
-	}
-
 	let res = web::block(move || {
-		userskills_repository::update_skill(
-			skill_id,
-			payload.user_id.clone(),
-			payload.skillscopelevel_id,
-			payload.years,
-			logged_user.email,
+		users_repository::set_pending(
+			payload.email.clone(),
 			&pool,
 		)
 	})
