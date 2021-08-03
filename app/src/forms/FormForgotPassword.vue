@@ -36,7 +36,7 @@ export default {
 	methods: {
 		resetPassword() {
 			fetch('/api/resetpassword', {
-				method: 'POST',
+				method: 'PUT',
 				headers: {"Content-Type": "application/json"},
 				credentials: 'include',
 				body: JSON.stringify(this.formData)
