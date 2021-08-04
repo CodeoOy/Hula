@@ -63,7 +63,7 @@ export default {
 			}
 		},
 		setPassword() {
-			this.$emit('resetPassword', this.formData.password);
+			this.$emit('formSent', this.formData.password);
 		}
 	}
 }

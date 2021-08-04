@@ -70,6 +70,7 @@ pub struct SkillDTO {
 #[derive(Deserialize, Debug)]
 pub struct ForgotPasswordData {
 	pub email: String,
+	pub password: String,
 }
 
 pub async fn get_all(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
@@ -519,20 +520,20 @@ pub async fn delete_favorite_project(
 	}
 }
 
-/*
-pub async fn forgotten_password(
+
+pub async fn update_password(
 	payload: web::Json<ForgotPasswordData>,
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Resetting password for: email = {:#?}", &payload.email,);
 
-	let res = web::block(move || users_repository::set_pending(payload.email.clone(), &pool)).await;
+	let res = web::block(move || users_repository::set_password(payload.email.clone(), payload.password.clone(), &pool)).await;
 	match res {
-		Ok(userskill) => Ok(HttpResponse::Ok().json(&userskill)),
+		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
 }
-*/
+
