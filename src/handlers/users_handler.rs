@@ -83,6 +83,8 @@ pub struct File {
 #[derive(Deserialize)]
 pub struct Download {
 	name: String,
+}
+
 #[derive(Deserialize, Debug)]
 pub struct ForgotPasswordData {
 	pub email: String,
