@@ -141,7 +141,7 @@ table! {
 		id -> Uuid,
 		user_id -> Uuid,
 		skill_id -> Uuid,
-		skillscopelevel_id -> Uuid,
+		skillscopelevel_id -> Nullable<Uuid>,
 		years -> Nullable<Double>,
 		updated_by -> Varchar,
 	}

@@ -25,7 +25,7 @@ pub struct NewUserData {
 #[derive(Deserialize, Debug)]
 pub struct UserSkillData {
 	pub skill_id: uuid::Uuid,
-	pub skillscopelevel_id: uuid::Uuid,
+	pub skillscopelevel_id: Option<uuid::Uuid>,
 	pub years: Option<f64>,
 	pub user_id: uuid::Uuid,
 }
@@ -62,7 +62,7 @@ pub struct SkillDTO {
 	pub id: uuid::Uuid,
 	pub user_id: uuid::Uuid,
 	pub skill_id: uuid::Uuid,
-	pub skillscopelevel_id: uuid::Uuid,
+	pub skillscopelevel_id: Option<uuid::Uuid>,
 	pub years: Option<f64>,
 	pub skill_label: String,
 }

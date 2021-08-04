@@ -34,7 +34,7 @@ pub struct UserSkill {
 	pub id: uuid::Uuid,
 	pub user_id: uuid::Uuid,
 	pub skill_id: uuid::Uuid,
-	pub skillscopelevel_id: uuid::Uuid,
+	pub skillscopelevel_id: Option<uuid::Uuid>,
 	pub years: Option<f64>,
 	pub updated_by: String,
 }

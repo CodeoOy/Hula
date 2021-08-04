@@ -18,7 +18,7 @@ pub fn query_belong_to_user(user: &User, pool: &web::Data<Pool>) -> Result<Vec<U
 pub fn add_skill(
 	uuid_data: uuid::Uuid,
 	q_skill_id: uuid::Uuid,
-	q_skillscopelevel_id: uuid::Uuid,
+	q_skillscopelevel_id: Option<uuid::Uuid>,
 	q_years: Option<f64>,
 	q_email: String,
 	pool: &web::Data<Pool>,
@@ -45,7 +45,7 @@ pub fn add_skill(
 pub fn update_skill(
 	q_uuid_data: uuid::Uuid,
 	q_user_id: uuid::Uuid,
-	q_skillscopelevel_id: uuid::Uuid,
+	q_skillscopelevel_id: Option<uuid::Uuid>,
 	q_years: Option<f64>,
 	q_email: String,
 	pool: &web::Data<Pool>,
