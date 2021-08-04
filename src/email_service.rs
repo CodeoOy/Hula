@@ -113,10 +113,10 @@ pub fn send_reset_request(reset_request: &ResetPasswordRequest) -> Result<(), Se
 	.expect("failed to construct URL. Check your PUBLIC_URL parameter.");
 
 	let email_body = format!(
-		"Please click on the link below to complete registration. <br/>
+		"You have requested a password reset. Please follow the following link to complete the process: <br/>
 			<a href=\"{}\">
 			Click here</a> <br>
-			your reset_request expires on <strong>{}</strong>",
+			Your reset request expires on <strong>{}</strong>",
 		url.as_str(),
 		reset_request.expires_at.format("%I:%M %p %A, %-d %B, %C%y").to_string()
 	);
@@ -125,7 +125,7 @@ pub fn send_reset_request(reset_request: &ResetPasswordRequest) -> Result<(), Se
 	email
 		.add_recipient(recipient)
 		.options(options)
-		.subject("You have been invited to join Hula ERP.")
+		.subject("You have requested a password reset at Hula.")
 		.html(email_body);
 
 	let result = tm.send(&email);
