@@ -104,8 +104,8 @@ pub fn send_reset_request(reset_request: &ResetPasswordRequest) -> Result<(), Se
 	let url = Url::parse_with_params(
 		&base,
 		&[
-			("id", reset_request.id.to_string()), 
-			("email", reset_request.email.clone()), 
+			("id", reset_request.id.to_string()),
+			("email", reset_request.email.clone()),
 			("password", "".to_string()),
 			("type", "reset".to_string()),
 		], // This part is quick and dirty, it'd be better to remove password entirely from invitation email if it's not provided

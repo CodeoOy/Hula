@@ -6,10 +6,7 @@ use crate::models::invitations::ResetPasswordRequest;
 use crate::models::users::Pool;
 use diesel::result::Error;
 
-pub fn create_reset_request(
-	q_email: String,
-	pool: &web::Data<Pool>,
-) -> Result<ResetPasswordRequest, Error> {
+pub fn create_reset_request(q_email: String, pool: &web::Data<Pool>) -> Result<ResetPasswordRequest, Error> {
 	use crate::schema::reset_requests::dsl::reset_requests;
 	let conn: &PgConnection = &pool.get().unwrap();
 

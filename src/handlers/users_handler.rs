@@ -520,14 +520,15 @@ pub async fn delete_favorite_project(
 	}
 }
 
-
 pub async fn update_password(
 	payload: web::Json<ForgotPasswordData>,
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Resetting password for: email = {:#?}", &payload.email,);
 
-	let res = web::block(move || users_repository::set_password(payload.email.clone(), payload.password.clone(), &pool)).await;
+	let res =
+		web::block(move || users_repository::set_password(payload.email.clone(), payload.password.clone(), &pool))
+			.await;
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
@@ -536,4 +537,3 @@ pub async fn update_password(
 		},
 	}
 }
-

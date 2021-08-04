@@ -60,7 +60,10 @@ pub async fn post_reset_request(
 	reset_request_data: web::Json<ResetRequestData>,
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Posting reset_request: reset_request_data = {}", &reset_request_data.email);
+	trace!(
+		"Posting reset_request: reset_request_data = {}",
+		&reset_request_data.email
+	);
 	let res = web::block(move || create_reset_request(reset_request_data.into_inner(), pool)).await;
 
 	match res {
@@ -72,14 +75,8 @@ pub async fn post_reset_request(
 	}
 }
 
-fn create_reset_request(
-	invdata: ResetRequestData, 
-	pool: web::Data<Pool>
-) -> Result<(), crate::errors::ServiceError> {
-	let reset_request = query_reset_request(
-		invdata.email,
-		pool,
-	)?;
+fn create_reset_request(invdata: ResetRequestData, pool: web::Data<Pool>) -> Result<(), crate::errors::ServiceError> {
+	let reset_request = query_reset_request(invdata.email, pool)?;
 	send_reset_request(&reset_request)
 }
 
@@ -113,17 +110,11 @@ fn query_invitation(
 	}
 }
 
-fn query_reset_request(
-	eml: String,
-	pool: web::Data<Pool>,
-) -> Result<ResetPasswordRequest, ServiceError> {
+fn query_reset_request(eml: String, pool: web::Data<Pool>) -> Result<ResetPasswordRequest, ServiceError> {
 	let res = users_repository::get_by_email(eml.clone(), &pool);
 	match res {
 		Ok(_) => {
-			let reset_request = reset_requests_repository::create_reset_request(
-				eml,
-				&pool,
-			)?;
+			let reset_request = reset_requests_repository::create_reset_request(eml, &pool)?;
 			Ok(reset_request)
 		}
 		Err(NotFound) => {

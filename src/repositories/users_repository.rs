@@ -1,8 +1,8 @@
 use crate::models::users::{Pool, User};
+use crate::utils::hash_password;
 use actix_web::web;
 use diesel::result::Error;
 use diesel::{prelude::*, PgConnection};
-use crate::utils::hash_password;
 use Error::NotFound;
 
 pub fn query_all(pool: &web::Data<Pool>) -> Result<Vec<User>, Error> {
@@ -75,7 +75,7 @@ pub fn update(
 }
 
 pub fn set_password(q_email: String, q_password: String, pool: &web::Data<Pool>) -> Result<User, Error> {
-	use crate::schema::users::dsl::{email, password_pending, hash, updated_by, users};
+	use crate::schema::users::dsl::{email, hash, password_pending, updated_by, users};
 	let conn: &PgConnection = &pool.get().unwrap();
 	let password_hashed = hash_password(&q_password).unwrap();
 
