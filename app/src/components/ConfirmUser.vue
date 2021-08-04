@@ -3,8 +3,11 @@
 		<VModal :modalTitle="'Enter new password'" :modalID="'Password'" :modalStatic="true">
 			<FormResetPassword v-on:form-sent="changePassword" />
 		</VModal>
-		<h2>Raw registration data:</h2>
-		<pre>{{ registrationData }}</pre>
+		<div v-if="confirmed">
+			<h2>Account confirmed.</h2>
+			<p>registration data:</p>
+			<pre>{{ registrationData }}</pre>
+		</div>
 	</div>
 </template>
 
@@ -20,6 +23,7 @@
 				registrationData: {},
 				noPassword: false,
 				modal: null,
+				confirmed: false,
 			};
 		},
 		components: {
@@ -57,6 +61,7 @@
 						title: 'Account confirmed.',
 						time: 2000
 					});
+					this.confirmed = true
 				})
 				.catch((errors) => {
 					console.log("Error data: " + errors);
@@ -82,6 +87,7 @@
 						title: 'Account confirmed.',
 						time: 2000
 					});
+					this.confirmed = true
 				})
 				.catch((errors) => {
 					console.log("Error data: " + errors);
