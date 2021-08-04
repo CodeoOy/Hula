@@ -24,6 +24,7 @@ pub struct User {
 	pub inserted_at: chrono::NaiveDateTime,
 	pub updated_by: String,
 	pub is_employee: bool,
+	pub password_pending: bool,
 }
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
@@ -33,7 +34,7 @@ pub struct UserSkill {
 	pub id: uuid::Uuid,
 	pub user_id: uuid::Uuid,
 	pub skill_id: uuid::Uuid,
-	pub skillscopelevel_id: uuid::Uuid,
+	pub skillscopelevel_id: Option<uuid::Uuid>,
 	pub years: Option<f64>,
 	pub updated_by: String,
 }
@@ -87,6 +88,7 @@ impl User {
 		pwd: T,
 		first_name: U,
 		last_name: V,
+		password_pending: bool,
 	) -> Self {
 		let emailstr: String = email.into();
 		User {
@@ -100,6 +102,7 @@ impl User {
 			inserted_at: chrono::Local::now().naive_local(),
 			updated_by: emailstr,
 			is_employee: false,
+			password_pending: password_pending,
 		}
 	}
 }

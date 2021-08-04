@@ -2,10 +2,11 @@ table! {
 	invitations (id) {
 		id -> Uuid,
 		email -> Varchar,
-		password_plain -> Varchar,
+		password_plain -> Nullable<Varchar>,
 		first_name -> Varchar,
 		last_name -> Varchar,
 		expires_at -> Timestamp,
+		password_pending -> Bool,
 		updated_by -> Varchar,
 	}
 }
@@ -40,6 +41,14 @@ table! {
 		is_hidden-> Bool,
 		name -> Varchar,
 		updated_by -> Varchar,
+	}
+}
+
+table! {
+	reset_requests (id) {
+		id -> Uuid,
+		email -> Varchar,
+		expires_at -> Timestamp,
 	}
 }
 
@@ -123,6 +132,7 @@ table! {
 		inserted_at -> Timestamp,
 		updated_by -> Varchar,
 		is_employee -> Bool,
+		password_pending -> Bool,
 	}
 }
 
@@ -131,7 +141,7 @@ table! {
 		id -> Uuid,
 		user_id -> Uuid,
 		skill_id -> Uuid,
-		skillscopelevel_id -> Uuid,
+		skillscopelevel_id -> Nullable<Uuid>,
 		years -> Nullable<Double>,
 		updated_by -> Varchar,
 	}

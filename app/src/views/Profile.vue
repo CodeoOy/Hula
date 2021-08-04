@@ -181,6 +181,9 @@
 			getUserReservations(id) {
 				fetch(`/api/userreservations/${id}`, {method: 'GET'})
 				.then(response => {
+					if (response.status == 204) {
+						return []
+					}
 					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
 				})
 				.then(response => {

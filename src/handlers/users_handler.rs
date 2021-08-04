@@ -33,7 +33,7 @@ pub struct NewUserData {
 #[derive(Deserialize, Debug)]
 pub struct UserSkillData {
 	pub skill_id: uuid::Uuid,
-	pub skillscopelevel_id: uuid::Uuid,
+	pub skillscopelevel_id: Option<uuid::Uuid>,
 	pub years: Option<f64>,
 	pub user_id: uuid::Uuid,
 }
@@ -64,12 +64,13 @@ pub struct UserDTO {
 	pub lastname: String,
 	pub skills: Vec<SkillDTO>,
 }
+
 #[derive(Serialize, Debug)]
 pub struct SkillDTO {
 	pub id: uuid::Uuid,
 	pub user_id: uuid::Uuid,
 	pub skill_id: uuid::Uuid,
-	pub skillscopelevel_id: uuid::Uuid,
+	pub skillscopelevel_id: Option<uuid::Uuid>,
 	pub years: Option<f64>,
 	pub skill_label: String,
 }
@@ -82,6 +83,10 @@ pub struct File {
 #[derive(Deserialize)]
 pub struct Download {
 	name: String,
+#[derive(Deserialize, Debug)]
+pub struct ForgotPasswordData {
+	pub email: String,
+	pub password: String,
 }
 
 pub async fn get_all(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
@@ -564,4 +569,22 @@ pub async fn download(info: web::Path<Download>) -> HttpResponse {
 			format!("form-data; filename={}", info.name.to_string()),
 		)
 		.body(data)
+}
+
+pub async fn update_password(
+	payload: web::Json<ForgotPasswordData>,
+	pool: web::Data<Pool>,
+) -> Result<HttpResponse, ServiceError> {
+	trace!("Resetting password for: email = {:#?}", &payload.email,);
+
+	let res =
+		web::block(move || users_repository::set_password(payload.email.clone(), payload.password.clone(), &pool))
+			.await;
+	match res {
+		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
 }

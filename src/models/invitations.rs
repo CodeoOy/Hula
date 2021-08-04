@@ -10,29 +10,51 @@ pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 pub struct Invitation {
 	pub id: uuid::Uuid,
 	pub email: String,
-	pub password_plain: String,
+	pub password_plain: Option<String>,
 	pub first_name: String,
 	pub last_name: String,
 	pub expires_at: chrono::NaiveDateTime,
+	pub password_pending: bool,
 	pub updated_by: String,
 }
 
+#[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
+#[table_name = "reset_requests"]
+pub struct ResetPasswordRequest {
+	pub id: uuid::Uuid,
+	pub email: String,
+	pub expires_at: chrono::NaiveDateTime,
+}
+
 impl Invitation {
-	pub fn from_details<S: Into<String>, T: Into<String>, U: Into<String>, V: Into<String>>(
+	pub fn from_details<S: Into<String>, T: Into<String>, U: Into<String>>(
 		email: S,
-		password_plain: T,
-		first_name: U,
-		last_name: V,
+		password_plain: Option<String>,
+		first_name: T,
+		last_name: U,
+		password_pending: bool,
 	) -> Self {
 		let emailstr: String = email.into();
 		Invitation {
 			id: uuid::Uuid::new_v4(),
 			email: String::from(&emailstr),
-			password_plain: password_plain.into(),
+			password_plain: password_plain,
 			first_name: first_name.into(),
 			last_name: last_name.into(),
+			password_pending: password_pending,
 			expires_at: chrono::Local::now().naive_local() + chrono::Duration::hours(24),
 			updated_by: emailstr,
+		}
+	}
+}
+
+impl ResetPasswordRequest {
+	pub fn from_details<S: Into<String>>(email: S) -> Self {
+		let emailstr: String = email.into();
+		ResetPasswordRequest {
+			id: uuid::Uuid::new_v4(),
+			email: String::from(&emailstr),
+			expires_at: chrono::Local::now().naive_local() + chrono::Duration::hours(24),
 		}
 	}
 }

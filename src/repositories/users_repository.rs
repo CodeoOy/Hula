@@ -1,4 +1,5 @@
 use crate::models::users::{Pool, User};
+use crate::utils::hash_password;
 use actix_web::web;
 use diesel::result::Error;
 use diesel::{prelude::*, PgConnection};
@@ -36,12 +37,13 @@ pub fn create(
 	q_password: String,
 	q_first_name: String,
 	q_last_name: String,
+	q_password_pending: bool,
 	pool: &web::Data<Pool>,
 ) -> Result<User, Error> {
 	use crate::schema::users::dsl::users;
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let new_user = User::from_details(q_email, q_password, q_first_name, q_last_name);
+	let new_user = User::from_details(q_email, q_password, q_first_name, q_last_name, q_password_pending);
 
 	let user: User = diesel::insert_into(users).values(&new_user).get_result(conn)?;
 
@@ -65,6 +67,23 @@ pub fn update(
 			firstname.eq(q_first_name),
 			lastname.eq(q_last_name),
 			is_hidden.eq(q_user_is_hidden),
+			updated_by.eq(q_email),
+		))
+		.get_result::<User>(conn)?;
+
+	Ok(user)
+}
+
+pub fn set_password(q_email: String, q_password: String, pool: &web::Data<Pool>) -> Result<User, Error> {
+	use crate::schema::users::dsl::{email, hash, password_pending, updated_by, users};
+	let conn: &PgConnection = &pool.get().unwrap();
+	let password_hashed = hash_password(&q_password).unwrap();
+
+	let user = diesel::update(users)
+		.filter(email.eq(q_email.clone()))
+		.set((
+			hash.eq(password_hashed),
+			password_pending.eq(false),
 			updated_by.eq(q_email),
 		))
 		.get_result::<User>(conn)?;

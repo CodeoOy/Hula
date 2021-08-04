@@ -8,15 +8,16 @@ use diesel::result::Error;
 
 pub fn create_invitation(
 	q_email: String,
-	q_password: String,
+	q_password: Option<String>,
 	q_first_name: String,
 	q_last_name: String,
+	q_password_pending: bool,
 	pool: &web::Data<Pool>,
 ) -> Result<Invitation, Error> {
 	use crate::schema::invitations::dsl::invitations;
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let new_invitation = Invitation::from_details(q_email, q_password, q_first_name, q_last_name);
+	let new_invitation = Invitation::from_details(q_email, q_password, q_first_name, q_last_name, q_password_pending);
 
 	let invitation = diesel::insert_into(invitations)
 		.values(&new_invitation)
