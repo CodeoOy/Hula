@@ -31,6 +31,16 @@
 				let modal = Modal.getInstance(document.querySelector('#hulaModalPassword'))
 				modal.hide()
 			},
+			changePassword (value) {
+				this.registrationData.password = value
+				this.noPassword = false
+				this.hideModalUpdate()
+				if (this.registrationData.type == 'reset') {
+					this.setPassword()
+				} else {
+					this.confirmRegistration()
+				}
+			},
 			confirmRegistration: function() {  
 				fetch(`/api/register/${this.registrationData.id}`, {
 					method: 'POST', 
@@ -56,10 +66,7 @@
 					});
 				})      
 			},
-			changePassword (value) {
-				this.registrationData.password = value
-				this.noPassword = false
-				this.hideModalUpdate()
+			setPassword () {
 				fetch('/api/updatepassword', {
 					method: 'PUT', 
 					headers: {"Content-Type": "application/json"}, 

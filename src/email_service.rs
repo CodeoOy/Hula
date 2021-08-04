@@ -38,6 +38,7 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
 				"password",
 				invitation.password_plain.clone().unwrap_or_else(|| "".to_string()),
 			),
+			("type", "invitation".to_string()),
 		],
 	)
 	.expect("failed to construct URL. Check your PUBLIC_URL parameter.");
@@ -106,6 +107,7 @@ pub fn send_reset_request(reset_request: &ResetPasswordRequest) -> Result<(), Se
 			("id", reset_request.id.to_string()), 
 			("email", reset_request.email.clone()), 
 			("password", "".to_string()),
+			("type", "reset".to_string()),
 		], // This part is quick and dirty, it'd be better to remove password entirely from invitation email if it's not provided
 	)
 	.expect("failed to construct URL. Check your PUBLIC_URL parameter.");
