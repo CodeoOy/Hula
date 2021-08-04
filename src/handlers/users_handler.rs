@@ -1,9 +1,17 @@
 use crate::errors::ServiceError;
 use crate::models::users::{LoggedUser, Pool};
 use crate::repositories::*;
+use actix_multipart::Multipart;
+use actix_web::Error;
 use actix_web::{error::BlockingError, web, HttpResponse};
+use dotenv::dotenv;
+use futures::{StreamExt, TryStreamExt};
 use log::trace;
 use serde::{Deserialize, Serialize};
+use std::env;
+use std::fs;
+use std::io::Write;
+use std::path::Path;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
@@ -67,6 +75,14 @@ pub struct SkillDTO {
 	pub skill_label: String,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct File {
+	name: String,
+}
+
+#[derive(Deserialize)]
+pub struct Download {
+	name: String,
 #[derive(Deserialize, Debug)]
 pub struct ForgotPasswordData {
 	pub email: String,
@@ -518,6 +534,41 @@ pub async fn delete_favorite_project(
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
+}
+
+pub async fn save_file(mut payload: Multipart) -> Result<HttpResponse, Error> {
+	dotenv::dotenv().ok();
+	let mut filename = "".to_string();
+	while let Ok(Some(mut field)) = payload.try_next().await {
+		let cv_path = env::var("CV_PATH").expect("path must be set.");
+		filename = format!(".pdf");
+	//	filename = format!("{}.pdf", logged_user.uid.to_string());
+		let filepath = format!("{}/{}", cv_path, filename);
+		let mut file = web::block(|| std::fs::File::create(filepath)).await.unwrap();
+		while let Some(chunk) = field.next().await {
+			let data = chunk.unwrap();
+			file = web::block(move || file.write_all(&data).map(|_| file)).await?;
+		}
+	}
+	Ok(HttpResponse::Ok().json(&File { name: filename }))
+}
+
+pub async fn download(info: web::Path<Download>) -> HttpResponse {
+	dotenv().ok();
+	let cv_path = env::var("CV_PATH").expect("cv_path not found");
+	let path = format!("{}/{}", cv_path, info.name.to_string());
+	if !Path::new(path.as_str()).exists() {
+		return HttpResponse::NotFound().json(&File {
+			name: info.name.to_string(),
+		});
+	}
+	let data = fs::read(path).unwrap();
+	HttpResponse::Ok()
+		.header(
+			"Content-Disposition",
+			format!("form-data; filename={}", info.name.to_string()),
+		)
+		.body(data)
 }
 
 pub async fn update_password(
