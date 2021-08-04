@@ -155,7 +155,7 @@
 			getSkillScopeLabel(id) {
 				if (id.length) {
 					var scope = this.skillScopes.find(skillScope => skillScope.id == id)
-					console.log(`Scope: ${scope}, id param: ${id}, searched id: ${skillScope.id}`)
+					console.log(`Scope: ${scope}, id param: ${id}`)
 					console.log(`Scope label: ${scope.label}`)
 					return scope.label
 				}
