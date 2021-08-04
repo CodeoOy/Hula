@@ -83,6 +83,7 @@ export default {
 		inviteUser() {
 			if (this.formData.password_plain.length == 0) {
 				delete this.formData.password_plain;
+				this.formData.password_pending = true;
 			}
 			fetch('/api/invitations', {
 				method: 'POST',

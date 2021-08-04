@@ -40,6 +40,7 @@
 				} else {
 					this.confirmRegistration()
 				}
+				this.$router.push('/')
 			},
 			confirmRegistration: function() {  
 				fetch(`/api/register/${this.registrationData.id}`, {
