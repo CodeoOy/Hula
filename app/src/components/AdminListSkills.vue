@@ -153,7 +153,7 @@
 				return this.skills.filter(skill => skill.skillcategory_id == id)
 			},
 			getSkillScopeLabel(id) {
-				if (id) {
+				if (id.length) {
 					var scope = this.skillScopes.find(skillScope => skillScope.id == id)
 					return scope.label
 				}
