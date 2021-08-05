@@ -48,9 +48,9 @@ export default {
             var r = parseInt(colorhex.substr(1, 2), 16);
             var g = parseInt(colorhex.substr(3, 2), 16);
             var b = parseInt(colorhex.substr(5, 2), 16);
-            this.r = r + 166 / 1.5
-            this.g = g + 13 / 10
-            this.b = b + 112 / 2
+            this.r = (r + 166) / 1.5
+            this.g = (g + 13) / 10
+            this.b = (b + 112) / 2
             return `rgba(${this.r}, ${this.g}, ${this.b}, 0.9)`
         },
         /*
