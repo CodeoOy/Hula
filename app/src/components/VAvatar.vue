@@ -33,14 +33,15 @@ export default {
     methods: {
         // get color brightness from hex
         textColor(color) {
-            var r = parseInt(color.substr(2, 2), 16);
-            var g = parseInt(color.substr(4, 2), 16);
-            var b = parseInt(color.substr(6, 2), 16);
+            var r = parseInt(color.substr(1, 2), 16);
+            var g = parseInt(color.substr(3, 2), 16);
+            var b = parseInt(color.substr(5, 2), 16);
             var brightness = (r * 299 + g * 587 + b * 114) / 1000;
+            console.log(`rgb: ${r} ${g} ${b}. brightness: ${brightness}`)
             return brightness < 128 ? '#97ffcb' : '#210e26';
         },
         color() {
-            var colorhex = this.id.substring(0,6)
+            var colorhex = this.id.substring(1,7)
             return '#' + colorhex
         }
         // TODO: Tint the hue towards the theme colors
