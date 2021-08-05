@@ -581,14 +581,9 @@ pub async fn update_password(
 	trace!("Resetting password for: email = {:#?}", &payload.email,);
 
 	let id = reset_requests_repository::get_by_reset_request(payload.id.clone(), &pool);
-	/*
-	if id.is_none() {
-		return Err(ServiceError::Gone);
-	}
-	*/
 	match id {
-		Ok(reset_request) => println!("Reset request found"),
-		Err(err) => return Err(ServiceError::InternalServerError),
+		Ok(_) => println!("Reset request found"),
+		Err(_) => return Err(ServiceError::InternalServerError),
 	}
 
 	let res =

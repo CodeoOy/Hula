@@ -42,6 +42,9 @@
         },
         computed: {
             matches() {
+                if (!this.suggestions.length) {
+                    return []
+                }
                 var matches = this.suggestions.filter(item => {
                     return item[this.filterProperties].toUpperCase().indexOf(this.selection.toUpperCase()) >= 0;
                 });
