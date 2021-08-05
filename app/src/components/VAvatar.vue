@@ -46,13 +46,15 @@ export default {
             return brightness < 128 ? '#97ffcb' : '#210e26';
         },
         color() {
+            //var colorhex = "0000ff".substring(0,6)
             var colorhex = this.id.substring(1,7)
-            var r = parseInt(colorhex.substr(1, 2), 16);
-            var g = parseInt(colorhex.substr(3, 2), 16);
-            var b = parseInt(colorhex.substr(5, 2), 16);
+            var r = parseInt(colorhex.substr(0, 2), 16);
+            var g = parseInt(colorhex.substr(2, 2), 16);
+            var b = parseInt(colorhex.substr(4, 2), 16);
+            //console.log(`rgba(${r}, ${g}, ${b}, 0.9)`)
             this.r = r < 166 ? r + 50 : r - 20
             this.g = g < 13 ? g : g - (g / 2)
-            this.b = b < 112 ? b + 30 : b
+            this.b = b < 112 ? b + 50 : b
             return `rgba(${this.r}, ${this.g}, ${this.b}, 0.9)`
         },
     }
