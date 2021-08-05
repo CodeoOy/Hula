@@ -7,6 +7,13 @@
 <script>
 export default {
 	name: 'VAvatar',
+    data() {
+        return {
+            r: 0,
+            g: 0,
+            b: 0,
+        }
+    },
 	props: {
         id: '',
         firstname: '',
@@ -26,24 +33,32 @@ export default {
                 height: this.size || '24px',
                 display: 'inline-block',
                 marginRight: '5px',
-                color: this.textColor(this.color()),
+                color: this.textColor(),
             }
         },
     },
     methods: {
         // get color brightness from hex
-        textColor(color) {
-            var r = parseInt(color.substr(1, 2), 16);
-            var g = parseInt(color.substr(3, 2), 16);
-            var b = parseInt(color.substr(5, 2), 16);
-            var brightness = (r * 299 + g * 587 + b * 114) / 1000;
-            console.log(`rgb: ${r} ${g} ${b}. brightness: ${brightness}`)
+        textColor() {
+            var brightness = (this.r * 299 + this.g * 587 + this.b * 114) / 1000;
             return brightness < 128 ? '#97ffcb' : '#210e26';
         },
         color() {
             var colorhex = this.id.substring(1,7)
+            var r = parseInt(colorhex.substr(1, 2), 16);
+            var g = parseInt(colorhex.substr(3, 2), 16);
+            var b = parseInt(colorhex.substr(5, 2), 16);
+            this.r = r + 166 / 1.5
+            this.g = g + 13 / 10
+            this.b = b + 112 / 2
+            return `rgba(${this.r}, ${this.g}, ${this.b}, 0.9)`
+        },
+        /*
+        colorHex() {
+            var colorhex = this.id.substring(1,7)
             return '#' + colorhex
         }
+        */
         // TODO: Tint the hue towards the theme colors
     }
 };
