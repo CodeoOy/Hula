@@ -21,7 +21,7 @@
 			<error-message name="begintime" class="error"></error-message>
 			<v-field
 				v-model="formData.begin_time"
-				:rules="isRequired"
+				:rules="isRequiredDate"
 				as="input"
 				type="date"
 				name="begintime"
@@ -35,6 +35,7 @@
 			<error-message name="endtime" class="error"></error-message>
 			<v-field
 				v-model="formData.end_time"
+				:rules="afterStartTime"
 				as="input"
 				type="date"
 				name="endtime"
@@ -82,6 +83,14 @@ export default {
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';
+		},
+		isRequiredDate(value) {
+			// check if value is a valid date
+			const date = new Date(value);
+			return date.toString() === 'Invalid Date' ? 'This field is required' : true;
+		},
+		afterStartTime(value) {
+			return value ? true : 'End time must be after start time.';
 		},
 		createUpdateProjectNeed() {
 			let chosenMethod = 'PUT'
