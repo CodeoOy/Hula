@@ -52,7 +52,7 @@ export default {
             var b = parseInt(colorhex.substr(5, 2), 16);
             this.r = r < 166 ? r + 50 : r - 20
             this.g = g < 13 ? g : g - (g / 2)
-            this.b = b < 112 ? b + 30 : b - 30
+            this.b = b < 112 ? b + 30 : b
             return `rgba(${this.r}, ${this.g}, ${this.b}, 0.9)`
         },
     }
