@@ -18,20 +18,17 @@ pub fn create_reset_request(q_email: String, pool: &web::Data<Pool>) -> Result<R
 
 	Ok(reset_request)
 }
-/*
+
 pub fn get_by_reset_request(
 	q_reset_request_id: uuid::Uuid,
-	q_email: String,
 	pool: &web::Data<Pool>,
 ) -> Result<ResetPasswordRequest, Error> {
-	use crate::schema::reset_requests::dsl::{email, id, reset_requests};
+	use crate::schema::reset_requests::dsl::{id, reset_requests};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let reset_request = reset_requests
 		.filter(id.eq(&q_reset_request_id))
-		.filter(email.eq(&q_email))
 		.get_result::<ResetPasswordRequest>(conn)?;
 
 	Ok(reset_request)
 }
-*/

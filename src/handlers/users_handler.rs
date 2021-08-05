@@ -89,6 +89,7 @@ pub struct Download {
 pub struct ForgotPasswordData {
 	pub email: String,
 	pub password: String,
+	pub id: uuid::Uuid,
 }
 
 pub async fn get_all(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
@@ -578,6 +579,17 @@ pub async fn update_password(
 	pool: web::Data<Pool>,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Resetting password for: email = {:#?}", &payload.email,);
+
+	let id = reset_requests_repository::get_by_reset_request(payload.id.clone(), &pool);
+	/*
+	if id.is_none() {
+		return Err(ServiceError::Gone);
+	}
+	*/
+	match id {
+		Ok(reset_request) => println!("Reset request found"),
+		Err(err) => return Err(ServiceError::InternalServerError),
+	}
 
 	let res =
 		web::block(move || users_repository::set_password(payload.email.clone(), payload.password.clone(), &pool))
