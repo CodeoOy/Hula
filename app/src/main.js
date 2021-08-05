@@ -182,11 +182,12 @@ const app = createApp(App)
 	.use(FlashMessage)
 	.use(store)
 router.beforeEach((to, from, next) => {
+	console.log(to)
 	if (to.name !== 'page-login' 
 		&& to.name !== 'page-confirm'
 		&& to.name !== 'page-forgot-password'
 		&& !store.state.loggeduser) {
-			store.state.nextpage = to.name
+			store.state.nextpage = to.fullPath
 			next({ name: 'page-login' })
 	}
 	else next()

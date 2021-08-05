@@ -83,7 +83,7 @@
 							this.$emit('hideModal')
 							this.$store.commit('getProjects')
 							if (this.$store.state.nextpage.length) {
-								this.$router.push({ name: this.$store.state.nextpage })
+								this.$router.push(this.$store.state.nextpage)
 							} else {
 								this.$router.push({ name: 'page-home' })
 							}
