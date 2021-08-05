@@ -34,6 +34,8 @@ export default {
                 display: 'inline-block',
                 marginRight: '5px',
                 color: this.textColor(),
+                lineHeight: '1.5rem',
+                textAlign: 'center',
             }
         },
     },
@@ -53,13 +55,6 @@ export default {
             this.b = (b + 112) / 2
             return `rgba(${this.r}, ${this.g}, ${this.b}, 0.9)`
         },
-        /*
-        colorHex() {
-            var colorhex = this.id.substring(1,7)
-            return '#' + colorhex
-        }
-        */
-        // TODO: Tint the hue towards the theme colors
     }
 };
 </script>
