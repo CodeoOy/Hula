@@ -46,7 +46,6 @@ export default {
             return brightness < 128 ? '#97ffcb' : '#210e26';
         },
         color() {
-            //var colorhex = "0000ff".substring(0,6)
             var colorhex = this.id.substring(1,7)
             var r = parseInt(colorhex.substr(0, 2), 16);
             var g = parseInt(colorhex.substr(2, 2), 16);

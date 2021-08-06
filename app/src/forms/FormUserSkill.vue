@@ -17,7 +17,7 @@
 				</option>
 			</v-field>
 		</div>
-		<div class="mb-2">
+		<div class="mb-2" v-if="'skillscopelevel_id' in formData">
 			<label class="form-label">Level of skill</label>
 			<error-message name="level" class="error"></error-message>
 			<v-field
@@ -27,6 +27,7 @@
 				class="form-select"
 				aria-label="Example select with button addon"
 			>
+				<option :value="null" disabled selected>No level</option>
 				<option v-for="lvl in filterLevels" :key="lvl" :value="lvl.id">
 					{{ lvl.label }}
 				</option>
@@ -96,7 +97,7 @@ export default {
 			})
 			.then(response => {
 				if (response.status >= 200 && response.status <= 299) {
-					this.$store.dispatch('setUser', this.userID)
+					//this.$store.dispatch('setUser', this.userID)
 					this.$emit('formSent')
 				} else {
 					this.$store.commit('errorHandling', response)
@@ -154,7 +155,10 @@ export default {
 	},
 	computed: {
 		filterLevels() {
-			return this.skillLevels.filter(lvl => lvl.skillscope_id == this.chosenSkill.skillscope_id)
+			if (this.chosenSkill.skillscope_id) {
+				return this.skillLevels.filter(lvl => lvl.skillscope_id == this.chosenSkill.skillscope_id)
+			}
+			return []
 		}
 	},
 	mounted() {
