@@ -11,7 +11,8 @@ const store = createStore({
 	state () {
 		return {
 			loggeduser: JSON.parse(localStorage.getItem('user')),
-			chosenproject: JSON.parse(localStorage.getItem('chosenproject')), // TODO: Are these needed?
+			//chosenproject: JSON.parse(localStorage.getItem('chosenproject')), // TODO: Are these needed?
+			chosenproject: {},
 			projects: [],
 			nextpage: '',
 			errorObject: null,
@@ -75,7 +76,7 @@ const store = createStore({
 			localStorage.setItem('user', JSON.stringify(data));
 		},
 		setChosenProject(state, data) {
-			localStorage.setItem('chosenproject', JSON.stringify(data));
+			//localStorage.setItem('chosenproject', JSON.stringify(data));
 			state.chosenproject = data
 		},
 		getProjects (state) {

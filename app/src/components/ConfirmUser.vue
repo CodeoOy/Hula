@@ -53,7 +53,7 @@
 					body: JSON.stringify(this.registrationData)
 				})
 				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+					return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
 				})
 				.then(() => {    
 					this.$flashMessage.show({

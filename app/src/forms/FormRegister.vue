@@ -44,8 +44,9 @@
 			<error-message name="password_plain" class="error"></error-message>
 			<v-field
 				v-model="formData.password_plain"
+				:rules="isRequiredNonAdmin"
 				as="input"
-				type="text"
+				type="password"
 				name="password_plain"
 				class="form-control"
 				aria-label="password_plain"
@@ -79,6 +80,14 @@ export default {
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';
+		},
+		isRequiredNonAdmin(value) {
+			if (this.$store.state.loggeduser && this.$store.state.loggeduser.is_admin) {
+				return true;
+			} else if (value) {
+				return true
+			}
+			return false
 		},
 		inviteUser() {
 			if (this.formData.password_plain.length == 0) {
