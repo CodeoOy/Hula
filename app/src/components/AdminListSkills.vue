@@ -14,12 +14,6 @@
 			<h2>Skills</h2>
 			<div>
 				<button
-					class="btn btn-gradient me-2"
-					data-bs-toggle="modal"
-					data-bs-target="#hulaModalSkills"
-					v-on:click="formTitle = 'Add skill', chosenForm = 'CreateSkill', chosenSkill = {}, url='/api/skills', method='POST'"
-				>New skill</button>
-				<button
 					class="btn btn-gradient"
 					data-bs-toggle="modal"
 					data-bs-target="#hulaModalSkills"
