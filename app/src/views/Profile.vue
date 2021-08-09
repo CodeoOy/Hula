@@ -140,7 +140,7 @@
 				chosenSkill: {},
 				chosenReservation: {},
 				editingInfo: false,
-				user: this.$store.state.loggeduser,
+				user: {},
 				url: '',
 				method: '',
 			}
@@ -213,7 +213,7 @@
 					this.$router.push({name: 'page-error'})
 				}
 			}
-			this.getUserReservations(this.$route.params.id)
+			this.checkProfile(this.$route.params.id)
 		}
 	}
 </script>
