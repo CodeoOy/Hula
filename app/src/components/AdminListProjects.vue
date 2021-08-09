@@ -91,7 +91,8 @@
 				url: '',
 				method: '',
 				projectName: '',
-				filteredProjects: []
+				filteredProjects: [],
+				projects: {}
 			}
 		},
 		components: {
