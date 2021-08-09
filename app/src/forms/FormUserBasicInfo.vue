@@ -71,7 +71,7 @@ export default {
 				id: this.chosenUser.id,
 				email: this.chosenUser.email || '',
 				is_hidden: this.chosenUser.is_hidden || false,
-				is_admin: this.chosenUser.is_admin || false,
+				isadmin: this.chosenUser.isadmin || false,
 				is_employee: this.chosenUser.is_employee || false,
 				firstname: this.chosenUser.firstname || '',
 				lastname: this.chosenUser.lastname || '',

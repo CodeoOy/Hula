@@ -87,10 +87,10 @@ const store = createStore({
 			})
 			.then((response) => response.json())
 			.catch((errors) => {
-				console.log(errors);
-				console.log("Projects set to empty")
 				state.projects = {}
 				projectsExist = false
+				console.log(errors);
+				console.log("Projects set to empty")
 			})
 			.then(response => {
 				if (projectsExist === true) {

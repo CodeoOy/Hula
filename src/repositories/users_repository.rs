@@ -55,10 +55,12 @@ pub fn update(
 	q_first_name: String,
 	q_last_name: String,
 	q_user_is_hidden: bool,
+	q_user_is_employee: bool,
+	q_user_is_admin: bool,
 	q_email: String,
 	pool: &web::Data<Pool>,
 ) -> Result<User, Error> {
-	use crate::schema::users::dsl::{firstname, id, is_hidden, lastname, updated_by, users};
+	use crate::schema::users::dsl::{firstname, id, is_hidden, is_employee, isadmin, lastname, updated_by, users};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let user = diesel::update(users)
@@ -67,6 +69,8 @@ pub fn update(
 			firstname.eq(q_first_name),
 			lastname.eq(q_last_name),
 			is_hidden.eq(q_user_is_hidden),
+			is_employee.eq(q_user_is_employee),
+			isadmin.eq(q_user_is_admin),
 			updated_by.eq(q_email),
 		))
 		.get_result::<User>(conn)?;

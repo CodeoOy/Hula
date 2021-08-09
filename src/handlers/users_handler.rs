@@ -19,6 +19,8 @@ pub struct QueryData {
 	pub firstname: String,
 	pub lastname: String,
 	pub is_hidden: bool,
+	pub is_employee: bool,
+	pub isadmin: bool,
 	pub email: String,
 }
 
@@ -59,6 +61,7 @@ pub struct UserDTO {
 	pub id: uuid::Uuid,
 	pub isadmin: bool,
 	pub is_hidden: bool,
+	pub is_employee: bool,
 	pub email: String,
 	pub firstname: String,
 	pub lastname: String,
@@ -135,6 +138,8 @@ pub async fn update_user(
 			payload.firstname.clone(),
 			payload.lastname.clone(),
 			payload.is_hidden,
+			payload.is_employee,
+			payload.isadmin,
 			payload.email.clone(),
 			&pool,
 		)
@@ -442,6 +447,7 @@ fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, Servic
 		id: user.id,
 		isadmin: user.isadmin,
 		is_hidden: user.is_hidden,
+		is_employee: user.is_employee,
 		email: user.email,
 		firstname: user.firstname,
 		lastname: user.lastname,

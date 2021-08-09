@@ -92,7 +92,7 @@
 				method: '',
 				projectName: '',
 				filteredProjects: [],
-				projects: {}
+				projects: this.$store.state.projects
 			}
 		},
 		components: {
