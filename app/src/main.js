@@ -121,6 +121,8 @@ const store = createStore({
 					state.projects = projects
 				} else {
 					projects = []
+					localStorage.setItem('projects', JSON.stringify(projects));
+					state.projects = projects
 				}
 			})
 		},
