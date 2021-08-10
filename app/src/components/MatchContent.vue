@@ -18,7 +18,7 @@
 				</tr>
 			</tbody>
 		</table>
-		<a href="#" v-on:click="addToOffers"><i class="bi-trash-fill me-2"></i></a>
+		<a href="#" v-on:click="addToOffers"><i class="bi-briefcase-fill me-2"></i></a>
     </div>
 </template>
 
