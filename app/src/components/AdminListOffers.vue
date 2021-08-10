@@ -1,0 +1,84 @@
+<template>
+	<div>
+		<div class="d-flex flex-row justify-content-between align-items-start">
+			<h2>Offers</h2>
+			<div>
+				<AutoComplete
+					v-if="offers.length" 
+					:suggestions="offers" 
+					:selection.sync="offerName" 
+					:placeholder="'filter offers'"
+					:dropdown="false"
+					:filterProperties="'project_id'"
+					v-on:auto-complete="autoCompleteAction"
+				></AutoComplete>
+			</div>
+		</div>
+		<transition name="fadeHeight">
+			<table class="table table-dark table-striped text-light">
+				<thead>
+					<tr>
+						<th scope="col">Project name</th>
+						<th scope="col">User name</th>
+						<th scope="col">Sold?</th>
+						<th scope="col">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="offer in offers" :key="offer.id">
+						<td>{{ offer.project_id }}</td>
+						<td>{{ offer.user_id }}</td>
+						<td>{{ offer.sold }}</td>
+						<td>
+							<a
+								href="#"
+								data-bs-toggle="modal"
+								data-bs-target="#hulaModalOffers" 
+								v-on:click="formTitle = `Delete ${offer.id}?`, chosenForm = 'Delete', url = `/api/offers/${offer.id}`, method = 'DELETE'"
+							><i class="bi-trash-fill me-2"></i></a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</transition>
+	</div>
+</template>
+
+<script>
+	import FormConfirmAction from '../forms/FormConfirmAction.vue'
+	import AutoComplete from './AutoComplete.vue'
+	export default {
+		name: 'AdminListOffers',
+		data () {
+			return {
+				filteredOffers: [],
+				offers: [],
+				offerName: '',
+			}
+		},
+		components: {
+			FormConfirmAction,
+			AutoComplete,
+		},
+		methods: {
+			getAllOffers () {
+				fetch('/api/offers', {method: 'GET'})
+				.then(response => { 
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
+				.then(response => { 
+					this.offers = response;
+				})    
+				.catch((errors) => {
+					this.$store.commit('errorHandling', errors)
+				})
+			},
+			autoCompleteAction(value) {
+				this.filteredOffers = value
+			}
+		},
+		mounted() {
+			this.getAllOffers()
+		},
+	}
+</script>

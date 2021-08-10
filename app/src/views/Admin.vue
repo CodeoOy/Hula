@@ -13,12 +13,16 @@
 			<li class="nav-item">
 				<a class="nav-link" v-bind:class="{ 'active': tab == 4, '': tab != 4 }" @click="tab = 4" href="#">Scopes & Levels</a>
 			</li>
+			<li class="nav-item">
+				<a class="nav-link" v-bind:class="{ 'active': tab == 5, '': tab != 5 }" @click="tab = 5" href="#">Offers</a>
+			</li>
 		</ul>
 		<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 			<AdminListProjects @project-chosen="updateProject" v-if="tab == 1" />
 			<AdminListUsers v-if="tab == 2" />
 			<AdminListSkills v-if="tab == 3" />
 			<AdminListScopes v-if="tab == 4" />
+			<AdminListOffers v-if="tab == 5" />
 		</div>
 	</div>
 </template>
@@ -28,6 +32,7 @@
 	import AdminListSkills from '../components/AdminListSkills.vue'
 	import AdminListUsers from '../components/AdminListUsers.vue'
 	import AdminListScopes from '../components/AdminListScopes.vue'
+	import AdminListOffers from '../components/AdminListOffers.vue'
 	export default {
 		name: 'Admin',
 		data() {
@@ -48,6 +53,7 @@
 			AdminListSkills,
 			AdminListUsers,
 			AdminListScopes,
+			AdminListOffers,
 		},
 		methods: {
 			updateProject(value) {
