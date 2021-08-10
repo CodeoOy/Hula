@@ -85,12 +85,17 @@ const store = createStore({
 				method: 'GET',
 				headers: {"Content-Type": "application/json"}
 			})
-			.then((response) => response.json())
+			.then(response => {
+				if (response.status == 204) {
+					state.projects = []
+					projectsExist = false
+					console.log("Projects set to empty")
+				} else {
+					return response.json()
+				}
+			})
 			.catch((errors) => {
-				state.projects = {}
-				projectsExist = false
 				console.log(errors);
-				console.log("Projects set to empty")
 			})
 			.then(response => {
 				if (projectsExist === true) {
@@ -111,6 +116,8 @@ const store = createStore({
 							project.needs = response
 						})
 					});
+				} else {
+					state.projects = []
 				}
 			})
 		},

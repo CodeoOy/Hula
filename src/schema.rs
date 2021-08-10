@@ -12,6 +12,17 @@ table! {
 }
 
 table! {
+	offers (id) {
+		id -> Uuid,
+		user_id -> Uuid,
+		project_id -> Uuid,
+		sold -> Bool,
+		comments -> Nullable<Varchar>,
+		updated_by -> Varchar,
+	}
+}
+
+table! {
 	projectneeds (id) {
 		id -> Uuid,
 		project_id -> Uuid,

@@ -1,5 +1,6 @@
 pub mod invitations;
 pub mod matchcandidates;
+pub mod offers;
 pub mod projectmatches;
 pub mod projects;
 pub mod projectskills;

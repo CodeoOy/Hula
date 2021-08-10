@@ -118,9 +118,10 @@
 				})
 			},
 			hideModalUpdate() {
-				this.$store.commit('getProjects')
 				let modal = Modal.getInstance(document.querySelector('#hulaModalProjects'))
 				modal.hide()
+				this.$store.commit('getProjects')
+				console.log(this.projects)
 			},
 			autoCompleteAction(value) {
 				this.filteredProjects = value
