@@ -13,7 +13,7 @@ const store = createStore({
 			loggeduser: JSON.parse(localStorage.getItem('user')),
 			//chosenproject: JSON.parse(localStorage.getItem('chosenproject')), // TODO: Are these needed?
 			chosenproject: {},
-			projects: [],
+			projects: JSON.parse(localStorage.getItem('projects')),
 			nextpage: '',
 			errorObject: null,
 		}
@@ -81,13 +81,14 @@ const store = createStore({
 		},
 		getProjects (state) {
 			let projectsExist = true
+			let projects = []
 			fetch('/api/projects?is_include_skills_and_matches=true', {
 				method: 'GET',
 				headers: {"Content-Type": "application/json"}
 			})
 			.then(response => {
 				if (response.status == 204) {
-					state.projects = []
+					projects = []
 					projectsExist = false
 					console.log("Projects set to empty")
 				} else {
@@ -99,9 +100,9 @@ const store = createStore({
 			})
 			.then(response => {
 				if (projectsExist === true) {
-					console.log(state.projects)
-					state.projects = response
-					state.projects.forEach(function (project) {
+					projects = response
+					console.log(projects)
+					projects.forEach(function (project) {
 						fetch(`/api/projectneeds/${project.id}`, {
 							method: 'GET',
 							headers: {"Content-Type": "application/json"},
@@ -116,8 +117,10 @@ const store = createStore({
 							project.needs = response
 						})
 					});
+					localStorage.setItem('projects', JSON.stringify(projects));
+					state.projects = projects
 				} else {
-					state.projects = []
+					projects = []
 				}
 			})
 		},
