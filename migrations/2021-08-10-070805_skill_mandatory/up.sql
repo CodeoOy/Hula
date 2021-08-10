@@ -1,0 +1,2 @@
+ALTER TABLE projectneedskills
+ADD COLUMN mandatory BOOLEAN NOT NULL DEFAULT FALSE;
