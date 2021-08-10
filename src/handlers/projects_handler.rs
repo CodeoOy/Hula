@@ -35,6 +35,7 @@ pub struct ProjectNeedSkillData {
 	pub skillscopelevel_id: Option<uuid::Uuid>,
 	pub min_years: Option<f64>,
 	pub max_years: Option<f64>,
+	pub mandatory: bool,
 }
 
 #[derive(Serialize, Debug)]
@@ -235,6 +236,7 @@ pub async fn create_projectneedskill(
 			projectneedskilldata.min_years,
 			projectneedskilldata.max_years,
 			logged_user.email,
+			projectneedskilldata.mandatory,
 			&pool,
 		)
 	})
@@ -275,6 +277,7 @@ pub async fn update_projectneedskill(
 			projectneedskilldata.min_years,
 			projectneedskilldata.max_years,
 			logged_user.email,
+			projectneedskilldata.mandatory,
 			&pool,
 		)
 	})

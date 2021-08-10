@@ -43,6 +43,7 @@ table! {
 		min_years -> Nullable<Float8>,
 		max_years -> Nullable<Float8>,
 		updated_by -> Varchar,
+		mandatory -> Bool,
 	}
 }
 
