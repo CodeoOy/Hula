@@ -15,7 +15,7 @@ export default {
         }
     },
 	props: {
-        id: '',
+        user_id: '',
         firstname: '',
         lastname: '',
         size: Number
@@ -46,7 +46,7 @@ export default {
             return brightness < 128 ? '#97ffcb' : '#210e26';
         },
         color() {
-            var colorhex = this.id.substring(1,7)
+            var colorhex = this.user_id.substring(1,7)
             var r = parseInt(colorhex.substr(0, 2), 16);
             var g = parseInt(colorhex.substr(2, 2), 16);
             var b = parseInt(colorhex.substr(4, 2), 16);

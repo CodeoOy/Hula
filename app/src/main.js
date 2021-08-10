@@ -11,7 +11,6 @@ const store = createStore({
 	state () {
 		return {
 			loggeduser: JSON.parse(localStorage.getItem('user')),
-			//chosenproject: JSON.parse(localStorage.getItem('chosenproject')), // TODO: Are these needed?
 			chosenproject: {},
 			projects: JSON.parse(localStorage.getItem('projects')),
 			nextpage: '',
@@ -76,7 +75,6 @@ const store = createStore({
 			localStorage.setItem('user', JSON.stringify(data));
 		},
 		setChosenProject(state, data) {
-			//localStorage.setItem('chosenproject', JSON.stringify(data));
 			state.chosenproject = data
 		},
 		getProjects (state) {
@@ -90,7 +88,6 @@ const store = createStore({
 				if (response.status == 204) {
 					projects = []
 					projectsExist = false
-					console.log("Projects set to empty")
 				} else {
 					return response.json()
 				}
@@ -101,7 +98,6 @@ const store = createStore({
 			.then(response => {
 				if (projectsExist === true) {
 					projects = response
-					console.log(projects)
 					projects.forEach(function (project) {
 						fetch(`/api/projectneeds/${project.id}`, {
 							method: 'GET',

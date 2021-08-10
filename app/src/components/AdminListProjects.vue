@@ -4,6 +4,7 @@
 			<component 
 				:is='modalComponent' 
 				:chosenProject="chosenProject" 
+				:chosenMatch="chosenMatch"
 				:url="url"
 				:method="method"
 				v-on:form-sent="hideModalUpdate"
@@ -53,11 +54,15 @@
 							>{{ skill.skill_label }}</span>
 						</td>
 						<td>
-							<span
+							<a
 								v-for="match in project.matches"
 								:key="match.user_id"
-							><VAvatar :id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" />
-							</span>
+								href="#"
+								data-bs-toggle="modal"
+								data-bs-target="#hulaModalProjects"
+								v-on:click="chosenForm = 'Match', chosenMatch = match, chosenProject = project, formTitle = 'Match'"
+							><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" />
+							</a>
 						</td>
 						<td>
 							<a
@@ -76,6 +81,7 @@
 
 <script>
 	import VModal from '../components/VModal.vue'
+	import MatchContent from '../components/MatchContent.vue'
 	import { Modal } from 'bootstrap'
 	import FormProject from '../forms/FormProject.vue'
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
@@ -92,11 +98,13 @@
 				method: '',
 				projectName: '',
 				filteredProjects: [],
+				chosenMatch: {},
 				projects: this.$store.state.projects
 			}
 		},
 		components: {
 			VModal,
+			MatchContent,
 			VAvatar,
 			FormProject,
 			FormConfirmAction,
@@ -132,6 +140,7 @@
 				const components = {
 					CreateProject: FormProject,
 					Delete: FormConfirmAction,
+					Match: MatchContent,
 				}
 				return components[this.chosenForm]
 			},

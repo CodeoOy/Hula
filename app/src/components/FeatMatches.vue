@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<VModal :modalTitle="'Match'" :modalID="'match'">
-			<MatchContent :match="currentMatch"/>
+			<MatchContent :chosenMatch="currentMatch"/>
 		</VModal>
 		<ul class="matches">
 			<li class="match" v-for="match in matches" :key="match.projectname">

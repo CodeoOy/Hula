@@ -9,7 +9,7 @@ pub fn query_get_all_offers(pool: &web::Data<Pool>) -> Result<Vec<Offer>, Error>
 	use crate::schema::offers::dsl::{offers, id, project_id};
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let mut items = offers
+	let items = offers
 		.order((id.asc(), project_id.asc()))
 		.load::<Offer>(conn)?;
 
@@ -19,7 +19,6 @@ pub fn query_get_all_offers(pool: &web::Data<Pool>) -> Result<Vec<Offer>, Error>
 pub fn query_add_offer(
 	q_user_id: uuid::Uuid,
 	q_project_id: uuid::Uuid,
-	q_sold: bool,
 	q_comments: Option<String>,
 	q_email: String,
 	pool: &web::Data<Pool>

@@ -42,11 +42,9 @@ pub async fn add_offer(
 	if logged_user.isadmin == false {
 		return Err(ServiceError::AdminRequired);
 	}
-	//let comments = payload.comments.unwrap_or("".to_string());
 	let res = web::block(move || offers_repository::query_add_offer(
 		payload.user_id,
 		payload.project_id,
-		payload.sold,
 		payload.comments.clone(),
 		logged_user.email,
 		&pool))
