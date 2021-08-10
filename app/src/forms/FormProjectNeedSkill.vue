@@ -18,6 +18,10 @@
 				</option>
 			</v-field>
 		</div>
+		<div class="mb-2 form-check">
+			<label class="form-label">Mandatory requirement</label>
+			<input type="checkbox" class="form-check-input" name="is_mandatory" v-model="formData.mandatory" />
+		</div>
 		<div class="mb-2">
 			<label class="form-label">Minimum level</label>
 			<error-message name="name" class="error"></error-message>
@@ -74,7 +78,8 @@ export default {
 				skill_id: this.chosenSkill.skill_id || '',
 				skillscopelevel_id: this.chosenSkill.skillscopelevel_id || '',
 				min_years: this.chosenSkill.min_years || '',
-				max_years: this.chosenSkill.max_years || '',	
+				max_years: this.chosenSkill.max_years || '',
+				mandatory: this.chosenSkill.mandatory || false,
 			},
 			availableSkills: {},
 			skillLevels: {},
