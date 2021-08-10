@@ -2,7 +2,6 @@ use actix_web::web;
 use diesel::result::Error;
 use diesel::result::Error::NotFound;
 use diesel::{prelude::*, PgConnection};
-
 use crate::models::projects::{Pool, ProjectNeedSkill};
 
 pub fn query_projectneedskills(pid: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Vec<ProjectNeedSkill>, Error> {
@@ -24,6 +23,7 @@ pub fn create_projectneedskill(
 	q_min_years: Option<f64>,
 	q_max_years: Option<f64>,
 	q_email: String,
+	q_mandatory: bool,
 	pool: &web::Data<Pool>,
 ) -> Result<ProjectNeedSkill, Error> {
 	use crate::schema::projectneedskills::dsl::projectneedskills;
@@ -37,6 +37,7 @@ pub fn create_projectneedskill(
 		min_years: q_min_years,
 		max_years: q_max_years,
 		updated_by: q_email,
+		mandatory: q_mandatory,
 	};
 
 	let projectneedskill = diesel::insert_into(projectneedskills)
@@ -54,6 +55,7 @@ pub fn update_projectneedskill(
 	q_min_years: Option<f64>,
 	q_max_years: Option<f64>,
 	q_email: String,
+	q_mandatory: bool,
 	pool: &web::Data<Pool>,
 ) -> Result<ProjectNeedSkill, Error> {
 	use crate::schema::projectneedskills::dsl::{projectneedskills, *};
@@ -68,6 +70,7 @@ pub fn update_projectneedskill(
 			min_years.eq(q_min_years),
 			max_years.eq(q_max_years),
 			updated_by.eq(q_email),
+			mandatory.eq(q_mandatory),
 		))
 		.get_result::<ProjectNeedSkill>(conn)?;
 

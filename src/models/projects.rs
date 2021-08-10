@@ -24,6 +24,7 @@ pub struct ProjectNeedSkill {
 	pub min_years: Option<f64>,
 	pub max_years: Option<f64>,
 	pub updated_by: String,
+	pub mandatory: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, Queryable, Insertable)]
