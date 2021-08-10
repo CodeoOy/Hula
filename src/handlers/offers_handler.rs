@@ -38,7 +38,7 @@ pub async fn add_offer(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Getting all offers: logged_user={:#?}", &logged_user);
+	trace!("Posting offer: logged_user={:#?}", &logged_user);
 	if logged_user.isadmin == false {
 		return Err(ServiceError::AdminRequired);
 	}
