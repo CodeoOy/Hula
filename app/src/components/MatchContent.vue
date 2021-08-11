@@ -29,8 +29,8 @@
 			return {
 				skills: {},
 				formData: {
-					user_id: this.chosenMatch.user_id,
-					project_id: this.chosenProject.id,
+					user_id: this.chosenMatch.user_id || '',
+					project_id: this.chosenProject.id || '',
 					sold: false,
 					comments: 'Lol.',
 				}
@@ -38,7 +38,10 @@
 		},
 		props: {
 			chosenMatch: {},
-			chosenProject: {},
+			chosenProject: {
+				type: String,
+				default: {}
+			}
 		},
 		methods: {
 			addToOffers() {
