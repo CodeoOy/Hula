@@ -35,7 +35,6 @@
 		methods: {
 			getMatchedUsers(value) {
 				this.users = value.matches
-				console.log(this.users)
 				this.$emit('usersfetched', this.users)
 			}
 		}
