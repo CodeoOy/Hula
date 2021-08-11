@@ -34,28 +34,9 @@
 		},
 		methods: {
 			getMatchedUsers(value) {
-				console.log(value)
-				if (value) {
-					this.queryData.projectname = value.name
-				}
-				fetch('api/matchedusers', {
-					method: 'POST',
-					headers: {"Content-Type": "application/json"},
-					credentials: 'include',
-					body: JSON.stringify(this.queryData)
-				}) 
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => {
-					this.users = response;
-					this.$emit('usersfetched', this.users)
-				})    
-				.catch((errors) => {
-					console.log(errors)
-					this.users = {}
-					this.$emit('usersfetched', this.users)
-				})
+				this.users = value.matches
+				console.log(this.users)
+				this.$emit('usersfetched', this.users)
 			}
 		}
 	}

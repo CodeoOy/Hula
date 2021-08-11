@@ -7,16 +7,16 @@
 					<tr>
 						<th scope="col">#</th>
 						<th scope="col">Name</th>
-						<th scope="col">Email</th>
-						<th scope="col">Available</th>
+						<th scope="col">All skills?</th>
+						<th scope="col">Available?</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="(user, index) in users" :key="user.uid">
 						<th scope="row">{{ index + 1 }}</th>
-						<td>{{ user.firstname }} {{ user.lastname }}</td>
-						<td>{{ user.email }}</td>
-						<td>{{ user.is_hidden }}</td>
+						<td>{{ user.first_name }} {{ user.last_name }}</td>
+						<td>{{ user.is_all_skills }}</td>
+						<td>{{ user.is_available }}</td>
 						<!--<a href="#" v-on:click="getUserData(user.uid)">{{user.firstname}} {{ user.lastname }}</a>-->
 					</tr>
 				</tbody>

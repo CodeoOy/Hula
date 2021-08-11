@@ -39,7 +39,7 @@
 		props: {
 			chosenMatch: {},
 			chosenProject: {
-				type: String,
+				type: Object,
 				default: {}
 			}
 		},
