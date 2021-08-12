@@ -21,7 +21,7 @@ pub struct File {
 pub async fn upload_file(
     mut payload: Multipart,
     logged_user: LoggedUser,
-) -> Result<HttpResponse, ServiceError> {
+) -> Result<HttpResponse, Error> {
 	dotenv::dotenv().ok();
 	let mut filename = "".to_string();
 	trace!("Trying to upload file");
