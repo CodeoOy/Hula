@@ -18,6 +18,19 @@
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h1>{{ user.firstname }} {{ user.lastname }}</h1>
 					<p>{{ user.email }}</p>
+					<v-form v-on:submit="uploadFile">
+						<div class="mb-2">
+							<label class="form-label">CV</label>
+							<error-message name="cv" class="error"></error-message>
+							<v-field
+								name="cv"
+								type="file"
+								class="form-control" 
+								v-model="file"
+							></v-field>
+						</div>
+						<button type="submit" class="btn btn-gradient">Upload CV</button>
+					</v-form>
 					<a 
 						href="#"
 						data-bs-toggle="modal" 
@@ -130,6 +143,7 @@
 	import FormSkill from '../forms/FormSkill.vue'
 	import FormUserBasicInfo from '../forms/FormUserBasicInfo.vue'
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
+	import { Field, Form, ErrorMessage } from 'vee-validate';
 	export default {
 		name: 'Profile',
 		data() {
@@ -143,6 +157,7 @@
 				user: {},
 				url: '',
 				method: '',
+				file: [],
 			}
 		},
 		components: {
@@ -152,6 +167,9 @@
 			FormSkill,
 			FormConfirmAction,
 			VModal,
+			'VForm': Form,
+			'VField': Field,
+			ErrorMessage
 		},
 		methods: {
 			hideModalUpdate() {
@@ -188,6 +206,20 @@
 				})
 				.then(response => {
 					this.user.reservations = response;
+				})
+			},
+			uploadFile() {
+				fetch(`/api/upload`, {
+					method: 'POST',
+					//headers: {"Content-Type": "application/json"},
+					credentials: 'include',
+					body: this.file[0],
+				})
+				.then(response => {
+					return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
+				})
+				.then(() => {
+					this.$emit('formSent')
 				})
 			}
 		},

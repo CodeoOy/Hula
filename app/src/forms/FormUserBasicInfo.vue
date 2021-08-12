@@ -47,16 +47,6 @@
 				v-model="formData.email"
 			></v-field>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">CV</label>
-			<error-message name="cv" class="error"></error-message>
-			<v-field
-				name="cv"
-				type="file"
-				class="form-control" 
-				v-model="formData.file"
-			></v-field>
-		</div>
 		<button type="submit" class="btn btn-gradient">Save</button>
 	</v-form>   
 </template>
