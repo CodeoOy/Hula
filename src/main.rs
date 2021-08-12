@@ -220,7 +220,7 @@ async fn main() -> std::io::Result<()> {
 					)
 					.service(
 						web::resource("/upload")
-							.route(web::post().to(handlers::upload_handler::upload_file)),
+							.route(web::post().to(handlers::upload_handler::save_file)),
 					)
 					.service(
 						web::resource("/auth")

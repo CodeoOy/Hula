@@ -18,24 +18,24 @@ pub struct File {
 	name: String,
 }
 
-pub async fn upload_file(
-    mut payload: Multipart,
-    logged_user: LoggedUser,
-) -> Result<HttpResponse, Error> {
-	dotenv::dotenv().ok();
-	let mut filename = "".to_string();
-	trace!("Trying to upload file");
-	while let Ok(Some(mut field)) = payload.try_next().await {
-		let cv_path = env::var("CV_PATH").expect("path must be set.");
-		//filename = format!(".pdf");
-	    filename = format!("{}.pdf", logged_user.uid.to_string());
-		let filepath = format!("{}/{}", cv_path, filename);
-		trace!("Uploading CV = {:#?} to path: {:?}", &filename, &cv_path);
-		let mut file = web::block(|| std::fs::File::create(filepath)).await.unwrap();
-		while let Some(chunk) = field.next().await {
-			let data = chunk.unwrap();
-			file = web::block(move || file.write_all(&data).map(|_| file)).await?;
-		}
-	}
-	Ok(HttpResponse::Ok().json(&File { name: filename }))
+pub async fn save_file(mut payload: Multipart) -> Result<HttpResponse, Error> {
+    // iterate over multipart stream
+    while let Ok(Some(mut field)) = payload.try_next().await {
+        let content_type = field.content_disposition().unwrap();
+        let filename = content_type.get_filename().unwrap();
+        let filepath = format!("./{}", sanitize_filename::sanitize(&filename));
+
+        // File::create is blocking operation, use threadpool
+        let mut f = web::block(|| std::fs::File::create(filepath))
+            .await
+            .unwrap();
+
+        // Field in turn is stream of *Bytes* object
+        while let Some(chunk) = field.next().await {
+            let data = chunk.unwrap();
+            // filesystem operations are blocking, we have to use threadpool
+            f = web::block(move || f.write_all(&data).map(|_| f)).await?;
+        }
+    }
+    Ok(HttpResponse::Ok().into())
 }

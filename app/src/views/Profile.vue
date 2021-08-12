@@ -209,11 +209,14 @@
 				})
 			},
 			uploadFile() {
+				var data = new FormData()
+				data.append('file', this.file[0])
+
 				fetch(`/api/upload`, {
 					method: 'POST',
 					//headers: {"Content-Type": "application/json"},
 					credentials: 'include',
-					body: this.file[0],
+					body: data,
 				})
 				.then(response => {
 					return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
