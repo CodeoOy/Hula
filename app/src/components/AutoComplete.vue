@@ -46,7 +46,11 @@
                     return []
                 }
                 var matches = this.suggestions.filter(item => {
-                    return item[this.filterProperties].toUpperCase().indexOf(this.selection.toUpperCase()) >= 0;
+                    const selection = this.selection.toUpperCase()
+                    const props = Array.isArray(this.filterProperties) ? this.filterProperties : [this.filterProperties]
+                    for (const prop of props) {
+                        if (String(item[prop]).toUpperCase().includes(selection)) return true
+                    }
                 });
                 if (!this.dropdown) {
                     this.$emit('autoComplete', matches)

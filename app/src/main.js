@@ -4,6 +4,8 @@ import FlashMessage from '@smartweb/vue-flash-message';
 import setupRouter from './router.js'
 import App from './App.vue'
 import 'bootstrap'
+import { Modal } from 'bootstrap'
+
 
 // Create a new store instance.
 
@@ -189,6 +191,18 @@ const app = createApp(App)
 	.use(router)
 	.use(FlashMessage)
 	.use(store)
+
+// Close modal before navigating
+router.beforeEach((to, from, next) => {
+	const modal = document.querySelector('.show[id^=hulaModal]')
+	if (!modal) {
+		next()
+	} else {
+		modal.addEventListener('hidden.bs.modal', () => next())
+		Modal.getInstance(modal).hide()
+	}
+})
+
 router.beforeEach((to, from, next) => {
 	console.log(to)
 	if (to.name !== 'page-login' 
