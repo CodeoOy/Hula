@@ -125,7 +125,7 @@ fn query_matches(
 		}
 
 		// Sort matches
-		matches_vec.sort_by(|a, b| b.is_all_skills.cmp(&a.is_all_skills));
+		matches_vec.sort_by(|a, b| b.has_mandatory.cmp(&a.has_mandatory));
 		matches_vec.sort_by(|a, b| b.is_available.cmp(&a.is_available));
 
 		let project_dto = ProjectDTO {
