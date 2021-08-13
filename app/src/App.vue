@@ -42,9 +42,6 @@
 			'errorObject'(newObject) {
 				this.flashIt(newObject)
 			}
-		},
-		mounted() {
-			this.$store.commit('getProjects')
 		}
 	}
 </script>

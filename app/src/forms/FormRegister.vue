@@ -52,6 +52,19 @@
 				aria-label="password_plain"
 			></v-field>
 		</div>
+		<div class="mb-2">
+			<label class="form-label">Password again</label>
+			<error-message name="password_plain_again" class="error"></error-message>
+			<v-field
+				v-model="formData.password_plain_again"
+				:rules="doubleCheck"
+				as="input"
+				type="password"
+				name="password_plain_again"
+				class="form-control"
+				aria-label="password"
+			></v-field>
+		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Register</button>
 	</v-form>
 </template>
@@ -68,6 +81,7 @@ export default {
 				first_name: '',
 				last_name: '',
 				password_plain: '',
+				password_plain_again: '',
 				password_pending: false,
 			}
 		}
@@ -80,6 +94,13 @@ export default {
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';
+		},
+		doubleCheck(value) {
+			if (this.formData.password_plain === value) {
+				return true;
+			} else {
+				return 'Passwords do not match';
+			}
 		},
 		isRequiredNonAdmin(value) {
 			if (this.$store.state.loggeduser && this.$store.state.loggeduser.is_admin) {
