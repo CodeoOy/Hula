@@ -181,6 +181,7 @@ const store = createStore({
 		deleteUser (state) {
 			state.loggeduser = null
 			localStorage.removeItem('user');
+			localStorage.removeItem('projects');
 			router.push({ name: 'page-login' })
 		}
 	}

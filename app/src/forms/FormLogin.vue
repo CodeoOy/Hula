@@ -98,6 +98,9 @@
 					}
 				})
 			},
+		},
+		mounted() {
+			this.$store.commit('deleteUser')
 		}
 	}
 </script>
