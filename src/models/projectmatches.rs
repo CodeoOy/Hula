@@ -1,6 +1,9 @@
 use super::super::schema::*;
+use diesel::{r2d2::ConnectionManager, PgConnection};
 use crate::models::projects::*;
 use serde::{Deserialize, Serialize};
+
+pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
 #[derive(Debug, Serialize, Deserialize, Queryable, Associations, Insertable, Identifiable)]
 #[belongs_to(Project, foreign_key = "project_id")]
