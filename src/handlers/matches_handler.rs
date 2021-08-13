@@ -32,6 +32,7 @@ pub struct MatchDTO {
 	pub user_id: uuid::Uuid,
 	pub first_name: String,
 	pub last_name: String,
+	pub has_mandatory: bool,
 	pub is_all_skills: bool,
 	pub is_available: bool,
 }
@@ -111,11 +112,15 @@ fn query_matches(
 				let is_user_available = user_matches
 					.clone()
 					.any(|x| x.required_load.unwrap_or_default() >= x.user_load);
+				let has_mandatory_skill = skills_vec
+					.iter()
+					.all(|x| user_matches.clone().any(|y| y.skill_mandatory == true));
 
 				let ss2 = MatchDTO {
 					user_id: s.user_id.clone(),
 					first_name: s.user_first_name.clone(),
 					last_name: s.user_last_name.clone(),
+					has_mandatory: has_mandatory_skill,
 					is_all_skills: is_all_skills,
 					is_available: is_user_available,
 				};
