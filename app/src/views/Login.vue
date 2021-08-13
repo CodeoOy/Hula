@@ -4,8 +4,8 @@
 			<FormLogin v-if="showSignup == false" v-on:hide-modal="hideModal"/>
 			<FormRegister v-else/>
 			<p>
-				<a href="#" v-if="showSignup == false" v-on:click="showSignup = true">Or sign up here.</a>
-				<a href="#" v-else v-on:click="showSignup = false">Already a user? Log in here.</a>
+				<a href="#" v-if="showSignup == false" v-on:click.prevent="showSignup = true">Or sign up here.</a>
+				<a href="#" v-else v-on:click.prevent="showSignup = false">Already a user? Log in here.</a>
 			</p>
 			<p><a href="/app/forgotpassword">Forgot password?</a></p>
 		</VModal>
