@@ -216,7 +216,7 @@ table! {
 		project_id -> Uuid,
 		skill_label -> Varchar,
 		pn_id -> Uuid,
-		mandatory -> Bool,
+		is_mandatory -> Bool,
 		required_index -> Nullable<Integer>,
 		required_minyears -> Nullable<Double>,
 		required_maxyears -> Nullable<Double>,
