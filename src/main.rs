@@ -180,7 +180,7 @@ async fn main() -> std::io::Result<()> {
 					)
 					.service(
 						web::resource("/projects")
-							.route(web::get().to(handlers::projects_handler::get_all_projects))
+							.route(web::get().to(handlers::matches_handler::get_all_matches))
 							.route(web::post().to(handlers::projects_handler::create_project)),
 					)
 					.service(
@@ -210,10 +210,6 @@ async fn main() -> std::io::Result<()> {
 							.route(web::delete().to(handlers::projects_handler::delete_projectneedskill)),
 					)
 					.service(web::resource("/matches").route(web::get().to(handlers::matches_handler::get_all_matches)))
-					.service(
-						web::resource("/matchedusers")
-							.route(web::post().to(handlers::matches_handler::get_matches_by_params)),
-					)
 					.service(
 						web::resource("/register/{invitation_id}")
 							.route(web::post().to(handlers::register_handler::register_user)),

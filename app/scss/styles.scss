@@ -305,6 +305,11 @@ nav {
 		color: $light;
 	}
 }
+tr.prime-match {
+	--#{$variable-prefix}table-accent-bg: #97ffcb !important;
+	--#{$variable-prefix}table-bg: #97ffcb !important;
+	color: $primary !important;
+}
 
 @keyframes fadein {
     from { opacity: 0; }
