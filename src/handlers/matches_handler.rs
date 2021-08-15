@@ -144,8 +144,8 @@ fn query_matches(
 		}
 
 		// Sort matches
-		matches_vec.sort_by(|a, b| b.has_mandatory.cmp(&a.has_mandatory));
-		matches_vec.sort_by(|a, b| b.is_available.cmp(&a.is_available));
+		//matches_vec.sort_by(|a, b| b.tier.cmp(&a.tier)); // this is a reverse sort so the line below may be overly complex?
+		matches_vec.sort_by(|a, b| a.tier.cmp(&b.tier));
 
 		let project_dto = ProjectDTO {
 			id: project.id.clone(),
