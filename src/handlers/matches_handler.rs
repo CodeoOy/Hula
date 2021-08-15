@@ -7,6 +7,13 @@ use crate::models::projectmatches::Pool;
 use crate::models::users::LoggedUser;
 use crate::repositories::*;
 
+const TIER1: i32 = 1;
+const TIER2: i32 = 2;
+const TIER3: i32 = 3;
+const TIER4: i32 = 4;
+const TIER5: i32 = 5;
+const TIER6: i32 = 6;
+
 #[derive(Deserialize, Debug)]
 pub struct QueryData {
 	#[serde(default)] // default = 0
@@ -35,6 +42,7 @@ pub struct MatchDTO {
 	pub has_mandatory: bool,
 	pub is_all_skills: bool,
 	pub is_available: bool,
+	pub tier: i32,
 }
 
 pub async fn get_all_matches(
@@ -113,6 +121,16 @@ fn query_matches(
 				.iter()
 				.all(|_x| user_matches.clone().any(|y| y.skill_mandatory == true));
 
+			let tier: i32 = match (has_mandatory_skill, is_user_available, is_all_skills) {
+				(true, true, true) => TIER1,
+				(true, true, false) => TIER1,
+				(true, false, true) => TIER2,
+				(false, true, true) => TIER3,
+				(false, true, false) => TIER4,
+				(false, false, true) => TIER5,
+				_ => TIER6,
+			};
+
 			let ss2 = MatchDTO {
 				user_id: s.user_id.clone(),
 				first_name: s.user_first_name.clone(),
@@ -120,6 +138,7 @@ fn query_matches(
 				has_mandatory: has_mandatory_skill,
 				is_all_skills: is_all_skills,
 				is_available: is_user_available,
+				tier: tier,
 			};
 			matches_vec.push(ss2);
 		}
