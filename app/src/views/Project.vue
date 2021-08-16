@@ -69,6 +69,7 @@
 							<thead>
 								<tr>
 									<th scope="col">Skill</th>
+									<th scope="col">Mandatory</th>
 									<th scope="col">Min level</th>
 									<th scope="col">Min years</th>
 									<th scope="col">Max years</th>
@@ -78,6 +79,7 @@
 							<tbody>
 								<tr v-for="skill in need.skills" :key="skill.id">
 									<td>{{ getSkillLabel(skill.skill_id) }}</td>
+									<td>{{ skill.mandatory }}</td>
 									<td>{{ getLevelLabel(skill.skillscopelevel_id) }}</td>
 									<td>{{ skill.min_years }}</td>
 									<td>{{ skill.max_years }}</td>

@@ -1,8 +1,7 @@
 <template>
 	<div>
 		{{ chosenMatch }}
-		{{ chosenProject }}
-        <table class="table table-dark table-striped text-light">
+        <!-- <table class="table table-dark table-striped text-light">
 			<thead>
 				<tr>
 					<th></th>
@@ -17,7 +16,7 @@
 					<td>{{ chosenMatch.user_years }}</td>
 				</tr>
 			</tbody>
-		</table>
+		</table> -->
 		<a href="#" v-on:click="addToOffers"><i class="bi-briefcase-fill me-2"></i></a>
     </div>
 </template>

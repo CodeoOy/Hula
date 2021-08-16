@@ -15,12 +15,12 @@
 			</div>
 		</div>
 		<div class="col-md-8">
-			<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+			<!-- <div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 				<h2>Matches from teh algorithm</h2>
 				<FeatMatches />
-			</div>
+			</div> -->
 			<ResultsLeads :leads='leadData' v-if="tabToggle == false" />
-			<ResultsPros :users='userData' v-else />
+			<ResultsPros :project='projectData' v-else />
 		</div>
 	</div>
 </template>
@@ -43,13 +43,13 @@
 		data() {
 			return {
 				tabToggle: true,
-				userData: {},
+				projectData: {},
 				leadData: {},
 			}
 		},
 		methods: {
 			passUsers(value) {
-				this.userData = value
+				this.projectData = value
 			},
 			passLeads(value) {
 				this.leadData = value
