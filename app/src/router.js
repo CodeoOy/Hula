@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from './store'
+import { Modal } from 'bootstrap'
 
 import Home from './views/Home.vue'
 import Confirm from './views/Confirm.vue'
