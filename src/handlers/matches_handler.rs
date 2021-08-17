@@ -105,6 +105,10 @@ fn query_matches(
 			skills_vec.push(ss);
 		}
 
+		println!("\n\n\nLOL\n\n\n");
+		println!("\nSKILLS: {:?}", skills_vec);
+		println!("\n\nMATCHES: {:?}", matches);
+
 		let matches = &matches[idx];
 
 		let mut mandatory_skills = skills_vec
@@ -129,12 +133,13 @@ fn query_matches(
 				.clone()
 				.any(|x| x.required_load.unwrap_or_default() >= x.user_load);
 			let mut has_mandatory_skills = false;
-			if (mandatory_skills_exists == true) {
+			if mandatory_skills_exists == true {
 				has_mandatory_skills = mandatory_skills
 					.clone()
 					.all(|x| user_matches.clone().any(|y| {
-						x.skill_label == y.skill_label // TODO: Missing the actual requirement levels
-				}));
+						x.skill_label == y.skill_label
+						// TODO the actual requirements
+					}));
 			}
 
 			let tier: i32 = match (has_mandatory_skills, is_user_available, is_all_skills) {

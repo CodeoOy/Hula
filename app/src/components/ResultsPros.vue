@@ -8,14 +8,14 @@
 			<table v-if="project.matches" class="table table-dark table-striped text-light">
 				<thead>
 					<tr>
-						<th scope="col">#</th>
+						<th scope="col"></th>
 						<th scope="col">Name</th>
 						<th scope="col">Available?</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="(user, index) in project.matches" :key="user.uid" :class="`tier tier--${user.tier}`">
-						<th scope="row"><span :class="`tier__ball tier__ball--${user.tier}`">{{ index + 1 }}</span></th>
+						<th scope="row"><span :class="`tier__ball tier__ball--${user.tier}`" :style="`zIndex: ${index}`">{{ index + 1 }}</span></th>
 						<td><a href="#"
 							data-bs-toggle="modal"
 							data-bs-target="#hulaModalmatch"
