@@ -13,7 +13,7 @@
 		<div class="d-flex flex-row justify-content-between align-items-start">
 			<h2>Projects</h2>
 			<div>
-				<AutoComplete
+				<VAutoComplete
 					v-if="this.$store.state.projects" 
 					:suggestions="this.$store.state.projects" 
 					:selection.sync="projectName" 
@@ -21,7 +21,7 @@
 					:dropdown="false"
 					:filterProperties="'name'"
 					v-on:auto-complete="autoCompleteAction"
-				></AutoComplete>
+				></VAutoComplete>
 				<button
 					class="btn btn-gradient"
 					data-bs-toggle="modal"
@@ -85,7 +85,7 @@
 	import { Modal } from 'bootstrap'
 	import FormProject from '../forms/FormProject.vue'
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
-	import AutoComplete from '../components/AutoComplete.vue'
+	import VAutoComplete from '../components/VAutoComplete.vue'
 	import VAvatar from '../components/VAvatar.vue'
 	export default {
 		name: 'AdminListProjects',
@@ -108,7 +108,7 @@
 			VAvatar,
 			FormProject,
 			FormConfirmAction,
-			AutoComplete,
+			VAutoComplete,
 		},
 		methods: {
 			chooseProject(project) {

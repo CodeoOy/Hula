@@ -3,7 +3,7 @@
 		<div class="d-flex flex-row justify-content-between align-items-start">
 			<h2>Offers</h2>
 			<div>
-				<AutoComplete
+				<VAutoComplete
 					v-if="offers.length" 
 					:suggestions="offers" 
 					:selection.sync="offerName" 
@@ -11,7 +11,7 @@
 					:dropdown="false"
 					:filterProperties="'project_id'"
 					v-on:auto-complete="autoCompleteAction"
-				></AutoComplete>
+				></VAutoComplete>
 			</div>
 		</div>
 		<transition name="fadeHeight">
@@ -46,7 +46,7 @@
 
 <script>
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
-	import AutoComplete from '../components/AutoComplete.vue'
+	import VAutoComplete from '../components/VAutoComplete.vue'
 	export default {
 		name: 'AdminListOffers',
 		data () {
@@ -58,7 +58,7 @@
 		},
 		components: {
 			FormConfirmAction,
-			AutoComplete,
+			VAutoComplete,
 		},
 		methods: {
 			getAllOffers () {
