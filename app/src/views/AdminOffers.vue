@@ -46,7 +46,7 @@
 
 <script>
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
-	import AutoComplete from './AutoComplete.vue'
+	import AutoComplete from '../components/AutoComplete.vue'
 	export default {
 		name: 'AdminListOffers',
 		data () {

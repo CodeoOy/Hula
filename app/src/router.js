@@ -8,6 +8,11 @@ import ForgotPassword from './views/ForgotPassword.vue'
 import Dashboard from './views/Dashboard.vue'
 import Profile from './views/Profile.vue'
 import Admin from './views/Admin.vue'
+import AdminProjects from './views/AdminProjects.vue'
+import AdminSkills from './views/AdminSkills.vue'
+import AdminUsers from './views/AdminUsers.vue'
+import AdminScopes from './views/AdminScopes.vue'
+import AdminOffers from './views/AdminOffers.vue'
 import PageError from './views/PageError.vue'
 import Project from './views/Project.vue'
 import Gdpr from './views/Gdpr.vue'
@@ -20,7 +25,13 @@ const router = createRouter({
 		{ path: '/app/forgotpassword', component: ForgotPassword, name: 'page-forgot-password' },
 		{ path: '/app/dashboard', component: Dashboard, name: 'page-dashboard' },
 		{ path: '/app/user/:id', component: Profile, name: 'page-profile' },
-		{ path: '/app/admin', component: Admin, name: 'page-admin' },
+		{ path: '/app/admin', component: Admin, name: 'page-admin', children: [
+			{ path: 'projects', alias: '', component: AdminProjects, name: 'admin-projects' },
+			{ path: 'skills', component: AdminSkills, name: 'admin-skills' },
+			{ path: 'users', component: AdminUsers, name: 'admin-users' },
+			{ path: 'scopes', component: AdminScopes, name: 'admin-scopes' },
+			{ path: 'offers', component: AdminOffers, name: 'admin-offers' },
+		] },
 		{ path: '/app/gdpr', component: Gdpr, name: 'page-gdpr' },
 		{ path: '/app/login', component: Login, name: 'page-login' },
 		{ path: '/app/project/:id', component: Project, name: 'page-project' },

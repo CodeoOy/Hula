@@ -145,7 +145,8 @@
 				return components[this.chosenForm]
 			},
 		},
-		mounted() {
+
+		activated() {
 			this.$store.commit('getProjects')
 		},
 	}
