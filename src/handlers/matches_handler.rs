@@ -112,7 +112,7 @@ fn query_matches(
 			.filter(|x| x.skill_mandatory == true).peekable();
 		let mut mandatory_skills_exists = false;
 		if mandatory_skills.peek().is_some() {
-			mandatory_skills_exists = true;
+			mandatory_skills_exists = true; // So in order to find out if there are any mandatory skills, you have to peek
 		} 
 
 		for s in matches {
@@ -133,7 +133,7 @@ fn query_matches(
 				has_mandatory_skills = mandatory_skills
 					.clone()
 					.all(|x| user_matches.clone().any(|y| {
-						x.skill_label == y.skill_label
+						x.skill_label == y.skill_label // TODO: Missing the actual requirement levels
 				}));
 			}
 
@@ -141,6 +141,7 @@ fn query_matches(
 				(true, true, true) => TIER1,
 				(true, true, false) => TIER1,
 				(true, false, true) => TIER2,
+				(true, false, false) => TIER2,
 				(false, true, true) => TIER3,
 				(false, true, false) => TIER4,
 				(false, false, true) => TIER5,
