@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from './store'
+import state from './store/state.js'
 import { Modal } from 'bootstrap'
 
 import Home from './views/Home.vue'
@@ -47,8 +47,8 @@ router.beforeEach((to, from, next) => {
 	if (to.name !== 'page-login' 
 		&& to.name !== 'page-confirm'
 		&& to.name !== 'page-forgot-password'
-		&& !store.state.loggeduser) {
-			store.state.nextpage = to.fullPath
+		&& !state.loggeduser) {
+			state.nextpage = to.fullPath
 			next({ name: 'page-login' })
 	}
 	else next()

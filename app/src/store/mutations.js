@@ -1,3 +1,5 @@
+import router from '../router.js'
+
 export default {
 	setUser(state, data) {
 		state.loggeduser = data;
