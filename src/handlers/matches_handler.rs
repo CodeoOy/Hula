@@ -106,14 +106,14 @@ fn query_matches(
 		}
 
 		let matches = &matches[idx];
-		
-		/*
-		SKILL: ProjectMatch { idx: 8, project_id: c1b7e37e-b022-4712-8a1b-d73030ecd7cc, 
-		skill_label: "Rust", skill_mandatory: false, pn_id: ef081bab-3591-47dd-8187-9cf66a977386, 
-		pn_label: "", required_load: Some(90), required_index: Some(3), required_minyears: Some(2.0), 
-		required_maxyears: None, user_id: 72e3c6f6-4ba4-43a2-a852-ef74dc9f9373, user_first_name: "Tuomas", 
-		user_last_name: "Codeooo", user_is_hidden: false, user_load: 0, user_index: Some(1), user_years: Some(4.0) }
-		*/
+
+		let mut mandatory_skills = skills_vec
+			.iter()
+			.filter(|x| x.skill_mandatory == true).peekable();
+		let mut mandatory_skills_exists = false;
+		if mandatory_skills.peek().is_some() {
+			mandatory_skills_exists = true;
+		} 
 
 		for s in matches {
 			if matches_vec.iter().any(|x| x.user_id == s.user_id) {
@@ -128,19 +128,14 @@ fn query_matches(
 			let is_user_available = user_matches
 				.clone()
 				.any(|x| x.required_load.unwrap_or_default() >= x.user_load);
-			// let has_mandatory_skill = skills_vec
-			// 	.iter()
-			// 	.all(|_x| user_matches.clone().any(|y| y.skill_mandatory == true));
-			let mandatory_skills = skills_vec
-				.iter()
-				.filter(|x| x.skill_mandatory == true);
-			let has_mandatory_skills = mandatory_skills
-				.clone()
-				.all(|x| user_matches.clone().any(|y| {
-					println!("\nSkill: {:?} \t\tM: {:?}\n", y.skill_label, y.skill_mandatory); 
-					x.skill_label == y.skill_label
+			let mut has_mandatory_skills = false;
+			if (mandatory_skills_exists == true) {
+				has_mandatory_skills = mandatory_skills
+					.clone()
+					.all(|x| user_matches.clone().any(|y| {
+						x.skill_label == y.skill_label
 				}));
-			println!("MATCH MANDATORY: {:?}\n\n", has_mandatory_skills);
+			}
 
 			let tier: i32 = match (has_mandatory_skills, is_user_available, is_all_skills) {
 				(true, true, true) => TIER1,
