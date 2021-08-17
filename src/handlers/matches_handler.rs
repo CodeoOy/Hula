@@ -32,6 +32,7 @@ pub struct ProjectDTO {
 #[derive(Serialize, Debug)]
 pub struct SkillDTO {
 	pub skill_label: String,
+	pub skill_mandatory: bool,
 }
 
 #[derive(Serialize, Debug)]
@@ -99,29 +100,49 @@ fn query_matches(
 		for s in &skills[idx] {
 			let ss = SkillDTO {
 				skill_label: s.skill_label.clone(),
+				skill_mandatory: s.is_mandatory,
 			};
 			skills_vec.push(ss);
 		}
 
 		let matches = &matches[idx];
+		
+		/*
+		SKILL: ProjectMatch { idx: 8, project_id: c1b7e37e-b022-4712-8a1b-d73030ecd7cc, 
+		skill_label: "Rust", skill_mandatory: false, pn_id: ef081bab-3591-47dd-8187-9cf66a977386, 
+		pn_label: "", required_load: Some(90), required_index: Some(3), required_minyears: Some(2.0), 
+		required_maxyears: None, user_id: 72e3c6f6-4ba4-43a2-a852-ef74dc9f9373, user_first_name: "Tuomas", 
+		user_last_name: "Codeooo", user_is_hidden: false, user_load: 0, user_index: Some(1), user_years: Some(4.0) }
+		*/
 
 		for s in matches {
 			if matches_vec.iter().any(|x| x.user_id == s.user_id) {
 				continue;
 			}
-
 			let user_matches = matches.iter().filter(|x| x.user_id == s.user_id);
 			let is_all_skills = skills_vec
 				.iter()
-				.all(|x| user_matches.clone().any(|y| x.skill_label == y.skill_label));
+				.all(|x| user_matches.clone().any(|y| {
+					x.skill_label == y.skill_label
+				}));
 			let is_user_available = user_matches
 				.clone()
 				.any(|x| x.required_load.unwrap_or_default() >= x.user_load);
-			let has_mandatory_skill = skills_vec
+			// let has_mandatory_skill = skills_vec
+			// 	.iter()
+			// 	.all(|_x| user_matches.clone().any(|y| y.skill_mandatory == true));
+			let mandatory_skills = skills_vec
 				.iter()
-				.all(|_x| user_matches.clone().any(|y| y.skill_mandatory == true));
+				.filter(|x| x.skill_mandatory == true);
+			let has_mandatory_skills = mandatory_skills
+				.clone()
+				.all(|x| user_matches.clone().any(|y| {
+					println!("\nSkill: {:?} \t\tM: {:?}\n", y.skill_label, y.skill_mandatory); 
+					x.skill_label == y.skill_label
+				}));
+			println!("MATCH MANDATORY: {:?}\n\n", has_mandatory_skills);
 
-			let tier: i32 = match (has_mandatory_skill, is_user_available, is_all_skills) {
+			let tier: i32 = match (has_mandatory_skills, is_user_available, is_all_skills) {
 				(true, true, true) => TIER1,
 				(true, true, false) => TIER1,
 				(true, false, true) => TIER2,
@@ -135,7 +156,7 @@ fn query_matches(
 				user_id: s.user_id.clone(),
 				first_name: s.user_first_name.clone(),
 				last_name: s.user_last_name.clone(),
-				has_mandatory: has_mandatory_skill,
+				has_mandatory: has_mandatory_skills,
 				is_all_skills: is_all_skills,
 				is_available: is_user_available,
 				tier: tier,
