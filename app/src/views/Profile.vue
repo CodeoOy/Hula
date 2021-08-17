@@ -18,19 +18,6 @@
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h1>{{ user.firstname }} {{ user.lastname }}</h1>
 					<p>{{ user.email }}</p>
-					<v-form v-on:submit="uploadFile">
-						<div class="mb-2">
-							<label class="form-label">CV</label>
-							<error-message name="cv" class="error"></error-message>
-							<v-field
-								name="cv"
-								type="file"
-								class="form-control" 
-								v-model="file"
-							></v-field>
-						</div>
-						<button type="submit" class="btn btn-gradient">Upload CV</button>
-					</v-form>
 					<a 
 						href="#"
 						data-bs-toggle="modal" 
@@ -43,6 +30,37 @@
 						data-bs-target="#hulaModalProfile" 
 						v-on:click="formTitle = 'Delete my profile', chosenForm = 'Delete', chosenUser = user, url=`/api/users/${user.id}`, method='DELETE'"
 					><i class="bi-trash-fill me-2"></i></a>
+					<hr />
+					<v-form v-on:submit="uploadFile" class='clearfix'>
+						<div class="mb-3">
+							<table v-if='files.length' class="table table-dark table-striped text-light">
+								<thead>
+									<tr>
+										<th scope="col">CV</th>
+										<th scope="col" colspan='2'>File</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="file in files" :key="file.id">
+										<td><input type='checkbox' :checked='cv == file.id' @click='cv = cv == file.id ? null : file.id'></td>
+										<td><a href='#' @click.prevent>{{ file.name }}</a></td>
+										<td><a href="#" class='float-end' @click.prevent><i class="bi-trash-fill"></i></a></td>
+									</tr>
+								</tbody>
+							</table>
+
+							<label class="form-label">Upload files</label>
+							<error-message name="files" class="error"></error-message>
+							<v-field
+								type="file"
+								name="files[]"
+								multiple
+								class="form-control" 
+								v-model="files.others"
+							></v-field>
+						</div>
+						<button type="submit" class="btn btn-gradient float-end">Upload files</button>
+					</v-form>
 				</div>
 			</div>
 			<div class="col-md-8">
@@ -157,7 +175,13 @@
 				user: {},
 				url: '',
 				method: '',
-				file: [],
+				cv: 'f2',
+				files: [
+					{ id: 'f1', name: 'Fake file #01.jpeg' },
+					{ id: 'f2', name: 'Fake file #02.jpeg' },
+					{ id: 'f3', name: 'Breaking the pattern.gif' },
+					{ id: 'f4', name: 'Fake file #04.jpeg' },
+				],
 			}
 		},
 		components: {
@@ -210,7 +234,7 @@
 			},
 			uploadFile() {
 				var data = new FormData()
-				data.append('file', this.file[0])
+				if (this.files.length) this.files.others.forEach(file => data.append('files[]', file))
 
 				fetch(`/api/upload`, {
 					method: 'POST',
