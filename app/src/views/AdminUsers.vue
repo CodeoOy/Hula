@@ -15,7 +15,7 @@
 				<VAutoComplete
 					v-if="initialUsers.length" 
 					:suggestions="initialUsers" 
-					:selection.sync="userName" 
+					:selection="userName" 
 					:placeholder="'filter users'"
 					:dropdown="false"
 					:filterProperties="'firstname'"

@@ -6,7 +6,7 @@
 				<VAutoComplete
 					v-if="offers.length" 
 					:suggestions="offers" 
-					:selection.sync="offerName" 
+					:selection="offerName" 
 					:placeholder="'filter offers'"
 					:dropdown="false"
 					:filterProperties="'project_id'"

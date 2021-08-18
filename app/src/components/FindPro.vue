@@ -7,7 +7,7 @@
 			:placeholder="'Start typing the name of project..'" 
 			:dropdown="true"
 			:filterProperties="'name'"
-			:selection.sync="value"
+			:selection="value"
 			v-on:auto-complete="getChosenProject($event)"
 		></VAutoComplete>
 	</div>
