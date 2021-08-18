@@ -1,13 +1,10 @@
 <template>
 	<div>
-		<VModal :modalTitle="formTitle" :modalID="'Projects'" v-on:updated-modal="chosenForm = ''">
+		<VModal v-if='modal' ref='modal' :showAtStart='true' :modalTitle="modal.title" v-on:modal-hidden="resetModal">
 			<component 
-				:is='modalComponent' 
-				:chosenProject="chosenProject" 
-				:chosenMatch="chosenMatch"
-				:url="url"
-				:method="method"
-				v-on:form-sent="hideModalUpdate"
+				:is='modal.component' 
+				v-bind='modal.props'
+				v-on:form-sent="closeModal"
 			/>
 		</VModal>
 		<div class="d-flex flex-row justify-content-between align-items-start">
@@ -16,18 +13,13 @@
 				<VAutoComplete
 					v-if="this.$store.state.projects" 
 					:suggestions="this.$store.state.projects" 
-					:selection.sync="projectName" 
+					:selection="projectName" 
 					:placeholder="'filter projects'"
 					:dropdown="false"
 					:filterProperties="'name'"
 					v-on:auto-complete="autoCompleteAction"
 				></VAutoComplete>
-				<button
-					class="btn btn-gradient"
-					data-bs-toggle="modal"
-					data-bs-target="#hulaModalProjects"
-					v-on:click="formTitle = 'New project', chosenForm = 'CreateProject', chosenProject = {}, url='/api/projects', method='POST'"
-				>New project</button>
+				<button class="btn btn-gradient" v-on:click="newProject()">New project</button>
 			</div>
 		</div>
 		<transition name="fadeHeight">
@@ -42,10 +34,9 @@
 				</thead>
 				<tbody>
 					<tr v-for="project in filteredProjects" :key="project.id">
-						<td><router-link
-							:to="{ name: 'page-project', params: { id: project.id}}"
-							v-on:click="this.chooseProject(project)"
-						>{{ project.name }}</router-link></td>
+						<td>
+							<router-link :to="{ name: 'page-project', params: { id: project.id }}">{{ project.name }}</router-link>
+						</td>
 						<td>
 							<span
 								v-for="skill in project.skills" 
@@ -58,19 +49,14 @@
 								v-for="match in project.matches"
 								:key="match.user_id"
 								href="#"
-								data-bs-toggle="modal"
-								data-bs-target="#hulaModalProjects"
-								v-on:click="chosenForm = 'Match', chosenMatch = match, chosenProject = project, formTitle = 'Match'"
+								v-on:click.prevent="showMatch(project, match)"
 							><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" />
 							</a>
 						</td>
 						<td>
-							<a
-								href="#"
-								data-bs-toggle="modal"
-								data-bs-target="#hulaModalProjects" 
-								v-on:click="formTitle = `Delete ${project.name}?`, chosenForm = 'Delete', url = `/api/projects/${project.id}`, method = 'DELETE'"
-							><i class="bi-trash-fill me-2"></i></a>
+							<a href="#" v-on:click.prevent="deleteProject(project)">
+								<i class="bi-trash-fill me-2"></i>
+							</a>
 						</td>
 					</tr>
 				</tbody>
@@ -82,26 +68,23 @@
 <script>
 	import VModal from '../components/VModal.vue'
 	import MatchContent from '../components/MatchContent.vue'
-	import { Modal } from 'bootstrap'
 	import FormProject from '../forms/FormProject.vue'
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
 	import VAvatar from '../components/VAvatar.vue'
+
 	export default {
 		name: 'AdminListProjects',
+
 		data () {
 			return {
-				formTitle: '',
-				chosenForm: '',
-				chosenProject: {},
-				url: '',
-				method: '',
+				modal: null,
 				projectName: '',
 				filteredProjects: [],
-				chosenMatch: {},
 				projects: this.$store.state.projects
 			}
 		},
+
 		components: {
 			VModal,
 			MatchContent,
@@ -110,39 +93,53 @@
 			FormConfirmAction,
 			VAutoComplete,
 		},
+
 		methods: {
-			chooseProject(project) {
-				this.$store.commit('setChosenProject', project.id)
-				this.$emit('projectChosen', project.name)
+			resetModal() {
+				this.modal = null
 			},
-			deleteProject(id) {
-				fetch(`/api/projects/${id}`, {
-					method: 'DELETE',
-					headers: {"Content-Type": "application/json"},
-					credentials: 'include'
-				})
-				.catch(() => {
-					throw new Error('Project not deleted');
-				})
-			},
-			hideModalUpdate() {
-				let modal = Modal.getInstance(document.querySelector('#hulaModalProjects'))
-				modal.hide()
+
+			closeModal() {
+				this.$refs.modal.hide()
 				this.$store.commit('getProjects')
-				console.log(this.projects)
 			},
+
 			autoCompleteAction(value) {
 				this.filteredProjects = value
-			}
-		},
-		computed: {
-			modalComponent() {
-				const components = {
-					CreateProject: FormProject,
-					Delete: FormConfirmAction,
-					Match: MatchContent,
+			},
+
+			newProject() {
+				this.modal = {
+					title: 'New project',
+					component: 'FormProject',
+					props: {
+						chosenProject: {},
+						url: '/api/projects',
+						method: 'POST',
+					}
 				}
-				return components[this.chosenForm]
+			},
+
+			showMatch(project, match) {
+				this.modal = {
+					title: 'Match',
+					component: 'MatchContent',
+					props: {
+						chosenMatch: match,
+						chosenProject: project,
+					},
+				}
+			},
+
+			deleteProject(project) {
+				this.modal = {
+					title: `Delete ${project.name}?`,
+					component: 'FormConfirmAction',
+					props: {
+						url: `/api/projects/${project.id}`,
+						method: 'DELETE'
+					}
+				}
 			},
 		},
 
