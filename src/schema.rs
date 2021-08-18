@@ -145,6 +145,7 @@ table! {
 		updated_by -> Varchar,
 		is_employee -> Bool,
 		password_pending -> Bool,
+		main_upload_id -> Uuid,
 	}
 }
 
@@ -155,6 +156,15 @@ table! {
 		skill_id -> Uuid,
 		skillscopelevel_id -> Nullable<Uuid>,
 		years -> Nullable<Double>,
+		updated_by -> Varchar,
+	}
+}
+
+table! {
+	useruploads (id) {
+		id -> Uuid,
+		user_id -> Uuid,
+		filename -> Varchar,
 		updated_by -> Varchar,
 	}
 }
@@ -237,6 +247,7 @@ joinable!(userreservations -> users (user_id));
 joinable!(userskills -> skills (skill_id));
 joinable!(userskills -> skillscopelevels (skillscopelevel_id));
 joinable!(userskills -> users (user_id));
+joinable!(useruploads -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
 	invitations,
@@ -252,4 +263,5 @@ allow_tables_to_appear_in_same_query!(
 	userreservations,
 	users,
 	userskills,
+	useruploads
 );

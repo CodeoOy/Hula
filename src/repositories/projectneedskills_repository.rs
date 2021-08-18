@@ -1,8 +1,8 @@
+use crate::models::projects::{Pool, ProjectNeedSkill};
 use actix_web::web;
 use diesel::result::Error;
 use diesel::result::Error::NotFound;
 use diesel::{prelude::*, PgConnection};
-use crate::models::projects::{Pool, ProjectNeedSkill};
 
 pub fn query_projectneedskills(pid: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Vec<ProjectNeedSkill>, Error> {
 	use crate::schema::projectneedskills::dsl::{projectneed_id, projectneedskills, skill_id};

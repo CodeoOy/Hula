@@ -12,7 +12,7 @@ pub struct OfferData {
 	pub user_id: uuid::Uuid,
 	pub project_id: uuid::Uuid,
 	pub sold: bool,
-	pub comments: Option<String>
+	pub comments: Option<String>,
 }
 
 pub async fn get_all_offers(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
@@ -36,18 +36,21 @@ pub async fn get_all_offers(pool: web::Data<Pool>, _logged_user: LoggedUser) -> 
 pub async fn add_offer(
 	payload: web::Json<OfferData>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedUser
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Posting offer: logged_user={:#?}", &logged_user);
 	if logged_user.isadmin == false {
 		return Err(ServiceError::AdminRequired);
 	}
-	let res = web::block(move || offers_repository::query_add_offer(
-		payload.user_id,
-		payload.project_id,
-		payload.comments.clone(),
-		logged_user.email,
-		&pool))
+	let res = web::block(move || {
+		offers_repository::query_add_offer(
+			payload.user_id,
+			payload.project_id,
+			payload.comments.clone(),
+			logged_user.email,
+			&pool,
+		)
+	})
 	.await;
 
 	match res {
@@ -62,15 +65,15 @@ pub async fn add_offer(
 pub async fn delete_offer(
 	oid: web::Path<String>,
 	pool: web::Data<Pool>,
-	logged_user: LoggedUser
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting all offers: logged_user={:#?}", &logged_user);
-	
+
 	if logged_user.isadmin == false {
 		return Err(ServiceError::AdminRequired);
 	}
 	let id = uuid::Uuid::parse_str(&oid.into_inner())?;
-	
+
 	let res = web::block(move || offers_repository::query_delete_offer(id, &pool)).await;
 	match res {
 		Ok(offer) => Ok(HttpResponse::Ok().json(&offer)),

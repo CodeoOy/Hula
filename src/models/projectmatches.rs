@@ -1,6 +1,6 @@
 use super::super::schema::*;
-use diesel::{r2d2::ConnectionManager, PgConnection};
 use crate::models::projects::*;
+use diesel::{r2d2::ConnectionManager, PgConnection};
 use serde::{Deserialize, Serialize};
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
