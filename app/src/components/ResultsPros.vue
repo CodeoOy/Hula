@@ -10,17 +10,19 @@
 					<tr>
 						<th scope="col"></th>
 						<th scope="col">Name</th>
+						<th scope="col">Matched skills</th>
 						<th scope="col">Available?</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="(user, index) in users" :key="user.user_first_name" :class="`tier tier--${tier(user)}`">
-						<th scope="row"><span :class="`tier__ball tier__ball--${tier(user)}`" :style="`zIndex: ${index}`">{{ index + 1 }}</span></th>
+						<th scope="row" class="tier__index"><span :class="`tier__ball tier__ball--${tier(user)}`" :style="`zIndex: ${index}`">{{ index + 1 }}</span></th>
 						<td><a href="#"
 							data-bs-toggle="modal"
 							data-bs-target="#hulaModalmatch"
 							v-on:click="currentMatch = user
 						">{{ user.user_first_name }} {{ user.user_last_name }}</a></td>
+						<td><span class="badge" v-for="match in user.matches" :key="match.skill_id">{{ match.skill_label }}</span></td>
 						<td>{{ user.user_is_available }}</td>
 						<!--<a href="#" v-on:click="getUserData(user.uid)">{{user.firstname}} {{ user.lastname }}</a>-->
 					</tr>
@@ -80,6 +82,12 @@
 		methods: {
 			tier(user) {
 				return user.user_is_hidden ? 1 : 2
+			},
+			hasAllMandatorySkills() {
+				
+			},
+			hasAllSkills() {
+
 			}
 		}
 	}
