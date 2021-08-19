@@ -43,7 +43,6 @@ router.beforeEach((to, from, next) => {
 })
 
 router.beforeEach((to, from, next) => {
-	console.log(to)
 	if (to.name !== 'page-login' 
 		&& to.name !== 'page-confirm'
 		&& to.name !== 'page-forgot-password'

@@ -317,6 +317,9 @@ nav {
 		--#{$variable-prefix}table-bg: #580032 !important;
 		//color: $primary !important;
 	}
+	&__index {
+		width: 60px;
+	}
 }
 
 .tier__ball {

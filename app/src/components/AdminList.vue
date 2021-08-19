@@ -11,7 +11,7 @@
 			</ul>
 			<div class="p-3 rounded-2 content-box bg-dark text-light">
 				<FindLead v-on:leadsfetched="passLeads" v-if="tabToggle == false" />
-				<FindPro v-on:usersfetched="passUsers" v-else />
+				<FindPro v-on:matchesfetched="passMatches" v-else />
 			</div>
 		</div>
 		<div class="col-md-8">
@@ -20,7 +20,7 @@
 				<FeatMatches />
 			</div> -->
 			<ResultsLeads :leads='leadData' v-if="tabToggle == false" />
-			<ResultsPros :project='projectData' v-else />
+			<ResultsPros :matches='matchesData' v-else />
 		</div>
 	</div>
 </template>
@@ -43,13 +43,13 @@
 		data() {
 			return {
 				tabToggle: true,
-				projectData: {},
+				matchesData: [],
 				leadData: {},
 			}
 		},
 		methods: {
-			passUsers(value) {
-				this.projectData = value
+			passMatches(value) {
+				this.matchesData = value
 			},
 			passLeads(value) {
 				this.leadData = value

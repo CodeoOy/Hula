@@ -8,7 +8,7 @@
 			:dropdown="true"
 			:filterProperties="'name'"
 			:selection.sync="value"
-			v-on:auto-complete="getMatchedUsers($event)"
+			v-on:auto-complete="getChosenProject($event)"
 		></AutoComplete>
 	</div>
 </template>
@@ -22,7 +22,6 @@
 				value: '',
 				projects: this.$store.state.projects,
 				user: {},
-				users: {},
 				selected: {},
 				queryData: {
 					projectname: '',
@@ -33,10 +32,18 @@
 			AutoComplete
 		},
 		methods: {
-			getMatchedUsers(value) {
-				this.users = value
-				this.$emit('usersfetched', this.users)
-			}
+			getChosenProject(value) {
+				fetch(`/api/matches/${value.id}`, {method: 'GET'})
+				.then(response => { 
+					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
+				})
+				.then(response => {
+					this.$emit('matchesfetched', response)
+				})    
+				.catch((errors) => {
+					this.$store.commit('errorHandling', errors)
+				})				
+			},
 		}
 	}
 </script>
