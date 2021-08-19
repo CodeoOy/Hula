@@ -13,6 +13,17 @@ pub fn query_all_skills(pool: &web::Data<Pool>) -> Result<Vec<Skill>, Error> {
 	Ok(items)
 }
 
+pub fn get_skill_by_label(q_label: String, pool: &web::Data<Pool>) -> Result<Skill, Error> {
+	use crate::schema::skills::dsl::{label, skills};
+	let conn: &PgConnection = &pool.get().unwrap();
+
+	let items = skills
+		.filter(label.eq(q_label))
+		.get_result::<Skill>(conn)?;
+
+	Ok(items)
+}
+
 pub fn create_skill(
 	q_label: String,
 	q_skillcategory_id: uuid::Uuid,
