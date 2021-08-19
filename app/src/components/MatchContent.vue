@@ -1,22 +1,25 @@
 <template>
 	<div>
-		{{ chosenMatch }}
-        <!-- <table class="table table-dark table-striped text-light">
+        <table class="table table-dark table-striped text-light">
 			<thead>
 				<tr>
-					<th></th>
-					<th scope="col">{{ chosenMatch.projectname }}</th>
-					<th scope="col">{{ chosenMatch.firstname }} {{ chosenMatch.lastname }}</th>
+					<th scope="col">User</th>
+					<th scope="col">Project index</th>
+					<th scope="col">User index</th>
+					<th scope="col">Project years</th>
+					<th scope="col">User years</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<td>{{ chosenMatch.skillname }}</td>
-					<td>{{ chosenMatch.required_minyears }}</td>
-					<td>{{ chosenMatch.user_years }}</td>
+				<tr v-for="skill in chosenMatch.matches" :key="skill.idx">
+					<td>{{ skill.skill_label }}</td>
+					<td>{{ skill.required_index}}</td>
+					<td>{{ skill.user_index }}</td>
+					<td>{{ skill.required_years}}</td>
+					<td>{{ skill.user_years }}</td>
 				</tr>
 			</tbody>
-		</table> -->
+		</table>
 		<a href="#" v-on:click="addToOffers"><i class="bi-briefcase-fill me-2"></i></a>
     </div>
 </template>

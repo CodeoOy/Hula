@@ -305,10 +305,46 @@ nav {
 		color: $light;
 	}
 }
-tr.prime-match {
-	--#{$variable-prefix}table-accent-bg: #97ffcb !important;
-	--#{$variable-prefix}table-bg: #97ffcb !important;
-	color: $primary !important;
+.tier {
+	position: relative;
+	&--1 {
+		--#{$variable-prefix}table-accent-bg: #770043 !important;
+		--#{$variable-prefix}table-bg: #770043 !important;
+	}
+	&--2,
+	&--3 {
+		--#{$variable-prefix}table-accent-bg: #580032 !important;
+		--#{$variable-prefix}table-bg: #580032 !important;
+		//color: $primary !important;
+	}
+	&__index {
+		width: 60px;
+	}
+}
+
+.tier__ball {
+	border-radius: 50%;
+	background-color: aquamarine;
+	position: absolute;
+	top: -5px;
+	width: 3rem;
+	height: 3rem;
+	line-height: 3rem;
+	text-align: center;
+	color: #000;
+	box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+	&--1 {
+		background-color: $yellow;
+	}
+	&--2,
+	&--3 {
+		background-color: $secondary;
+	}
+	&--4,
+	&--5,
+	&--6 {
+		background-color: $separator-color;
+	}
 }
 
 @keyframes fadein {

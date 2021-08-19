@@ -70,11 +70,6 @@ pub struct SkillDTO {
 	pub skill_label: String,
 }
 
-#[derive(Deserialize)]
-pub struct Download {
-	name: String,
-}
-
 #[derive(Deserialize, Debug)]
 pub struct ForgotPasswordData {
 	pub email: String,

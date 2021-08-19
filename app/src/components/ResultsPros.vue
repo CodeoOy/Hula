@@ -3,30 +3,30 @@
 		<VModal :modalTitle="'Match'" :modalID="'match'">
 			<MatchContent :chosenMatch="currentMatch"/>
 		</VModal>
-		<h2>Pro search results</h2>
+		{{ skills }}
+		<!-- <h2 v-if="project.name">Pro search results for {{ project.name }}</h2> -->
 		<transition name="fadeHeight">
-			<table v-if="project.matches" class="table table-dark table-striped text-light">
+			<table v-if="matches" class="table table-dark table-striped text-light">
 				<thead>
 					<tr>
-						<th scope="col">#</th>
+						<th scope="col"></th>
 						<th scope="col">Name</th>
-						<th scope="col">Match tier</th>
+						<th scope="col">Has mandatory skills</th>
+						<th scope="col">Matched skills</th>
 						<th scope="col">Available?</th>
-						<th scope="col">Mandatory skills</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(user, index) in project.matches" :key="user.uid" :class="user.has_mandatory ? 'prime-match' : ''">
-						<th scope="row">{{ index + 1 }}</th>
+					<tr v-for="(user, index) in users" :key="user.user_first_name" :class="`tier tier--${tier(user)}`">
+						<th scope="row" class="tier__index"><span :class="`tier__ball tier__ball--${tier(user)}`" :style="`zIndex: ${index}`">{{ index + 1 }}</span></th>
 						<td><a href="#"
 							data-bs-toggle="modal"
 							data-bs-target="#hulaModalmatch"
 							v-on:click="currentMatch = user
-						">{{ user.first_name }} {{ user.last_name }}</a></td>
-						<td>{{ user.tier }}</td>
-						<td>{{ user.is_available }}</td>
-						<td>{{ user.has_mandatory }}</td>
-						<!--<a href="#" v-on:click="getUserData(user.uid)">{{user.firstname}} {{ user.lastname }}</a>-->
+						">{{ user.user_first_name }} {{ user.user_last_name }}</a></td>
+						<td>{{ hasAllMandatorySkills(user) }}</td>
+						<td><span class="badge" v-for="match in user.matches" :key="match.skill_id">{{ match.skill_label }}</span></td>
+						<td>{{ user.user_is_available }}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -42,16 +42,73 @@
 		data() {
 			return {
 				currentMatch: {},
-				matches: {},
 				show: false,
+				project: {},
+				skills: [],
+				mandatorySkills: [],
 			}
 		},
 		props: {
-			project: {}
+			matches: []
 		},
 		components: {
 			VModal,
 			MatchContent
+		},
+		computed: {
+			users() {
+				const users = Object.values(this.matches.reduce((users, match) => {
+					const {
+						user_id,
+						user_first_name,
+						user_last_name,
+						user_is_hidden,
+						project_id,
+						...rest
+					} = match
+					if (user_id in users) {
+						users[user_id].matches.push(rest)
+					} else {
+						users[user_id] = {
+							user_id,
+							user_first_name,
+							user_last_name,
+							user_is_hidden,
+							project_id,
+							matches: [rest],
+						}
+					}
+					return users
+				}, {}))
+				if (users.length) {
+					this.getProjectSkills(users[0].project_id)
+				}
+				return users
+			},
+		},
+		methods: {
+			tier(user) {
+				console.log(user)
+			},
+			hasAllMandatorySkills(user) {
+				return this.mandatorySkills.every(skill => {
+					return user.matches.some(match => {
+						return match.skill_label === skill.skill_label
+					})
+				})
+			},
+			hasAllSkills() {
+
+			},
+			getProjectSkills(id) {
+				this.project = this.$store.state.projects.filter(project => {
+					return (project.id == id)
+				})
+				this.skills = this.project[0].skills
+				this.mandatorySkills = this.skills.filter(skill => {
+					return skill.skill_mandatory === true
+				})
+			}
 		},
 	}
 </script>
