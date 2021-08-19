@@ -14,6 +14,7 @@ pub struct QueryData {
 	pub is_employee: bool,
 	pub isadmin: bool,
 	pub email: String,
+	pub main_upload_id: uuid::Uuid,
 }
 
 #[derive(Deserialize, Debug)]
@@ -109,7 +110,6 @@ pub async fn update_user(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}
@@ -123,6 +123,7 @@ pub async fn update_user(
 			payload.is_employee,
 			payload.isadmin,
 			payload.email.clone(),
+			payload.main_upload_id,
 			&pool,
 		)
 	})
@@ -151,7 +152,6 @@ pub async fn add_skill(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}

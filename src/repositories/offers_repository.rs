@@ -6,12 +6,10 @@ use diesel::{prelude::*, PgConnection};
 use crate::models::offers::{Offer, Pool};
 
 pub fn query_get_all_offers(pool: &web::Data<Pool>) -> Result<Vec<Offer>, Error> {
-	use crate::schema::offers::dsl::{offers, id, project_id};
+	use crate::schema::offers::dsl::{id, offers, project_id};
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let items = offers
-		.order((id.asc(), project_id.asc()))
-		.load::<Offer>(conn)?;
+	let items = offers.order((id.asc(), project_id.asc())).load::<Offer>(conn)?;
 
 	Ok(items)
 }
@@ -21,9 +19,9 @@ pub fn query_add_offer(
 	q_project_id: uuid::Uuid,
 	q_comments: Option<String>,
 	q_email: String,
-	pool: &web::Data<Pool>
+	pool: &web::Data<Pool>,
 ) -> Result<Offer, Error> {
-	use crate::schema::offers::dsl::{offers};
+	use crate::schema::offers::dsl::offers;
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let new_offer = Offer {
@@ -44,7 +42,7 @@ pub fn query_add_offer(
 
 pub fn query_delete_offer(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
-	use crate::schema::offers::dsl::{offers, id};
+	use crate::schema::offers::dsl::{id, offers};
 
 	let deleted = diesel::delete(offers.filter(id.eq(uuid_data))).execute(conn)?;
 
