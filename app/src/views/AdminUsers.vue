@@ -12,15 +12,15 @@
 		<div class="d-flex flex-row justify-content-between align-items-start">
 			<h2>Users</h2>
 			<div>
-				<AutoComplete
+				<VAutoComplete
 					v-if="initialUsers.length" 
 					:suggestions="initialUsers" 
-					:selection.sync="userName" 
+					:selection="userName" 
 					:placeholder="'filter users'"
 					:dropdown="false"
 					:filterProperties="'firstname'"
 					v-on:auto-complete="autoCompleteAction"
-				></AutoComplete>
+				></VAutoComplete>
 				<button
 					class="btn btn-gradient"
 					data-bs-toggle="modal"
@@ -68,7 +68,7 @@
 	import VAvatar from '../components/VAvatar.vue'
 	import VModal from '../components/VModal.vue'
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
-	import AutoComplete from '../components/AutoComplete.vue'
+	import VAutoComplete from '../components/VAutoComplete.vue'
 	import { Modal } from 'bootstrap'
 	export default {
 		name: 'AdminListUsers',
@@ -88,7 +88,7 @@
 			VModal,
 			VAvatar,
 			FormConfirmAction,
-			AutoComplete,
+			VAutoComplete,
 		},
 		methods: {
 			hideModalUpdate() {

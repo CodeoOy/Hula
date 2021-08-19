@@ -1,5 +1,5 @@
 <template>
-	<div class="modal fade" ref="hulaModal" :id="'hulaModal' + modalID" :data-bs-backdrop="modalStatic ? 'static' : null">
+	<div class="modal fade" ref="modal" :id="'hulaModal' + modalID" :data-bs-backdrop="modalStatic ? 'static' : null">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content rounded-2 content-box bg-dark text-light">
 				<div class="modal-header" v-if="modalStatic == false">
@@ -15,20 +15,39 @@
 </template>
 
 <script>
-export default {
-	name: 'VModal',
-	props: {	
-		modalTitle: String,
-		modalID: String,
-		modalStatic: {
-			type: Boolean,
-			default: false
+	import { Modal } from 'bootstrap'
+
+	export default {
+		name: 'VModal',
+		
+		props: {
+			modalTitle: String,
+			modalID: String,
+			modalStatic: {
+				type: Boolean,
+				default: false
+			},
+			showAtStart: false,
+		},
+
+		mounted() {
+			this.modal = Modal.getOrCreateInstance(this.$refs.modal)
+			if (this.showAtStart) this.modal.show()
+
+			this.$refs.modal.addEventListener('hide.bs.modal', () => { this.$emit('modal-hiding') })
+			this.$refs.modal.addEventListener('hidden.bs.modal', () => { this.$emit('modal-hidden') })
+			this.$refs.modal.addEventListener('show.bs.modal', () => { this.$emit('modal-showing') })
+			this.$refs.modal.addEventListener('shown.bs.modal', () => { this.$emit('modal-shown') })
+		},
+
+		methods: {
+			show() {
+				this.modal.show()
+			},
+
+			hide() {
+				this.modal.hide()
+			}
 		}
-	},
-	updated() {
-		this.$refs.hulaModal.addEventListener('hidden.bs.modal', () => {
-			this.$emit('updatedModal')
-		})
 	}
-};
 </script>

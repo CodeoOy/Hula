@@ -19,7 +19,7 @@
 </template>
 <script>
     export default {
-        name: 'AutoComplete',
+        name: 'VAutoComplete',
         data() {
             return {
                 open: false,
