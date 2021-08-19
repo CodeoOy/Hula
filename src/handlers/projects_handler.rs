@@ -50,6 +50,7 @@ pub struct ProjectDTO {
 #[derive(Serialize, Debug)]
 pub struct SkillDTO {
 	pub skill_label: String,
+	pub skill_mandatory: bool,
 }
 
 #[derive(Serialize, Debug)]
@@ -499,6 +500,7 @@ fn query_projects_dto(
 			for s in &skills[idx] {
 				let ss = SkillDTO {
 					skill_label: s.skill_label.clone(),
+					skill_mandatory: s.is_mandatory,
 				};
 				skills_vec.push(ss);
 			}

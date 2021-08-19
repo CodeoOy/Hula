@@ -3,6 +3,7 @@
 		<VModal :modalTitle="'Match'" :modalID="'match'">
 			<MatchContent :chosenMatch="currentMatch"/>
 		</VModal>
+		{{ skills }}
 		<!-- <h2 v-if="project.name">Pro search results for {{ project.name }}</h2> -->
 		<transition name="fadeHeight">
 			<table v-if="matches" class="table table-dark table-striped text-light">
@@ -10,6 +11,7 @@
 					<tr>
 						<th scope="col"></th>
 						<th scope="col">Name</th>
+						<th scope="col">Has mandatory skills</th>
 						<th scope="col">Matched skills</th>
 						<th scope="col">Available?</th>
 					</tr>
@@ -22,9 +24,9 @@
 							data-bs-target="#hulaModalmatch"
 							v-on:click="currentMatch = user
 						">{{ user.user_first_name }} {{ user.user_last_name }}</a></td>
+						<td>{{ hasAllMandatorySkills(user) }}</td>
 						<td><span class="badge" v-for="match in user.matches" :key="match.skill_id">{{ match.skill_label }}</span></td>
 						<td>{{ user.user_is_available }}</td>
-						<!--<a href="#" v-on:click="getUserData(user.uid)">{{user.firstname}} {{ user.lastname }}</a>-->
 					</tr>
 				</tbody>
 			</table>
@@ -41,10 +43,12 @@
 			return {
 				currentMatch: {},
 				show: false,
+				project: {},
+				skills: [],
+				mandatorySkills: [],
 			}
 		},
 		props: {
-			project: {},
 			matches: []
 		},
 		components: {
@@ -76,6 +80,9 @@
 					}
 					return users
 				}, {}))
+				if (users.length) {
+					this.getProjectSkills(users[0].project_id)
+				}
 				return users
 			},
 		},
@@ -83,12 +90,25 @@
 			tier(user) {
 				return user.user_is_hidden ? 1 : 2
 			},
-			hasAllMandatorySkills() {
-				
+			hasAllMandatorySkills(user) {
+				return this.mandatorySkills.every(skill => {
+					return user.matches.some(match => {
+						return match.skill_label === skill.skill_label
+					})
+				})
 			},
 			hasAllSkills() {
 
+			},
+			getProjectSkills(id) {
+				this.project = this.$store.state.projects.filter(project => {
+					return (project.id == id)
+				})
+				this.skills = this.project[0].skills
+				this.mandatorySkills = this.skills.filter(skill => {
+					return skill.skill_mandatory === true
+				})
 			}
-		}
+		},
 	}
 </script>

@@ -7,13 +7,6 @@ use crate::models::projectmatches::Pool;
 use crate::models::users::LoggedUser;
 use crate::repositories::*;
 
-const TIER1: i32 = 1;
-const TIER2: i32 = 2;
-const TIER3: i32 = 3;
-const TIER4: i32 = 4;
-const TIER5: i32 = 5;
-const TIER6: i32 = 6;
-
 #[derive(Serialize, Debug)]
 pub struct ProjectDTO {
 	pub id: uuid::Uuid,
