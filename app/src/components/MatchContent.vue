@@ -1,5 +1,6 @@
 <template>
 	<div>
+		{{ chosenMatch }}
         <table class="table table-dark table-striped text-light">
 			<thead>
 				<tr>

@@ -26,7 +26,7 @@
 						">{{ user.user_first_name }} {{ user.user_last_name }}</a></td>
 						<td>{{ hasAllMandatorySkills(user) }}</td>
 						<td><span class="badge" v-for="match in user.matches" :key="match.skill_id">{{ match.skill_label }}</span></td>
-						<td>{{ user.user_is_available }}</td>
+						<td>{{ isAvailable(user) }}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -99,6 +99,11 @@
 			},
 			hasAllSkills() {
 
+			},
+			isAvailable(user) {
+				return user.matches.every(match => {
+					return match.required_load >= match.user_load
+				})
 			},
 			getProjectSkills(id) {
 				this.project = this.$store.state.projects.filter(project => {
