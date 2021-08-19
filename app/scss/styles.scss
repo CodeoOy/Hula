@@ -311,8 +311,7 @@ nav {
 		--#{$variable-prefix}table-accent-bg: #770043 !important;
 		--#{$variable-prefix}table-bg: #770043 !important;
 	}
-	&--2,
-	&--3 {
+	&--2 {
 		--#{$variable-prefix}table-accent-bg: #580032 !important;
 		--#{$variable-prefix}table-bg: #580032 !important;
 		//color: $primary !important;
@@ -336,13 +335,10 @@ nav {
 	&--1 {
 		background-color: $yellow;
 	}
-	&--2,
-	&--3 {
+	&--2 {
 		background-color: $secondary;
 	}
-	&--4,
-	&--5,
-	&--6 {
+	&--3 {
 		background-color: $separator-color;
 	}
 }

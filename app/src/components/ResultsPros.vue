@@ -13,6 +13,7 @@
 						<th scope="col">Name</th>
 						<th scope="col">Has mandatory skills</th>
 						<th scope="col">Matched skills</th>
+						<th scope="col">Tier</th>
 						<th scope="col">Available?</th>
 					</tr>
 				</thead>
@@ -26,6 +27,7 @@
 						">{{ user.user_first_name }} {{ user.user_last_name }}</a></td>
 						<td>{{ hasAllMandatorySkills(user) }}</td>
 						<td><span class="badge" v-for="match in user.matches" :key="match.skill_id">{{ match.skill_label }}</span></td>
+						<td>{{ tier(user) }}</td>
 						<td>{{ isAvailable(user) }}</td>
 					</tr>
 				</tbody>
@@ -88,17 +90,34 @@
 		},
 		methods: {
 			tier(user) {
-				console.log(user)
+				let hasMandatory = this.hasAllMandatorySkills(user)
+				let isAvailable = this.isAvailable(user)
+				if (hasMandatory == true && isAvailable == true) {
+					return 1
+				} else if (hasMandatory == true && isAvailable == false) {
+					return 2
+				} else if (hasMandatory == false && isAvailable == true) {
+					return 3
+				} else {
+					return 4
+				}
 			},
 			hasAllMandatorySkills(user) {
 				return this.mandatorySkills.every(skill => {
 					return user.matches.some(match => {
+						if (user.user_first_name == "Mace") {
+							console.log("Windu")
+							console.log(
+								match.skill_label, skill.skill_label, match.user_index, match.required_index,
+								match.user_years, match.required_minyears, match.user_years, match.required_maxyears
+							)
+						}
 						return match.skill_label === skill.skill_label
+						&& match.user_index >= match.required_index
+						&& match.user_years >= match.required_minyears
+						&& (match.user_years <= match.required_maxyears || match.required_maxyears === null)
 					})
 				})
-			},
-			hasAllSkills() {
-
 			},
 			isAvailable(user) {
 				return user.matches.every(match => {
