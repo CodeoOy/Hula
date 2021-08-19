@@ -88,7 +88,7 @@
 		},
 		methods: {
 			tier(user) {
-				return user.user_is_hidden ? 1 : 2
+				console.log(user)
 			},
 			hasAllMandatorySkills(user) {
 				return this.mandatorySkills.every(skill => {
