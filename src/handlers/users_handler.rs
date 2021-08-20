@@ -14,7 +14,7 @@ pub struct QueryData {
 	pub is_employee: bool,
 	pub isadmin: bool,
 	pub email: String,
-	pub main_upload_id: uuid::Uuid,
+	pub main_upload_id: Option<uuid::Uuid>,
 }
 
 #[derive(Deserialize, Debug)]

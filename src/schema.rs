@@ -145,7 +145,7 @@ table! {
 		updated_by -> Varchar,
 		is_employee -> Bool,
 		password_pending -> Bool,
-		main_upload_id -> Uuid,
+		main_upload_id -> Nullable<Uuid>,
 	}
 }
 

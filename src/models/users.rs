@@ -4,6 +4,7 @@ use crate::models;
 use crate::repositories::*;
 use actix_identity::Identity;
 use actix_web::{dev::Payload, web::Data, Error, FromRequest, HttpRequest};
+use diesel::sql_types::Uuid;
 use diesel::{r2d2::ConnectionManager, PgConnection};
 use futures::future::{err, ok, Ready};
 use log::debug;
@@ -25,7 +26,7 @@ pub struct User {
 	pub updated_by: String,
 	pub is_employee: bool,
 	pub password_pending: bool,
-	pub main_upload_id: uuid::Uuid,
+	pub main_upload_id: Option<uuid::Uuid>,
 }
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
@@ -115,7 +116,7 @@ impl User {
 			updated_by: emailstr,
 			is_employee: false,
 			password_pending: password_pending,
-			main_upload_id: uuid::Uuid::new_v4(),
+			main_upload_id: None,
 		}
 	}
 }
