@@ -3,8 +3,8 @@
 		<VModal :modalTitle="'Match'" :modalID="'match'">
 			<MatchContent :chosenMatch="currentMatch"/>
 		</VModal>
-		{{ project }}
-		<!-- <h2 v-if="project.name">Pro search results for {{ project.name }}</h2> -->
+		<h2 v-if="project[0]">Pro search results for {{ project[0].name }}</h2>
+		<p>Projects skills: <span class="me-2" v-for="skill in this.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></p>
 		<transition name="fadeHeight">
 			<table v-if="matches" class="table table-dark table-striped text-light">
 				<thead>
@@ -88,7 +88,7 @@
 						users[user_id].isAvailable = this.isAvailable(users[user_id])
 						return users
 					}, {}))
-					return users
+					return users.sort((a, b) => (a.tier > b.tier) ? 1 : (a.tier === b.tier) ? ((a.isAvailable > b.isAvailable) ? 1 : -1) : -1 )
 				}
 			},
 		},
