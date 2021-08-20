@@ -4,6 +4,7 @@ use crate::models;
 use crate::repositories::*;
 use actix_identity::Identity;
 use actix_web::{dev::Payload, web::Data, Error, FromRequest, HttpRequest};
+use diesel::sql_types::Uuid;
 use diesel::{r2d2::ConnectionManager, PgConnection};
 use futures::future::{err, ok, Ready};
 use log::debug;
@@ -25,6 +26,7 @@ pub struct User {
 	pub updated_by: String,
 	pub is_employee: bool,
 	pub password_pending: bool,
+	pub main_upload_id: Option<uuid::Uuid>,
 }
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
@@ -61,6 +63,17 @@ pub struct UserFavorite {
 	pub project_id: uuid::Uuid,
 	pub updated_by: String,
 }
+
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
+#[belongs_to(User, foreign_key = "user_id")]
+#[table_name = "useruploads"]
+pub struct UserUploads {
+	pub id: uuid::Uuid,
+	pub user_id: uuid::Uuid,
+	pub filename: String,
+	pub updated_by: String,
+}
+
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
 #[belongs_to(User, foreign_key = "user_id")]
@@ -103,6 +116,7 @@ impl User {
 			updated_by: emailstr,
 			is_employee: false,
 			password_pending: password_pending,
+			main_upload_id: None,
 		}
 	}
 }

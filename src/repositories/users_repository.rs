@@ -41,12 +41,13 @@ pub fn create(
 	pool: &web::Data<Pool>,
 ) -> Result<User, Error> {
 	use crate::schema::users::dsl::users;
+	
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let new_user = User::from_details(q_email, q_password, q_first_name, q_last_name, q_password_pending);
 
 	let user: User = diesel::insert_into(users).values(&new_user).get_result(conn)?;
-
+	
 	Ok(user)
 }
 
@@ -58,9 +59,12 @@ pub fn update(
 	q_user_is_employee: bool,
 	q_user_is_admin: bool,
 	q_email: String,
+	q_main_upload_id: Option<uuid::Uuid>,
 	pool: &web::Data<Pool>,
 ) -> Result<User, Error> {
-	use crate::schema::users::dsl::{firstname, id, is_hidden, is_employee, isadmin, lastname, updated_by, users};
+	use crate::schema::users::dsl::{
+		firstname, id, is_employee, is_hidden, isadmin, lastname, main_upload_id, updated_by, users,
+	};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let user = diesel::update(users)
@@ -72,6 +76,7 @@ pub fn update(
 			is_employee.eq(q_user_is_employee),
 			isadmin.eq(q_user_is_admin),
 			updated_by.eq(q_email),
+			main_upload_id.eq(q_main_upload_id),
 		))
 		.get_result::<User>(conn)?;
 

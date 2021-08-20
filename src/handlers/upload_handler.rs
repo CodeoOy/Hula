@@ -1,33 +1,51 @@
+use crate::errors::ServiceError;
+use crate::models::users::LoggedUser;
+use crate::models::users::Pool;
+use crate::repositories::*;
 use actix_multipart::Multipart;
 use actix_web::Error;
-use actix_web::{web, HttpResponse};
+use actix_web::{error::BlockingError, web, HttpResponse};
 use futures::{StreamExt, TryStreamExt};
 use serde::{Deserialize, Serialize};
 use std::io::Write;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct File {
 	name: String,
 }
 
-pub async fn save_file(mut payload: Multipart) -> Result<HttpResponse, Error> {
-    // iterate over multipart stream
-    while let Ok(Some(mut field)) = payload.try_next().await {
-        let content_type = field.content_disposition().unwrap();
-        let filename = content_type.get_filename().unwrap();
-        let filepath = format!("./{}", sanitize_filename::sanitize(&filename));
+pub async fn save_file(
+	mut payload: Multipart,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, Error> {
+	let filename = format!("{}.pdf", logged_user.uid);
+	while let Ok(Some(mut field)) = payload.try_next().await {
+		let filepath = format!("./{}", sanitize_filename::sanitize(&filename));
 
-        // File::create is blocking operation, use threadpool
-        let mut f = web::block(|| std::fs::File::create(filepath))
-            .await
-            .unwrap();
+		let mut f = web::block(|| std::fs::File::create(filepath)).await.unwrap();
 
-        // Field in turn is stream of *Bytes* object
-        while let Some(chunk) = field.next().await {
-            let data = chunk.unwrap();
-            // filesystem operations are blocking, we have to use threadpool
-            f = web::block(move || f.write_all(&data).map(|_| f)).await?;
-        }
-    }
-    Ok(HttpResponse::Ok().into())
+		while let Some(chunk) = field.next().await {
+			let data = chunk.unwrap();
+			f = web::block(move || f.write_all(&data).map(|_| f)).await?;
+		}
+	}
+	web::block(move || useruploads_repository::create_file(logged_user.uid, filename, logged_user.email, &pool))
+		.await?;
+
+	Ok(HttpResponse::Ok().into())
+}
+
+pub async fn delete_file(uuid_data: web::Path<String>, pool: web::Data<Pool>) -> Result<HttpResponse, ServiceError> {
+	
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	let res = web::block(move || useruploads_repository::delete_file(id, &pool)).await;
+	match res {
+		Ok(_) => Ok(HttpResponse::Ok().finish()),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
 }

@@ -42,7 +42,7 @@ async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
 		counter = count + 1;
 	}
 
-	session.set("counter", counter)?;
+	session.set("counter", counter)?; 
 
 	Ok(HttpResponse::build(StatusCode::OK)
 		.content_type("text/html; charset=utf-8")
@@ -103,8 +103,7 @@ async fn main() -> std::io::Result<()> {
 							.route(web::get().to(handlers::offers_handler::get_all_offers)),
 					)
 					.service(
-						web::resource("/offers/{id}")
-							.route(web::delete().to(handlers::offers_handler::delete_offer)),
+						web::resource("/offers/{id}").route(web::delete().to(handlers::offers_handler::delete_offer)),
 					)
 					.service(web::resource("/users").route(web::get().to(handlers::users_handler::get_all)))
 					.service(
@@ -130,6 +129,11 @@ async fn main() -> std::io::Result<()> {
 							.route(web::post().to(handlers::users_handler::add_reservation))
 							.route(web::put().to(handlers::users_handler::update_reservation))
 							.route(web::delete().to(handlers::users_handler::delete_reservation)),
+					)
+					.service(web::resource("/useruploads").route(web::post().to(handlers::upload_handler::save_file)))
+					.service(
+						web::resource("/useruploads/{id}")
+							.route(web::delete().to(handlers::upload_handler::delete_file)),
 					)
 					.service(
 						web::resource("/resetpassword")
@@ -227,10 +231,7 @@ async fn main() -> std::io::Result<()> {
 						web::resource("/register/{invitation_id}")
 							.route(web::post().to(handlers::register_handler::register_user)),
 					)
-					.service(
-						web::resource("/upload")
-							.route(web::post().to(handlers::upload_handler::save_file)),
-					)
+					.service(web::resource("/upload").route(web::post().to(handlers::upload_handler::save_file)))
 					.service(
 						web::resource("/auth")
 							.route(web::post().to(handlers::auth_handler::login))

@@ -18,3 +18,4 @@ pub mod userreservations_repository;
 pub mod users_repository;
 pub mod userskills_repository;
 pub mod transactions;
+pub mod useruploads_repository; 

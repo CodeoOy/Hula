@@ -1,20 +1,20 @@
 <template>
 	<div>
 		<h2 v-if="queryData.projectname.length">{{ queryData.projectname }}</h2>
-		<AutoComplete 
+		<VAutoComplete 
 			v-if="this.$store.state.projects" 
 			:suggestions="this.$store.state.projects"
 			:placeholder="'Start typing the name of project..'" 
 			:dropdown="true"
 			:filterProperties="'name'"
-			:selection.sync="value"
+			:selection="value"
 			v-on:auto-complete="getChosenProject($event)"
-		></AutoComplete>
+		></VAutoComplete>
 	</div>
 </template>
 
 <script>
-	import AutoComplete from '../components/AutoComplete.vue'
+	import VAutoComplete from '../components/VAutoComplete.vue'
 	export default {
 		name: 'FindPro',
 		data() {
@@ -29,7 +29,7 @@
 			}
 		},
 		components: {
-			AutoComplete
+			VAutoComplete
 		},
 		methods: {
 			getChosenProject(value) {
