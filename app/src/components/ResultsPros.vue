@@ -1,10 +1,10 @@
 <template>
-	<div class="p-3 rounded-2 content-box bg-dark text-light">
+	<div v-if="matches[0]" class="p-3 rounded-2 content-box bg-dark text-light">
 		<VModal :modalTitle="'Match'" :modalID="'match'">
-			<MatchContent :chosenMatch="currentMatch"/>
+			<MatchContent :chosenMatch="currentMatch" :projectName="projectName"/>
 		</VModal>
 		<h2 v-if="project[0]">Pro search results for {{ project[0].name }}</h2>
-		<p>Projects skills: <span class="me-2" v-for="skill in this.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></p>
+		<p>Projects skills: <span class="badge badge-skill me-2" v-for="skill in this.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></p>
 		<transition name="fadeHeight">
 			<table v-if="matches" class="table table-dark table-striped text-light">
 				<thead>
@@ -48,6 +48,7 @@
 				project: {},
 				skills: [],
 				mandatorySkills: [],
+				projectName: '',
 			}
 		},
 		props: {
@@ -126,6 +127,7 @@
 					return (project.id == id)
 				})
 				this.skills = this.project[0].skills
+				this.projectName = this.project[0].name
 				this.mandatorySkills = this.skills.filter(skill => {
 					return skill.skill_mandatory === true
 				})

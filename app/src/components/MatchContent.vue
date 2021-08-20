@@ -1,6 +1,11 @@
 <template>
 	<div>
 		{{ chosenMatch }}
+		<h4 class="h4">
+			<a :href="`app/user/${chosenMatch.user_id}`">{{ chosenMatch.user_first_name }} {{ chosenMatch.user_last_name }}&nbsp;</a>
+			<i class="bi-heart-fill me-2"></i>
+			<a :href="`app/project/${chosenMatch.project_id}`">{{ projectName }}</a>
+		</h4>
         <table class="table table-dark table-striped text-light">
 			<thead>
 				<tr>
@@ -33,7 +38,7 @@
 				skills: {},
 				formData: {
 					user_id: this.chosenMatch.user_id || '',
-					project_id: this.chosenProject.id || '',
+					project_id: this.chosenMatch.project_id|| '',
 					sold: false,
 					comments: 'Lol.',
 				}
@@ -41,10 +46,7 @@
 		},
 		props: {
 			chosenMatch: {},
-			chosenProject: {
-				type: Object,
-				default: {}
-			}
+			projectName: '',
 		},
 		methods: {
 			addToOffers() {

@@ -299,6 +299,10 @@ nav {
 	transition: all 0.4s ease-in-out;
 }
 
+.badge-skill {
+	background-color: $purple;
+}
+
 .table-striped { // Not very pretty but changing the BS variable had no effect
 	> tbody > tr:nth-of-type(#{$table-striped-order}) {
 		--#{$variable-prefix}table-accent-bg: var(--#{$variable-prefix}table-striped-bg);
