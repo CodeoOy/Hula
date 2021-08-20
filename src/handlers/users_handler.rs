@@ -59,6 +59,7 @@ pub struct UserDTO {
 	pub firstname: String,
 	pub lastname: String,
 	pub skills: Vec<SkillDTO>,
+	pub main_upload_id: Option<uuid::Uuid>,
 }
 
 #[derive(Serialize, Debug)]
@@ -434,6 +435,7 @@ fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, Servic
 		firstname: user.firstname,
 		lastname: user.lastname,
 		skills: skills_dto,
+		main_upload_id: user.main_upload_id,
 	};
 	if data.id.is_nil() == false {
 		return Ok(data.into());
