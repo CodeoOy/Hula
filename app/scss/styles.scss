@@ -338,7 +338,8 @@ nav {
 	&--2 {
 		background-color: $secondary;
 	}
-	&--3 {
+	&--3,
+	&--4 {
 		background-color: $separator-color;
 	}
 }
