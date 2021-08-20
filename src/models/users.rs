@@ -74,7 +74,6 @@ pub struct UserUploads {
 	pub updated_by: String,
 }
 
-
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]
 #[belongs_to(User, foreign_key = "user_id")]
 #[table_name = "sessions"]
