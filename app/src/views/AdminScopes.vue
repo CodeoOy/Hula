@@ -11,7 +11,7 @@
 			/>
 		</VModal>
 		<div class="d-flex flex-row justify-content-between align-items-start">
-			<h2>Scopes</h2>
+			<h2 class="h2">Scopes</h2>
 			<button
 				class="btn btn-gradient"
 				data-bs-toggle="modal"

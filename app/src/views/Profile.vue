@@ -16,7 +16,7 @@
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					<h1>{{ user.firstname }} {{ user.lastname }}</h1>
+					<h1 class="h1">{{ user.firstname }} {{ user.lastname }}</h1>
 					<p>{{ user.email }}</p>
 					<a 
 						href="#"
@@ -73,7 +73,7 @@
 			<div class="col-md-8">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<div class="d-flex flex-row justify-content-between align-items-start">
-						<h3>Skills</h3>
+						<h3 class="h3">Skills</h3>
 						<button
 							class="btn btn-gradient"
 							v-on:click="formTitle = 'Add Skill', chosenSkill = {}, chosenForm = 'Skill', url = `/api/userskills/${user.id}`, method = 'POST'" 
@@ -113,7 +113,7 @@
 						</tbody>
 					</table>
 					<div class="d-flex flex-row justify-content-between align-items-start">
-						<h3>Reservations</h3>
+						<h3 class="h3">Reservations</h3>
 						<button
 							class="btn btn-gradient"
 							v-on:click="formTitle = 'Add Reservation', chosenReservation = {}, chosenForm = 'Reservation', url = `/api/userreservations/${user.id}`, method = 'POST'" 
@@ -151,6 +151,21 @@
 										v-on:click="formTitle = `Delete reservation?`, chosenReservation = reservation, chosenForm = 'Delete', url = `/api/userreservations/${reservation.id}`, method = 'DELETE'"
 									><i class="bi-trash-fill me-2"></i></a>
 								</td>
+							</tr>
+						</tbody>
+					</table>
+					<h3 class="h3">Matches</h3>
+					<table class="table table-dark table-striped text-light">
+						<thead>
+							<tr>
+								<th scope="col">Project</th>
+								<th scope="col">Skills</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="match in getUserMatches" :key="match.id">
+								<td>{{ match.name }}</td>
+								<td><span class="badge badge-skill me-2" v-for="skill in match.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></td>
 							</tr>
 						</tbody>
 					</table>
@@ -296,7 +311,7 @@
 				.catch((errors) => {
 					this.$store.commit('errorHandling', errors)
 				})
-			},
+			}
 		},
 		computed: {
 			modalComponent() {
@@ -308,9 +323,17 @@
 				}
 				return components[this.chosenForm]
 			},
-			userSkills () {
+			userSkills() {
 				return this.user.skills
-			}
+			},
+			getUserMatches() {
+				console.log(this.user.id)
+				return this.$store.state.projects.filter(project => {
+					return project.matches.some(match =>
+						match.user_id == this.user.id
+					)
+				})			
+			},
 		},
 		mounted() {
 			if (this.$route.params.id != this.$store.state.loggeduser.id) {

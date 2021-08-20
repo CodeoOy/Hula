@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="d-flex flex-row justify-content-between align-items-start">
-			<h2>Offers</h2>
+			<h2 class="h2">Offers</h2>
 			<div>
 				<VAutoComplete
 					v-if="offers.length" 

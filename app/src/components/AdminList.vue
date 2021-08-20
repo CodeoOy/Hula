@@ -16,7 +16,7 @@
 		</div>
 		<div class="col-md-8">
 			<!-- <div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-				<h2>Matches from teh algorithm</h2>
+				<h2 class="h2">Matches from teh algorithm</h2>
 				<FeatMatches />
 			</div> -->
 			<ResultsLeads :leads='leadData' v-if="tabToggle == false" />

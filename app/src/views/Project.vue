@@ -14,7 +14,7 @@
 		<div class="row gx-4">
 			<div class="col-md-4">
                 <div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-                	<h2>{{ project.name }}</h2>
+                	<h2 class="h2">{{ project.name }}</h2>
 					<a 
 						href="#"
 						data-bs-toggle="modal" 
@@ -32,7 +32,7 @@
 			<div class="col-md-8">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<div class="d-flex flex-row justify-content-between align-items-start">
-						<h2>Needs</h2>
+						<h2 class="h2">Needs</h2>
 						<button
 							class="btn btn-gradient"
 							data-bs-toggle="modal"
