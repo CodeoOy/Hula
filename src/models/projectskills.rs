@@ -9,10 +9,12 @@ use serde::{Deserialize, Serialize};
 pub struct ProjectSkill {
 	pub idx: i32,
 	pub project_id: uuid::Uuid,
-	pub skill_label: String,
 	pub pn_id: uuid::Uuid,
+	pub pn_label: Option<String>,
+	pub skill_label: String,
 	pub is_mandatory: bool,
 	pub required_index: Option<i32>,
+	pub required_label: Option<String>,
 	pub required_minyears: Option<f64>,
 	pub required_maxyears: Option<f64>,
 }

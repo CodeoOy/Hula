@@ -6,6 +6,8 @@ use crate::errors::ServiceError;
 use crate::models::projects::Pool;
 use crate::models::users::LoggedUser;
 use crate::repositories::*;
+use crate::repositories::transactions::*;
+use crate::repositories::transactions::project_structure_transaction::*;
 
 #[derive(Deserialize, Debug)]
 pub struct ProjectStructureData {
@@ -33,6 +35,29 @@ pub struct ProjectStructureNeedSkillData {
 	pub mandatory: bool,
 }
 
+impl From<ProjectStructureData> for ProjectStructure {
+	fn from(project: ProjectStructureData) -> ProjectStructure {
+		ProjectStructure {
+			name: project.name.clone(),
+			is_hidden: project.is_hidden,
+			needs: project.needs.iter().map(|x| ProjectStructureNeed {
+				label: x.label.clone(),
+				count_of_users: x.count_of_users,
+				begin_time: x.begin_time,
+				end_time: x.end_time,
+				percentage: x.percentage,
+				skills: x.skills.iter().map(|y| ProjectStructureNeedSkill {
+					skill_label: y.skill_label.clone(),
+					skillscopelevel_label: y.skillscopelevel_label.clone(),
+					min_years: y.min_years,
+					max_years: y.max_years,
+					mandatory: y.mandatory,
+				}).collect()
+			}).collect()
+		}
+	}
+}
+
 pub async fn create_project_structure(
 	projectdata: web::Json<ProjectStructureData>,
 	pool: web::Data<Pool>,
@@ -48,11 +73,20 @@ pub async fn create_project_structure(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res =
-		web::block(move || projects_repository::create_project(projectdata.name.clone(), logged_user.email, &pool))
-			.await;
+	let projectdata :ProjectStructure = projectdata.into_inner().into();
+
+	let res = web::block(move || {
+		project_structure_transaction::save_project_structure(
+			None, 
+			projectdata.into(), 
+			&pool, 
+			logged_user.email,
+			false
+		)
+	})
+	.await;
 	match res {
-		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
+		Ok(id) => Ok(HttpResponse::Ok().json(&id.unwrap_or_default())),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -79,13 +113,15 @@ pub async fn update_project_structure(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
+	let projectdata :ProjectStructure = projectdata.into_inner().into();
+
 	let res = web::block(move || {
-		projects_repository::update_project(
-			id,
-			projectdata.name.clone(),
-			projectdata.is_hidden,
+		project_structure_transaction::save_project_structure(
+			Some(id), 
+			projectdata.into(), 
+			&pool, 
 			logged_user.email,
-			&pool,
+			true
 		)
 	})
 	.await;

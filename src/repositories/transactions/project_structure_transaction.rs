@@ -45,145 +45,153 @@ pub struct ProjectStructureNeedSkill {
 	pub mandatory: bool,
 }
 
-pub fn test_project_structure_equals(
+fn test_project_structure_equals(
 	id: uuid::Uuid,
-	project: ProjectStructure,
-	pool: web::Data<Pool>,
+	project: &ProjectStructure,
+	pool: &web::Data<Pool>,
 ) -> Result<bool, Error> {
 	
 	let db_project = projects_repository::query_one(id, &pool)?;
 	
 	if db_project.name != project.name 
 		|| db_project.is_hidden != project.is_hidden {
+			println!("project on eri {:#?} vs {:#?}", db_project, project);
 			return Ok(false);
 	}
 
-	let db_skills = projectskills_repository::find_by_projects(&vec!(db_project), &pool)?;
-	let db_skills = &db_skills[0];
+	let db_project_skills = projectskills_repository::find_by_projects(&vec!(db_project), &pool)?;
+	let db_project_skills = &db_project_skills[0];
+	println!("");
+	println!("***db_project_skills on: {:#?}", db_project_skills);
 
 	let mut skills_count = 0;
 
 	for need in project.needs.iter() {
+		println!("need: {:#?}", need);
 		skills_count += need.skills.len();
 
-		//db_skills.iter().filter(|x| x.pn_id);		
-	}
-
-/*
-	let db_needs = projectneeds_repository::query_project_needs(&pool, id)?;
-	if db_needs.len() != project.needs.len() { return Ok(false); }
-
-	for need in project.needs.iter() {
-		let db_need = db_needs.iter().filter(|x| x.label == need.label).next();
-		if db_need.is_none() { return Ok(false); }
-
-		let db_need = db_need.unwrap();
-		if db_need.count_of_users != need.count_of_users ||
-			db_need.begin_time != need.begin_time ||
-			db_need.end_time != need.end_time ||
-			db_need.percentage != need.percentage {
-				return Ok(false);
-		}
-
-		let db_skills = projectneedskills_repository::query_projectneedskills(db_need.id, &pool)?;
-		if db_skills.len() != need.skills.len() { return Ok(false); }
-
 		for skill in need.skills.iter() {
-			let db_skill = db_skills.iter().filter(|x| x.label == need.label).next();
-			if db_level.is_none() { return Ok(false); }
-	
-		}
+			println!("skill: {:#?}", skill);
+			let db_project_skill = db_project_skills
+				.iter()
+				.filter(|x| x.pn_label.clone().unwrap_or_default() == need.label && x.skill_label == skill.skill_label)
+				.next();
 
-		let skill_match = need.skills.iter().all(|x| db_skills.iter().any(|y| 
-			x.skill_label == y.label &&
-			x.skill == y.count_of_users &&
-			x.begin_time == y.begin_time &&
-			x.end_time == y.end_time &&
-			x.percentage == y.percentage
-		));
+			println!("db_project_skill: {:#?}", db_project_skill);
+			if db_project_skill.is_none() { return Ok(false); }
+
+			let db_project_skill = db_project_skill.unwrap();
+
+			println!("db_project_skill {:#?} vs {:#?}", db_project_skill, skill);
+			if db_project_skill.is_mandatory != skill.mandatory ||
+				db_project_skill.required_minyears != skill.min_years ||
+				db_project_skill.required_label != skill.skillscopelevel_label {
+					return Ok(false);
+			}
+		}
 	}
 
+	println!("skills_count {} versus {}", skills_count, db_project_skills.len());
+	if skills_count != db_project_skills.len() {
+		return Ok(false);
+	}
 
-	if need_match == false { return Ok(false); }
-*/
-/*
-	pub skillscopelevel_label: Option<String>,
-	pub min_years: Option<f64>,
-	pub max_years: Option<f64>,
-	pub mandatory: bool,
-
-*/
-
-
+	println!("täytyy updateta {:#?}", id);
 	Ok(true)
 }
 
 pub fn save_project_structure(
-	id: uuid::Uuid,
+	mut id: Option<uuid::Uuid>,
 	project: ProjectStructure,
-	pool: web::Data<Pool>,
+	pool: &web::Data<Pool>,
 	email: String,
-) -> Result<(), Error> {
+	is_update: bool,
+) -> Result<Option<uuid::Uuid>, Error> {
 
-	let conn: &PgConnection = &pool.get().unwrap();
+	if is_update == true {
+		println!("tsekataan onko eri");
+		let equals = test_project_structure_equals(
+			id.unwrap(),
+			&project,
+			&pool)?;
 
-	conn.transaction::<_, Error, _>(|| {
+		if equals == true {
+			println!("on sama");
+			return Ok(None);
+		}
+		println!("on eri");
+	}
 
-		projects_repository::update_project(
+	if is_update == false {
+		let db_project = projects_repository::create_project(project.name.clone(), email.clone(), &pool)?;
+		id = Some(db_project.id);
+	}
+
+	let id = id.unwrap();
+		
+	println!("id on {:#?}", id);
+	projects_repository::update_project(
+		id,
+		project.name.clone(),
+		project.is_hidden,
+		email.clone(),
+		&pool,
+	)?;
+
+	println!("updated");
+
+	projectneeds_repository::delete_projectneeds_by_project(id, &pool)?;	
+
+	println!("deleted");
+
+	for need in project.needs.iter() {
+		let need_res = projectneeds_repository::create_projectneed(
 			id,
-			project.name.clone(),
-			project.is_hidden,
+			need.count_of_users,
+			need.percentage,
+			need.begin_time,
+			need.end_time,
 			email.clone(),
-			&pool,
-		)?;
+			&pool)?;	
 
-		projectneeds_repository::delete_projectneeds_by_project(id, &pool)?;	
+		for skill in need.skills.iter() {
+			println!("haetaan skill");
+			let db_skill = skills_repository::get_skill_by_label(skill.skill_label.clone(), &pool);
+			if db_skill.is_err() {
+				continue;
+			}
+			
+			let db_skill = db_skill.unwrap();
 
-		for need in project.needs.iter() {
-			let need_res = projectneeds_repository::create_projectneed(
-				id,
-				need.count_of_users,
-				need.percentage,
-				need.begin_time,
-				need.end_time,
-				email.clone(),
-				&pool)?;	
+			println!("haettu skill");
 
-			for skill in need.skills.iter() {
-				let db_skill = skills_repository::get_skill_by_label(skill.skill_label.clone(), &pool)?;
+			let mut skill_scope_level_id :Option<uuid::Uuid> = None;
+			if let Some(scopelabel) = skill.skillscopelevel_label.clone() {
+				println!("haetaan level for {}", scopelabel);
 
-				let mut skill_scope_level_id :Option<uuid::Uuid> = None;
-				if let Some(scopelabel) = skill.skillscopelevel_label.clone() {
-					let db_skill_scope_level = skillscopelevels_repository::get_skill_level_by_label(scopelabel, &pool)?;
+				let db_skill_scope_level = skillscopelevels_repository::get_skill_level_by_label(scopelabel, &pool);
+
+				if db_skill_scope_level.is_err() == false {
+					println!("löytyi");
+					let db_skill_scope_level = db_skill_scope_level.unwrap();
 					skill_scope_level_id = Some(db_skill_scope_level.id);
 				}
-
-				projectneedskills_repository::create_projectneedskill(
-					need_res.id,
-					db_skill.id,
-					skill_scope_level_id,
-					skill.min_years,
-					skill.max_years,
-					email.clone(),
-					skill.mandatory,
-					&pool)?;	
+				println!("haettu level");
+				
 			}
+
+			println!("luodaan projectneedskill");
+			projectneedskills_repository::create_projectneedskill(
+				need_res.id,
+				db_skill.id,
+				skill_scope_level_id,
+				skill.min_years,
+				skill.max_years,
+				email.clone(),
+				skill.mandatory,
+				&pool)?;	
 		}
-
-
-			Ok(())
-
-	})?;
-
-	Ok(())
-
-		/*
-	match res {
-		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
-		Err(err) => match err {
-			BlockingError::Error(service_error) => Err(service_error.into()),
-			BlockingError::Canceled => Err(ServiceError::InternalServerError),
-		},
 	}
-	*/
+
+	Ok(Some(id))
 }
