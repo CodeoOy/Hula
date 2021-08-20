@@ -59,7 +59,7 @@ pub fn update(
 	q_user_is_employee: bool,
 	q_user_is_admin: bool,
 	q_email: String,
-	q_main_upload_id: uuid::Uuid,
+	q_main_upload_id: Option<uuid::Uuid>,
 	pool: &web::Data<Pool>,
 ) -> Result<User, Error> {
 	use crate::schema::users::dsl::{
