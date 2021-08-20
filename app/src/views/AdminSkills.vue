@@ -100,7 +100,6 @@
 				method: '',
 				chosenSkill: {},
 				chosenCategory: {},
-				skills: [],
 				categories: [],
 				skillScopes: [],
 			}
@@ -112,39 +111,14 @@
 			FormConfirmAction
 		},
 		methods: {
-			getAllSkills() {
-				fetch('/api/skills', {method: 'GET'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => { 
-					this.skills = response;
-				})    
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
+			async getSkillCategories() {
+				this.categories = await this.$api.skills.categories.get()
 			},
-			getSkillCategories() {
-				fetch('/api/skills/categories', {method: 'GET'})
-				.then(response => {
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				}) 
-				.then(response => { 
-					this.categories = response;
-				})
+			
+			async getSkillScopes() {
+				this.skillScopes = await this.$api.skills.scopes.get()
 			},
-			getAllScopes() {
-				fetch('/api/skills/scopes', {method: 'GET'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => { 
-					this.skillScopes = response;
-				})    
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
-			},
+
 			filterSkills(id) {
 				return this.skills.filter(skill => skill.skillcategory_id == id)
 			},
@@ -156,12 +130,16 @@
 			},
 			hideModalUpdate() {
 				this.getSkillCategories()
-				this.getAllSkills()
+				this.$store.dispatch('getSkills')
 				let modal = Modal.getInstance(document.querySelector('#hulaModalSkills'))
 				modal.hide()
 			}
 		},
 		computed: {
+			skills() {
+				return this.$store.state.skills
+			},
+
 			modalComponent() {
 				const components = {
 					CreateSkill: FormSkill,
@@ -172,9 +150,9 @@
 			}
 		},
 		mounted() {
+			this.$store.dispatch('getSkills')
 			this.getSkillCategories()
-			this.getAllSkills()
-			this.getAllScopes()
+			this.getSkillScopes()
 		}
 	}
 </script>

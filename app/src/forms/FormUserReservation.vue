@@ -1,5 +1,5 @@
 <template>
-	<v-form v-on:submit="createUpdateUserReservation">
+	<v-form v-on:submit="saveUserReservation">
 		<div class="mb-2">
 			<label class="form-label">Description</label>
 			<error-message name="description" class="error"></error-message>
@@ -62,6 +62,7 @@ export default {
 	data() {
 		return {
 			formData: {
+				id: this.chosenReservation.id || undefined,
 				description: this.chosenReservation.description || '',
 				begin_time: this.chosenReservation.begin_time || '',
 				end_time: this.chosenReservation.end_time || '',
@@ -85,25 +86,11 @@ export default {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
-		createUpdateUserReservation() {
+		async saveUserReservation() {
 			const formData = { ...this.formData }
 			if (formData.end_time == '') delete formData.end_time
-			fetch(this.url, {
-				method: this.method,
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include',
-				body: JSON.stringify(formData)
-			})
-			.then(response => {
-				if (response.status >= 200 && response.status <= 299) {
-					this.$emit('formSent')
-				} else {
-					this.$store.commit('errorHandling', response)
-				}
-			})
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
+			const reservation = await this.$api.users.reservations.save(formData)
+			if (reservation) this.$emit('formSent')
 		},
 	},
 };

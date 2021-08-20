@@ -56,6 +56,7 @@
 				filteredOffers: [],
 				offerName: '',
 				users: [],
+				offers: [],
 			}
 		},
 		components: {
@@ -63,55 +64,30 @@
 			VAutoComplete,
 		},
 		methods: {
-			getProjectName(id) {
-				let project = this.$store.state.projects.find(project => project.id == id)
-				if (project) {
-					return project.name
-				} else {
-					return 'Unknown'
-				}
+			addUserNames() {
+				this.offers.forEach(offer => {
+					const user = this.users.find(({ id }) => id == offer.user_id)
+					offer.user_name = user ? `${user.firstname} ${user.firstname}` : 'Unknown'
+				})
 			},
-			getUserName(id) {
-				let user = this.users.find(user => user.id == id)
-				if (user) {
-					return user.name
-				} else {
-					return 'Unknown'
-				}
+			addProjectNames() {
+				this.offers.forEach(offer => {
+					const project = this.$store.state.projects.find(project => project.id == offer.project_id)
+					offer.project_name = project ? project.name : 'Unknown'
+				})
 			},
 			autoCompleteAction(value) {
 				this.filteredOffers = value
 			},
-			getAllUsers() {
-				fetch('/api/users', {method: 'GET'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => { 
-					this.users = response;
-				})
-			}
 		},
-		computed: {
-			offers() {
-				fetch('/api/offers', {method: 'GET'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => { 
-					let offers = response;
-					offers.forEach(offer => {
-						offer.project_name = this.getProjectName(offer.project_id)
-						offer.user_name = this.getUserName(offer.user_id)
-					})
-					console.log("Fetched offers")
-					console.log(offers)
-					return offers
-				})
-			}
-		},
-		mounted() {
-			this.getAllUsers()
+		async mounted() {
+			await Promise.all([
+				this.$store.dispatch('getProjects'),
+				this.users = await this.$api.users.get(),
+				this.offers = await this.$api.offers.get(),
+			])
+			this.addUserNames()
+			this.addProjectNames()
 		},
 	}
 </script>

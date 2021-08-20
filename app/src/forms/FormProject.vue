@@ -1,5 +1,5 @@
 <template>
-	<v-form v-on:submit="createUpdateProject">
+	<v-form v-on:submit="saveProject">
 		<div class="mb-2">
 			<label class="form-label">Project name</label>
 			<error-message name="name" class="error"></error-message>
@@ -29,6 +29,7 @@ export default {
 	data() {
 		return {
 			formData: {
+				id: this.chosenProject.id || undefined,
 				name: this.chosenProject.name || '',
 				is_hidden: this.chosenProject.is_hidden || false, // TODO: Does this work in both edit and new?
 			},
@@ -48,23 +49,9 @@ export default {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
-		createUpdateProject() {
-			fetch(this.url, {
-				method: this.method,
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include',
-				body: JSON.stringify(this.formData)
-			})
-			.then(response => {
-				if (response.status >= 200 && response.status <= 299) {
-					this.$emit('formSent')
-				} else {
-					this.$store.commit('errorHandling', response)
-				}
-			})
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
+		async saveProject() {
+			const project = await this.$api.saveProject(this.formData)
+			if (project) this.$emit('formSent', project)
 		},
 	}
 };

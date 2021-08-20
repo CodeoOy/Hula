@@ -75,8 +75,8 @@
 												data-bs-target="#hulaModalScopes" 
 												v-on:click="formTitle = `Delete ${lvl.label}?`, chosenForm = 'Delete', url = `/api/skills/levels/${lvl.id}`, method = 'DELETE'"
 											><i class="bi-trash-fill me-2"></i></a>
-											<a href="#" v-on:click.prevent="chosenLevel = lvl, chosenLevel.swap_direction = 'Better', this.swapLevels(lvl.id);"><i class="bi-caret-up-fill me-1"></i></a>
-											<a href="#" v-on:click.prevent="chosenLevel = lvl, chosenLevel.swap_direction = 'Worse', this.swapLevels(lvl.id);"><i class="bi-caret-down-fill me-2"></i></a>
+											<a href="#" v-on:click.prevent="swapLevels({ ...lvl, swap_direction: 'Better' })"><i class="bi-caret-up-fill me-1"></i></a>
+											<a href="#" v-on:click.prevent="swapLevels({ ...lvl, swap_direction: 'Worse' })"><i class="bi-caret-down-fill me-2"></i></a>
 										</div>
 									</li>
 								</transition-group>
@@ -109,7 +109,6 @@
 					label: '',
 				},
 				skillScopes: [],
-				skillLevels: [],
 			}
 		},
 		components: {
@@ -119,44 +118,11 @@
 			FormConfirmAction
 		},
 		methods: {
-			swapLevels(id) {
-				fetch(`/api/skills/levels/${id}`, {
-					method: 'PUT',
-					headers: {"Content-Type": "application/json"},
-					credentials: 'include',
-					body: JSON.stringify(this.chosenLevel)
-				})
-				.then(response => { 
-					this.getAllLevels()
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
+			swapLevels(data) {
+				this.$store.dispatch('saveSkillLevel', data)
 			},
-			getAllScopes() {
-				fetch('/api/skills/scopes', {method: 'GET'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => { 
-					this.skillScopes = response;
-				})    
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
-			},
-			getAllLevels() {
-				fetch('/api/skills/levels', {method: 'GET'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => { 
-					this.skillLevels = response; // Handle 204
-				})
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
+			async getSkillScopes() {
+				this.skillScopes = await this.$api.skills.scopes.get()
 			},
 			filterLevels(id) {
 				let levels = this.skillLevels.filter(lvl => lvl.skillscope_id == id)
@@ -174,13 +140,16 @@
 				modal.hide()
 			},
 			hideModalUpdate() {
-				this.getAllScopes()
-				this.getAllLevels()
+				this.getSkillScopes()
+				this.$store.dispatch('getSkillLevels')
 				let modal = Modal.getInstance(document.querySelector('#hulaModalScopes'))
 				modal.hide()
 			},
 		},
 		computed: {
+			skillLevels() {
+				return this.$store.state.skillLevels
+			},
 			modalComponent() {
 				const components = {
 					Scope: FormSkillScope,
@@ -191,8 +160,8 @@
 			}
 		},
 		mounted() {
-			this.getAllLevels()
-			this.getAllScopes()
+			this.$store.dispatch('getSkillLevels')
+			this.getSkillScopes()
 		}
 	}
 </script>

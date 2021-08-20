@@ -1,5 +1,5 @@
 <template>
-	<v-form v-on:submit="createUpdateProjectNeed">
+	<v-form v-on:submit="saveNeed">
 		<h2 v-if="'id' in this.chosenNeed">{{ chosenNeed.id }}</h2>
 		<h2 v-else>New need</h2>
 		<div class="mb-2">
@@ -106,33 +106,14 @@ export default {
 		afterStartTime(value) {
 			return value ? true : 'End time must be after start time.';
 		},
-		createUpdateProjectNeed() {
-			let chosenMethod = 'PUT'
-			let fetchPath = '/api/projectneeds/' + this.chosenNeed.id
-			if ('isNew' in this.chosenNeed) {
-				chosenMethod = 'POST'
-				fetchPath = '/api/projectneeds'
-			}
-			if (this.formData.end_time == '') {
-				delete this.formData.end_time
-			}
-			delete this.formData.skills
-			fetch(fetchPath, {
-				method: chosenMethod,
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include',
-				body: JSON.stringify(this.formData)
-			})
-			.then(response => {
-				if (response.status >= 200 && response.status <= 299) {
-					this.$emit('formSent')
-				} else {
-					this.$store.commit('errorHandling', response)
-				}
-			})
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
+		async saveNeed() {
+			const data = { ...this.formData }
+			if ('id' in this.chosenNeed) data.id = this.chosenNeed.id
+			if (data.end_time == '') delete data.end_time
+			delete data.skills
+
+			const need = await this.$api.needs.save(data)
+			if (need) this.$emit('formSent')
 		},
 	},
 	props: {

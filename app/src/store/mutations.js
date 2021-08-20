@@ -1,61 +1,42 @@
 import router from '../router.js'
 
+const ensureArray = value => {
+	if (!Array.isArray(value)) {
+		console.error(`Expecting an array, got "${typeof value}"`, value)
+		return []
+	}
+	return value
+}
+
 export default {
 	setUser(state, data) {
-		state.loggeduser = data;
-		localStorage.setItem('user', JSON.stringify(data));
+		state.loggeduser = data
+		if (data) {
+			localStorage.setItem('user', JSON.stringify(data))
+		} else {
+			localStorage.removeItem('user')
+		}
 	},
+
 	setChosenProject(state, data) {
 		state.chosenproject = data
 	},
-	getProjects (state) {
-		let projectsExist = true
-		let projects = []
-		fetch('/api/projects?is_include_skills_and_matches=true', {
-			method: 'GET',
-			headers: {"Content-Type": "application/json"}
-		})
-		.then(response => {
-			if (response.status == 204) {
-				projects = []
-				projectsExist = false
-			} else {
-				return response.json()
-			}
-		})
-		.catch((errors) => {
-			console.log(errors);
-		})
-		.then(response => {
-			if (projectsExist === true) {
-				projects = response
-				projects.forEach(function (project) {
-					fetch(`/api/projectneeds/${project.id}`, {
-						method: 'GET',
-						headers: {"Content-Type": "application/json"},
-						credentials: 'include'
-					})
-					.then((response) => response.json())
-					.catch((errors) => {
-						console.log(errors)
-						project.needs = {}
-					})
-					.then((response) => {
-						project.needs = response
-					})
-				});
-				localStorage.setItem('projects', JSON.stringify(projects));
-				state.projects = projects
-			} else {
-				projects = []
-				localStorage.setItem('projects', JSON.stringify(projects));
-				state.projects = projects
-			}
-		})
+
+	setProjects(state, data) {
+		state.projects = ensureArray(data)
 	},
-	resetChosenProject (state) {
-		state.chosenproject = {}
+
+	setSkills(state, data) {
+		state.skills = ensureArray(data)
 	},
+
+	setSkillLevels(state, data) {
+		state.skillLevels = ensureArray(data)
+	},
+
+
+
+	// TODO: Get rid of this
 	errorHandling (state, error) {
 		if(error.status == 401) {
 			state.loggeduser = null
@@ -107,10 +88,4 @@ export default {
 			}
 		})
 	},
-	deleteUser (state) {
-		state.loggeduser = null
-		localStorage.removeItem('user');
-		localStorage.removeItem('projects');
-		router.push({ name: 'page-login' })
-	}
 }

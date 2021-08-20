@@ -1,5 +1,5 @@
 <template>
-	<v-form v-on:submit="createSkill">
+	<v-form v-on:submit="saveSkill">
 		<div class="mb-2">
 			<label class="form-label">Skill name</label>
 			<error-message name="name" class="error"></error-message>
@@ -60,6 +60,7 @@ export default {
 			categories: [],
 			scopes: [],
 			formData: {
+				id: this.chosenSkill.id || undefined,
 				label: this.chosenSkill.label || '',
 				skillcategory_id: this.chosenSkill.skillcategory_id || this.chosenCategory.id,
 				skillscope_id: this.chosenSkill.skillscope_id || null,
@@ -81,53 +82,14 @@ export default {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
-		createSkill() {
-			fetch(this.url, {
-				method: this.method,
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include',
-				body: JSON.stringify(this.formData)
-			})
-			.then(response => {
-				if (response.status >= 200 && response.status <= 299) {
-					this.$emit('formSent')
-				} else {
-					this.$store.commit('errorHandling', response)
-				}
-			})
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
+		async saveSkill() {
+			const skill = await this.$api.skills.save(this.formData)
+			if (skill) this.$emit('formSent')
 		},
-		getSkillCategories() {
-			fetch('/api/skills/categories', {method: 'GET'})
-			.then(response => { 
-				return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-			})
-			.then(response => { 
-				this.categories = response;
-			})    
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
-		},
-		getSkillScopes() {
-			fetch('/api/skills/scopes', {method: 'GET'})
-			.then(response => { 
-				return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-			})
-			.then(response => { 
-				this.scopes = response;
-				this.formData.skillscope_id = this.scopes[0].id
-			})    
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
-		}
 	},
-	mounted() {
-		this.getSkillCategories()
-		this.getSkillScopes()
+	async mounted() {
+		this.categories = await this.$api.skills.categories.get()
+		this.scopes = await this.$api.skills.scopes.get()
 	},
 };
 </script>

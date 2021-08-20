@@ -46,57 +46,41 @@
 				}
 				this.$router.push('/')
 			},
-			confirmRegistration: function() {  
-				fetch(`/api/register/${this.registrationData.id}`, {
-					method: 'POST', 
-					headers: {"Content-Type": "application/json"}, 
-					body: JSON.stringify(this.registrationData)
+			async confirmRegistration() {  
+				const success = await this.$api.users.registration.confirm(this.registrationData)
+				
+				const message = success ? {
+					type: 'success',
+					title: 'Account confirmed',
+				} : {
+					type: 'error',
+					title: 'Account confirmation failed',
+				}
+
+				this.$flashMessage.show({
+					...message,
+					time: 5000,
 				})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
-				})
-				.then(() => {    
-					this.$flashMessage.show({
-						type: 'success',
-						title: 'Account confirmed.',
-						time: 2000
-					});
-					this.confirmed = true
-				})
-				.catch((errors) => {
-					console.log("Error data: " + errors);
-					this.$flashMessage.show({
-						type: 'error',
-						title: 'Account not confirmed',
-						time: 2000
-					});
-				})      
+
+				if (success) this.confirmed = true
 			},
-			setPassword () {
-				fetch('/api/updatepassword', {
-					method: 'PUT', 
-					headers: {"Content-Type": "application/json"}, 
-					body: JSON.stringify(this.registrationData)
+			async setPassword() {
+				const success = await this.$api.users.password.save(this.registrationData)
+				
+				const message = success ? {
+					type: 'success',
+					title: 'Password changed',
+				} : {
+					type: 'error',
+					title: 'Updating password failed',
+				}
+
+				this.$flashMessage.show({
+					...message,
+					time: 5000,
 				})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(() => {    
-					this.$flashMessage.show({
-						type: 'success',
-						title: 'Account confirmed.',
-						time: 2000
-					});
-					this.confirmed = true
-				})
-				.catch((errors) => {
-					console.log("Error data: " + errors);
-					this.$flashMessage.show({
-						type: 'error',
-						title: 'Account not confirmed',
-						time: 2000
-					});
-				})
+				
+				if (success) this.confirmed = true
 			}
 		},
 		mounted() {

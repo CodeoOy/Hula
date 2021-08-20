@@ -31,38 +31,36 @@
 						v-on:click="formTitle = 'Delete my profile', chosenForm = 'Delete', chosenUser = user, url=`/api/users/${user.id}`, method='DELETE'"
 					><i class="bi-trash-fill me-2"></i></a>
 					<hr />
-					<v-form v-on:submit="uploadFile" class='clearfix'>
+					<v-form v-on:submit="saveFiles" class='clearfix'>
 						<div class="mb-3">
-							<div class="table-responsive">
-								<table v-if='user.uploads && user.uploads.length' class="table table-dark table-striped text-light">
-									<thead>
-										<tr>
-											<th scope="col">CV</th>
-											<th scope="col" colspan='2'>File</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr v-for="file in user.uploads" :key="file.id">
-											<td><input type='checkbox' :checked='user.main_upload_id == file.id' @click='setCV(file.id)'></td>
-											<td><a href='#' @click.prevent>{{ file.filename }}</a></td>
-											<td>
-												<a 
-													href="#"
-													data-bs-toggle="modal" 
-													data-bs-target="#hulaModalProfile" 
-													v-on:click="formTitle = `Delete file ${file.filename}`, chosenForm = 'Delete', url=`/api/useruploads/${file.id}`, method='DELETE'"
-												><i class="bi-trash-fill me-2"></i></a>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
+							<table v-if='files.length' class="table table-dark table-striped text-light">
+								<thead>
+									<tr>
+										<th scope="col">CV</th>
+										<th scope="col" colspan='2'>File</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="file in files" :key="file.id">
+										<td><input type='checkbox' :checked='user.main_upload_id == file.id' @click='setCV(file.id)'></td>
+										<td><a href='#' @click.prevent>{{ file.filename }}</a></td>
+										<td>
+											<a 
+												href="#"
+												data-bs-toggle="modal" 
+												data-bs-target="#hulaModalProfile" 
+												v-on:click="formTitle = `Delete file ${file.filename}`, chosenForm = 'Delete', url=`/api/useruploads/${file.id}`, method='DELETE'"
+											><i class="bi-trash-fill me-2"></i></a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
 
 							<label class="form-label">Upload files</label>
 							<error-message name="files" class="error"></error-message>
 							<v-field
 								type="file"
-								name="files[]"
+								name="newFiles[]"
 								multiple
 								class="form-control" 
 								v-model="newFiles"
@@ -125,41 +123,39 @@
 							data-bs-target="#hulaModalProfile"
 						>Add reservation</button>
 					</div>
-					<div class="table-responsive">
-						<table class="table table-dark table-striped text-light" v-if="'reservations' in user">
-							<thead>
-								<tr>
-									<th scope="col">Description</th>
-									<th scope="col">From</th>
-									<th scope="col">To</th>
-									<th scope="col">Percentage</th>
-									<th scope="col">Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr v-for="reservation in user.reservations" :key="reservation.id">
-									<td>{{ reservation.description }}</td>
-									<td>{{ reservation.begin_time }}</td>
-									<td>{{ reservation.end_time }}</td>
-									<td>{{ reservation.percentage }}</td>
-									<td>
-										<a 
-											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalProfile"
-											v-on:click="formTitle = reservation.id, chosenForm = 'Reservation', chosenReservation = reservation, url=`/api/userreservations/${reservation.id}`, method='PUT'"
-										><i class="bi-pencil-fill me-2"></i></a>
-										<a
-											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalProfile" 
-											v-on:click="formTitle = `Delete reservation?`, chosenReservation = reservation, chosenForm = 'Delete', url = `/api/userreservations/${reservation.id}`, method = 'DELETE'"
-										><i class="bi-trash-fill me-2"></i></a>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+					<table class="table table-dark table-striped text-light" v-if="reservations.length">
+						<thead>
+							<tr>
+								<th scope="col">Description</th>
+								<th scope="col">From</th>
+								<th scope="col">To</th>
+								<th scope="col">Percentage</th>
+								<th scope="col">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="reservation in reservations" :key="reservation.id">
+								<td>{{ reservation.description }}</td>
+								<td>{{ reservation.begin_time }}</td>
+								<td>{{ reservation.end_time }}</td>
+								<td>{{ reservation.percentage }}</td>
+								<td>
+									<a 
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalProfile"
+										v-on:click="formTitle = reservation.id, chosenForm = 'Reservation', chosenReservation = reservation, url=`/api/userreservations/${reservation.id}`, method='PUT'"
+									><i class="bi-pencil-fill me-2"></i></a>
+									<a
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalProfile" 
+										v-on:click="formTitle = `Delete reservation?`, chosenReservation = reservation, chosenForm = 'Delete', url = `/api/userreservations/${reservation.id}`, method = 'DELETE'"
+									><i class="bi-trash-fill me-2"></i></a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 					<h3 class="h3">Matches</h3>
 					<div class="table-responsive">
 						<table class="table table-dark table-striped text-light">
@@ -205,12 +201,8 @@
 				user: {},
 				url: '',
 				method: '',
-				files: [
-					{ id: '00000000-0000-0000-0000-000000000001', name: 'Fake file #01.jpeg' },
-					{ id: '00000000-0000-0000-0000-000000000002', name: 'Fake file #02.jpeg' },
-					{ id: '00000000-0000-0000-0000-000000000003', name: 'Breaking the pattern.gif' },
-					{ id: '00000000-0000-0000-0000-000000000004', name: 'Fake file #04.jpeg' },
-				],
+				reservations: [],
+				files: [],
 				newFiles: [],
 			}
 		},
@@ -228,98 +220,56 @@
 		methods: {
 			hideModalUpdate() {
 				this.checkProfile(this.$route.params.id)
-				this.getUserReservations(this.$route.params.id)
 				let modal = Modal.getInstance(document.querySelector('#hulaModalProfile'))
 				modal.hide()
 			},
-			deleteSkill(id) {
-				fetch(`/api/userskills/${id}`, {
-					method: 'DELETE',
-					headers: {"Content-Type": "application/json"},
-					credentials: 'include',
-					body: JSON.stringify(this.user)
-				})
+			async checkProfile(id) {
+				const [
+					user,
+					reservations,
+				] = await Promise.all([
+					this.$api.users.get(id),
+					this.$api.users.reservations.get(id),
+					this.getUserUploads(id),
+				])
+				this.user =  user
+				this.reservations = reservations
 			},
-			checkProfile(id) {
-				fetch(`/api/users/${id}`, {method: 'GET'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => { 
-					this.user = response;
-					this.getUserReservations(this.$route.params.id)
-					this.getUserUploads(id)
-				}) 
+			async getUserUploads(id) {
+				const files = await this.$api.users.files.get(id)
+				this.files = Array.isArray(files) ? files : [files] // TODO: Fix endpoint
 			},
-			getUserReservations(id) {
-				fetch(`/api/userreservations/${id}`, {method: 'GET'})
-				.then(response => {
-					if (response.status == 204) {
-						return []
-					}
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => {
-					this.user.reservations = response;
-				})
-			},
-			getUserUploads(id) {
-				fetch(`/api/useruploads/${id}`, {method: 'GET'})
-					.then(response => {
-						if (response.status == 204) return []
-						if (response.status >= 200 && response.status <= 299) return response.json()
-						throw Error(response)
-					})
-					.then(response => {
-						this.user.uploads = Array.isArray(response) ? response : [response]
-					})
-					.catch((errors) => {
-						this.$store.commit('errorHandling', errors)
-						this.user.uploads = []
-					})
-			},
-			uploadFile() {
-				var data = new FormData()
-				if (this.newFiles.length) this.newFiles.forEach(file => data.append('files[]', file))
+			async saveFiles() {
+				const success = await this.$api.users.files.save(this.newFiles)
 
-				fetch(`/api/upload`, {
-					method: 'POST',
-					//headers: {"Content-Type": "application/json"},
-					credentials: 'include',
-					body: data,
-				})
-				.then(response => {
-					if (response.status >= 200 && response.status <= 299) {
-						this.getUserUploads(this.$route.params.id)
-					} else {
-						this.$store.commit('errorHandling', response)
-					}
-				})
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
+				const message = success ? {
+					type: 'success',
+					title: 'Upload complete',
+					text: `${this.newFiles.length} file${this.newFiles.length > 1 ? 's were' : ' was'} uploaded successfully`,
+				} : {
+					type: 'error',
+					title: 'Upload failed',
+				}
+
+				this.$flashMessage.show({
+					...message,
+					time: 5000,
 				})
 
 				this.newFiles = []
+
+				if (success) this.getUserUploads(this.$route.params.id)
 			},
-			setCV(id) {
+			async setCV(id) {
 				const value = this.user.main_upload_id == id ? null : id
-				fetch(`/api/users/${this.user.id}`, {
-					method: 'PUT',
-					headers: {"Content-Type": "application/json"},
-					credentials: 'include',
-					body: JSON.stringify({ ...this.user, main_upload_id: value })
+
+				const data = await this.$api.users.save({
+					...this.user,
+					main_upload_id: value,
 				})
-				.then(response => {
-					if (response.status >= 200 && response.status <= 299) {
-						this.user.main_upload_id = value
-					} else {
-						this.$store.commit('errorHandling', response)
-					}
-				})
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
-			}
+
+				if (data) this.user.main_upload_id = value
+			},
 		},
 		computed: {
 			modalComponent() {
@@ -345,9 +295,7 @@
 		},
 		mounted() {
 			if (this.$route.params.id != this.$store.state.loggeduser.id) {
-				if (this.$store.state.loggeduser.isadmin === true) {
-					this.checkProfile(this.$route.params.id)
-				} else {
+				if (this.$store.state.loggeduser.isadmin !== true) {
 					this.$router.push({name: 'page-error'})
 				}
 			}

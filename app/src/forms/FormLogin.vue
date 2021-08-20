@@ -55,52 +55,23 @@
 			isRequired(value) {
 				return value ? true : 'This field is required';
 			},
-			loginUser() {
-				console.log("Logging in")   
-				let data = {    
-					"email": this.email,    
-					"password": this.password
+
+			async loginUser() {
+				let data = {
+					email: this.email,
+					password: this.password,
 				}
-				fetch('/api/auth', {
-					method: 'POST',
-					headers: {"Content-Type": "application/json"},
-					credentials: 'include',
-					body: JSON.stringify(data)
-				})
-				.then((response) => {
-					if(response.ok) {
-						fetch('/api/auth', {method: 'GET'})
-						.then((response) => response.json())
-						.catch((errors) => {
-							console.log("Auth (GET) failed, error data:");
-							console.log(errors)
-						}) 
-						.then(async response => {
-							console.log(response)
-							await this.$store.dispatch('setUser', response)
-						})
-						.then(() => {
-							this.$emit('hideModal')
-							this.$store.commit('getProjects')
-							if (this.$store.state.nextpage.length) {
-								this.$router.push(this.$store.state.nextpage)
-							} else {
-								this.$router.push({ name: 'page-home' })
-							}
-						})
-					} else {
-						this.$flashMessage.show({
-							type: 'error',
-							title: 'Unauthorized',
-							time: 1000
-						});
-						throw new Error('Auth (POST) failed');
-					}
-				})
+
+				const success = await this.$store.dispatch('login', data)
+
+				if (success) {
+					this.$router.push(this.$store.state.nextpage || { name: 'page-home' })
+				}
 			},
 		},
+
 		mounted() {
-			this.$store.commit('deleteUser')
+			this.$store.dispatch('setUser', null)
 		}
 	}
 </script>

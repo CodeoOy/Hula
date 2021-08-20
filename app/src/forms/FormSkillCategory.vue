@@ -1,5 +1,5 @@
 <template>
-	<v-form v-on:submit="createUpdateSkillCategory">
+	<v-form v-on:submit="saveSkillCategory">
 		<div class="mb-2">
 			<label class="form-label">Category label</label>
 			<error-message name="name" class="error"></error-message>
@@ -42,6 +42,7 @@ export default {
 		return {
 			categories: {},
 			formData: {
+				id: this.chosenCategory.id || undefined,
 				email: this.chosenCategory.email || '',
 				label: this.chosenCategory.label || '',
 				parent_id: this.chosenCategory.parent_id || null,
@@ -62,43 +63,17 @@ export default {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
-		createUpdateSkillCategory() {
+		async saveSkillCategory() {
 			if (this.formData.parent_id == '') {
 				console.log("no parent")
 				delete this.formData.parent_id;
 			}
-			fetch(this.url, {
-				method: this.method,
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include',
-				body: JSON.stringify(this.formData)
-			})
-			.then(response => {
-				if (response.status >= 200 && response.status <= 299) {
-					this.$emit('formSent')
-				} else {
-					this.$store.commit('errorHandling', response)
-				}
-			})
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
+			const category = await this.$api.skills.categories.save(this.formData)
+			if (category) this.$emit('formSent')
 		},
-		getSkillCategories() {
-			fetch('/api/skills/categories', {method: 'GET'})
-			.then(response => { 
-				return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-			})
-			.then(response => { 
-				this.categories = response;
-			})    
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
-		}
 	},
-	mounted() {
-		this.getSkillCategories()
+	async mounted() {
+		this.categories = await this.$api.getSkillCategories()
 	},
 };
 </script>

@@ -80,23 +80,9 @@ export default {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
-		editUserInfo() {
-			fetch(`/api/users/${this.chosenUser.id}`, {
-				method: 'PUT',
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include',
-				body: JSON.stringify(this.formData)
-			})
-			.then(response => {
-				if (response.status >= 200 && response.status <= 299) {
-					this.$emit('formSent')
-				} else {
-					this.$store.commit('errorHandling', response)
-				}
-			})
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
+		async editUserInfo() {
+			const user = await this.$api.users.save(this.formData)
+			if (user) this.$emit('formSent')
 		},
 	}
 };

@@ -11,7 +11,7 @@
 				v-on:form-sent="hideModalUpdate"
 			/>
 		</VModal>
-		<div class="row gx-4">
+		<div class="row gx-4" v-if='project'>
 			<div class="col-md-4">
                 <div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
                 	<h2 class="h2">{{ project.name }}</h2>
@@ -126,7 +126,7 @@
 				chosenNeed: {},
 				chosenNeedDefault: {
 					isNew: true,
-					project_id: this.$store.state.chosenproject.id,
+					project_id: this.$store.state.chosenproject ? this.$store.state.chosenproject.id : undefined,
 					count_of_users: Number,
 					begin_time: String,
 					end_time: String,
@@ -139,8 +139,6 @@
 				chosenSkill: {},
 				url: '',
 				method: '',
-				skills: [],
-				skillLevels: [],
 			}
 		},
 		components: {
@@ -154,6 +152,12 @@
 			project() {
 				return this.$store.state.chosenproject
 			},
+			skills() {
+				return this.$store.state.skills
+			},
+			skillLevels() {
+				return this.$store.state.skillLevels
+			},
 			modalComponent() {
 				const components = {
 					Need: FormProjectNeed,
@@ -166,37 +170,13 @@
 		},
 		methods: {
 			hideModalUpdate() {
-				this.checkProject(this.$route.params.id)
+				this.$store.dispatch('setChosenProject', this.$route.params.id)
 				let modal = Modal.getInstance(document.querySelector('#hulaModalSingleProject'))
 				modal.hide()
-			},
-			getAllSkills() {
-				fetch('/api/skills', {method: 'GET'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => { 
-					this.skills = response;
-				})    
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
 			},
 			getSkillLabel(id) {
 				var returnedSkill = this.skills.find(skill => skill.id == id)
 				return returnedSkill.label
-			},
-			getAllLevels() {
-				fetch('/api/skills/levels', {method: 'GET'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => { 
-					this.skillLevels = response
-				})    
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
 			},
 			getLevelLabel(id) {
 				if (id) {
@@ -204,21 +184,11 @@
 					return returnedLevel.label
 				}
 			},
-			checkProject(id) {
-				fetch(`/api/projects/${id}`, {method: 'GET'})
-				.then(response => { 
-					if (!response.ok) {
-						this.$router.push({name: 'page-error'})
-					} else {
-						this.$store.dispatch('setChosenProject', this.$route.params.id)
-					}
-				})
-			}
 		},
 		mounted() {
-			this.checkProject(this.$route.params.id)
-			this.getAllSkills()
-			this.getAllLevels()
+			this.$store.dispatch('setChosenProject', this.$route.params.id)
+			this.$store.dispatch('getSkills')
+			this.$store.dispatch('getSkillLevels')
 		}
 	}
 </script>

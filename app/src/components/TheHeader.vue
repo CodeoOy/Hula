@@ -65,18 +65,15 @@ export default {
 		}
 	},
 	methods: {
-		logOut() {
-			fetch('/api/auth', {method: 'DELETE'})
-			.then((response) => {
-				this.message = response;
-				this.$flashMessage.show({
-					type: 'success',
-					title: 'Successfully logged out',
-					time: 1000
-				});
-				this.$store.commit('deleteUser')
+		async logOut() {
+			const success = await this.$store.dispatch('logout')
+
+			if (success) this.$flashMessage.show({
+				type: 'success',
+				title: 'Successfully logged out',
+				time: 5000,
 			})
-		}
+		},
 	}
 };
 </script>

@@ -93,23 +93,10 @@
 			VAutoComplete,
 		},
 		methods: {
-			hideModalUpdate() {
-				this.getSkillCategories()
-				this.getAllSkills()
+			async hideModalUpdate() {
+				this.initialUsers = await this.$api.users.get()
 				let modal = Modal.getInstance(document.querySelector('#hulaModalUsers'))
 				modal.hide()
-			},
-			getAllUsers() {
-				fetch('/api/users', {method: 'GET'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => { 
-					this.initialUsers = response;
-				})
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
 			},
 			autoCompleteAction(value) {
 				this.filteredUsers = value
@@ -123,8 +110,8 @@
 				return components[this.chosenForm]
 			},
 		},
-		mounted() {
-			this.getAllUsers()
+		async mounted() {
+			this.initialUsers = await this.$api.users.get()
 		}
 	}
 </script>

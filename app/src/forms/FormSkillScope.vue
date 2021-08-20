@@ -1,5 +1,5 @@
 <template>
-	<v-form v-on:submit="createUpdateSkillScope">
+	<v-form v-on:submit="saveSkillScope">
 		<div class="mb-2">
 			<label class="form-label">Scope name</label>
 			<error-message name="name" class="error"></error-message>
@@ -24,6 +24,7 @@ export default {
 		return {
 			categories: {},
 			formData: {
+				id: this.chosenScope.id || undefined,
 				label: this.chosenScope.label || ''
 			}
 		};
@@ -42,23 +43,9 @@ export default {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
-		createUpdateSkillScope() {
-			fetch(this.url, {
-				method: this.method,
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include',
-				body: JSON.stringify(this.formData)
-			})
-			.then(response => {
-				if (response.status >= 200 && response.status <= 299) {
-					this.$emit('formSent')
-				} else {
-					this.$store.commit('errorHandling', response)
-				}
-			})
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
+		async saveSkillScope() {
+			const scope = await this.$api.skills.scopes.save(this.formData)
+			if (scope) this.$emit('formSent')
 		}
 	}
 };

@@ -103,7 +103,7 @@
 
 			closeModal() {
 				this.$refs.modal.hide()
-				this.$store.commit('getProjects')
+				this.$store.dispatch('getProjects')
 			},
 
 			autoCompleteAction(value) {
@@ -146,7 +146,7 @@
 		},
 
 		activated() {
-			this.$store.commit('getProjects')
+			this.$store.dispatch('getProjects')
 		},
 	}
 </script>

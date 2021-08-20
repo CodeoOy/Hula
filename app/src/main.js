@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import store from './store'
+import api from './api.js'
 import FlashMessage from '@smartweb/vue-flash-message';
 import router from './router.js'
 import App from './App.vue'
@@ -9,6 +10,7 @@ const app = createApp(App)
 	.use(router)
 	.use(FlashMessage)
 	.use(store)
+	.use(api)
 
 router.isReady()
 	.then(() => app.mount('#hula'))
