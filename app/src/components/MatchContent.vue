@@ -1,6 +1,5 @@
 <template>
 	<div>
-		{{ chosenMatch }}
 		<h4 class="h4">
 			<a :href="`app/user/${chosenMatch.user_id}`">{{ chosenMatch.user_first_name }} {{ chosenMatch.user_last_name }}&nbsp;</a>
 			<i class="bi-heart-fill me-2"></i>
@@ -9,10 +8,10 @@
         <table class="table table-dark table-striped text-light">
 			<thead>
 				<tr>
-					<th scope="col">User</th>
-					<th scope="col">Project index</th>
-					<th scope="col">User index</th>
-					<th scope="col">Project years</th>
+					<th scope="col">Skill</th>
+					<th scope="col">Required level</th>
+					<th scope="col">User level</th>
+					<th scope="col">Required years</th>
 					<th scope="col">User years</th>
 				</tr>
 			</thead>
@@ -36,12 +35,6 @@
 		data() {
 			return {
 				skills: {},
-				formData: {
-					user_id: this.chosenMatch.user_id || '',
-					project_id: this.chosenMatch.project_id|| '',
-					sold: false,
-					comments: 'Lol.',
-				}
 			}
 		},
 		props: {
@@ -54,13 +47,23 @@
 					method: 'POST',
 					headers: {"Content-Type": "application/json"},
 					credentials: 'include',
-					body: JSON.stringify(this.formData)
+					body: JSON.stringify({
+						user_id: this.chosenMatch.user_id || '',
+						project_id: this.chosenMatch.project_id || '',
+						sold: false,
+						comments: '',
+					})
 				})
 				.then(response => { 
 					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
 				})
 				.then(response => { 
 					this.$emit('formSent');
+					this.$flashMessage.show({
+						type: 'success',
+						title: 'Offer added.',
+						time: 1000
+					});
 				})    
 				.catch((errors) => {
 					this.$store.commit('errorHandling', errors)
