@@ -42,7 +42,7 @@ async fn allviews(session: Session, req: HttpRequest) -> Result<HttpResponse> {
 		counter = count + 1;
 	}
 
-	session.set("counter", counter)?; 
+	session.set("counter", counter)?;
 
 	Ok(HttpResponse::build(StatusCode::OK)
 		.content_type("text/html; charset=utf-8")
@@ -133,6 +133,7 @@ async fn main() -> std::io::Result<()> {
 					.service(web::resource("/useruploads").route(web::post().to(handlers::upload_handler::save_file)))
 					.service(
 						web::resource("/useruploads/{id}")
+							.route(web::get().to(handlers::upload_handler::get_userfiles))
 							.route(web::delete().to(handlers::upload_handler::delete_file)),
 					)
 					.service(
@@ -213,7 +214,10 @@ async fn main() -> std::io::Result<()> {
 							.route(web::put().to(handlers::projects_handler::update_projectneedskill))
 							.route(web::delete().to(handlers::projects_handler::delete_projectneedskill)),
 					)
-					.service(web::resource("/matches/{id}").route(web::get().to(handlers::matches_handler::get_project_matchdata)))
+					.service(
+						web::resource("/matches/{id}")
+							.route(web::get().to(handlers::matches_handler::get_project_matchdata)),
+					)
 					.service(
 						web::resource("/register/{invitation_id}")
 							.route(web::post().to(handlers::register_handler::register_user)),
