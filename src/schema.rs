@@ -26,6 +26,7 @@ table! {
 	projectneeds (id) {
 		id -> Uuid,
 		project_id -> Uuid,
+		label -> Varchar,
 		count_of_users -> Int4,
 		begin_time -> Date,
 		end_time -> Nullable<Date>,

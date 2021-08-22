@@ -20,6 +20,7 @@ pub fn query_project_needs(pool: &web::Data<Pool>, pid: uuid::Uuid) -> Result<Ve
 
 pub fn create_projectneed(
 	q_project_id: uuid::Uuid,
+	q_label: String,
 	q_count_of_users: i32,
 	q_percentage: Option<i32>,
 	q_begin_time: NaiveDate,
@@ -32,6 +33,7 @@ pub fn create_projectneed(
 
 	let new_projectneed = ProjectNeed {
 		id: uuid::Uuid::new_v4(),
+		label: q_label.clone(),
 		project_id: q_project_id,
 		count_of_users: q_count_of_users,
 		percentage: q_percentage,
