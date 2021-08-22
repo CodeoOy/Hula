@@ -108,14 +108,18 @@
 				}
 			},
 			hasAllMandatorySkills(user) {
-				return this.mandatorySkills.every(skill => {
-					return user.matches.some(match => {
-						return match.skill_label === skill.skill_label
-						&& match.user_index >= match.required_index
-						&& match.user_years >= match.required_minyears
-						&& (match.user_years <= match.required_maxyears || match.required_maxyears === null)
+				if (this.mandatorySkills.length) {
+					return this.mandatorySkills.every(skill => {
+						return user.matches.some(match => {
+							return match.skill_label === skill.skill_label
+							&& match.user_index >= match.required_index
+							&& match.user_years >= match.required_minyears
+							&& (match.user_years <= match.required_maxyears || match.required_maxyears === null)
+						})
 					})
-				})
+				} else {
+					return false
+				}
 			},
 			isAvailable(user) {
 				return user.matches.every(match => {

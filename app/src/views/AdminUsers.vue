@@ -10,7 +10,7 @@
 			/>
 		</VModal>
 		<div class="d-flex flex-row justify-content-between align-items-start">
-			<h2>Users</h2>
+			<h2 class="h2">Users</h2>
 			<div>
 				<VAutoComplete
 					v-if="initialUsers.length" 

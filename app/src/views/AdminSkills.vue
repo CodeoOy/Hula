@@ -11,7 +11,7 @@
 			/>
 		</VModal>
 		<div class="d-flex flex-row justify-content-between align-items-start">
-			<h2>Skills</h2>
+			<h2 class="h2">Skills</h2>
 			<div>
 				<button
 					class="btn btn-gradient"

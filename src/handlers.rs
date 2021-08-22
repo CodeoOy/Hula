@@ -7,4 +7,4 @@ pub mod projects_handler;
 pub mod register_handler;
 pub mod skills_handler;
 pub mod upload_handler;
-pub mod users_handler; 
+pub mod users_handler;

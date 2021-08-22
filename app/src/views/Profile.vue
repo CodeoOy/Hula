@@ -16,7 +16,7 @@
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					<h1>{{ user.firstname }} {{ user.lastname }}</h1>
+					<h1 class="h1">{{ user.firstname }} {{ user.lastname }}</h1>
 					<p>{{ user.email }}</p>
 					<a 
 						href="#"
@@ -33,7 +33,7 @@
 					<hr />
 					<v-form v-on:submit="uploadFile" class='clearfix'>
 						<div class="mb-3">
-							<table v-if='files.length' class="table table-dark table-striped text-light">
+							<table v-if='user.uploads && user.uploads.length' class="table table-dark table-striped text-light">
 								<thead>
 									<tr>
 										<th scope="col">CV</th>
@@ -41,10 +41,17 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr v-for="file in files" :key="file.id">
-										<td><input type='checkbox' :checked='cv == file.id' @click='cv = cv == file.id ? null : file.id'></td>
-										<td><a href='#' @click.prevent>{{ file.name }}</a></td>
-										<td><a href="#" class='float-end' @click.prevent><i class="bi-trash-fill"></i></a></td>
+									<tr v-for="file in user.uploads" :key="file.id">
+										<td><input type='checkbox' :checked='user.main_upload_id == file.id' @click='setCV(file.id)'></td>
+										<td><a href='#' @click.prevent>{{ file.filename }}</a></td>
+										<td>
+											<a 
+												href="#"
+												data-bs-toggle="modal" 
+												data-bs-target="#hulaModalProfile" 
+												v-on:click="formTitle = `Delete file ${file.filename}`, chosenForm = 'Delete', url=`/api/useruploads/${file.id}`, method='DELETE'"
+											><i class="bi-trash-fill me-2"></i></a>
+										</td>
 									</tr>
 								</tbody>
 							</table>
@@ -56,7 +63,7 @@
 								name="files[]"
 								multiple
 								class="form-control" 
-								v-model="files.others"
+								v-model="newFiles"
 							></v-field>
 						</div>
 						<button type="submit" class="btn btn-gradient float-end">Upload files</button>
@@ -66,7 +73,7 @@
 			<div class="col-md-8">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<div class="d-flex flex-row justify-content-between align-items-start">
-						<h3>Skills</h3>
+						<h3 class="h3">Skills</h3>
 						<button
 							class="btn btn-gradient"
 							v-on:click="formTitle = 'Add Skill', chosenSkill = {}, chosenForm = 'Skill', url = `/api/userskills/${user.id}`, method = 'POST'" 
@@ -106,7 +113,7 @@
 						</tbody>
 					</table>
 					<div class="d-flex flex-row justify-content-between align-items-start">
-						<h3>Reservations</h3>
+						<h3 class="h3">Reservations</h3>
 						<button
 							class="btn btn-gradient"
 							v-on:click="formTitle = 'Add Reservation', chosenReservation = {}, chosenForm = 'Reservation', url = `/api/userreservations/${user.id}`, method = 'POST'" 
@@ -147,6 +154,21 @@
 							</tr>
 						</tbody>
 					</table>
+					<h3 class="h3">Matches</h3>
+					<table class="table table-dark table-striped text-light">
+						<thead>
+							<tr>
+								<th scope="col">Project</th>
+								<th scope="col">Skills</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="match in getUserMatches" :key="match.id">
+								<td>{{ match.name }}</td>
+								<td><span class="badge badge-skill me-2" v-for="skill in match.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -175,13 +197,13 @@
 				user: {},
 				url: '',
 				method: '',
-				cv: 'f2',
 				files: [
-					{ id: 'f1', name: 'Fake file #01.jpeg' },
-					{ id: 'f2', name: 'Fake file #02.jpeg' },
-					{ id: 'f3', name: 'Breaking the pattern.gif' },
-					{ id: 'f4', name: 'Fake file #04.jpeg' },
+					{ id: '00000000-0000-0000-0000-000000000001', name: 'Fake file #01.jpeg' },
+					{ id: '00000000-0000-0000-0000-000000000002', name: 'Fake file #02.jpeg' },
+					{ id: '00000000-0000-0000-0000-000000000003', name: 'Breaking the pattern.gif' },
+					{ id: '00000000-0000-0000-0000-000000000004', name: 'Fake file #04.jpeg' },
 				],
+				newFiles: [],
 			}
 		},
 		components: {
@@ -218,6 +240,7 @@
 				.then(response => { 
 					this.user = response;
 					this.getUserReservations(this.$route.params.id)
+					this.getUserUploads(id)
 				}) 
 			},
 			getUserReservations(id) {
@@ -232,9 +255,24 @@
 					this.user.reservations = response;
 				})
 			},
+			getUserUploads(id) {
+				fetch(`/api/useruploads/${id}`, {method: 'GET'})
+					.then(response => {
+						if (response.status == 204) return []
+						if (response.status >= 200 && response.status <= 299) return response.json()
+						throw Error(response)
+					})
+					.then(response => {
+						this.user.uploads = Array.isArray(response) ? response : [response]
+					})
+					.catch((errors) => {
+						this.$store.commit('errorHandling', errors)
+						this.user.uploads = []
+					})
+			},
 			uploadFile() {
 				var data = new FormData()
-				if (this.files.length) this.files.others.forEach(file => data.append('files[]', file))
+				if (this.newFiles.length) this.newFiles.forEach(file => data.append('files[]', file))
 
 				fetch(`/api/upload`, {
 					method: 'POST',
@@ -243,10 +281,35 @@
 					body: data,
 				})
 				.then(response => {
-					return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
+					if (response.status >= 200 && response.status <= 299) {
+						this.getUserUploads(this.$route.params.id)
+					} else {
+						this.$store.commit('errorHandling', response)
+					}
 				})
-				.then(() => {
-					this.$emit('formSent')
+				.catch((errors) => {
+					this.$store.commit('errorHandling', errors)
+				})
+
+				this.newFiles = []
+			},
+			setCV(id) {
+				const value = this.user.main_upload_id == id ? null : id
+				fetch(`/api/users/${this.user.id}`, {
+					method: 'PUT',
+					headers: {"Content-Type": "application/json"},
+					credentials: 'include',
+					body: JSON.stringify({ ...this.user, main_upload_id: value })
+				})
+				.then(response => {
+					if (response.status >= 200 && response.status <= 299) {
+						this.user.main_upload_id = value
+					} else {
+						this.$store.commit('errorHandling', response)
+					}
+				})
+				.catch((errors) => {
+					this.$store.commit('errorHandling', errors)
 				})
 			}
 		},
@@ -260,9 +323,17 @@
 				}
 				return components[this.chosenForm]
 			},
-			userSkills () {
+			userSkills() {
 				return this.user.skills
-			}
+			},
+			getUserMatches() {
+				console.log(this.user.id)
+				return this.$store.state.projects.filter(project => {
+					return project.matches.some(match =>
+						match.user_id == this.user.id
+					)
+				})			
+			},
 		},
 		mounted() {
 			if (this.$route.params.id != this.$store.state.loggeduser.id) {

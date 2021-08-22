@@ -8,7 +8,7 @@
 			/>
 		</VModal>
 		<div class="d-flex flex-row justify-content-between align-items-start">
-			<h2>Projects</h2>
+			<h2 class="h2">Projects</h2>
 			<div>
 				<VAutoComplete
 					v-if="this.$store.state.projects" 

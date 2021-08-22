@@ -4,7 +4,7 @@
 			<FormResetPassword v-on:form-sent="changePassword" />
 		</VModal>
 		<div v-if="confirmed">
-			<h2>Account confirmed.</h2>
+			<h2 class="h2">Account confirmed.</h2>
 			<p>registration data:</p>
 			<pre>{{ registrationData }}</pre>
 		</div>
