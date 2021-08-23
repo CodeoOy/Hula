@@ -21,6 +21,7 @@ pub fn query_project_needs(pool: &web::Data<Pool>, pid: uuid::Uuid) -> Result<Ve
 pub fn create_projectneed(
 	q_project_id: uuid::Uuid,
 	q_count_of_users: i32,
+	q_label: Option<String>,
 	q_percentage: Option<i32>,
 	q_begin_time: NaiveDate,
 	q_end_time: Option<NaiveDate>,
@@ -34,6 +35,7 @@ pub fn create_projectneed(
 		id: uuid::Uuid::new_v4(),
 		project_id: q_project_id,
 		count_of_users: q_count_of_users,
+		label: q_label,
 		percentage: q_percentage,
 		begin_time: q_begin_time,
 		end_time: q_end_time,
@@ -50,6 +52,7 @@ pub fn create_projectneed(
 pub fn update_projectneed(
 	uuid_data: uuid::Uuid,
 	q_count_of_users: i32,
+	q_label: Option<String>,
 	q_percentage: Option<i32>,
 	q_begin_time: NaiveDate,
 	q_end_time: Option<NaiveDate>,
@@ -63,6 +66,7 @@ pub fn update_projectneed(
 		.filter(id.eq(uuid_data))
 		.set((
 			count_of_users.eq(q_count_of_users),
+			label.eq(q_label),
 			percentage.eq(q_percentage),
 			begin_time.eq(q_begin_time),
 			end_time.eq(q_end_time),

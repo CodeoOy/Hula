@@ -3,6 +3,19 @@
 		<h2 v-if="'id' in this.chosenNeed">{{ chosenNeed.id }}</h2>
 		<h2 v-else>New need</h2>
 		<div class="mb-2">
+			<label class="form-label">Need label</label>
+			<error-message name="percentage" class="error"></error-message>
+			<v-field
+				v-model.number="formData.label"
+				:rules="isRequired"
+				as="input"
+				type="text"
+				name="label"
+				class="form-control"
+				aria-label="Label" 
+			></v-field>
+		</div>
+		<div class="mb-2">
 			<label class="form-label">How many pros for this need?</label>
 			<error-message name="users" class="error"></error-message>
 			<v-field
@@ -67,6 +80,7 @@ export default {
 	data() {
 		return {
 			formData: {
+				label: this.chosenNeed.label || '',
 				project_id: this.$route.params.id,
 				count_of_users: this.chosenNeed.count_of_users || '',
 				begin_time: this.chosenNeed.begin_time || '',

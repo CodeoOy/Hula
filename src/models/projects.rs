@@ -35,6 +35,7 @@ pub struct ProjectNeed {
 	pub count_of_users: i32,
 	pub begin_time: chrono::NaiveDate,
 	pub end_time: Option<chrono::NaiveDate>,
+	pub label: Option<String>,
 	pub percentage: Option<i32>,
 	pub updated_by: String,
 }
