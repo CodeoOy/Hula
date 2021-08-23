@@ -43,7 +43,10 @@
 					<div class="mt-3" v-for="need in project.needs" :key="need.id">
 						<hr />
 						<div class="d-flex flex-row justify-content-between align-items-baseline mb-3">
-							<h5>{{ need.count_of_users}} from {{ need.begin_time }} at percentage: {{ need.percentage}}</h5>
+							<div>
+								<h5 class="h5">{{ need.label }}</h5>
+								<p>{{ need.count_of_users}} from {{ need.begin_time }} at percentage: {{ need.percentage}}</p>
+							</div>
 							<div class="btn-group" role="group" aria-label="Need actions">
 								<a 
 									href="#"
@@ -65,41 +68,43 @@
 								><i class="bi-trash-fill me-2"></i></a>
 							</div>
 						</div>
-						<table v-if="skills.length" class="table table-dark table-striped text-light mb-4">
-							<thead>
-								<tr>
-									<th scope="col">Skill</th>
-									<th scope="col">Mandatory</th>
-									<th scope="col">Min level</th>
-									<th scope="col">Min years</th>
-									<th scope="col">Max years</th>
-									<th scope="col">Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr v-for="skill in need.skills" :key="skill.id">
-									<td>{{ getSkillLabel(skill.skill_id) }}</td>
-									<td>{{ skill.mandatory }}</td>
-									<td>{{ getLevelLabel(skill.skillscopelevel_id) }}</td>
-									<td>{{ skill.min_years }}</td>
-									<td>{{ skill.max_years }}</td>
-									<td class="hoverable-td">
-										<a 
-											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalSingleProject"
-											v-on:click="formTitle =`${getSkillLabel(skill.skill_id)}`, chosenForm = 'Skill', chosenSkill = skill, chosenNeed = need, url=`/api/projectskills/${skill.id}`, method='PUT'"
-										><i class="bi-pencil-fill me-2"></i></a>
-										<a
-											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalSingleProject" 
-											v-on:click="formTitle = `Delete ${skill.id}?`, chosenForm = 'Delete', url = `/api/projectskills/${skill.id}`, method = 'DELETE'"
-										><i class="bi-trash-fill me-2"></i></a>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+						<div class="table-responsive">
+							<table v-if="skills.length" class="table table-dark table-striped text-light mb-4">
+								<thead>
+									<tr>
+										<th scope="col">Skill</th>
+										<th scope="col">Mandatory</th>
+										<th scope="col">Min level</th>
+										<th scope="col">Min years</th>
+										<th scope="col">Max years</th>
+										<th scope="col">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="skill in need.skills" :key="skill.id">
+										<td>{{ getSkillLabel(skill.skill_id) }}</td>
+										<td>{{ skill.mandatory }}</td>
+										<td>{{ getLevelLabel(skill.skillscopelevel_id) }}</td>
+										<td>{{ skill.min_years }}</td>
+										<td>{{ skill.max_years }}</td>
+										<td class="hoverable-td">
+											<a 
+												href="#"
+												data-bs-toggle="modal"
+												data-bs-target="#hulaModalSingleProject"
+												v-on:click="formTitle =`${getSkillLabel(skill.skill_id)}`, chosenForm = 'Skill', chosenSkill = skill, chosenNeed = need, url=`/api/projectskills/${skill.id}`, method='PUT'"
+											><i class="bi-pencil-fill me-2"></i></a>
+											<a
+												href="#"
+												data-bs-toggle="modal"
+												data-bs-target="#hulaModalSingleProject" 
+												v-on:click="formTitle = `Delete ${skill.id}?`, chosenForm = 'Delete', url = `/api/projectskills/${skill.id}`, method = 'DELETE'"
+											><i class="bi-trash-fill me-2"></i></a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>

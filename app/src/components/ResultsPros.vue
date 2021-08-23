@@ -6,32 +6,34 @@
 		<h2 v-if="project[0]">Pro search results for {{ project[0].name }}</h2>
 		<p>Project skills: <span class="badge badge-skill me-2" v-for="skill in this.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></p>
 		<transition name="fadeHeight">
-			<table v-if="matches" class="table table-dark table-striped text-light">
-				<thead>
-					<tr>
-						<th scope="col"></th>
-						<th scope="col">Name</th>
-						<th @click="sort('hasMandatory')" scope="col">Has mandatory skills</th>
-						<th scope="col">Matched skills</th>
-						<th scope="col">Tier</th>
-						<th scope="col">Available?</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="(user, index) in users" :key="user.user_id" :class="`tier tier--${user.tier}`">
-						<th scope="row" class="tier__index"><span :class="`tier__ball tier__ball--${user.tier}`" :style="`zIndex: ${index}`">{{ index + 1 }}</span></th>
-						<td><a href="#"
-							data-bs-toggle="modal"
-							data-bs-target="#hulaModalmatch"
-							v-on:click="currentMatch = user
-						">{{ user.user_first_name }} {{ user.user_last_name }}</a></td>
-						<td>{{ user.hasMandatory }}</td>
-						<td><span class="badge" v-for="match in user.matches" :key="match.skill_id">{{ match.skill_label }}</span></td>
-						<td>{{ user.tier }}</td>
-						<td>{{ user.isAvailable }}</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="table-responsive">
+				<table v-if="matches" class="table table-dark table-striped text-light">
+					<thead>
+						<tr>
+							<th scope="col"></th>
+							<th scope="col">Name</th>
+							<th @click="sort('hasMandatory')" scope="col">Has mandatory skills</th>
+							<th scope="col">Matched skills</th>
+							<th scope="col">Tier</th>
+							<th scope="col">Available?</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(user, index) in users" :key="user.user_id" :class="`tier tier--${user.tier}`">
+							<th scope="row" class="tier__index"><span :class="`tier__ball tier__ball--${user.tier}`" :style="`zIndex: ${index}`">{{ index + 1 }}</span></th>
+							<td><a href="#"
+								data-bs-toggle="modal"
+								data-bs-target="#hulaModalmatch"
+								v-on:click="currentMatch = user
+							">{{ user.user_first_name }} {{ user.user_last_name }}</a></td>
+							<td>{{ user.hasMandatory }}</td>
+							<td><span class="badge" v-for="match in user.matches" :key="match.skill_id">{{ match.skill_label }}</span></td>
+							<td>{{ user.tier }}</td>
+							<td>{{ user.isAvailable }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</transition>
 	</div>
 </template>

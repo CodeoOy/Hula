@@ -15,31 +15,33 @@
 			</div>
 		</div>
 		<transition name="fadeHeight">
-			<table class="table table-dark table-striped text-light">
-				<thead>
-					<tr>
-						<th scope="col">Project name</th>
-						<th scope="col">User name</th>
-						<th scope="col">Sold?</th>
-						<th scope="col">Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="offer in offers" :key="offer.id">
-						<td>{{ offer.project_id }}</td>
-						<td>{{ offer.user_id }}</td>
-						<td>{{ offer.sold }}</td>
-						<td>
-							<a
-								href="#"
-								data-bs-toggle="modal"
-								data-bs-target="#hulaModalOffers" 
-								v-on:click="formTitle = `Delete ${offer.id}?`, chosenForm = 'Delete', url = `/api/offers/${offer.id}`, method = 'DELETE'"
-							><i class="bi-trash-fill me-2"></i></a>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="table-responsive">
+				<table class="table table-dark table-striped text-light">
+					<thead>
+						<tr>
+							<th scope="col">Project name</th>
+							<th scope="col">User name</th>
+							<th scope="col">Sold?</th>
+							<th scope="col">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="offer in offers" :key="offer.id">
+							<td>{{ offer.project_id }}</td>
+							<td>{{ offer.user_id }}</td>
+							<td>{{ offer.sold }}</td>
+							<td>
+								<a
+									href="#"
+									data-bs-toggle="modal"
+									data-bs-target="#hulaModalOffers" 
+									v-on:click="formTitle = `Delete ${offer.id}?`, chosenForm = 'Delete', url = `/api/offers/${offer.id}`, method = 'DELETE'"
+								><i class="bi-trash-fill me-2"></i></a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</transition>
 	</div>
 </template>

@@ -33,28 +33,30 @@
 					<hr />
 					<v-form v-on:submit="uploadFile" class='clearfix'>
 						<div class="mb-3">
-							<table v-if='user.uploads && user.uploads.length' class="table table-dark table-striped text-light">
-								<thead>
-									<tr>
-										<th scope="col">CV</th>
-										<th scope="col" colspan='2'>File</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr v-for="file in user.uploads" :key="file.id">
-										<td><input type='checkbox' :checked='user.main_upload_id == file.id' @click='setCV(file.id)'></td>
-										<td><a href='#' @click.prevent>{{ file.filename }}</a></td>
-										<td>
-											<a 
-												href="#"
-												data-bs-toggle="modal" 
-												data-bs-target="#hulaModalProfile" 
-												v-on:click="formTitle = `Delete file ${file.filename}`, chosenForm = 'Delete', url=`/api/useruploads/${file.id}`, method='DELETE'"
-											><i class="bi-trash-fill me-2"></i></a>
-										</td>
-									</tr>
-								</tbody>
-							</table>
+							<div class="table-responsive">
+								<table v-if='user.uploads && user.uploads.length' class="table table-dark table-striped text-light">
+									<thead>
+										<tr>
+											<th scope="col">CV</th>
+											<th scope="col" colspan='2'>File</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr v-for="file in user.uploads" :key="file.id">
+											<td><input type='checkbox' :checked='user.main_upload_id == file.id' @click='setCV(file.id)'></td>
+											<td><a href='#' @click.prevent>{{ file.filename }}</a></td>
+											<td>
+												<a 
+													href="#"
+													data-bs-toggle="modal" 
+													data-bs-target="#hulaModalProfile" 
+													v-on:click="formTitle = `Delete file ${file.filename}`, chosenForm = 'Delete', url=`/api/useruploads/${file.id}`, method='DELETE'"
+												><i class="bi-trash-fill me-2"></i></a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 
 							<label class="form-label">Upload files</label>
 							<error-message name="files" class="error"></error-message>
@@ -81,37 +83,39 @@
 							data-bs-target="#hulaModalProfile"
 						>Add skill</button>
 					</div>
-					<table class="table table-dark table-striped text-light">
-						<thead>
-							<tr>
-								<th scope="col">Skill</th>
-								<th scope="col">Level</th>
-								<th scope="col">Years</th>
-								<th scope="col">Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="skill in user.skills" :key="skill.id">
-								<td>{{ skill.skill_label }}</td>
-								<td>{{ skill.skillscopelevel_id }}</td>
-								<td>{{ skill.years }}</td>
-								<td>
-									<a 
-										href="#"
-										data-bs-toggle="modal"
-										data-bs-target="#hulaModalProfile"
-										v-on:click="formTitle = skill.skill_label, chosenForm = 'Skill', chosenSkill = skill, url=`/api/userskills/${skill.id}`, method='PUT'"
-									><i class="bi-pencil-fill me-2"></i></a>
-									<a
-										href="#"
-										data-bs-toggle="modal"
-										data-bs-target="#hulaModalProfile" 
-										v-on:click="formTitle = `Delete ${skill.skill_label}?`, chosenSkill = skill, chosenForm = 'Delete', url = `/api/userskills/${skill.id}`, method = 'DELETE'"
-									><i class="bi-trash-fill me-2"></i></a>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+					<div class="table-responsive">
+						<table class="table table-dark table-striped text-light">
+							<thead>
+								<tr>
+									<th scope="col">Skill</th>
+									<th scope="col">Level</th>
+									<th scope="col">Years</th>
+									<th scope="col">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="skill in user.skills" :key="skill.id">
+									<td>{{ skill.skill_label }}</td>
+									<td>{{ skill.skillscopelevel_id }}</td>
+									<td>{{ skill.years }}</td>
+									<td>
+										<a 
+											href="#"
+											data-bs-toggle="modal"
+											data-bs-target="#hulaModalProfile"
+											v-on:click="formTitle = skill.skill_label, chosenForm = 'Skill', chosenSkill = skill, url=`/api/userskills/${skill.id}`, method='PUT'"
+										><i class="bi-pencil-fill me-2"></i></a>
+										<a
+											href="#"
+											data-bs-toggle="modal"
+											data-bs-target="#hulaModalProfile" 
+											v-on:click="formTitle = `Delete ${skill.skill_label}?`, chosenSkill = skill, chosenForm = 'Delete', url = `/api/userskills/${skill.id}`, method = 'DELETE'"
+										><i class="bi-trash-fill me-2"></i></a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 					<div class="d-flex flex-row justify-content-between align-items-start">
 						<h3 class="h3">Reservations</h3>
 						<button
@@ -121,54 +125,58 @@
 							data-bs-target="#hulaModalProfile"
 						>Add reservation</button>
 					</div>
-					<table class="table table-dark table-striped text-light" v-if="'reservations' in user">
-						<thead>
-							<tr>
-								<th scope="col">Description</th>
-								<th scope="col">From</th>
-								<th scope="col">To</th>
-								<th scope="col">Percentage</th>
-								<th scope="col">Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="reservation in user.reservations" :key="reservation.id">
-								<td>{{ reservation.description }}</td>
-								<td>{{ reservation.begin_time }}</td>
-								<td>{{ reservation.end_time }}</td>
-								<td>{{ reservation.percentage }}</td>
-								<td>
-									<a 
-										href="#"
-										data-bs-toggle="modal"
-										data-bs-target="#hulaModalProfile"
-										v-on:click="formTitle = reservation.id, chosenForm = 'Reservation', chosenReservation = reservation, url=`/api/userreservations/${reservation.id}`, method='PUT'"
-									><i class="bi-pencil-fill me-2"></i></a>
-									<a
-										href="#"
-										data-bs-toggle="modal"
-										data-bs-target="#hulaModalProfile" 
-										v-on:click="formTitle = `Delete reservation?`, chosenReservation = reservation, chosenForm = 'Delete', url = `/api/userreservations/${reservation.id}`, method = 'DELETE'"
-									><i class="bi-trash-fill me-2"></i></a>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+					<div class="table-responsive">
+						<table class="table table-dark table-striped text-light" v-if="'reservations' in user">
+							<thead>
+								<tr>
+									<th scope="col">Description</th>
+									<th scope="col">From</th>
+									<th scope="col">To</th>
+									<th scope="col">Percentage</th>
+									<th scope="col">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="reservation in user.reservations" :key="reservation.id">
+									<td>{{ reservation.description }}</td>
+									<td>{{ reservation.begin_time }}</td>
+									<td>{{ reservation.end_time }}</td>
+									<td>{{ reservation.percentage }}</td>
+									<td>
+										<a 
+											href="#"
+											data-bs-toggle="modal"
+											data-bs-target="#hulaModalProfile"
+											v-on:click="formTitle = reservation.id, chosenForm = 'Reservation', chosenReservation = reservation, url=`/api/userreservations/${reservation.id}`, method='PUT'"
+										><i class="bi-pencil-fill me-2"></i></a>
+										<a
+											href="#"
+											data-bs-toggle="modal"
+											data-bs-target="#hulaModalProfile" 
+											v-on:click="formTitle = `Delete reservation?`, chosenReservation = reservation, chosenForm = 'Delete', url = `/api/userreservations/${reservation.id}`, method = 'DELETE'"
+										><i class="bi-trash-fill me-2"></i></a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 					<h3 class="h3">Matches</h3>
-					<table class="table table-dark table-striped text-light">
-						<thead>
-							<tr>
-								<th scope="col">Project</th>
-								<th scope="col">Skills</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="match in getUserMatches" :key="match.id">
-								<td>{{ match.name }}</td>
-								<td><span class="badge badge-skill me-2" v-for="skill in match.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></td>
-							</tr>
-						</tbody>
-					</table>
+					<div class="table-responsive">
+						<table class="table table-dark table-striped text-light">
+							<thead>
+								<tr>
+									<th scope="col">Project</th>
+									<th scope="col">Skills</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="match in getUserMatches" :key="match.id">
+									<td>{{ match.name }}</td>
+									<td><span class="badge badge-skill me-2" v-for="skill in match.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>

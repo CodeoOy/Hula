@@ -30,36 +30,38 @@
 			</div>
 		</div>
 		<transition name="fadeHeight">
-			<table class="table table-dark table-striped text-light">
-				<thead>
-					<tr>
-						<th scope="col">User</th>
-						<th scope="col">Email</th>
-						<th scope="col">Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="user in filteredUsers" :key="user.id">
-						<td>
-							<span>
-								<VAvatar :user_id="user.id" :firstname="user.firstname" :lastname="user.lastname" />
-								<router-link :to="{ name: 'page-profile', params: { id: user.id}}">
-									{{ user.firstname }} {{ user.lastname }}
-								</router-link>
-							</span>
-						</td>
-						<td>{{ user.email }}</td>
-						<td class="hoverable-td">
-							<a
-								href="#"
-								data-bs-toggle="modal"
-								data-bs-target="#hulaModalUsers" 
-								v-on:click="formTitle = `Delete ${user.firstname} ${user.lastname}?`, chosenForm = 'Delete', url = `/api/users/${user.id}`, method = 'DELETE'"
-							><i class="bi-trash-fill me-2"></i></a>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="table-responsive">
+				<table class="table table-dark table-striped text-light">
+					<thead>
+						<tr>
+							<th scope="col">User</th>
+							<th scope="col">Email</th>
+							<th scope="col">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="user in filteredUsers" :key="user.id">
+							<td>
+								<span>
+									<VAvatar :user_id="user.id" :firstname="user.firstname" :lastname="user.lastname" />
+									<router-link :to="{ name: 'page-profile', params: { id: user.id}}">
+										{{ user.firstname }} {{ user.lastname }}
+									</router-link>
+								</span>
+							</td>
+							<td>{{ user.email }}</td>
+							<td class="hoverable-td">
+								<a
+									href="#"
+									data-bs-toggle="modal"
+									data-bs-target="#hulaModalUsers" 
+									v-on:click="formTitle = `Delete ${user.firstname} ${user.lastname}?`, chosenForm = 'Delete', url = `/api/users/${user.id}`, method = 'DELETE'"
+								><i class="bi-trash-fill me-2"></i></a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</transition>
 	</div>
 </template>
