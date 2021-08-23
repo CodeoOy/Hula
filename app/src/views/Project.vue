@@ -31,7 +31,7 @@
 			</div>
 			<div class="col-md-8">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					<div class="d-flex flex-row justify-content-between align-items-start">
+					<div class="d-sm-flex flex-row justify-content-between align-items-start">
 						<h2 class="h2">Needs</h2>
 						<button
 							class="btn btn-gradient"
@@ -42,7 +42,7 @@
 					</div>
 					<div class="mt-3" v-for="need in project.needs" :key="need.id">
 						<hr />
-						<div class="d-flex flex-row justify-content-between align-items-baseline mb-3">
+						<div class="d-sm-flex flex-row justify-content-between align-items-baseline mb-3">
 							<div>
 								<h5 class="h5">{{ need.label }}</h5>
 								<p>{{ need.count_of_users}} from {{ need.begin_time }} at percentage: {{ need.percentage}}</p>

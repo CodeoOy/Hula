@@ -74,7 +74,7 @@
 			</div>
 			<div class="col-md-8">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					<div class="d-flex flex-row justify-content-between align-items-start">
+					<div class="d-sm-flex flex-row justify-content-between align-items-start">
 						<h3 class="h3">Skills</h3>
 						<button
 							class="btn btn-gradient"
@@ -116,7 +116,7 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="d-flex flex-row justify-content-between align-items-start">
+					<div class="d-sm-flex flex-row justify-content-between align-items-start">
 						<h3 class="h3">Reservations</h3>
 						<button
 							class="btn btn-gradient"

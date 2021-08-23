@@ -9,7 +9,7 @@
 				v-on:form-sent="hideModalUpdate"
 			/>
 		</VModal>
-		<div class="d-flex flex-row justify-content-between align-items-start">
+		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Users</h2>
 			<div>
 				<VAutoComplete
