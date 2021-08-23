@@ -4,7 +4,7 @@
 			<MatchContent :chosenMatch="currentMatch" :projectName="projectName"/>
 		</VModal>
 		<h2 v-if="project[0]">Pro search results for {{ project[0].name }}</h2>
-		<p>Projects skills: <span class="badge badge-skill me-2" v-for="skill in this.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></p>
+		<p>Project skills: <span class="badge badge-skill me-2" v-for="skill in this.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></p>
 		<transition name="fadeHeight">
 			<table v-if="matches" class="table table-dark table-striped text-light">
 				<thead>
