@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<VModal :modalTitle="formTitle" :modalID="'Scopes'" v-on:updated-modal="chosenForm = ''">
+		<VModal :modalTitle="formTitle" :modalID="'Scopes'" v-on:modal-hidden="chosenForm = ''">
 			<component 
 				:is='modalComponent' 
 				:chosenScope="chosenScope"
