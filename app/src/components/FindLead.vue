@@ -1,70 +1,62 @@
 <template>
 	<div>
-		<form action="#" v-on:submit.prevent="getProjects">
-			<select class="mb-2 form-select" v-model="selected" aria-label="Choose pro">
-				<option :value="{}" disabled>Choose the pro</option>
-				<option v-for="user in users" :key="user.name" :value="{ user }">{{ user.firstname }} {{ user.lastname }}</option>
-			</select>
-			<button type="submit" class="btn btn-gradient mb-1">Search</button>
-		</form>	
+		<h2 v-if="formData.projectname.length">{{ formData.projectname }}</h2>
+		<VAutoComplete
+			v-if="users.length"
+			:suggestions="users"
+			:placeholder="'Start typing the name of the pro..'" 
+			:dropdown="true"
+			dropdownLabel="firstname"
+			:filterProperties="'firstname'"
+			:selection="value"
+			v-on:auto-complete="matchedProjects"
+		></VAutoComplete>
 	</div>
 </template>
 
 <script>
+	import VAutoComplete from '../components/VAutoComplete.vue'
 	export default {
 		name: 'FindLead',
 		data() {
 			return {
-				users: {},
-				project: {},
-				projects: {},
+				value: '',
+				users: [],
 				selected: {},
+				formData: {
+					projectname: '',
+				},
 			}
+		},
+		components: {
+			VAutoComplete
 		},
 		methods: {
-			getUserData(userid) { 
-				fetch(`/api/users/${userid}`, {
-					method: 'GET',
-					headers: {"Content-Type": "application/json"}
+			matchedProjects(value) {
+				// get the projects that have user's user_id in matches
+				let projects = this.$store.state.projects.filter(project => {
+					return project.matches.some(match => {
+						console.log(`p: ${project.name} | m: ${match.user_id} | u: ${value.id}`)
+						return match.user_id === value.id
+					})
 				})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => { 
-					this.user = response;
-				})    
+				this.$emit('leadsfetched', projects)
 			},
-			getUsers() {
-				fetch('api/users', {method: 'GET'})
+			allUsers() {
+				fetch('/api/users', {method: 'GET'})
 				.then(response => { 
 					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
 				})
-				.then(response => { 
-					this.users = response;
-					this.$emit('datafetched', this.users)
-				})    
-				.catch((errors) => {    
+				.then(response => {
+					this.users = response
+				})
+				.catch((errors) => {
 					this.$store.commit('errorHandling', errors)
 				})
 			},
-			getProjects() {
-				fetch('api/projects', {method: 'GET'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => { 
-					this.projects = response;
-					this.$emit('leadsfetched', this.projects)
-				})    
-				.catch((errors) => {    
-					this.$store.commit('errorHandling', errors)
-				})
-			}
 		},
 		mounted() {
-			this.getUsers()
-			this.getProjects()
-			//this.$store.commit('getProjects')
+			this.allUsers();
 		}
 	}
 </script>

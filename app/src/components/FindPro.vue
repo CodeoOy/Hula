@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h2 v-if="queryData.projectname.length">{{ queryData.projectname }}</h2>
+		<h2 v-if="formData.projectname.length">{{ formData.projectname }}</h2>
 		<VAutoComplete 
 			v-if="this.$store.state.projects" 
 			:suggestions="this.$store.state.projects"
@@ -21,9 +21,8 @@
 			return {
 				value: '',
 				projects: this.$store.state.projects,
-				user: {},
 				selected: {},
-				queryData: {
+				formData: {
 					projectname: '',
 				},
 			}

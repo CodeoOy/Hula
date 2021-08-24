@@ -44,7 +44,7 @@
 			return {
 				tabToggle: true,
 				matchesData: [],
-				leadData: {},
+				leadData: [],
 			}
 		},
 		methods: {
@@ -52,6 +52,7 @@
 				this.matchesData = value
 			},
 			passLeads(value) {
+				console.log(value)
 				this.leadData = value
 			}
 		}
