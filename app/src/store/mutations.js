@@ -79,7 +79,7 @@ export default {
 				case 'ForeignKeyViolation':
 					state.errorObject = {
 						type: 'error',
-						title: 'Foreign key violation',
+						title: 'Item may be in use.',
 						time: 5000
 					}
 					break;
