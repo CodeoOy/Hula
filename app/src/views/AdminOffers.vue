@@ -33,7 +33,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="offer in offers" :key="offer.id">
+						<tr v-for="offer in filteredOffers" :key="offer.id">
 							<td>{{ offer.project_name }}</td>
 							<td>{{ offer.user_name }}</td>
 							<td>{{ offer.sold }}</td>
