@@ -57,6 +57,7 @@
 		},
 		mounted() {
 			this.allUsers();
+			if (!this.$store.state.projects.length) this.$store.dispatch('getProjects')	
 		}
 	}
 </script>

@@ -30,6 +30,9 @@
 		components: {
 			VAutoComplete
 		},
+		mounted() {
+			if (!this.$store.state.projects.length) this.$store.dispatch('getProjects')	
+		},
 		methods: {
 			getChosenProject(value) {
 				fetch(`/api/matches/${value.id}`, {method: 'GET'})
