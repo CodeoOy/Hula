@@ -8,7 +8,7 @@
 					:selection="offerName" 
 					:placeholder="'filter offers'"
 					:dropdown="false"
-					:filterProperties="'project_id'"
+					:filterProperties="'project_name'"
 					v-on:auto-complete="autoCompleteAction"
 				></VAutoComplete>
 			</div>
@@ -66,7 +66,7 @@
 			addUserNames() {
 				this.offers.forEach(offer => {
 					const user = this.users.find(({ id }) => id == offer.user_id)
-					offer.user_name = user ? `${user.firstname} ${user.firstname}` : 'Unknown'
+					offer.user_name = user ? `${user.firstname} ${user.lastname}` : 'Unknown'
 				})
 			},
 			addProjectNames() {
