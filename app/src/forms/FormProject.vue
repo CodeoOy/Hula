@@ -50,7 +50,7 @@ export default {
 			return value ? true : 'This field is required';
 		},
 		async saveProject() {
-			const project = await this.$api.saveProject(this.formData)
+			const project = await this.$api.projects.save(this.formData)
 			if (project) this.$emit('formSent', project)
 		},
 	}
