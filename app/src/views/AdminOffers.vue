@@ -1,5 +1,13 @@
 <template>
 	<div>
+		<VModal :modalTitle="formTitle" modalID="Offers" v-on:modal-hidden="chosenForm = ''">
+			<component 
+				:is='modalComponent'
+				:url="url"
+				:method="method"
+				v-on:form-sent="hideModalUpdate"
+			/>
+		</VModal>
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Offers</h2>
 			<div v-if="offers">
@@ -48,6 +56,8 @@
 <script>
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
+	import VModal from '../components/VModal.vue'
+	import { Modal } from 'bootstrap'
 	export default {
 		name: 'AdminListOffers',
 		data () {
@@ -56,13 +66,23 @@
 				offerName: '',
 				users: [],
 				offers: [],
+				formTitle: '',
+				chosenForm: '',
 			}
 		},
 		components: {
 			FormConfirmAction,
 			VAutoComplete,
+			VModal,
 		},
 		methods: {
+			async hideModalUpdate() {
+				this.offers = await this.$api.offers.get()
+				this.addUserNames()
+				this.addProjectNames()
+				let modal = Modal.getInstance(document.querySelector('#hulaModalOffers'))
+				modal.hide()
+			},
 			addUserNames() {
 				this.offers.forEach(offer => {
 					const user = this.users.find(({ id }) => id == offer.user_id)
@@ -77,6 +97,14 @@
 			},
 			autoCompleteAction(value) {
 				this.filteredOffers = value
+			},
+		},
+		computed: {
+			modalComponent() {
+				const components = {
+					Delete: FormConfirmAction,
+				}
+				return components[this.chosenForm]
 			},
 		},
 		async mounted() {
