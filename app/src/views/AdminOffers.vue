@@ -44,6 +44,12 @@
 									data-bs-target="#hulaModalOffers" 
 									v-on:click="formTitle = `Delete ${offer.id}?`, chosenForm = 'Delete', url = `/api/offers/${offer.id}`, method = 'DELETE'"
 								><i class="bi-trash-fill me-2"></i></a>
+								<a
+									href="#"
+									data-bs-toggle="modal"
+									data-bs-target="#hulaModalOffers" 
+									v-on:click="formTitle = `Edit offer`, chosenForm = 'Edit', url = `/api/offers/${offer.id}`, method = 'PUT'"
+								><i class="bi-pencil-fill me-2"></i></a>
 							</td>
 						</tr>
 					</tbody>
@@ -54,6 +60,7 @@
 </template>
 
 <script>
+	import FormOffer from '../forms/FormOffer.vue'
 	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
 	import VModal from '../components/VModal.vue'
@@ -66,11 +73,14 @@
 				offerName: '',
 				users: [],
 				offers: [],
+				url: '',
+				method: '',
 				formTitle: '',
 				chosenForm: '',
 			}
 		},
 		components: {
+			FormOffer,
 			FormConfirmAction,
 			VAutoComplete,
 			VModal,
@@ -103,6 +113,7 @@
 			modalComponent() {
 				const components = {
 					Delete: FormConfirmAction,
+					Edit: FormOffer,
 				}
 				return components[this.chosenForm]
 			},

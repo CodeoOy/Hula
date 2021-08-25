@@ -23,12 +23,14 @@ pub fn get_by_reset_request(
 	q_reset_request_id: uuid::Uuid,
 	pool: &web::Data<Pool>,
 ) -> Result<ResetPasswordRequest, Error> {
-	use crate::schema::reset_requests::dsl::{id, expires_at, reset_requests};
+	use crate::schema::reset_requests::dsl::{expires_at, id, reset_requests};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let reset_request = reset_requests
-		.filter(id.eq(&q_reset_request_id)
-		.and(expires_at.gt(chrono::Local::now().naive_local())))
+		.filter(
+			id.eq(&q_reset_request_id)
+				.and(expires_at.gt(chrono::Local::now().naive_local())),
+		)
 		.get_result::<ResetPasswordRequest>(conn)?;
 	Ok(reset_request)
 }

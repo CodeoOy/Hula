@@ -103,7 +103,9 @@ async fn main() -> std::io::Result<()> {
 							.route(web::get().to(handlers::offers_handler::get_all_offers)),
 					)
 					.service(
-						web::resource("/offers/{id}").route(web::delete().to(handlers::offers_handler::delete_offer)),
+						web::resource("/offers/{id}")
+							.route(web::delete().to(handlers::offers_handler::delete_offer))
+							.route(web::put().to(handlers::offers_handler::update_offer)),
 					)
 					.service(web::resource("/users").route(web::get().to(handlers::users_handler::get_all)))
 					.service(
