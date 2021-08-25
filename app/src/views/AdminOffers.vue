@@ -2,20 +2,19 @@
 	<div>
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Offers</h2>
-			{{ offers }}
-			<div>
-				<!-- <VAutoComplete 
+			<div v-if="offers">
+				<VAutoComplete 
 					:suggestions="offers" 
 					:selection="offerName" 
 					:placeholder="'filter offers'"
 					:dropdown="false"
 					:filterProperties="'project_id'"
 					v-on:auto-complete="autoCompleteAction"
-				></VAutoComplete> -->
+				></VAutoComplete>
 			</div>
 		</div>
 		<transition name="fadeHeight">
-			<div class="table-responsive">
+			<div v-if="offers" class="table-responsive">
 				<table class="table table-dark table-striped text-light">
 					<thead>
 						<tr>
