@@ -54,7 +54,10 @@
 			}
 		},
 		props: {
-			matches: []
+			matches: {
+				type: Array,
+				required: true,
+			},
 		},
 		components: {
 			VModal,

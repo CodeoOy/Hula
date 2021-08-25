@@ -9,7 +9,7 @@
 			dropdownLabel="firstname"
 			:filterProperties="'firstname'"
 			:selection="value"
-			v-on:auto-complete="matchedProjects"
+			v-on:auto-complete="getMatches"
 		></VAutoComplete>
 	</div>
 </template>
@@ -32,31 +32,20 @@
 			VAutoComplete
 		},
 		methods: {
-			matchedProjects(value) {
+			getMatches(user) {
 				// get the projects that have user's user_id in matches
 				let projects = this.$store.state.projects.filter(project => {
 					return project.matches.some(match => {
-						console.log(`p: ${project.name} | m: ${match.user_id} | u: ${value.id}`)
-						return match.user_id === value.id
+						console.log(`p: ${project.name} | m: ${match.user_id} | u: ${user.id}`)
+						return match.user_id === user.id
 					})
 				})
 				this.$emit('leadsfetched', projects)
 			},
-			allUsers() {
-				fetch('/api/users', {method: 'GET'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => {
-					this.users = response
-				})
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
-			},
 		},
-		mounted() {
-			this.allUsers();
+		async mounted() {
+			if (!this.$store.state.projects.length) this.$store.dispatch('getProjects')	
+			this.users = await this.$api.users.get()
 		}
 	}
 </script>

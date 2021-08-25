@@ -8,7 +8,7 @@
 			:dropdown="true"
 			:filterProperties="'name'"
 			:selection="value"
-			v-on:auto-complete="getChosenProject($event)"
+			v-on:auto-complete="getMatches"
 		></VAutoComplete>
 	</div>
 </template>
@@ -30,18 +30,13 @@
 		components: {
 			VAutoComplete
 		},
+		mounted() {
+			if (!this.$store.state.projects.length) this.$store.dispatch('getProjects')	
+		},
 		methods: {
-			getChosenProject(value) {
-				fetch(`/api/matches/${value.id}`, {method: 'GET'})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => {
-					this.$emit('matchesfetched', response)
-				})    
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})				
+			async getMatches(project) {
+				const matches = await this.$api.matches.get(project.id)
+				if (matches) this.$emit('matchesfetched', matches)
 			},
 		}
 	}
