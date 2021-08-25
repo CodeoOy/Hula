@@ -45,31 +45,21 @@
 		},
 		methods: {
 			addToOffers() {
-				fetch('/api/offers', {
-					method: 'POST',
-					headers: {"Content-Type": "application/json"},
-					credentials: 'include',
-					body: JSON.stringify({
-						user_id: this.chosenMatch.user_id || '',
-						project_id: this.chosenMatch.project_id || '',
-						sold: false,
-						comments: '',
-					})
+				const offer = this.$api.offers.save({
+					user_id: this.chosenMatch.user_id || '',
+					project_id: this.chosenMatch.project_id || '',
+					sold: false,
+					comments: '',
 				})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => { 
-					this.$emit('formSent');
+
+				if (offer) {
+					this.$emit('formSent')
 					this.$flashMessage.show({
 						type: 'success',
 						title: 'Offer added.',
-						time: 1000
-					});
-				})    
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
+						time: 5000,
+					})
+				}
 			}
 		}
 	}

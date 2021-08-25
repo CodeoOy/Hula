@@ -202,6 +202,10 @@ export const api = {
 		},
 	},
 
+	matches: {
+		get: getArray('/api/matches'),
+	},
+
 	offers: {
 		get: get('/api/offers'),
 		save: save('/api/offers'),
