@@ -15,10 +15,6 @@
 			</div>
 		</div>
 		<div class="col-md-8">
-			<!-- <div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-				<h2 class="h2">Matches from teh algorithm</h2>
-				<FeatMatches />
-			</div> -->
 			<ResultsLeads :leads='leadData' v-if="tabToggle == false" />
 			<ResultsPros :matches='matchesData' v-else />
 		</div>
@@ -30,7 +26,6 @@
 	import FindPro from './FindPro.vue'
 	import ResultsLeads from './ResultsLeads.vue'
 	import ResultsPros from './ResultsPros.vue'
-	import FeatMatches from './FeatMatches.vue'
 	export default {
 		name: 'AdminList',
 		components: {
@@ -38,13 +33,12 @@
 			FindLead,
 			ResultsLeads,
 			ResultsPros,
-			FeatMatches
 		},
 		data() {
 			return {
 				tabToggle: true,
 				matchesData: [],
-				leadData: {},
+				leadData: [],
 			}
 		},
 		methods: {
@@ -52,6 +46,7 @@
 				this.matchesData = value
 			},
 			passLeads(value) {
+				console.log(value)
 				this.leadData = value
 			}
 		}

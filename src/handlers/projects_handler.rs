@@ -25,6 +25,7 @@ pub struct ProjectNeedData {
 	pub count_of_users: i32,
 	pub begin_time: chrono::NaiveDate,
 	pub end_time: Option<chrono::NaiveDate>,
+	pub label: Option<String>,
 	pub percentage: Option<i32>,
 }
 
@@ -197,6 +198,7 @@ pub async fn create_projectneed(
 			projectneeddata.project_id,
 			"label".to_string(),
 			projectneeddata.count_of_users,
+			projectneeddata.label.clone(),
 			projectneeddata.percentage,
 			projectneeddata.begin_time,
 			projectneeddata.end_time,
@@ -374,6 +376,7 @@ pub async fn update_projectneed(
 		projectneeds_repository::update_projectneed(
 			id,
 			projectneed.count_of_users,
+			projectneed.label.clone(),
 			projectneed.percentage,
 			projectneed.begin_time,
 			projectneed.end_time,

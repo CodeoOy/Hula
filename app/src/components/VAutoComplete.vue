@@ -12,7 +12,7 @@
             @click="suggestionClick(suggestion)"
             v-bind:key="suggestion.id"
         >
-            {{ suggestion.name }}
+            {{ suggestion[dropdownLabel] }}
         </li>
     </ul>
 </div>
@@ -38,6 +38,10 @@
             },
 			placeholder: String,
             dropdown: Boolean,
+            dropdownLabel: {
+                type: String,
+                default: 'name'
+            },
             filterProperties: '',
         },
         computed: {

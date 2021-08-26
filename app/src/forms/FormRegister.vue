@@ -110,33 +110,22 @@ export default {
 			}
 			return false
 		},
-		inviteUser() {
+		async inviteUser() {
 			if (this.formData.password_plain.length == 0) {
 				delete this.formData.password_plain;
 				this.formData.password_pending = true;
 			}
-			fetch('/api/invitations', {
-				method: 'POST',
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include',
-				body: JSON.stringify(this.formData)
-			})
-			.then(response => {
-				if (response.status >= 200 && response.status <= 299) {
-					this.$emit('formSent')
-					// localStorage.setItem('user', JSON.stringify(response)); // Is this actualy needed?
-					this.$flashMessage.show({
-						type: 'success',
-						title: 'Invitation sent. Check your email',
-						time: 5000
-					});
-				} else {
-					this.$store.commit('errorHandling', response)
-				}
-			})
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
+
+			const success = this.$api.users.registration.invite(this.formData)
+
+			if (success) {
+				this.$emit('formSent')
+				this.$flashMessage.show({
+					type: 'success',
+					title: 'Invitation sent. Check your email',
+					time: 5000,
+				})
+			}
 		}
 	}
 }

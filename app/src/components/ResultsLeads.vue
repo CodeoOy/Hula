@@ -1,23 +1,25 @@
 <template>
 	<div class="p-3 rounded-2 content-box bg-dark text-light">
-		<h2 class="h2">Project search results</h2>
+		<h2 class="h2">Lead search results</h2>
 		<transition name="fadeHeight">
-			<table v-if="leads.length" class="table table-dark table-striped text-light">
-				<thead>
-					<tr>
-						<th scope="col">#</th>
-						<th scope="col">Project name</th>
-						<th scope="col">Available</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="(lead, index) in leads" :key="lead.pid">
-						<th scope="row">{{ index + 1 }}</th>
-						<td>{{ lead.name }}</td>
-						<td>{{ lead.is_hidden }}</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="table-responsive">
+				<table v-if="leads.length" class="table table-dark table-striped text-light">
+					<thead>
+						<tr>
+							<th scope="col">Project</th>
+							<th scope="col">Skills</th>
+							<th scope="col"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="lead in leads" :key="lead.pid">
+							<th scope="row"><a :href="`app/project/${lead.id}`">{{ lead.name }}</a></th>
+							<td>{{ lead.name }}</td>
+							<td>{{ lead.is_hidden }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</transition>
 	</div>
 </template>

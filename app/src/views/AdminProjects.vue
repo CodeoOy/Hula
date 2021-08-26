@@ -7,7 +7,7 @@
 				v-on:form-sent="closeModal"
 			/>
 		</VModal>
-		<div class="d-flex flex-row justify-content-between align-items-start">
+		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Projects</h2>
 			<div>
 				<VAutoComplete
@@ -23,44 +23,46 @@
 			</div>
 		</div>
 		<transition name="fadeHeight">
-			<table class="table table-dark table-striped text-light">
-				<thead>
-					<tr>
-						<th scope="col">Project name</th>
-						<th scope="col">Skills</th>
-						<th scope="col">Matches</th>
-						<th scope="col">Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="project in filteredProjects" :key="project.id">
-						<td>
-							<router-link :to="{ name: 'page-project', params: { id: project.id }}">{{ project.name }}</router-link>
-						</td>
-						<td>
-							<span
-								v-for="skill in project.skills" 
-								:key="skill.skill_label"
-								class="badge"
-							>{{ skill.skill_label }}</span>
-						</td>
-						<td>
-							<a
-								v-for="match in project.matches"
-								:key="match.user_id"
-								href="#"
-								v-on:click.prevent="showMatch(project, match)"
-							><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" />
-							</a>
-						</td>
-						<td>
-							<a href="#" v-on:click.prevent="deleteProject(project)">
-								<i class="bi-trash-fill me-2"></i>
-							</a>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="table-responsive">
+				<table class="table table-dark table-striped text-light">
+					<thead>
+						<tr>
+							<th scope="col">Project name</th>
+							<th scope="col">Skills</th>
+							<th scope="col">Matches</th>
+							<th scope="col">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="project in filteredProjects" :key="project.id">
+							<td>
+								<router-link :to="{ name: 'page-project', params: { id: project.id }}">{{ project.name }}</router-link>
+							</td>
+							<td>
+								<span
+									v-for="skill in project.skills" 
+									:key="skill.skill_label"
+									class="badge"
+								>{{ skill.skill_label }}</span>
+							</td>
+							<td>
+								<a
+									v-for="match in project.matches"
+									:key="match.user_id"
+									href="#"
+									v-on:click.prevent="showMatch(project, match)"
+								><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" />
+								</a>
+							</td>
+							<td>
+								<a href="#" v-on:click.prevent="deleteProject(project)">
+									<i class="bi-trash-fill me-2"></i>
+								</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</transition>
 	</div>
 </template>
@@ -101,7 +103,7 @@
 
 			closeModal() {
 				this.$refs.modal.hide()
-				this.$store.commit('getProjects')
+				this.$store.dispatch('getProjects')
 			},
 
 			autoCompleteAction(value) {
@@ -144,7 +146,7 @@
 		},
 
 		activated() {
-			this.$store.commit('getProjects')
+			this.$store.dispatch('getProjects')
 		},
 	}
 </script>

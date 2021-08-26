@@ -1,5 +1,5 @@
 <template>
-	<v-form v-on:submit="createUpdateSkillScopeLevel">
+	<v-form v-on:submit="saveSkillLevel">
 		<div class="mb-2">
 			<label class="form-label">Level name</label>
 			<error-message name="name" class="error"></error-message>
@@ -39,6 +39,7 @@ export default {
 		return {
 			scopes: {},
 			formData: {
+				id: this.chosenLevel.id || undefined,
 				label: this.chosenLevel.label || '',
 				percentage: this.chosenLevel.percentage || 0,
 				skillscope_id: this.chosenScope.id,
@@ -61,40 +62,13 @@ export default {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
-		createUpdateSkillScopeLevel() {
-			fetch(this.url, {
-				method: this.method,
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include',
-				body: JSON.stringify(this.formData)
-			})
-			.then(response => {
-				if (response.status >= 200 && response.status <= 299) {
-					this.$emit('formSent')
-				} else {
-					this.$store.commit('errorHandling', response)
-				}
-			})
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
+		async saveSkillLevel() {
+			const level = await this.$api.skills.levels.save(this.formData)
+			if (level) this.$emit('formSent')
 		},
-		getSkillScopes() {
-			fetch('/api/skills/scopes', {method: 'GET'})
-			.then(response => { 
-				return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-			})
-			.then(response => { 
-				this.scopes = response;
-			})    
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
-		}
 	},
-	mounted() {
-		this.getSkillScopes()
-		console.log(this.chosenScope)
+	async mounted() {
+		this.scopes = await this.$api.skills.scopes.get()
 	}
 };
 </script>

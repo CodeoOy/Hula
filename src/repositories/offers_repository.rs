@@ -51,3 +51,26 @@ pub fn query_delete_offer(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Resu
 	}
 	Err(NotFound)
 }
+
+pub fn query_update_offer(
+	uuid_data: uuid::Uuid,
+	q_user_id: uuid::Uuid,
+	q_project_id: uuid::Uuid,
+	q_sold: bool,
+	q_comments: Option<String>,
+	q_email: String,
+	pool: &web::Data<Pool>,
+) -> Result<Offer, Error> {
+	use crate::schema::offers::dsl::{offers, *};
+	let conn: &PgConnection = &pool.get().unwrap();
+
+	let offer = diesel::update(offers)
+		.filter(id.eq(uuid_data))
+		.set((
+			comments.eq(q_comments),
+			sold.eq(q_sold),
+			updated_by.eq(q_email),
+		))
+		.get_result::<Offer>(conn)?;
+	Ok(offer)
+}

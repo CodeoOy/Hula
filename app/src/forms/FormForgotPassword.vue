@@ -34,22 +34,13 @@ export default {
 		ErrorMessage
 	},
 	methods: {
-		resetPassword() {
-			fetch('/api/resetpassword', {
-				method: 'POST',
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include',
-				body: JSON.stringify(this.formData)
-			})
-			.then(response => { 
-				return (response.status >= 200 && response.status <= 299) ? response : this.$store.commit('errorHandling', response)
-			})
-			.then(() => {
-				this.$emit('formSent')
-			})  
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
+		isRequired(value) {
+			return value ? true : 'This field is required'
+		},
+
+		async resetPassword() {
+			const success = await this.$api.users.password.requestReset(this.formData)
+			if (success) this.$emit('formSent')
 		},
 	}
 };

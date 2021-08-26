@@ -210,60 +210,6 @@ nav {
 	}
 }
 
-.matches {
-	.match {
-		list-style-type: none;
-		position: relative;
-		width: 170px;
-		height: 130px;
-		margin-right: 10px;
-		display: inline-block;
-		animation: fadein 0.3s;
-		cursor: pointer;
-		&:hover {
-			.match__pro,
-			.match__project {
-				transform: rotate(0deg);
-			}
-		}
-		&__bg {
-			border: 6px solid $secondary;
-			width: 110px;
-			height: 110px;
-			display: block;
-			position: absolute;
-			border-radius: 50%;
-			left: 30px;
-		}
-		&__pro,
-		&__project {
-			position: absolute;
-			width: 100px;
-			text-align: center;
-			top: 24px;
-			color: $white;
-			transition: 0.2s transform ease-in-out;
-			h4 {
-				font-size: 0.8rem;
-			}
-		}
-		&__pro {
-			left: 0;
-			transform: rotate(-5deg);
-		}
-		&__project {
-			right: 0;
-			transform: rotate(5deg);
-		}
-		img {
-			border-radius: 50%;
-			width: 90px;
-			height: 90px;
-			filter: url('../assets/filter.svg#cherry-icecream');
-		}
-	}
-}
-
 .nav-tabs.nav-dark{
 	border-bottom: 1px solid $separator-color;
 	.nav-link {

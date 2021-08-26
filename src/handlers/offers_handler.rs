@@ -83,3 +83,36 @@ pub async fn delete_offer(
 		},
 	}
 }
+
+pub async fn update_offer(
+	oid: web::Path<String>,
+	pool: web::Data<Pool>,
+	payload: web::Json<OfferData>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!("Updating offer: logged_user={:#?}", &logged_user);
+
+	if logged_user.isadmin == false {
+		return Err(ServiceError::AdminRequired);
+	}
+	let id = uuid::Uuid::parse_str(&oid.into_inner())?;
+	let res = web::block(move || {
+		offers_repository::query_update_offer(
+			id,
+			payload.user_id,
+			payload.project_id,
+			payload.sold,
+			payload.comments.clone(),
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
+	match res {
+		Ok(offer) => Ok(HttpResponse::Ok().json(&offer)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}

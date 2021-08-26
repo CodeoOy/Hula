@@ -30,6 +30,7 @@ table! {
 		count_of_users -> Int4,
 		begin_time -> Date,
 		end_time -> Nullable<Date>,
+		label -> Nullable<Varchar>,
 		percentage -> Nullable<Int4>,
 		updated_by -> Varchar,
 	}

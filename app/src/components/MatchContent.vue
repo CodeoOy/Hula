@@ -5,26 +5,28 @@
 			<i class="bi-heart-fill me-2"></i>
 			<a :href="`app/project/${chosenMatch.project_id}`">{{ projectName }}</a>
 		</h4>
-        <table class="table table-dark table-striped text-light">
-			<thead>
-				<tr>
-					<th scope="col">Skill</th>
-					<th scope="col">Required level</th>
-					<th scope="col">User level</th>
-					<th scope="col">Required years</th>
-					<th scope="col">User years</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr v-for="skill in chosenMatch.matches" :key="skill.idx">
-					<td>{{ skill.skill_label }}</td>
-					<td>{{ skill.required_index}}</td>
-					<td>{{ skill.user_index }}</td>
-					<td>{{ skill.required_years}}</td>
-					<td>{{ skill.user_years }}</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="table-responsive">
+			<table class="table table-dark table-striped text-light">
+				<thead>
+					<tr>
+						<th scope="col">Skill</th>
+						<th scope="col">Required level</th>
+						<th scope="col">User level</th>
+						<th scope="col">Required years</th>
+						<th scope="col">User years</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="skill in chosenMatch.matches" :key="skill.idx">
+						<td>{{ skill.skill_label }}</td>
+						<td>{{ skill.required_index}}</td>
+						<td>{{ skill.user_index }}</td>
+						<td>{{ skill.required_years}}</td>
+						<td>{{ skill.user_years }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 		<a href="#" v-on:click="addToOffers"><i class="bi-briefcase-fill me-2"></i></a>
     </div>
 </template>
@@ -43,31 +45,21 @@
 		},
 		methods: {
 			addToOffers() {
-				fetch('/api/offers', {
-					method: 'POST',
-					headers: {"Content-Type": "application/json"},
-					credentials: 'include',
-					body: JSON.stringify({
-						user_id: this.chosenMatch.user_id || '',
-						project_id: this.chosenMatch.project_id || '',
-						sold: false,
-						comments: '',
-					})
+				const offer = this.$api.offers.save({
+					user_id: this.chosenMatch.user_id || '',
+					project_id: this.chosenMatch.project_id || '',
+					sold: false,
+					comments: '',
 				})
-				.then(response => { 
-					return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-				})
-				.then(response => { 
-					this.$emit('formSent');
+
+				if (offer) {
+					this.$emit('formSent')
 					this.$flashMessage.show({
 						type: 'success',
 						title: 'Offer added.',
-						time: 1000
-					});
-				})    
-				.catch((errors) => {
-					this.$store.commit('errorHandling', errors)
-				})
+						time: 5000,
+					})
+				}
 			}
 		}
 	}

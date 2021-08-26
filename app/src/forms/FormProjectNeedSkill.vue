@@ -1,5 +1,5 @@
 <template>
-	<v-form v-on:submit="createProjectNeedSkill" v-if="availableSkills.length && skillLevels.length">
+	<v-form v-on:submit="saveNeedSkill" v-if="availableSkills.length && skillLevels.length">
 		<div class="mb-2" v-if="this.method == 'POST'">
 			<label class="form-label">Skill</label>
 			<error-message name="name" class="error"></error-message>
@@ -73,7 +73,7 @@ export default {
 	data() {
 		return {
 			formData: {
-				id: this.chosenSkill.id || null,
+				id: this.chosenSkill.id || undefined,
 				projectneed_id: this.chosenNeed.id,
 				skill_id: this.chosenSkill.skill_id || '',
 				skillscopelevel_id: this.chosenSkill.skillscopelevel_id || '',
@@ -102,57 +102,16 @@ export default {
 		isRequired(value) {
 			return value ? true : 'This field is required';
 		},
-		createProjectNeedSkill() {
+		async saveNeedSkill() {
 			// iterate object properties and change empty values to null
 			for (let prop in this.formData) {
 				if (this.formData[prop] === '') {
 					this.formData[prop] = null;
 				}
 			}
-			if (this.method == 'POST') {
-				delete this.formData.id
-			}
-			fetch(this.url, {
-				method: this.method,
-				headers: {"Content-Type": "application/json"},
-				credentials: 'include',
-				body: JSON.stringify(this.formData)
-			})
-			.then(response => {
-				if (response.status >= 200 && response.status <= 299) {
-					this.$emit('formSent')
-				} else {
-					this.$store.commit('errorHandling', response)
-				}
-			})
-			.catch((errors) => {
-				this.errors.push('skill-error')
-				this.$store.commit('errorHandling', errors)
-			})
-		},
-		getAllSkills() {
-			fetch('/api/skills', {method: 'GET'})
-			.then(response => { 
-				return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-			})
-			.then(response => { 
-				this.availableSkills = response;
-			})    
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
-		},
-		getAllLevels() {
-			fetch('/api/skills/levels', {method: 'GET'})
-			.then(response => { 
-				return (response.status >= 200 && response.status <= 299) ? response.json() : this.$store.commit('errorHandling', response)
-			})
-			.then(response => { 
-				this.skillLevels = response
-			})    
-			.catch((errors) => {
-				this.$store.commit('errorHandling', errors)
-			})
+
+			const skill = await this.$api.needs.skills.save(this.formData)
+			if (skill) this.$emit('formSent')
 		},
 		getSkillScope(needle) {
 			if (needle) {
@@ -187,9 +146,9 @@ export default {
 			}
 		}
 	},
-	mounted() {
-		this.getAllSkills()
-		this.getAllLevels()
+	async mounted() {
+		this.availableSkills = await this.$api.skills.get()
+		this.skillLevels = await this.$api.skills.levels.get()
 	}
 };
 </script>
