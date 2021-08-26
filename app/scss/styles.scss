@@ -47,18 +47,6 @@
 
 // Custom styles
 
-.fadeHeight-enter-active,
-.fadeHeight-leave-active {
-	transition: all 0.5s;
-	//max-height: 230px;
-}
-.fadeHeight-enter,
-.fadeHeight-leave-to
-{
-	opacity: 0;
-	//max-height: 0px;
-}
-
 body {
 	background-image: url('../assets/bg4.jpg');
 	background-size: cover;

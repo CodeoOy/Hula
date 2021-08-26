@@ -5,7 +5,6 @@ import { Modal } from 'bootstrap'
 import Home from './views/Home.vue'
 import Confirm from './views/Confirm.vue'
 import ForgotPassword from './views/ForgotPassword.vue'
-import Dashboard from './views/Dashboard.vue'
 import Profile from './views/Profile.vue'
 import Admin from './views/Admin.vue'
 import AdminProjects from './views/AdminProjects.vue'
@@ -23,7 +22,6 @@ const router = createRouter({
 		{ path: '/', component: Home, name: 'page-home'},
 		{ path: '/app/confirm', component: Confirm, name: 'page-confirm' },
 		{ path: '/app/forgotpassword', component: ForgotPassword, name: 'page-forgot-password' },
-		{ path: '/app/dashboard', component: Dashboard, name: 'page-dashboard' },
 		{ path: '/app/user/:id', component: Profile, name: 'page-profile' },
 		{ path: '/app/admin', component: Admin, name: 'page-admin', children: [
 			{ path: 'projects', alias: '', component: AdminProjects, name: 'admin-projects' },
