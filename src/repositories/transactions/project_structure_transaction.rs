@@ -147,8 +147,8 @@ pub fn save_project_structure(
 	for need in project.needs.iter() {
 		let need_res = projectneeds_repository::create_projectneed(
 			id,
-			need.label.clone(),
 			need.count_of_users,
+			Some(need.label.clone()),
 			need.percentage,
 			need.begin_time,
 			need.end_time,

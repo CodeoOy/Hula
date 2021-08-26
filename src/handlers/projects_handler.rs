@@ -196,7 +196,6 @@ pub async fn create_projectneed(
 	let res = web::block(move || {
 		projectneeds_repository::create_projectneed(
 			projectneeddata.project_id,
-			"label".to_string(),
 			projectneeddata.count_of_users,
 			projectneeddata.label.clone(),
 			projectneeddata.percentage,

@@ -32,7 +32,6 @@ pub struct ProjectNeedSkill {
 pub struct ProjectNeed {
 	pub id: uuid::Uuid,
 	pub project_id: uuid::Uuid,
-	pub label: String,
 	pub count_of_users: i32,
 	pub begin_time: chrono::NaiveDate,
 	pub end_time: Option<chrono::NaiveDate>,
