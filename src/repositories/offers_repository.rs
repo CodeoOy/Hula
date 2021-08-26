@@ -64,11 +64,7 @@ pub fn query_update_offer(
 
 	let offer = diesel::update(offers)
 		.filter(id.eq(uuid_data))
-		.set((
-			comments.eq(q_comments),
-			sold.eq(q_sold),
-			updated_by.eq(q_email),
-		))
+		.set((comments.eq(q_comments), sold.eq(q_sold), updated_by.eq(q_email)))
 		.get_result::<Offer>(conn)?;
 	Ok(offer)
 }

@@ -11,6 +11,7 @@ pub struct Project {
 	pub id: uuid::Uuid,
 	pub is_hidden: bool,
 	pub name: String,
+	pub description: Option<String>,
 	pub updated_by: String,
 }
 

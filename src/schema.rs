@@ -53,6 +53,7 @@ table! {
 		id -> Uuid,
 		is_hidden-> Bool,
 		name -> Varchar,
+		description -> Nullable<Varchar>,
 		updated_by -> Varchar,
 	}
 }

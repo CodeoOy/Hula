@@ -103,13 +103,7 @@ pub async fn update_offer(
 	}
 	let id = uuid::Uuid::parse_str(&oid.into_inner())?;
 	let res = web::block(move || {
-		offers_repository::query_update_offer(
-			id,
-			payload.sold,
-			payload.comments.clone(),
-			logged_user.email,
-			&pool,
-		)
+		offers_repository::query_update_offer(id, payload.sold, payload.comments.clone(), logged_user.email, &pool)
 	})
 	.await;
 	match res {
