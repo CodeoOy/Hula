@@ -34,11 +34,21 @@ pub struct UserSkillData {
 }
 
 #[derive(Deserialize, Debug)]
+pub struct UserSkillDeleteData {
+	pub user_id: uuid::Uuid,
+}
+
+#[derive(Deserialize, Debug)]
 pub struct UserReservationData {
 	pub description: String,
 	pub begin_time: Option<chrono::NaiveDate>,
 	pub end_time: Option<chrono::NaiveDate>,
 	pub percentage: Option<i32>,
+	pub user_id: uuid::Uuid,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct UserReservationDeleteData {
 	pub user_id: uuid::Uuid,
 }
 
@@ -180,6 +190,7 @@ pub async fn add_skill(
 
 pub async fn delete_userskill(
 	uuid_data: web::Path<String>,
+	payload: web::Json<UserSkillDeleteData>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
@@ -190,7 +201,7 @@ pub async fn delete_userskill(
 	);
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	if logged_user.isadmin == false && logged_user.uid != id {
+	if logged_user.isadmin == false && logged_user.uid != payload.user_id {
 		return Err(ServiceError::AdminRequired);
 	}
 
@@ -315,6 +326,7 @@ pub async fn add_reservation(
 
 pub async fn delete_reservation(
 	uuid_data: web::Path<String>,
+	payload: web::Json<UserReservationDeleteData>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
@@ -325,7 +337,7 @@ pub async fn delete_reservation(
 	);
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	if logged_user.isadmin == false && logged_user.uid != id {
+	if logged_user.isadmin == false && logged_user.uid != payload.user_id {
 		return Err(ServiceError::AdminRequired);
 	}
 
