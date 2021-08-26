@@ -26,9 +26,7 @@
 					><i class="bi-pencil-fill me-2"></i></a>
 					<a 
 						href="#"
-						data-bs-toggle="modal" 
-						data-bs-target="#hulaModalProfile" 
-						v-on:click="formTitle = 'Delete my profile', chosenForm = 'Delete', chosenUser = user, url=`/api/users/${user.id}`, method='DELETE'"
+						v-on:click.prevent="confirmDelete('user', user)"
 					><i class="bi-trash-fill me-2"></i></a>
 					<hr />
 					<v-form v-on:submit="saveFiles" class='clearfix'>
@@ -47,9 +45,7 @@
 										<td>
 											<a 
 												href="#"
-												data-bs-toggle="modal" 
-												data-bs-target="#hulaModalProfile" 
-												v-on:click="formTitle = `Delete file ${file.filename}`, chosenForm = 'Delete', url=`/api/useruploads/${file.id}`, method='DELETE'"
+												v-on:click.prevent="confirmDelete('user.file', file)"
 											><i class="bi-trash-fill me-2"></i></a>
 										</td>
 									</tr>
@@ -105,9 +101,7 @@
 										><i class="bi-pencil-fill me-2"></i></a>
 										<a
 											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalProfile" 
-											v-on:click="formTitle = `Delete ${skill.skill_label}?`, chosenSkill = skill, chosenForm = 'Delete', url = `/api/userskills/${skill.id}`, method = 'DELETE'"
+											v-on:click.prevent="confirmDelete('user.skill', skill)"
 										><i class="bi-trash-fill me-2"></i></a>
 									</td>
 								</tr>
@@ -148,9 +142,7 @@
 									><i class="bi-pencil-fill me-2"></i></a>
 									<a
 										href="#"
-										data-bs-toggle="modal"
-										data-bs-target="#hulaModalProfile" 
-										v-on:click="formTitle = `Delete reservation?`, chosenReservation = reservation, chosenForm = 'Delete', url = `/api/userreservations/${reservation.id}`, method = 'DELETE'"
+										v-on:click.prevent="confirmDelete('user.reservation', reservation)"
 									><i class="bi-trash-fill me-2"></i></a>
 								</td>
 							</tr>
@@ -186,7 +178,6 @@
 	import FormUserReservation from '../forms/FormUserReservation.vue'
 	import FormSkill from '../forms/FormSkill.vue'
 	import FormUserBasicInfo from '../forms/FormUserBasicInfo.vue'
-	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	import { Field, Form, ErrorMessage } from 'vee-validate';
 	export default {
 		name: 'Profile',
@@ -211,7 +202,6 @@
 			FormUserSkill,
 			FormUserReservation,
 			FormSkill,
-			FormConfirmAction,
 			VModal,
 			'VForm': Form,
 			'VField': Field,
@@ -270,11 +260,34 @@
 
 				if (data) this.user.main_upload_id = value
 			},
+			async confirmDelete(type, data) {
+				const success = await this.$confirm.delete(type, data)
+				
+				if (success) {
+					switch (type) {
+						case 'user':
+							if (data.id == this.$store.state.loggeduser.id) await this.$api.users.log.out()
+							this.$router.push({ name: 'admin-users' })
+							break
+
+						case 'user.skill':
+							this.user = await this.$api.users.get(this.$route.params.id)
+							break
+						
+						case 'user.reservation':
+							this.reservations = await this.$api.users.reservations.get(this.$route.params.id)
+							break
+						
+						case 'user.file':
+							this.getUserUploads(this.$route.params.id)
+							break
+					}
+				}
+			}
 		},
 		computed: {
 			modalComponent() {
 				const components = {
-					Delete: FormConfirmAction,
 					User: FormUserBasicInfo,
 					Skill: FormUserSkill,
 					Reservation: FormUserReservation,

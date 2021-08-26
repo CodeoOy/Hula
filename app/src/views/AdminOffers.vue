@@ -11,7 +11,7 @@
 		</VModal>
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Offers</h2>
-			<div v-if="offers">
+			<div>
 				<VAutoComplete 
 					:suggestions="offers" 
 					:selection="offerName" 
@@ -23,7 +23,7 @@
 			</div>
 		</div>
 		<transition name="fadeHeight">
-			<div v-if="offers" class="table-responsive">
+			<div class="table-responsive">
 				<table class="table table-dark table-striped text-light">
 					<thead>
 						<tr>
@@ -41,9 +41,7 @@
 							<td>
 								<a
 									href="#"
-									data-bs-toggle="modal"
-									data-bs-target="#hulaModalOffers" 
-									v-on:click="formTitle = `Delete ${offer.id}?`, chosenOfferID = offer.id, chosenForm = 'Delete', url = `/api/offers/${offer.id}`, method = 'DELETE'"
+									v-on:click.prevent="confirmDelete(offer)"
 								><i class="bi-trash-fill me-2"></i></a>
 								<a
 									href="#"
@@ -62,7 +60,6 @@
 
 <script>
 	import FormOffer from '../forms/FormOffer.vue'
-	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
 	import VModal from '../components/VModal.vue'
 	import { Modal } from 'bootstrap'
@@ -83,7 +80,6 @@
 		},
 		components: {
 			FormOffer,
-			FormConfirmAction,
 			VAutoComplete,
 			VModal,
 		},
@@ -110,22 +106,36 @@
 			autoCompleteAction(value) {
 				this.filteredOffers = value
 			},
+			async confirmDelete(offer) {
+				const success = await this.$confirm.delete('offer', offer)
+				if (success) {
+					this.offers = await this.$api.offers.get()
+					this.addUserNames()
+					this.addProjectNames()
+				}
+			},
 		},
 		computed: {
 			modalComponent() {
 				const components = {
-					Delete: FormConfirmAction,
 					Edit: FormOffer,
 				}
 				return components[this.chosenForm]
 			},
 		},
 		async mounted() {
-			await Promise.all([
+			const [
+				_,
+				users,
+				offers,
+			] = await Promise.all([
 				this.$store.dispatch('getProjects'),
-				this.users = await this.$api.users.get(),
-				this.offers = await this.$api.offers.get(),
+				this.$api.users.get(),
+				this.$api.offers.get(),
 			])
+			this.users = users
+			this.offers = offers
+
 			this.addUserNames()
 			this.addProjectNames()
 		},

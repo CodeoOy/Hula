@@ -1,14 +1,5 @@
 <template>
 	<div>
-		<VModal :modalTitle="formTitle" :modalID="'Users'" v-on:modal-hidden="chosenForm = ''">
-			<component 
-				:is='modalComponent' 
-				:chosenUser="chosenUser" 
-				:url="url"
-				:method="method"
-				v-on:form-sent="hideModalUpdate"
-			/>
-		</VModal>
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Users</h2>
 			<div>
@@ -53,9 +44,7 @@
 							<td class="hoverable-td">
 								<a
 									href="#"
-									data-bs-toggle="modal"
-									data-bs-target="#hulaModalUsers" 
-									v-on:click="formTitle = `Delete ${user.firstname} ${user.lastname}?`, chosenForm = 'Delete', url = `/api/users/${user.id}`, method = 'DELETE'"
+									v-on:click.prevent="confirmDelete(user)"
 								><i class="bi-trash-fill me-2"></i></a>
 							</td>
 						</tr>
@@ -69,7 +58,6 @@
 <script>
 	import VAvatar from '../components/VAvatar.vue'
 	import VModal from '../components/VModal.vue'
-	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
 	import { Modal } from 'bootstrap'
 	export default {
@@ -89,7 +77,6 @@
 		components: {
 			VModal,
 			VAvatar,
-			FormConfirmAction,
 			VAutoComplete,
 		},
 		methods: {
@@ -100,14 +87,10 @@
 			},
 			autoCompleteAction(value) {
 				this.filteredUsers = value
-			}
-		},
-		computed: {
-			modalComponent() {
-				const components = {
-					Delete: FormConfirmAction,
-				}
-				return components[this.chosenForm]
+			},
+			async confirmDelete(user) {
+				const success = await this.$confirm.delete('user', user)
+				if (success) this.initialUsers = await this.$api.users.get()
 			},
 		},
 		async mounted() {

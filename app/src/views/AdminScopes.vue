@@ -48,9 +48,7 @@
 										><i class="bi-pencil-fill me-2"></i></a>
 										<a
 											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalScopes" 
-											v-on:click="formTitle = `Delete ${scope.label}?`, chosenForm = 'Delete', url = `/api/skills/scopes/${scope.id}`, method = 'DELETE'"
+											v-on:click.prevent="confirmDelete('skill.scope', scope)"
 										><i class="bi-trash-fill me-2"></i></a>
 									</div>
 								</div>
@@ -71,9 +69,7 @@
 											><i class="bi-pencil-fill me-2"></i></a>
 											<a
 												href="#"
-												data-bs-toggle="modal"
-												data-bs-target="#hulaModalScopes" 
-												v-on:click="formTitle = `Delete ${lvl.label}?`, chosenForm = 'Delete', url = `/api/skills/levels/${lvl.id}`, method = 'DELETE'"
+												v-on:click.prevent="confirmDelete('skill.level', lvl)"
 											><i class="bi-trash-fill me-2"></i></a>
 											<a href="#" v-on:click.prevent="swapLevels({ ...lvl, swap_direction: 'Better' })"><i class="bi-caret-up-fill me-1"></i></a>
 											<a href="#" v-on:click.prevent="swapLevels({ ...lvl, swap_direction: 'Worse' })"><i class="bi-caret-down-fill me-2"></i></a>
@@ -94,7 +90,6 @@
 	import { Modal } from 'bootstrap'
 	import FormSkillScope from '../forms/FormSkillScope.vue'
 	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
-	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	export default {
 		name: 'AdminListSkills',
 		data () {
@@ -115,7 +110,6 @@
 			VModal,
 			FormSkillScope,
 			FormSkillScopeLevel,
-			FormConfirmAction
 		},
 		methods: {
 			swapLevels(data) {
@@ -135,15 +129,24 @@
 				})
 			},
 			hideModalUpdate() {
-				this.$store.dispatch('setChosenProject', this.$route.params.id)
-				let modal = Modal.getInstance(document.querySelector('#hulaModalSingleProject'))
-				modal.hide()
-			},
-			hideModalUpdate() {
 				this.getSkillScopes()
 				this.$store.dispatch('getSkillLevels')
 				let modal = Modal.getInstance(document.querySelector('#hulaModalScopes'))
 				modal.hide()
+			},
+			async confirmDelete(type, data) {
+				const success = await this.$confirm.delete(type, data)
+				if (success) {
+					switch (type) {
+						case 'skill.scope':
+							this.getSkillScopes()
+							break
+						
+						case 'skill.level':
+							this.$store.dispatch('getSkillLevels')
+							break
+					}
+				}
 			},
 		},
 		computed: {
@@ -154,7 +157,6 @@
 				const components = {
 					Scope: FormSkillScope,
 					Level: FormSkillScopeLevel,
-					Delete: FormConfirmAction
 				}
 				return components[this.chosenForm]
 			}

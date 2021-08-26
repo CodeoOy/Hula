@@ -50,9 +50,7 @@
 										><i class="bi-pencil-fill me-2"></i></a>
 										<a
 											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalSkills" 
-											v-on:click="formTitle = `Delete ${category.label}?`, chosenForm = 'Delete', url = `/api/skills/categories/${category.id}`, method = 'DELETE'"
+											v-on:click.prevent="confirmDelete('skill.category', category)"
 										><i class="bi-trash-fill me-2"></i></a>
 									</div>
 								</div>
@@ -69,9 +67,7 @@
 										><i class="bi-pencil-fill me-2"></i></a>
 										<a
 											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalSkills" 
-											v-on:click="formTitle = `Delete ${skill.label}?`, chosenForm = 'Delete', url = `/api/skills/${skill.id}`, method = 'DELETE'"
+											v-on:click.prevent="confirmDelete('skill', skill)"
 										><i class="bi-trash-fill me-2"></i></a>
 									</div>
 								</div>
@@ -89,7 +85,6 @@
 	import { Modal } from 'bootstrap'
 	import FormSkill from '../forms/FormSkill.vue'
 	import FormSkillCategory from '../forms/FormSkillCategory.vue'
-	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	export default {
 		name: 'AdminListSkills',
 		data () {
@@ -108,7 +103,6 @@
 			VModal,
 			FormSkill,
 			FormSkillCategory,
-			FormConfirmAction
 		},
 		methods: {
 			async getSkillCategories() {
@@ -133,7 +127,22 @@
 				this.$store.dispatch('getSkills')
 				let modal = Modal.getInstance(document.querySelector('#hulaModalSkills'))
 				modal.hide()
-			}
+			},
+			async confirmDelete(type, data) {
+				const success = await this.$confirm.delete(type, data)
+				
+				if (success) {
+					switch (type) {
+						case 'skill':
+							this.$store.dispatch('getSkills')
+							break
+
+						case 'skill.category':
+							this.getSkillCategories()
+							break
+					}
+				}
+			},
 		},
 		computed: {
 			skills() {
@@ -144,7 +153,6 @@
 				const components = {
 					CreateSkill: FormSkill,
 					Category: FormSkillCategory,
-					Delete: FormConfirmAction
 				}
 				return components[this.chosenForm]
 			}
