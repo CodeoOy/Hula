@@ -32,11 +32,6 @@ async function handleHttpStatus(response) {
 	if (error) {
 		error = error.error_type
 		switch (error) {
-			case 'AdminRequired':
-				store.dispatch('setUser', null)
-				router.push({ name: 'page-login' })
-				break
-
 			default:
 				errorMessage = errorMessages[error] || splitPascalCase(error)
 				console.error(error)
@@ -95,6 +90,8 @@ const getArray = url => id => returnArray(request({ url: `${url}/${id || ''}` })
 const getObject = url => id => returnObject(request({ url: `${url}/${id || ''}` }))
 const get = url => id => (id ? getObject(url) : getArray(url))(id)
 
+const remove = url => id => returnBoolean(request({ url: `${url}/${id || ''}`, method: 'DELETE' }))
+
 export const api = {
 
 	projects: {
@@ -108,13 +105,14 @@ export const api = {
 				returnObject(request({ url: `/api/projects/${id}` })),
 				api.needs.get(id),
 			])
-	
+
 			if (project) project.needs = needs
 
 			return project
 		},
 
 		save: save('/api/projects'),
+		delete: remove('/api/projects'),
 	},
 
 	needs: {
@@ -123,54 +121,63 @@ export const api = {
 
 			const addSkills = async need => need.skills = await api.needs.skills.get(need.id)
 			await Promise.all(needs.map(addSkills))
-	
+
 			return needs
 		},
 
 		save: save('/api/projectneeds'),
+		delete: remove('/api/projectneeds'),
 
 		skills: {
 			get: getArray('/api/projectskills'),
 			save: save('/api/projectskills'),
+			delete: remove('/api/projectskills'),
 		},
 	},
 
 	skills: {
 		get: get('/api/skills'),
 		save: save('/api/skills'),
-	
+		delete: remove('/api/skills'),
+
 		levels: {
 			get: get('/api/skills/levels'),
 			save: save('/api/skills/levels'),
+			delete: remove('/api/skills/levels'),
 		},
-		
+
 		scopes: {
 			get: get('/api/skills/scopes'),
 			save: save('/api/skills/scopes'),
+			delete: remove('/api/skills/scopes'),
 		},
-	
+
 		categories: {
 			get: get('/api/skills/categories'),
 			save: save('/api/skills/categories'),
+			delete: remove('/api/skills/categories'),
 		},
 	},
 
 	users: {
 		get: get('/api/users'),
 		save: save('/api/users'),
+		delete: remove('/api/users'),
 
 		skills: {
 			save: save('/api/userskills', { post: 'user_id' }),
+			delete: remove('/api/userskills'),
 		},
 
 		reservations: {
 			get: getArray('/api/userreservations'),
 			save: save('/api/userreservations', { post: 'user_id' }),
+			delete: remove('/api/userreservations'),
 		},
 
 		files: {
 			get: getArray('/api/useruploads'),
-		
+
 			save: files => {
 				const body = new FormData()
 				if (files.length) files.forEach(file => body.append('files[]', file))
@@ -180,6 +187,8 @@ export const api = {
 					body,
 				}))
 			},
+
+			delete: remove('/api/useruploads'),
 		},
 
 		password: {
@@ -197,7 +206,7 @@ export const api = {
 				await sendJson({ url: '/api/auth', body })
 				return returnObject(request({ url: '/api/auth' }))
 			},
-			
+
 			out: () => request({ url: '/api/auth', method: 'DELETE' }),
 		},
 	},
@@ -207,8 +216,9 @@ export const api = {
 	},
 
 	offers: {
-		get: get('/api/offers'),
+		get: getArray('/api/offers'),
 		save: save('/api/offers'),
+		delete: remove('/api/offers'),
 	},
 }
 

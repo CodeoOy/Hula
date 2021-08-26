@@ -11,8 +11,8 @@
 			<h2 class="h2">Projects</h2>
 			<div>
 				<VAutoComplete
-					v-if="this.$store.state.projects" 
-					:suggestions="this.$store.state.projects" 
+					v-if="$store.state.projects" 
+					:suggestions="$store.state.projects" 
 					:selection="projectName" 
 					:placeholder="'filter projects'"
 					:dropdown="false"
@@ -55,7 +55,7 @@
 								</a>
 							</td>
 							<td>
-								<a href="#" v-on:click.prevent="deleteProject(project)">
+								<a href="#" v-on:click.prevent="confirmDelete(project)">
 									<i class="bi-trash-fill me-2"></i>
 								</a>
 							</td>
@@ -71,7 +71,6 @@
 	import VModal from '../components/VModal.vue'
 	import MatchContent from '../components/MatchContent.vue'
 	import FormProject from '../forms/FormProject.vue'
-	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
 	import VAvatar from '../components/VAvatar.vue'
 
@@ -92,7 +91,6 @@
 			MatchContent,
 			VAvatar,
 			FormProject,
-			FormConfirmAction,
 			VAutoComplete,
 		},
 
@@ -133,20 +131,14 @@
 				}
 			},
 
-			deleteProject(project) {
-				this.modal = {
-					title: `Delete ${project.name}?`,
-					component: 'FormConfirmAction',
-					props: {
-						url: `/api/projects/${project.id}`,
-						method: 'DELETE'
-					}
-				}
+			async confirmDelete(project) {
+				const success = await this.$confirm.delete('project', project)
+				if (success) this.$store.dispatch('getProjects')
 			},
 		},
 
-		activated() {
-			this.$store.dispatch('getProjects')
+		mounted() {
+			if (!this.$store.state.projects.length) this.$store.dispatch('getProjects')
 		},
 	}
 </script>

@@ -13,8 +13,8 @@
 		</VModal>
 		<div class="row gx-4" v-if='project'>
 			<div class="col-md-4">
-                <div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-                	<h2 class="h2">{{ project.name }}</h2>
+				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+					<h2 class="h2">{{ project.name }}</h2>
 					<a 
 						href="#"
 						data-bs-toggle="modal" 
@@ -23,9 +23,7 @@
 					><i class="bi-pencil-fill me-2"></i></a>
 					<a 
 						href="#"
-						data-bs-toggle="modal" 
-						data-bs-target="#hulaModalSingleProject" 
-						v-on:click="formTitle = 'Delete project', chosenForm = 'Delete', chosenProject = project, url=`/api/projects/${project.id}`, method='DELETE'"
+						v-on:click.prevent="confirmDelete('project', project)"
 					><i class="bi-trash-fill me-2"></i></a>
                 </div>
 			</div>
@@ -62,9 +60,7 @@
 								><i class="bi-pencil-fill me-2"></i></a>
 								<a
 									href="#"
-									data-bs-toggle="modal"
-									data-bs-target="#hulaModalSingleProject" 
-									v-on:click="formTitle = `Delete ${need.id}?`, chosenForm = 'Delete', url = `/api/projectneeds/${need.id}`, method = 'DELETE'"
+									v-on:click.prevent="confirmDelete('need', need)"
 								><i class="bi-trash-fill me-2"></i></a>
 							</div>
 						</div>
@@ -96,9 +92,7 @@
 											><i class="bi-pencil-fill me-2"></i></a>
 											<a
 												href="#"
-												data-bs-toggle="modal"
-												data-bs-target="#hulaModalSingleProject" 
-												v-on:click="formTitle = `Delete ${skill.id}?`, chosenForm = 'Delete', url = `/api/projectskills/${skill.id}`, method = 'DELETE'"
+												v-on:click.prevent="confirmDelete('need.skill', skill)"
 											><i class="bi-trash-fill me-2"></i></a>
 										</td>
 									</tr>
@@ -117,7 +111,6 @@
 	import { Modal } from 'bootstrap'
 	import FormProjectNeed from '../forms/FormProjectNeed.vue'
 	import FormProjectNeedSkill from '../forms/FormProjectNeedSkill.vue'
-	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	import FormProject from '../forms/FormProject.vue'
 	export default {
 		name: 'Project',
@@ -145,7 +138,6 @@
 			VModal,
 			FormProjectNeed,
 			FormProjectNeedSkill,
-			FormConfirmAction,
 			FormProject,
 		},
 		computed: {
@@ -162,7 +154,6 @@
 				const components = {
 					Need: FormProjectNeed,
 					Skill: FormProjectNeedSkill,
-					Delete: FormConfirmAction,
 					Project: FormProject,
 				}
 				return components[this.chosenForm]
@@ -176,12 +167,29 @@
 			},
 			getSkillLabel(id) {
 				var returnedSkill = this.skills.find(skill => skill.id == id)
-				return returnedSkill.label
+				return returnedSkill ? returnedSkill.label : ''
 			},
 			getLevelLabel(id) {
 				if (id) {
 					var returnedLevel = this.skillLevels.find(level => level.id == id)
-					return returnedLevel.label
+					return returnedLevel ? returnedLevel.label : ''
+				}
+			},
+			async confirmDelete(type, data) {
+				const success = await this.$confirm.delete(type, data)
+
+				if (success) {
+					switch (type) {
+						case 'project':
+							this.$store.dispatch('getProjects')
+							this.$router.push({ name: 'admin-projects' })
+							break
+						
+						case 'need':
+						case 'need.skill':
+							this.$store.dispatch('setChosenProject', this.$route.params.id)
+							break
+					}
 				}
 			},
 		},
