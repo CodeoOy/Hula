@@ -59,6 +59,11 @@ pub struct FavoriteData {
 	pub user_id: uuid::Uuid,
 }
 
+#[derive(Deserialize, Debug)]
+pub struct FavoriteDeleteData {
+	pub user_id: uuid::Uuid,
+}
+
 #[derive(Serialize, Debug)]
 pub struct UserDTO {
 	pub id: uuid::Uuid,
@@ -516,6 +521,7 @@ pub async fn add_favorite_project(
 
 pub async fn delete_favorite_project(
 	uuid_data: web::Path<String>,
+	payload: web::Json<FavoriteDeleteData>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
@@ -527,7 +533,7 @@ pub async fn delete_favorite_project(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	if logged_user.isadmin == false && logged_user.uid != id {
+	if logged_user.isadmin == false && logged_user.uid != payload.user_id {
 		return Err(ServiceError::AdminRequired);
 	}
 

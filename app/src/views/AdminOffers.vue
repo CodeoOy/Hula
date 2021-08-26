@@ -30,6 +30,7 @@
 							<th scope="col">Project name</th>
 							<th scope="col">User name</th>
 							<th scope="col">Sold?</th>
+							<th scope="col">Comments</th>
 							<th scope="col">Actions</th>
 						</tr>
 					</thead>
@@ -38,6 +39,7 @@
 							<td>{{ offer.project_name }}</td>
 							<td>{{ offer.user_name }}</td>
 							<td>{{ offer.sold }}</td>
+							<td>{{ offer.comments }}</td>
 							<td>
 								<a
 									href="#"
