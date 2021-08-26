@@ -168,9 +168,15 @@ pub async fn create_project(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res =
-		web::block(move || projects_repository::create_project(projectdata.name.clone(), projectdata.description.clone(), logged_user.email, &pool))
-			.await;
+	let res = web::block(move || {
+		projects_repository::create_project(
+			projectdata.name.clone(),
+			projectdata.description.clone(),
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
