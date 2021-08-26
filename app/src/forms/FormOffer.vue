@@ -9,7 +9,6 @@
 			<error-message name="name" class="error"></error-message>
 			<v-field
 				v-model="formData.comments"
-				:rules="isRequired"
 				as="input"
 				type="text"
 				name="comments"
@@ -43,9 +42,6 @@ export default {
 		chosenOfferID: '',
 	},	
 	methods: {
-		isRequired(value) {
-			return value ? true : 'This field is required';
-		},
 		async saveOffer() {
 			console.log(this.formData)
 			const offer = await this.$api.offers.save(this.formData)
