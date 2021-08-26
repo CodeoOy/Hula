@@ -32,11 +32,6 @@ async function handleHttpStatus(response) {
 	if (error) {
 		error = error.error_type
 		switch (error) {
-			case 'AdminRequired':
-				store.dispatch('setUser', null)
-				router.push({ name: 'page-login' })
-				break
-
 			default:
 				errorMessage = errorMessages[error] || splitPascalCase(error)
 				console.error(error)
