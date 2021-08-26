@@ -96,7 +96,7 @@ fn test_project_structure_equals(
 		return Ok(false);
 	}
 
-	println!("täytyy updateta {:#?}", id);
+	println!("ei tarvi päivityksiä {:#?}", id);
 	Ok(true)
 }
 
