@@ -86,7 +86,7 @@ pub async fn create_project_structure(
 	})
 	.await;
 	match res {
-		Ok(id) => Ok(HttpResponse::Ok().json(&id.unwrap_or_default())),
+		Ok(id) => Ok(HttpResponse::Ok().json(&id)),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -132,4 +132,5 @@ pub async fn update_project_structure(
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
+
 }

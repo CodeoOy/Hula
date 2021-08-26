@@ -9,7 +9,7 @@ use serde::{Serialize, Deserialize};
 use crate::models::skills::{Pool};
 use crate::models::projects::{Project};
 
-use crate::repositories::{projects_repository, projectneeds_repository, projectneedskills_repository, projectskills_repository, skills_repository, skillscopelevels_repository};
+use crate::repositories::{projectmatches_repository, projectneeds_repository, projectneedskills_repository, projects_repository, projectskills_repository, skills_repository, skillscopelevels_repository};
 
 /*
 #[derive(Debug, Display, Serialize)]
@@ -43,6 +43,22 @@ pub struct ProjectStructureNeedSkill {
 	pub min_years: Option<f64>,
 	pub max_years: Option<f64>,
 	pub mandatory: bool,
+}
+
+#[derive(Serialize, Debug)]
+pub struct ProjectStructureResponse {
+	pub id: uuid::Uuid,
+	pub matches: i32,
+}
+
+fn get_project_matches_count(
+	id: uuid::Uuid,
+	pool: &web::Data<Pool>,
+) -> Result<i32, Error> {
+	let db_project = projects_repository::query_one(id, &pool)?;
+	let db_matches = projectmatches_repository::find_by_project(&db_project, &pool)?;
+
+	Ok(db_matches.len() as i32)
 }
 
 fn test_project_structure_equals(
@@ -106,7 +122,7 @@ pub fn save_project_structure(
 	pool: &web::Data<Pool>,
 	email: String,
 	is_update: bool,
-) -> Result<Option<uuid::Uuid>, Error> {
+) -> Result<ProjectStructureResponse, Error> {
 
 	if is_update == true {
 		println!("tsekataan onko eri");
@@ -117,7 +133,7 @@ pub fn save_project_structure(
 
 		if equals == true {
 			println!("on sama");
-			return Ok(None);
+			return Ok(ProjectStructureResponse {id: id.unwrap(), matches: get_project_matches_count(id.unwrap(), &pool)?});
 		}
 		println!("on eri");
 	}
@@ -193,6 +209,6 @@ pub fn save_project_structure(
 				&pool)?;	
 		}
 	}
-
-	Ok(Some(id))
+	
+	Ok(ProjectStructureResponse {id: id, matches: get_project_matches_count(id, &pool)?})
 }
