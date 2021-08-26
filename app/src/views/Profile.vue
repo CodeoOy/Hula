@@ -227,7 +227,7 @@
 			},
 			async getUserUploads(id) {
 				const files = await this.$api.users.files.get(id)
-				this.files = Array.isArray(files) ? files : [files] // TODO: Fix endpoint
+				this.files = files
 			},
 			async saveFiles() {
 				const success = await this.$api.users.files.save(this.newFiles)
