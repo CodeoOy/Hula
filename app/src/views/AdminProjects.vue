@@ -22,48 +22,46 @@
 				<button class="btn btn-gradient" v-on:click="newProject()">New project</button>
 			</div>
 		</div>
-		<transition name="fadeHeight">
-			<div class="table-responsive">
-				<table class="table table-dark table-striped text-light">
-					<thead>
-						<tr>
-							<th scope="col">Project name</th>
-							<th scope="col">Skills</th>
-							<th scope="col">Matches</th>
-							<th scope="col">Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="project in filteredProjects" :key="project.id">
-							<td>
-								<router-link :to="{ name: 'page-project', params: { id: project.id }}">{{ project.name }}</router-link>
-							</td>
-							<td>
-								<span
-									v-for="skill in project.skills" 
-									:key="skill.skill_label"
-									class="badge"
-								>{{ skill.skill_label }}</span>
-							</td>
-							<td>
-								<a
-									v-for="match in project.matches"
-									:key="match.user_id"
-									href="#"
-									v-on:click.prevent="showMatch(project, match)"
-								><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" />
-								</a>
-							</td>
-							<td>
-								<a href="#" v-on:click.prevent="confirmDelete(project)">
-									<i class="bi-trash-fill me-2"></i>
-								</a>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</transition>
+		<div class="table-responsive" v-if="filteredProjects.length">
+			<table class="table table-dark table-striped text-light">
+				<thead>
+					<tr>
+						<th scope="col">Project name</th>
+						<th scope="col">Skills</th>
+						<th scope="col">Matches</th>
+						<th scope="col">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="project in filteredProjects" :key="project.id">
+						<td>
+							<router-link :to="{ name: 'page-project', params: { id: project.id }}">{{ project.name }}</router-link>
+						</td>
+						<td>
+							<span
+								v-for="skill in project.skills" 
+								:key="skill.skill_label"
+								class="badge"
+							>{{ skill.skill_label }}</span>
+						</td>
+						<td>
+							<a
+								v-for="match in project.matches"
+								:key="match.user_id"
+								href="#"
+								v-on:click.prevent="showMatch(project, match)"
+							><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" />
+							</a>
+						</td>
+						<td>
+							<a href="#" v-on:click.prevent="confirmDelete(project)">
+								<i class="bi-trash-fill me-2"></i>
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </template>
 
@@ -126,7 +124,7 @@
 					component: 'MatchContent',
 					props: {
 						chosenMatch: match,
-						chosenProject: project,
+						projectName: project.name,
 					},
 				}
 			},

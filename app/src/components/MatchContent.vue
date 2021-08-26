@@ -5,6 +5,8 @@
 			<i class="bi-heart-fill me-2"></i>
 			<a :href="`app/project/${chosenMatch.project_id}`">{{ projectName }}</a>
 		</h4>
+		{{ chosenMatch }}<br />
+		{{ projectName}}
 		<div class="table-responsive">
 			<table class="table table-dark table-striped text-light">
 				<thead>

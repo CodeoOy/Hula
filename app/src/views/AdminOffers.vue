@@ -22,41 +22,39 @@
 				></VAutoComplete>
 			</div>
 		</div>
-		<transition name="fadeHeight">
-			<div class="table-responsive">
-				<table class="table table-dark table-striped text-light">
-					<thead>
-						<tr>
-							<th scope="col">Project name</th>
-							<th scope="col">User name</th>
-							<th scope="col">Sold?</th>
-							<th scope="col">Comments</th>
-							<th scope="col">Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="offer in filteredOffers" :key="offer.id">
-							<td>{{ offer.project_name }}</td>
-							<td>{{ offer.user_name }}</td>
-							<td>{{ offer.sold }}</td>
-							<td>{{ offer.comments }}</td>
-							<td>
-								<a
-									href="#"
-									v-on:click.prevent="confirmDelete(offer)"
-								><i class="bi-trash-fill me-2"></i></a>
-								<a
-									href="#"
-									data-bs-toggle="modal"
-									data-bs-target="#hulaModalOffers" 
-									v-on:click="formTitle = `Edit offer`, chosenOfferID = offer.id, chosenForm = 'Edit', url = `/api/offers/${offer.id}`, method = 'PUT'"
-								><i class="bi-pencil-fill me-2"></i></a>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</transition>
+		<div class="table-responsive">
+			<table class="table table-dark table-striped text-light">
+				<thead>
+					<tr>
+						<th scope="col">Project name</th>
+						<th scope="col">User name</th>
+						<th scope="col">Sold?</th>
+						<th scope="col">Comments</th>
+						<th scope="col">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="offer in filteredOffers" :key="offer.id">
+						<td>{{ offer.project_name }}</td>
+						<td>{{ offer.user_name }}</td>
+						<td>{{ offer.sold }}</td>
+						<td>{{ offer.comments }}</td>
+						<td>
+							<a
+								href="#"
+								v-on:click.prevent="confirmDelete(offer)"
+							><i class="bi-trash-fill me-2"></i></a>
+							<a
+								href="#"
+								data-bs-toggle="modal"
+								data-bs-target="#hulaModalOffers" 
+								v-on:click="formTitle = `Edit offer`, chosenOfferID = offer.id, chosenForm = 'Edit', url = `/api/offers/${offer.id}`, method = 'PUT'"
+							><i class="bi-pencil-fill me-2"></i></a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </template>
 

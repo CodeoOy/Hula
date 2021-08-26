@@ -19,69 +19,67 @@
 				v-on:click="formTitle = 'Add scope', chosenForm = 'Scope', chosenScope = chosenScopeDefault, url='/api/skills/scopes', method='POST'"
 			>Add scope</button>
 		</div>
-		<transition name="fadeHeight">
-			<div class="table-responsive">
-				<table class="table table-dark table-striped text-light">
-					<thead>
-						<tr>
-							<th scope="col">Scope name</th>
-							<th scope="col">Levels</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="scope in skillScopes" :key="scope.id">
-							<td class="hoverable-td">
-								<div class="title-actions">
-									<span class="title-actions__maintitle">{{ scope.label }}</span>
+		<div class="table-responsive">
+			<table class="table table-dark table-striped text-light">
+				<thead>
+					<tr>
+						<th scope="col">Scope name</th>
+						<th scope="col">Levels</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="scope in skillScopes" :key="scope.id">
+						<td class="hoverable-td">
+							<div class="title-actions">
+								<span class="title-actions__maintitle">{{ scope.label }}</span>
+								<div class="title-actions__actions">
+									<a 
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalScopes"
+										v-on:click="formTitle = `Add level to ${scope.label}`, chosenForm = 'Level', chosenScope = scope, url='/api/skills/levels', method='POST'"
+									><i class="bi-plus-circle-fill me-2"></i></a>
+									<a 
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalScopes"
+										v-on:click="formTitle = `Edit ${scope.label}`, chosenForm = 'Scope', chosenScope = scope, url=`/api/skills/scopes/${scope.id}`, method='PUT'"
+									><i class="bi-pencil-fill me-2"></i></a>
+									<a
+										href="#"
+										v-on:click.prevent="confirmDelete('skill.scope', scope)"
+									><i class="bi-trash-fill me-2"></i></a>
+								</div>
+							</div>
+						</td>
+						<td class="hoverable-td">
+							<transition-group name="flip-list" tag="ul">
+								<li class="title-actions" v-for="lvl in filterLevels(scope.id)" :key="lvl.id" :value="lvl.id">
+									<span class="title-actions__maintitle">{{ lvl.index }}: {{ lvl.label }} - {{ lvl.percentage }}</span>
 									<div class="title-actions__actions">
 										<a 
 											href="#"
+											:data-scope-id="lvl.id" 
+											:data-scope-name="lvl.label" 
 											data-bs-toggle="modal"
 											data-bs-target="#hulaModalScopes"
-											v-on:click="formTitle = `Add level to ${scope.label}`, chosenForm = 'Level', chosenScope = scope, url='/api/skills/levels', method='POST'"
-										><i class="bi-plus-circle-fill me-2"></i></a>
-										<a 
-											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalScopes"
-											v-on:click="formTitle = `Edit ${scope.label}`, chosenForm = 'Scope', chosenScope = scope, url=`/api/skills/scopes/${scope.id}`, method='PUT'"
+											title="Edit level" 
+											v-on:click="chosenScope = scope, formTitle = lvl.label, chosenForm = 'Level', chosenLevel = lvl, url = `/api/skills/levels/${lvl.id}`, method = 'PUT'"
 										><i class="bi-pencil-fill me-2"></i></a>
 										<a
 											href="#"
-											v-on:click.prevent="confirmDelete('skill.scope', scope)"
+											v-on:click.prevent="confirmDelete('skill.level', lvl)"
 										><i class="bi-trash-fill me-2"></i></a>
+										<a href="#" v-on:click.prevent="swapLevels({ ...lvl, swap_direction: 'Better' })"><i class="bi-caret-up-fill me-1"></i></a>
+										<a href="#" v-on:click.prevent="swapLevels({ ...lvl, swap_direction: 'Worse' })"><i class="bi-caret-down-fill me-2"></i></a>
 									</div>
-								</div>
-							</td>
-							<td class="hoverable-td">
-								<transition-group name="flip-list" tag="ul">
-									<li class="title-actions" v-for="lvl in filterLevels(scope.id)" :key="lvl.id" :value="lvl.id">
-										<span class="title-actions__maintitle">{{ lvl.index }}: {{ lvl.label }} - {{ lvl.percentage }}</span>
-										<div class="title-actions__actions">
-											<a 
-												href="#"
-												:data-scope-id="lvl.id" 
-												:data-scope-name="lvl.label" 
-												data-bs-toggle="modal"
-												data-bs-target="#hulaModalScopes"
-												title="Edit level" 
-												v-on:click="chosenScope = scope, formTitle = lvl.label, chosenForm = 'Level', chosenLevel = lvl, url = `/api/skills/levels/${lvl.id}`, method = 'PUT'"
-											><i class="bi-pencil-fill me-2"></i></a>
-											<a
-												href="#"
-												v-on:click.prevent="confirmDelete('skill.level', lvl)"
-											><i class="bi-trash-fill me-2"></i></a>
-											<a href="#" v-on:click.prevent="swapLevels({ ...lvl, swap_direction: 'Better' })"><i class="bi-caret-up-fill me-1"></i></a>
-											<a href="#" v-on:click.prevent="swapLevels({ ...lvl, swap_direction: 'Worse' })"><i class="bi-caret-down-fill me-2"></i></a>
-										</div>
-									</li>
-								</transition-group>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</transition>
+								</li>
+							</transition-group>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </template>
 
