@@ -54,8 +54,6 @@ pub fn query_delete_offer(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Resu
 
 pub fn query_update_offer(
 	uuid_data: uuid::Uuid,
-	q_user_id: uuid::Uuid,
-	q_project_id: uuid::Uuid,
 	q_sold: bool,
 	q_comments: Option<String>,
 	q_email: String,

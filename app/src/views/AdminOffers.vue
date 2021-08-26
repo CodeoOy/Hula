@@ -4,6 +4,7 @@
 			<component 
 				:is='modalComponent'
 				:url="url"
+				:chosenOfferID="chosenOfferID"
 				:method="method"
 				v-on:form-sent="hideModalUpdate"
 			/>
@@ -42,13 +43,13 @@
 									href="#"
 									data-bs-toggle="modal"
 									data-bs-target="#hulaModalOffers" 
-									v-on:click="formTitle = `Delete ${offer.id}?`, chosenForm = 'Delete', url = `/api/offers/${offer.id}`, method = 'DELETE'"
+									v-on:click="formTitle = `Delete ${offer.id}?`, chosenOfferID = offer.id, chosenForm = 'Delete', url = `/api/offers/${offer.id}`, method = 'DELETE'"
 								><i class="bi-trash-fill me-2"></i></a>
 								<a
 									href="#"
 									data-bs-toggle="modal"
 									data-bs-target="#hulaModalOffers" 
-									v-on:click="formTitle = `Edit offer`, chosenForm = 'Edit', url = `/api/offers/${offer.id}`, method = 'PUT'"
+									v-on:click="formTitle = `Edit offer`, chosenOfferID = offer.id, chosenForm = 'Edit', url = `/api/offers/${offer.id}`, method = 'PUT'"
 								><i class="bi-pencil-fill me-2"></i></a>
 							</td>
 						</tr>
@@ -77,6 +78,7 @@
 				method: '',
 				formTitle: '',
 				chosenForm: '',
+				chosenOfferID: '',
 			}
 		},
 		components: {
