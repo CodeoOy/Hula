@@ -1,12 +1,5 @@
 <template>
 	<div>
-		<VModal v-if='modal' ref='modal' :showAtStart='true' :modalTitle="modal.title" v-on:modal-hidden="resetModal">
-			<component 
-				:is='modal.component' 
-				v-bind='modal.props'
-				v-on:form-sent="closeModal"
-			/>
-		</VModal>
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Projects</h2>
 			<div class='d-flex'>
@@ -80,7 +73,6 @@
 </template>
 
 <script>
-	import VModal from '../components/VModal.vue'
 	import MatchContent from '../components/MatchContent.vue'
 	import FormProject from '../forms/FormProject.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
@@ -91,19 +83,17 @@
 
 		data () {
 			return {
-				modal: null,
 				autoCompletedProjects: [],
 				filters: {
 					showHidden: true,
 				},
+				matchSkills: {},
 			}
 		},
 
 		components: {
-			VModal,
 			MatchContent,
 			VAvatar,
-			FormProject,
 			VAutoComplete,
 		},
 
@@ -122,41 +112,55 @@
 		},
 
 		methods: {
-			resetModal() {
-				this.modal = null
-			},
-
-			closeModal() {
-				this.$refs.modal.hide()
-				this.$store.dispatch('getProjects')
-			},
-
 			autoCompleteAction(value) {
 				this.autoCompletedProjects = value
 			},
 
-			newProject() {
-				this.modal = {
+			async newProject() {
+				const result = await this.$modal({
 					title: 'New project',
-					component: 'FormProject',
-					props: {
-						chosenProject: {},
-						url: '/api/projects',
-						method: 'POST',
-					}
-				}
+					component: FormProject,
+				})
+
+				if (result) this.$store.dispatch('getProjects')
 			},
 
-			showMatch(project, match) {
-				this.modal = {
+			async showMatch(project, match) {
+				if (!(project.id in this.matchSkills)) await this.loadMatchSkills(project)
+
+				this.$modal({
 					title: 'Match',
-					component: 'MatchContent',
+					component: MatchContent,
 					props: {
-						chosenMatch: match,
-						projectName: project.name,
-						projectID: project.id,
+						user_id: match.user_id,
+						user_first_name: match.first_name,
+						user_last_name: match.last_name,
+						project_id: project.id,
+						project_name: project.name,
+						matches: this.matchSkills[project.id][match.user_id],
 					},
-				}
+				})
+			},
+
+			async loadMatchSkills(project) {
+				const skillProps = [
+					'idx',
+					'skill_label',
+					'required_index',
+					'user_index',
+					'required_years',
+					'user_years',
+				]
+
+				const matches = await this.$api.matches.get(project.id)
+
+				this.matchSkills[project.id] = matches.reduce((users, match) => {
+					if (!(match.user_id in users)) users[match.user_id] = []
+					users[match.user_id].push(Object.fromEntries(
+						skillProps.map(prop => [prop, match[prop]])
+					))
+					return users
+				}, {})
 			},
 
 			async confirmDelete(project) {

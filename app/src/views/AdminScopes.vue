@@ -1,22 +1,10 @@
 <template>
 	<div>
-		<VModal :modalTitle="formTitle" :modalID="'Scopes'" v-on:modal-hidden="chosenForm = ''">
-			<component 
-				:is='modalComponent' 
-				:chosenScope="chosenScope"
-				:chosenLevel="chosenLevel"
-				:url="url"
-				:method="method"
-				v-on:form-sent="hideModalUpdate"
-			/>
-		</VModal>
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Scopes</h2>
 			<button
 				class="btn btn-gradient"
-				data-bs-toggle="modal"
-				data-bs-target="#hulaModalScopes"
-				v-on:click="formTitle = 'Add scope', chosenForm = 'Scope', chosenScope = chosenScopeDefault, url='/api/skills/scopes', method='POST'"
+				v-on:click.prevent="editScope()"
 			>Add scope</button>
 		</div>
 		<div class="table-responsive">
@@ -35,15 +23,11 @@
 								<div class="title-actions__actions">
 									<a 
 										href="#"
-										data-bs-toggle="modal"
-										data-bs-target="#hulaModalScopes"
-										v-on:click="formTitle = `Add level to ${scope.label}`, chosenForm = 'Level', chosenScope = scope, url='/api/skills/levels', method='POST'"
+										v-on:click.prevent="editLevel(scope)"
 									><i class="bi-plus-circle-fill me-2"></i></a>
 									<a 
 										href="#"
-										data-bs-toggle="modal"
-										data-bs-target="#hulaModalScopes"
-										v-on:click="formTitle = `Edit ${scope.label}`, chosenForm = 'Scope', chosenScope = scope, url=`/api/skills/scopes/${scope.id}`, method='PUT'"
+										v-on:click.prevent="editScope(scope)"
 									><i class="bi-pencil-fill me-2"></i></a>
 									<a
 										href="#"
@@ -61,10 +45,8 @@
 											href="#"
 											:data-scope-id="lvl.id" 
 											:data-scope-name="lvl.label" 
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalScopes"
 											title="Edit level" 
-											v-on:click="chosenScope = scope, formTitle = lvl.label, chosenForm = 'Level', chosenLevel = lvl, url = `/api/skills/levels/${lvl.id}`, method = 'PUT'"
+											v-on:click.prevent="editLevel(lvl)"
 										><i class="bi-pencil-fill me-2"></i></a>
 										<a
 											href="#"
@@ -84,37 +66,14 @@
 </template>
 
 <script>
-	import VModal from '../components/VModal.vue'
-	import { Modal } from 'bootstrap'
 	import FormSkillScope from '../forms/FormSkillScope.vue'
 	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
+
 	export default {
 		name: 'AdminListSkills',
-		data () {
-			return {
-				formTitle: '',
-				chosenForm: '',
-				url: '',
-				method: '',
-				chosenScope: {},
-				chosenLevel: {},
-				chosenScopeDefault: {
-					label: '',
-				},
-				skillScopes: [],
-			}
-		},
-		components: {
-			VModal,
-			FormSkillScope,
-			FormSkillScopeLevel,
-		},
 		methods: {
 			swapLevels(data) {
 				this.$store.dispatch('saveSkillLevel', data)
-			},
-			async getSkillScopes() {
-				this.skillScopes = await this.$api.skills.scopes.get()
 			},
 			filterLevels(id) {
 				let levels = this.skillLevels.filter(lvl => lvl.skillscope_id == id)
@@ -126,18 +85,32 @@
   					return 0;
 				})
 			},
-			hideModalUpdate() {
-				this.getSkillScopes()
-				this.$store.dispatch('getSkillLevels')
-				let modal = Modal.getInstance(document.querySelector('#hulaModalScopes'))
-				modal.hide()
+			async editScope(props = {}) {
+				const result = await this.$modal({
+					title: props.id ? `Edit scope: ${props.label}` : 'Add scope',
+					component: FormSkillScope,
+					props,
+				})
+
+				if (result) this.$store.dispatch('getSkillScopes')
+			},
+			async editLevel(props = {}) {
+				const result = await this.$modal({
+					title: props.skillscope_id ? `Edit level: ${props.label}` : `Add level to ${props.label}`,
+					component: FormSkillScopeLevel,
+					props: props.skillscope_id ? props : { skillscope_id: props.id },
+				})
+
+				if (result) {
+					this.$store.dispatch('getSkillLevels')
+				}
 			},
 			async confirmDelete(type, data) {
 				const success = await this.$confirm.delete(type, data)
 				if (success) {
 					switch (type) {
 						case 'skill.scope':
-							this.getSkillScopes()
+							this.$store.dispatch('getSkillScopes')
 							break
 						
 						case 'skill.level':
@@ -148,20 +121,16 @@
 			},
 		},
 		computed: {
+			skillScopes() {
+				return this.$store.state.skillScopes
+			},
 			skillLevels() {
 				return this.$store.state.skillLevels
 			},
-			modalComponent() {
-				const components = {
-					Scope: FormSkillScope,
-					Level: FormSkillScopeLevel,
-				}
-				return components[this.chosenForm]
-			}
 		},
 		mounted() {
-			this.$store.dispatch('getSkillLevels')
-			this.getSkillScopes()
+			if (!this.$store.state.skillLevels.length) this.$store.dispatch('getSkillLevels')
+			if (!this.$store.state.skillScopes.length) this.$store.dispatch('getSkillScopes')
 		}
 	}
 </script>

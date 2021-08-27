@@ -1,7 +1,7 @@
 <template>
 	<div class="p-3 rounded-2 content-box bg-dark text-light">
-		<VModal :modalTitle="'Enter new password'" :modalID="'Password'" :modalStatic="true">
-			<FormResetPassword v-on:form-sent="changePassword" />
+		<VModal ref='modal' :modalTitle="'Enter new password'" modalBackdrop="static">
+			<FormResetPassword v-on:success="changePassword" />
 		</VModal>
 		<div v-if="confirmed">
 			<h2 class="h2">Account confirmed.</h2>
@@ -13,9 +13,9 @@
 
 <script>
 	import VModal from '../components/VModal.vue'
-	import { Modal } from 'bootstrap'
 	import FormResetPassword from '../forms/FormResetPassword.vue'
 	import { useRoute } from 'vue-router'
+
 	export default {
 		name: 'ConfirmUser',
 		data: function() {
@@ -31,14 +31,9 @@
 			FormResetPassword,
 		},
 		methods: {
-			hideModalUpdate() {
-				let modal = Modal.getInstance(document.querySelector('#hulaModalPassword'))
-				modal.hide()
-			},
 			changePassword (value) {
 				this.registrationData.password = value
 				this.noPassword = false
-				this.hideModalUpdate()
 				if (this.registrationData.type == 'reset') {
 					this.setPassword()
 				} else {
@@ -88,8 +83,7 @@
 			this.registrationData = route.query
 			if (this.registrationData.password == '') {
 				this.noPassword = true
-					this.modal = new Modal(document.getElementById('hulaModalPassword'))
-					this.modal.show()
+				this.$refs.modal.show()
 			} else {
 				this.confirmRegistration()
 			}

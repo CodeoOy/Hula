@@ -1,10 +1,10 @@
 <template>
-	<div class="modal fade" ref="modal" :id="'hulaModal' + modalID" :data-bs-backdrop="modalStatic ? 'static' : null">
+	<div class="modal fade" ref="modal" :data-bs-backdrop="modalBackdrop" :data-bs-keyboard='modalBackdrop != "static"'>
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content rounded-2 content-box bg-dark text-light">
-				<div class="modal-header" v-if="modalStatic == false">
+				<div class="modal-header" v-if="modalTitle">
 					<h2 class="modal-title">{{ modalTitle }}</h2>
-					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+					<button v-if='modalBackdrop != "static"' type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
 					<slot></slot>
@@ -22,10 +22,10 @@
 		
 		props: {
 			modalTitle: String,
-			modalID: String,
-			modalStatic: {
-				type: Boolean,
-				default: false
+			modalBackdrop: {
+				type: [Boolean, String],
+				default: true,
+				validator :value => typeof value == 'boolean' || value == 'static',
 			},
 			showAtStart: false,
 		},

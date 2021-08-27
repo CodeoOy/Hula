@@ -1,78 +1,76 @@
 <template>
-	<v-form v-on:submit="saveSkillCategory">
-		<div class="mb-2">
-			<label class="form-label">Category label</label>
-			<error-message name="name" class="error"></error-message>
-			<v-field
-				:rules="isRequired"
-				as="input"
-				type="text"
-				name="name"
-				class="form-control"
-				placeholder="Techs"
-				aria-label="Category name"
-				v-model="formData.label"
-			></v-field>
+	<VForm v-on:submit='onSubmit'>
+
+		<div class='mb-2'>
+			<label for='label' class='form-label'>Name</label>
+			<ErrorMessage name='label' class='error' />
+			<VField
+				v-model='form.label'
+				rules='required'
+				type='text'
+				id='label'
+				name='label'
+				label='Name'
+				aria-label='Name'
+				placeholder='Techs' 
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2" v-if="categories.length">
-			<label class="form-label">Category parent (optional)</label>
-			<error-message name="parent" class="error"></error-message>
-			<v-field
-				as="select"
-				name="parent"
-				class="form-select"
-				aria-label="Category parent"
-				v-model="formData.parent_id"
+
+		<div class='mb-2' v-if='categories.length'>
+			<label for='parent_id' class='form-label'>Parent category (optional)</label>
+			<VField
+				v-model='form.parent_id'
+				as='select'
+				name='parent_id'
+				id='parent_id'
+				label='Parent'
+				aria-label='Parent'
+				class='form-select'
 			>
-				<option :value="null">No parent</option>
-				<option v-for="category in categories" :key="category.label" :value="category.id">
+				<option :value='null'>No parent</option>
+				<option v-for='category in categories' :key='category.id' :value='category.id'>
 					{{ category.label }}
 				</option>
-			</v-field>
+			</VField>
 		</div>
-		<button type="submit" class="btn btn-gradient">Submit</button>
-	</v-form>   
+
+		<button type='submit' class='btn btn-gradient'>Submit</button>
+	</VForm>   
 </template>
 
 <script>
-import { Field, Form, ErrorMessage } from 'vee-validate';
-export default {
-	name: 'SkillCategory',
-	data() {
-		return {
-			categories: {},
-			formData: {
-				id: this.chosenCategory.id || undefined,
-				email: this.chosenCategory.email || '',
-				label: this.chosenCategory.label || '',
-				parent_id: this.chosenCategory.parent_id || null,
-			}
-		};
-	},
-	components: {
-		'VForm': Form,
-		'VField': Field,
-		ErrorMessage
-	},
-	props: {
-		chosenCategory: {},
-		url: '',
-		method: '',
-	},
-	methods: {
-		isRequired(value) {
-			return value ? true : 'This field is required';
+	export default {
+		name: 'FormSkillCategory',
+
+		props: {
+			id: {
+				type: String,
+				default: undefined,
+			},
+			parent_id: {
+				type: String,
+				default: undefined,
+			},
+			label: String,
 		},
-		async saveSkillCategory() {
-			if (this.formData.parent_id == '') {
-				delete this.formData.parent_id;
+
+		data() {
+			return {
+				form: { ...this.$props },
+				categories: {},
 			}
-			const category = await this.$api.skills.categories.save(this.formData)
-			if (category) this.$emit('formSent')
 		},
-	},
-	async mounted() {
-		this.categories = await this.$api.skills.categories.get()
-	},
-};
+
+		async mounted() {
+			this.categories = await this.$api.skills.categories.get()
+		},
+
+		methods: {
+			async onSubmit() {
+				const category = await this.$api.skills.categories.save(this.form)
+				if (category) this.$emit('success', category)
+			},
+		},
+	}
 </script>

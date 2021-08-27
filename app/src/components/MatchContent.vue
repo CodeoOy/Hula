@@ -1,12 +1,10 @@
 <template>
 	<div>
 		<h4 class="h4">
-			<a :href="`app/user/${chosenMatch.user_id}`">{{ chosenMatch.user_first_name }} {{ chosenMatch.user_last_name }}&nbsp;</a>
-			<i class="bi-heart-fill me-2"></i>
-			<a :href="`app/project/${chosenMatch.project_id}`">{{ projectName }}</a>
+			<a :href="`/app/user/${user_id}`">{{ user_first_name }} {{ user_last_name }}</a>
+			<i class="bi-heart-fill mx-2"></i>
+			<a :href="`/app/project/${project_id}`">{{ project_name }}</a>
 		</h4>
-		{{ chosenMatch }}<br />
-		{{ projectName}}
 		<div class="table-responsive">
 			<table class="table table-dark table-striped text-light">
 				<thead>
@@ -19,44 +17,62 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="skill in chosenMatch.matches" :key="skill.idx">
-						<td>{{ skill.skill_label }}</td>
-						<td>{{ skill.required_index}}</td>
-						<td>{{ skill.user_index }}</td>
-						<td>{{ skill.required_years}}</td>
-						<td>{{ skill.user_years }}</td>
+					<tr v-for="match in matches" :key="match.idx">
+						<td>{{ match.skill_label }}</td>
+						<td>{{ match.required_index}}</td>
+						<td>{{ match.user_index }}</td>
+						<td>{{ match.required_years}}</td>
+						<td>{{ match.user_years }}</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
-		<a href="#" v-on:click="addToOffers"><i class="bi-briefcase-fill me-2"></i></a>
+		<a href="#" v-on:click.prevent="addOffer"><i class="bi-briefcase-fill"></i></a>
     </div>
 </template>
 
 <script>
 	export default {
 		name: 'MatchContent',
-		data() {
-			return {
-				skills: {},
-				match: this.chosenMatch || {},
-			}
-		},
+
 		props: {
-			chosenMatch: {},
-			projectName: '',
+			user_id: {
+				type: String,
+				required: true,
+			},
+			user_first_name: {
+				type: String,
+				required: true,
+			},
+			user_last_name: {
+				type: String,
+				required: true,
+			},
+			project_id: {
+				type: String,
+				required: true,
+			},
+			project_name: {
+				type: String,
+				required: true,
+			},
+			matches: {
+				type: Array,
+				required: true,
+			},
 		},
+
 		methods: {
-			addToOffers() {
-				const offer = this.$api.offers.save({
-					user_id: this.chosenMatch.user_id || '',
-					project_id: this.chosenMatch.project_id || '',
+			async addOffer() {
+				const offer = await this.$api.offers.save({
+					user_id: this.user_id,
+					project_id: this.project_id,
 					sold: false,
 					comments: '',
 				})
 
 				if (offer) {
-					this.$emit('formSent')
+					this.$emit('offer-saved')
 					this.$flashMessage.show({
 						type: 'success',
 						title: 'Offer added.',
@@ -65,10 +81,5 @@
 				}
 			}
 		},
-		async mounted() {
-			if (this.chosenMatch.project_id) {
-				this.match = await this.$api.matches.get(this.chosenMatch.project_id)
-			}
-		}
 	}
 </script>

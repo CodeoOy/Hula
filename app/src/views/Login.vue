@@ -1,6 +1,6 @@
 <template>
 	<div class="container-fluid mt-4">
-		<VModal :modalID="'login'" :modalStatic="true">
+		<VModal ref='modal' :modalTitle='title' modalBackdrop="static">
 			<FormLogin v-if="showSignup == false" />
 			<FormRegister v-else/>
 			<p>
@@ -16,7 +16,7 @@
 	import VModal from '../components/VModal.vue'
 	import FormRegister from '../forms/FormRegister.vue'
 	import FormLogin from '../forms/FormLogin.vue'
-	import { Modal } from 'bootstrap'
+
 	export default {
 		name: 'Login',
 		data() {
@@ -29,11 +29,13 @@
 			FormRegister,
 			FormLogin,
 			VModal,
-  		},
+		},
+		computed: {
+			title() { return this.showSignup ? 'Sign up' : 'Log in' },
+		},
 		mounted() {
-			this.modal = new Modal(document.getElementById('hulaModallogin'))
 			if (!this.$store.state.loggeduser) {
-				this.modal.show()
+				this.$refs.modal.show()
 			} 
 		},
 	}

@@ -1,10 +1,7 @@
 <template>
 	<div v-if="matches.length">
-		<VModal :modalTitle="'Match'" :modalID="'match'" @modal-hidden='currentMatch = null'>
-			<MatchContent v-if='currentMatch' :chosenMatch="currentMatch" :projectName="project.name"/>
-		</VModal>
 		<div class="table-responsive">
-			<table v-if="matches" class="table table-dark table-striped text-light">
+			<table class="table table-dark table-striped text-light">
 				<thead>
 					<tr>
 						<th scope="col"></th>
@@ -19,10 +16,8 @@
 					<tr v-for="(user, index) in users" :key="user.user_id" :class="`tier tier--${user.tier}`">
 						<th scope="row" class="tier__index"><span :class="`tier__ball tier__ball--${user.tier}`" :style="`zIndex: ${index}`">{{ index + 1 }}</span></th>
 						<td><a href="#"
-							data-bs-toggle="modal"
-							data-bs-target="#hulaModalmatch"
-							v-on:click="currentMatch = user
-						">{{ user.user_first_name }} {{ user.user_last_name }}</a></td>
+							v-on:click.prevent='showMatch(user)'
+						>{{ user.user_first_name }} {{ user.user_last_name }}</a></td>
 						<td>{{ user.hasMandatory }}</td>
 						<td><span class="badge" v-for="match in user.matches" :key="match.skill_id">{{ match.skill_label }}</span></td>
 						<td>{{ user.tier }}</td>
@@ -135,6 +130,16 @@
 			isAvailable(user) {
 				return user.matches.every(match => {
 					return match.required_load >= match.user_load
+				})
+			},
+			showMatch(user) {
+				this.$modal({
+					title: 'Match',
+					component: MatchContent,
+					props: {
+						...user,
+						project_name: this.project.name,
+					},
 				})
 			},
 		},

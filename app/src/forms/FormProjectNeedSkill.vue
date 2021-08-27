@@ -1,152 +1,165 @@
 <template>
-	<v-form v-on:submit="saveNeedSkill" v-if="availableSkills.length && skillLevels.length">
-		<div class="mb-2" v-if="this.method == 'POST'">
-			<label class="form-label">Skill</label>
-			<error-message name="name" class="error"></error-message>
-			<v-field
-				v-model="formData.skill_id"
-				:rules="isRequired"
-				as="select"
-				name="skill"
-				class="form-select"
-				id="AddExistingSkill"
-				aria-label="Pick skill"
+	<VForm v-on:submit='onSubmit' v-if='skills.length && levels.length'>
+
+		<div class='mb-2' v-if='!id'>
+			<label for='skill' class='form-label'>Skill</label>
+			<ErrorMessage name='skill' class='error' />
+			<VField
+				v-model='form.skill_id'
+				rules='required'
+				as='select'
+				name='skill'
+				id='skill'
+				label='Skill'
+				aria-label='Skill'
+				class='form-select'
 			>
-				<option :value="null" disabled selected>Pick a skill</option>
-				<option v-for="avskill in filterSkills" :key="avskill" :value="avskill.id">
-					{{ avskill.label }}
+				<option :value='null' disabled selected>Pick a skill</option>
+				<option v-for='skill in filteredSkills' :key='skill.id' :value='skill.id'>
+					{{ skill.label }}
 				</option>
-			</v-field>
+			</VField>
 		</div>
-		<div class="mb-2 form-check">
-			<label class="form-label">Mandatory requirement</label>
-			<input type="checkbox" class="form-check-input" name="is_mandatory" v-model="formData.mandatory" />
+
+		<div class='mb-2 form-check'>
+			<label for='mandatory' class='form-label'>Mandatory requirement</label>
+			<VField
+				v-model.boolean='form.mandatory'
+				:value='true'
+				:unchecked-value='false'
+				type='checkbox'
+				name='mandatory'
+				id='mandatory'
+				aria-label='Skill'
+				class="form-check-input"
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">Minimum level</label>
-			<error-message name="name" class="error"></error-message>
-			<v-field
-				v-model="formData.skillscopelevel_id"
-				as="select"
-				name="skillscope"
-				class="form-select"
-				id="AddLevel"
-				aria-label="Pick minimum level"
+
+		<div class='mb-2'>
+			<label for='skillscopelevel_id' class='form-label'>Minimum level</label>
+			<ErrorMessage name='skillscopelevel_id' class='error' />
+			<VField
+				v-model='form.skillscopelevel_id'
+				:disabled='!form.skill_id'
+				as='select'
+				name='skillscopelevel_id'
+				id='skillscopelevel_id'
+				label='Minimum level'
+				aria-label='Minimum level'
+				class='form-select'
 			>
-				<option v-for="lvl in filterLevels" :key="lvl" :value="lvl.id">
-					{{ lvl.label }}
+				<option v-for='level in filteredLevels' :key='level.id' :value='level.id'>
+					{{ level.label }}
 				</option>
-			</v-field>
+			</VField>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">Min years</label>
-			<error-message name="min years" class="error"></error-message>
-			<v-field
-				v-model.number="formData.min_years"
-				as="input"
-				type="number"
-				name="min years"
-				class="form-control"
-				aria-label="Min years"
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='min_years' class='form-label'>Min years</label>
+			<ErrorMessage name='min_years' class='error' />
+			<VField
+				v-model.number='form.min_years'
+				type='number'
+				name='min_years'
+				id='min_years'
+				label='Min years'
+				aria-label='Min years'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">Max years</label>
-			<error-message name="max years" class="error"></error-message>
-			<v-field
-				v-model.number="formData.max_years"
-				as="input"
-				type="number"
-				name="max years"
-				class="form-control"
-				aria-label="Max years"
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='max_years' class='form-label'>Max years</label>
+			<ErrorMessage name='max_years' class='error' />
+			<VField
+				v-model.number='form.max_years'
+				:rules='`min_value:${form.min_years}`'
+				type='number'
+				name='max_years'
+				id='max_years'
+				label='Max years'
+				aria-label='Max years'
+				class='form-control'
+			/>
 		</div>
-		<button type="submit" class="btn btn-gradient mb-1">Save</button>
-	</v-form>
+
+		<button type='submit' class='btn btn-gradient mb-1'>Save</button>
+	</VForm>
 </template>
 
 <script>
-import { Field, Form, ErrorMessage } from 'vee-validate';
-export default {
-	name: 'ProjectNeedSkill',
-	data() {
-		return {
-			formData: {
-				id: this.chosenSkill.id || undefined,
-				projectneed_id: this.chosenNeed.id,
-				skill_id: this.chosenSkill.skill_id || '',
-				skillscopelevel_id: this.chosenSkill.skillscopelevel_id || '',
-				min_years: this.chosenSkill.min_years || '',
-				max_years: this.chosenSkill.max_years || '',
-				mandatory: this.chosenSkill.mandatory || false,
-			},
-			availableSkills: {},
-			skillLevels: {},
-			errors: [],
-		}
-	},
-	components: {
-		'VForm': Form,
-		'VField': Field,
-		ErrorMessage
-	},
-	props: {
-		chosenNeed: {},
-		chosenSkill: {},
-		chosenScope: '',
-		method: '',
-		url: '',
-	},
-	methods: {
-		isRequired(value) {
-			return value ? true : 'This field is required';
-		},
-		async saveNeedSkill() {
-			// iterate object properties and change empty values to null
-			for (let prop in this.formData) {
-				if (this.formData[prop] === '') {
-					this.formData[prop] = null;
-				}
-			}
+	export default {
+		name: 'FormProjectNeedSkill',
 
-			const skill = await this.$api.needs.skills.save(this.formData)
-			if (skill) this.$emit('formSent')
+		props: {
+			id: {
+				type: String,
+				default: undefined,
+			},
+			projectneed_id: {
+				type: String,
+				required: true,
+			},
+			skill_id: String,
+			skillscopelevel_id: String,
+			min_years: Number,
+			max_years: Number,
+			mandatory: {
+				type: Boolean,
+				default: false,
+			},
+			disabledSkills: {
+				type: Array,
+				default: [],
+			},
 		},
-		getSkillScope(needle) {
-			if (needle) {
-				var scope = this.availableSkills.find(x => x.id == needle).skillscope_id;
-				this.chosenSkill.skillscope_id = scope;
+
+		data() {
+			const {
+				disabledSkills,
+				...props
+			} = this.$props
+
+			return {
+				form: { ...props },
+				skills: {},
+				levels: {},
 			}
 		},
-	},
-	watch: {
-		'formData.skill_id'(newID) {
-			this.getSkillScope(newID)
+
+		computed: {
+			scopeId() {
+				const skill = this.skills.find(skill => skill.id == this.form.skill_id)
+				return skill ? skill.skillscope_id : null
+			},
+
+			filteredSkills() {
+				return this.skills.filter(skill => !this.disabledSkills.includes(skill.id))
+			},
+
+			filteredLevels() {
+				return this.levels.filter(level => level.skillscope_id == this.scopeId)
+			},
 		},
-		'chosenNeed.id'(newID) {
-			this.formData.projectneed_id = newID
+
+		async mounted() {
+			const [
+				skills,
+				levels,
+			] = await Promise.all([
+				this.$api.skills.get(),
+				this.$api.skills.levels.get(),
+			])
+
+			this.skills = skills
+			this.levels = levels
 		},
-	},
-	computed: {
-		filterLevels() {
-			if (!('skillscope_id' in this.chosenSkill)) { // Projectneedskills would need to have the skillscope_id too
-				this.getSkillScope(this.chosenSkill.skill_id)
-			}
-			return this.skillLevels.filter(lvl => lvl.skillscope_id == this.chosenSkill.skillscope_id)
+
+		methods: {
+			async onSubmit() {
+				const skill = await this.$api.needs.skills.save(this.form)
+				if (skill) this.$emit('success', skill)
+			},
 		},
-		filterSkills() {
-			if (this.availableSkills.length) {
-				if (this.chosenNeed.skills.length) {
-					return this.availableSkills.filter(x => !this.chosenNeed.skills.find(y => y.skill_id == x.id));
-				}
-				return this.availableSkills
-			}
-		}
-	},
-	async mounted() {
-		this.availableSkills = await this.$api.skills.get()
-		this.skillLevels = await this.$api.skills.levels.get()
 	}
-};
 </script>

@@ -1,52 +1,64 @@
 <template>
-	<v-form v-on:submit="saveOffer">
-		<div class="mb-2 form-check">
-			<label class="form-label">Sold</label>
-			<input type="checkbox" class="form-check-input" name="sold" v-model="formData.sold" />
+	<VForm v-on:submit='onSubmit'>
+
+		<div class='mb-2 form-check'>
+			<label for='sold' class='form-label'>Sold</label>
+			<VField
+				v-model='form.sold'
+				:value='true'
+				:unchecked-value='false'
+				type='checkbox'
+				id='sold'
+				name='sold'
+				class='form-check-input'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">Comments</label>
-			<error-message name="name" class="error"></error-message>
-			<v-field
-				v-model="formData.comments"
-				as="input"
-				type="text"
-				name="comments"
-				class="form-control"
-				aria-label="Offer comments"
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='comments' class='form-label'>Comments</label>
+			<error-message name='comments' class='error'></error-message>
+			<VField
+				v-model='form.comments'
+				type='text'
+				id='comments'
+				name='comments'
+				label='Comments'
+				aria-label='Comments'
+				class='form-control'
+			/>
 		</div>
-		<button type="submit" class="btn btn-gradient mb-1">Save</button>
-	</v-form> 
+
+		<button type='submit' class='btn btn-gradient mb-1'>Save</button>
+	</VForm>
 </template>
 
 <script>
-import { Field, Form, ErrorMessage } from 'vee-validate';
-export default {
-	name: 'FormOffer',
-	data() {
-		return {
-			formData: {
-				id: this.chosenOfferID || undefined,
-				sold: this.sold || false,
-				comments: '',
+	export default {
+		name: 'FormOffer',
+
+		props: {
+			id: {
+				type: String,
+				required: true, // At the moment we can't create offers with a form
+			},
+			sold: {
+				type: Boolean,
+				default: false,
+			},
+			comments: String,
+		},
+
+		data() {
+			return {
+				form: { ...this.$props },
+			}
+		},
+
+		methods: {
+			async onSubmit() {
+				const offer = await this.$api.offers.save(this.form)
+				if (offer) this.$emit('success', offer)
 			},
 		}
-	},
-	components: {
-		'VForm': Form,
-		'VField': Field,
-		ErrorMessage,
-	},
-	props: {
-		chosenOfferID: '',
-		sold: false,
-	},	
-	methods: {
-		async saveOffer() {
-			const offer = await this.$api.offers.save(this.formData)
-			if (offer) this.$emit('formSent')
-		},
 	}
-};
 </script>

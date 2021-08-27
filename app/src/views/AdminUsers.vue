@@ -26,9 +26,7 @@
 				</div>
 				<button
 					class="btn btn-gradient flex-shrink-0"
-					data-bs-toggle="modal"
-					data-bs-target="#hulaModalUsers"
-					v-on:click="formTitle = 'New User', chosenForm = 'CreateUser', chosenUser = {}, url='/api/users', method='POST'"
+					v-on:click.prevent="inviteUser()"
 				>Invite a user</button>
 			</div>
 		</div>
@@ -69,18 +67,13 @@
 	import VAvatar from '../components/VAvatar.vue'
 	import VModal from '../components/VModal.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
-	import { Modal } from 'bootstrap'
+
 	export default {
 		name: 'AdminListUsers',
 		data() {
 			return {
-				formTitle: '',
-				chosenForm: '',
 				initialUsers: [],
 				autoCompletedUsers: [],
-				chosenUser: {},
-				url: '',
-				method: '',
 				filters: {
 					employees: false,
 				},
@@ -101,13 +94,11 @@
 			async getUsers() {
 				this.initialUsers = await this.$api.users.get()
 			},
-			async hideModalUpdate() {
-				let modal = Modal.getInstance(document.querySelector('#hulaModalUsers'))
-				this.getUsers()
-				modal.hide()
-			},
 			autoCompleteAction(value) {
 				this.autoCompletedUsers = value
+			},
+			async inviteUser() {
+				// TODO: Implement this
 			},
 			async confirmDelete(user) {
 				const success = await this.$confirm.delete('user', user)

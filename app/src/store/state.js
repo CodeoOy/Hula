@@ -4,6 +4,8 @@ export default {
 	projects: [],
 	nextpage: null,
 	errorObject: null,
+	skillCategories: [],
+	skillScopes: [],
 	skills: [],
 	skillLevels: [],
 }

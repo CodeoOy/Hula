@@ -1,123 +1,118 @@
 <template>
-	<v-form v-on:submit="saveNeed">
-		<h2 v-if="'id' in this.chosenNeed">{{ chosenNeed.id }}</h2>
-		<h2 v-else>New need</h2>
-		<div class="mb-2">
-			<label class="form-label">Need label</label>
-			<error-message name="percentage" class="error"></error-message>
-			<v-field
-				v-model.number="formData.label"
-				:rules="isRequired"
-				as="input"
-				type="text"
-				name="label"
-				class="form-control"
-				aria-label="Label" 
-			></v-field>
+	<VForm v-on:submit='onSubmit'>
+
+		<div class='mb-2'>
+			<label for='label' class='form-label'>Need label</label>
+			<ErrorMessage name='label' class='error' />
+			<VField
+				v-model='form.label'
+				rules='required'
+				type='text'
+				name='label'
+				id='label'
+				label='Label'
+				aria-label='Label'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">How many pros for this need?</label>
-			<error-message name="users" class="error"></error-message>
-			<v-field
-				v-model.number="formData.count_of_users"
-				:rules="isRequired"
-				as="input"
-				type="number"
-				name="users"
-				class="form-control"
-				aria-label="Number of pros" 
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='count_of_users' class='form-label'>How many pros for this need?</label>
+			<ErrorMessage name='count_of_users' class='error' />
+			<VField
+				v-model.number='form.count_of_users'
+				rules='required'
+				type='number'
+				name='count_of_users'
+				id='count_of_users'
+				label='Number of pros'
+				aria-label='Number of pros'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">When does this need start?</label>
-			{{ formData.begin_time }}<br />
-			<error-message name="begintime" class="error"></error-message>
-			<v-field
-				v-model="formData.begin_time"
-				:rules="isRequiredDate"
-				as="input"
-				type="date"
-				name="begintime"
-				class="form-control"
-				aria-label="Date start" 
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='begin_time' class='form-label'>When does this need start?</label>
+			{{ begin_time }}<br />
+			<ErrorMessage name='begin_time' class='error' />
+			<VField
+				v-model='form.begin_time'
+				rules='required|date'
+				type='date'
+				name='begin_time'
+				id='begin_time'
+				label='Start date' 
+				aria-label='Start date' 
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">When does this need end?</label>
-			{{ formData.end_time }}<br />
-			<error-message name="endtime" class="error"></error-message>
-			<v-field
-				v-model="formData.end_time"
-				:rules="afterStartTime"
-				as="input"
-				type="date"
-				name="endtime"
-				class="form-control"
-				aria-label="Date end" 
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='end_time' class='form-label'>When does this need end?</label>
+			{{ end_time }}<br />
+			<ErrorMessage name='end_time' class='error' />
+			<VField
+				v-model='form.end_time'
+				rules='required|date|afterDate:begin_time'
+				type='date'
+				name='end_time'
+				id='end_time'
+				label='End date'
+				aria-label='End date'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">At what percentage?</label>
-			<error-message name="percentage" class="error"></error-message>
-			<v-field
-				v-model.number="formData.percentage"
-				:rules="isRequired"
-				as="input"
-				type="number"
-				name="percentage"
-				class="form-control"
-				aria-label="Percentage" 
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='percentage' class='form-label'>At what percentage?</label>
+			<ErrorMessage name='percentage' class='error' />
+			<VField
+				v-model.number='form.percentage'
+				rules='required'
+				type='number'
+				name='percentage'
+				id='percentage'
+				label='Percentage'
+				aria-label='Percentage'
+				class='form-control'
+			/>
 		</div>
-		<button type="submit" class="btn btn-gradient mb-1">Save</button>
-	</v-form>
+
+		<button type='submit' class='btn btn-gradient mb-1'>Save</button>
+	</VForm>
 </template>
 
 <script>
-import { Field, Form, ErrorMessage } from 'vee-validate';
-export default {
-	name: 'ProjectNeed',
-	data() {
-		return {
-			formData: {
-				label: this.chosenNeed.label || '',
-				project_id: this.$route.params.id,
-				count_of_users: this.chosenNeed.count_of_users || '',
-				begin_time: this.chosenNeed.begin_time || '',
-				end_time: this.chosenNeed.end_time || '',
-				percentage: this.chosenNeed.percentage || '',
-			}
-		}
-	},
-	components: {
-		'VForm': Form,
-		'VField': Field,
-		ErrorMessage
-	},
-	methods: {
-		isRequired(value) {
-			return value ? true : 'This field is required';
-		},
-		isRequiredDate(value) {
-			// check if value is a valid date
-			const date = new Date(value);
-			return date.toString() === 'Invalid Date' ? 'This field is required' : true;
-		},
-		afterStartTime(value) {
-			return value ? true : 'End time must be after start time.';
-		},
-		async saveNeed() {
-			const data = { ...this.formData }
-			if ('id' in this.chosenNeed) data.id = this.chosenNeed.id
-			if (data.end_time == '') delete data.end_time
-			delete data.skills
+	export default {
+		name: 'FormProjectNeed',
 
-			const need = await this.$api.needs.save(data)
-			if (need) this.$emit('formSent')
+		props: {
+			id: {
+				type: String,
+				default: undefined,
+			},
+			project_id: {
+				type: String,
+				required: true,
+			},
+			label: String,
+			count_of_users: Number,
+			begin_time: String,
+			end_time: String,
+			percentage: Number,
 		},
-	},
-	props: {
-		chosenNeed: {},
-	},
-};
+
+		data() {
+			return {
+				form: { ...this.$props },
+			}
+		},
+
+		methods: {
+			async onSubmit() {
+				const need = await this.$api.needs.save(this.form)
+				if (need) this.$emit('success', need)
+			},
+		},
+	}
 </script>

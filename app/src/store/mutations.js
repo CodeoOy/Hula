@@ -26,6 +26,14 @@ export default {
 		state.projects = ensureArray(data)
 	},
 
+	setSkillCategories(state, data) {
+		state.skillCategories = ensureArray(data)
+	},
+
+	setSkillScopes(state, data) {
+		state.skillScopes = ensureArray(data)
+	},
+
 	setSkills(state, data) {
 		state.skills = ensureArray(data)
 	},

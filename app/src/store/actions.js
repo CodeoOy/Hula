@@ -38,6 +38,16 @@ export default {
 		context.commit('setProjects', data)
 	},
 
+	async getSkillCategories(context) {
+		const data = await api.skills.categories.get()
+		context.commit('setSkillCategories', data)
+	},
+
+	async getSkillScopes(context) {
+		const data = await api.skills.scopes.get()
+		context.commit('setSkillScopes', data)
+	},
+
 	async getSkills(context) {
 		const data = await api.skills.get()
 		context.commit('setSkills', data)

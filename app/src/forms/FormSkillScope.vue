@@ -1,52 +1,49 @@
 <template>
-	<v-form v-on:submit="saveSkillScope">
-		<div class="mb-2">
-			<label class="form-label">Scope name</label>
-			<error-message name="name" class="error"></error-message>
-			<v-field
-				name="name" 
-				type="text" 
-				placeholder="One to ten" 
-				:rules="isRequired" 
-				class="form-control" 
-				v-model="formData.label"
-			></v-field>
+	<VForm v-on:submit='onSubmit'>
+
+		<div class='mb-2'>
+			<label for='label' class='form-label'>Name</label>
+			<ErrorMessage name='label' class='error' />
+			<VField
+				v-model='form.label'
+				rules='required'
+				type='text'
+				id='label'
+				name='label'
+				label='Name'
+				aria-label='Name'
+				placeholder='One to ten' 
+				class='form-control'
+			/>
 		</div>
-		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
-	</v-form>  
+
+		<button type='submit' class='btn btn-gradient mb-1'>Submit</button>
+	</VForm>  
 </template>
 
 <script>
-import { Field, Form, ErrorMessage } from 'vee-validate';
-export default {
-	name: 'SkillScope',
-	data() {
-		return {
-			categories: {},
-			formData: {
-				id: this.chosenScope.id || undefined,
-				label: this.chosenScope.label || ''
+	export default {
+		name: 'FormSkillScope',
+
+		props: {
+			id: {
+				type: String,
+				default: undefined,
+			},
+			label: String,
+		},	
+
+		data() {
+			return {
+				form: { ...this.$props },
 			}
-		};
-	},
-	components: {
-		'VForm': Form,
-		'VField': Field,
-		ErrorMessage
-	},
-	props: {
-		chosenScope: {},
-		url: '',
-		method: ''
-	},	
-	methods: {
-		isRequired(value) {
-			return value ? true : 'This field is required';
 		},
-		async saveSkillScope() {
-			const scope = await this.$api.skills.scopes.save(this.formData)
-			if (scope) this.$emit('formSent')
-		}
+
+		methods: {
+			async onSubmit() {
+				const scope = await this.$api.skills.scopes.save(this.form)
+				if (scope) this.$emit('success', scope)
+			}
+		},
 	}
-};
 </script>
