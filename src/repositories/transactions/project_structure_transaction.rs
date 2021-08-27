@@ -1,10 +1,13 @@
 use actix_web::web;
 use diesel::result::Error;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
-use crate::models::skills::{Pool};
+use crate::models::skills::Pool;
 
-use crate::repositories::{projectmatches_repository, projectneeds_repository, projectneedskills_repository, projects_repository, projectskills_repository, skills_repository, skillscopelevels_repository};
+use crate::repositories::{
+	projectmatches_repository, projectneeds_repository, projectneedskills_repository, projects_repository,
+	projectskills_repository, skills_repository, skillscopelevels_repository,
+};
 
 #[derive(Deserialize, Debug)]
 pub struct ProjectStructure {
@@ -39,10 +42,7 @@ pub struct ProjectStructureResponse {
 	pub matches: i32,
 }
 
-fn get_project_matches_count(
-	id: uuid::Uuid,
-	pool: &web::Data<Pool>,
-) -> Result<i32, Error> {
+fn get_project_matches_count(id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<i32, Error> {
 	let db_project = projects_repository::query_one(id, &pool)?;
 	let db_matches = projectmatches_repository::find_by_project(&db_project, &pool)?;
 
@@ -54,16 +54,14 @@ fn test_project_structure_equals(
 	project: &ProjectStructure,
 	pool: &web::Data<Pool>,
 ) -> Result<bool, Error> {
-	
 	let db_project = projects_repository::query_one(id, &pool)?;
-	
-	if db_project.name != project.name 
-		|| db_project.is_hidden != project.is_hidden {
-			println!("project on eri {:#?} vs {:#?}", db_project, project);
-			return Ok(false);
+
+	if db_project.name != project.name || db_project.is_hidden != project.is_hidden {
+		println!("project on eri {:#?} vs {:#?}", db_project, project);
+		return Ok(false);
 	}
 
-	let db_project_skills = projectskills_repository::find_by_projects(&vec!(db_project), &pool)?;
+	let db_project_skills = projectskills_repository::find_by_projects(&vec![db_project], &pool)?;
 	let db_project_skills = &db_project_skills[0];
 	println!("");
 	println!("***db_project_skills on: {:#?}", db_project_skills);
@@ -82,15 +80,18 @@ fn test_project_structure_equals(
 				.next();
 
 			println!("db_project_skill: {:#?}", db_project_skill);
-			if db_project_skill.is_none() { return Ok(false); }
+			if db_project_skill.is_none() {
+				return Ok(false);
+			}
 
 			let db_project_skill = db_project_skill.unwrap();
 
 			println!("db_project_skill {:#?} vs {:#?}", db_project_skill, skill);
-			if db_project_skill.is_mandatory != skill.mandatory ||
-				db_project_skill.required_minyears != skill.min_years ||
-				db_project_skill.required_label != skill.skillscopelevel_label {
-					return Ok(false);
+			if db_project_skill.is_mandatory != skill.mandatory
+				|| db_project_skill.required_minyears != skill.min_years
+				|| db_project_skill.required_label != skill.skillscopelevel_label
+			{
+				return Ok(false);
 			}
 		}
 	}
@@ -111,28 +112,32 @@ pub fn save_project_structure(
 	email: String,
 	is_update: bool,
 ) -> Result<ProjectStructureResponse, Error> {
-
 	if is_update == true {
 		println!("tsekataan onko eri");
-		let equals = test_project_structure_equals(
-			id.unwrap(),
-			&project,
-			&pool)?;
+		let equals = test_project_structure_equals(id.unwrap(), &project, &pool)?;
 
 		if equals == true {
 			println!("on sama");
-			return Ok(ProjectStructureResponse {id: id.unwrap(), matches: get_project_matches_count(id.unwrap(), &pool)?});
+			return Ok(ProjectStructureResponse {
+				id: id.unwrap(),
+				matches: get_project_matches_count(id.unwrap(), &pool)?,
+			});
 		}
 		println!("on eri");
 	}
 
 	if is_update == false {
-		let db_project = projects_repository::create_project(project.name.clone(), project.description.clone(), email.clone(), &pool)?;
+		let db_project = projects_repository::create_project(
+			project.name.clone(),
+			project.description.clone(),
+			email.clone(),
+			&pool,
+		)?;
 		id = Some(db_project.id);
 	}
 
 	let id = id.unwrap();
-		
+
 	println!("id on {:#?}", id);
 	projects_repository::update_project(
 		id,
@@ -145,7 +150,7 @@ pub fn save_project_structure(
 
 	println!("updated");
 
-	projectneeds_repository::delete_projectneeds_by_project(id, &pool)?;	
+	projectneeds_repository::delete_projectneeds_by_project(id, &pool)?;
 
 	println!("deleted");
 
@@ -158,7 +163,8 @@ pub fn save_project_structure(
 			need.begin_time,
 			need.end_time,
 			email.clone(),
-			&pool)?;	
+			&pool,
+		)?;
 
 		for skill in need.skills.iter() {
 			println!("haetaan skill");
@@ -166,12 +172,12 @@ pub fn save_project_structure(
 			if db_skill.is_err() {
 				continue;
 			}
-			
+
 			let db_skill = db_skill.unwrap();
 
 			println!("haettu skill");
 
-			let mut skill_scope_level_id :Option<uuid::Uuid> = None;
+			let mut skill_scope_level_id: Option<uuid::Uuid> = None;
 			if let Some(scopelabel) = skill.skillscopelevel_label.clone() {
 				println!("haetaan level for {}", scopelabel);
 
@@ -183,7 +189,6 @@ pub fn save_project_structure(
 					skill_scope_level_id = Some(db_skill_scope_level.id);
 				}
 				println!("haettu level");
-				
 			}
 
 			println!("luodaan projectneedskill");
@@ -195,9 +200,13 @@ pub fn save_project_structure(
 				skill.max_years,
 				email.clone(),
 				skill.mandatory,
-				&pool)?;	
+				&pool,
+			)?;
 		}
 	}
-	
-	Ok(ProjectStructureResponse {id: id, matches: get_project_matches_count(id, &pool)?})
+
+	Ok(ProjectStructureResponse {
+		id: id,
+		matches: get_project_matches_count(id, &pool)?,
+	})
 }

@@ -96,5 +96,5 @@ pub fn delete_projectneeds_by_project(uuid_data: uuid::Uuid, pool: &web::Data<Po
 	use crate::schema::projectneeds::dsl::*;
 
 	diesel::delete(projectneeds.filter(project_id.eq(uuid_data))).execute(conn)?;
- 	Ok(())
+	Ok(())
 }

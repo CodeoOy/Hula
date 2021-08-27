@@ -17,9 +17,7 @@ pub fn get_skill_by_label(q_label: String, pool: &web::Data<Pool>) -> Result<Ski
 	use crate::schema::skills::dsl::{label, skills};
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let items = skills
-		.filter(label.eq(q_label))
-		.get_result::<Skill>(conn)?;
+	let items = skills.filter(label.eq(q_label)).get_result::<Skill>(conn)?;
 
 	Ok(items)
 }

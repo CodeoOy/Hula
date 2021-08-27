@@ -5,8 +5,8 @@ use serde::Deserialize;
 use crate::errors::ServiceError;
 use crate::models::projects::Pool;
 use crate::models::users::LoggedUser;
-use crate::repositories::transactions::*;
 use crate::repositories::transactions::project_structure_transaction::*;
+use crate::repositories::transactions::*;
 
 #[derive(Deserialize, Debug)]
 pub struct ProjectStructureData {
@@ -41,20 +41,28 @@ impl From<ProjectStructureData> for ProjectStructure {
 			name: project.name.clone(),
 			description: project.description.clone(),
 			is_hidden: project.is_hidden,
-			needs: project.needs.iter().map(|x| ProjectStructureNeed {
-				label: x.label.clone(),
-				count_of_users: x.count_of_users,
-				begin_time: x.begin_time,
-				end_time: x.end_time,
-				percentage: x.percentage,
-				skills: x.skills.iter().map(|y| ProjectStructureNeedSkill {
-					skill_label: y.skill_label.clone(),
-					skillscopelevel_label: y.skillscopelevel_label.clone(),
-					min_years: y.min_years,
-					max_years: y.max_years,
-					mandatory: y.mandatory,
-				}).collect()
-			}).collect()
+			needs: project
+				.needs
+				.iter()
+				.map(|x| ProjectStructureNeed {
+					label: x.label.clone(),
+					count_of_users: x.count_of_users,
+					begin_time: x.begin_time,
+					end_time: x.end_time,
+					percentage: x.percentage,
+					skills: x
+						.skills
+						.iter()
+						.map(|y| ProjectStructureNeedSkill {
+							skill_label: y.skill_label.clone(),
+							skillscopelevel_label: y.skillscopelevel_label.clone(),
+							min_years: y.min_years,
+							max_years: y.max_years,
+							mandatory: y.mandatory,
+						})
+						.collect(),
+				})
+				.collect(),
 		}
 	}
 }
@@ -74,16 +82,10 @@ pub async fn create_project_structure(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let projectdata :ProjectStructure = projectdata.into_inner().into();
+	let projectdata: ProjectStructure = projectdata.into_inner().into();
 
 	let res = web::block(move || {
-		project_structure_transaction::save_project_structure(
-			None, 
-			projectdata.into(), 
-			&pool, 
-			logged_user.email,
-			false
-		)
+		project_structure_transaction::save_project_structure(None, projectdata.into(), &pool, logged_user.email, false)
 	})
 	.await;
 	match res {
@@ -114,15 +116,15 @@ pub async fn update_project_structure(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	let projectdata :ProjectStructure = projectdata.into_inner().into();
+	let projectdata: ProjectStructure = projectdata.into_inner().into();
 
 	let res = web::block(move || {
 		project_structure_transaction::save_project_structure(
-			Some(id), 
-			projectdata.into(), 
-			&pool, 
+			Some(id),
+			projectdata.into(),
+			&pool,
 			logged_user.email,
-			true
+			true,
 		)
 	})
 	.await;
@@ -133,5 +135,4 @@ pub async fn update_project_structure(
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
 		},
 	}
-
 }
