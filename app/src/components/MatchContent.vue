@@ -39,11 +39,13 @@
 		data() {
 			return {
 				skills: {},
+				match: this.chosenMatch || {},
 			}
 		},
 		props: {
 			chosenMatch: {},
 			projectName: '',
+			projectID: '',
 		},
 		methods: {
 			addToOffers() {
@@ -62,6 +64,12 @@
 						time: 5000,
 					})
 				}
+			}
+		},
+		async mounted() {
+			console.log(this.projectID)
+			if (!this.chosenMatch.project_id) {
+				this.match = await this.$api.matches.get(this.projectID)
 			}
 		}
 	}

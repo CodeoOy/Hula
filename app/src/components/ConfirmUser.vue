@@ -85,7 +85,6 @@
 		},
 		mounted() {
 			const route = useRoute()
-			console.log(route.query)
 			this.registrationData = route.query
 			if (this.registrationData.password == '') {
 				this.noPassword = true

@@ -46,7 +46,6 @@
 				this.matchesData = value
 			},
 			passLeads(value) {
-				console.log(value)
 				this.leadData = value
 			}
 		}

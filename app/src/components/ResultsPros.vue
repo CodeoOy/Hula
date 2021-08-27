@@ -64,7 +64,6 @@
 		computed: {
 			users() {
 				if (this.matches.length) {
-					console.log("Running the users and using resources!")
 					this.getProjectSkills(this.matches[0].project_id)
 					const users = Object.values(this.matches.reduce((users, match) => {
 						const {

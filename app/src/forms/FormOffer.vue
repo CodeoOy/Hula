@@ -44,7 +44,6 @@ export default {
 	},	
 	methods: {
 		async saveOffer() {
-			console.log(this.formData)
 			const offer = await this.$api.offers.save(this.formData)
 			if (offer) this.$emit('formSent')
 		},

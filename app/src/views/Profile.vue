@@ -298,7 +298,6 @@
 				return this.user.skills
 			},
 			getUserMatches() {
-				console.log(this.user.id)
 				return this.$store.state.projects.filter(project => {
 					return project.matches.some(match =>
 						match.user_id == this.user.id

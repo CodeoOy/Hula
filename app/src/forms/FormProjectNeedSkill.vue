@@ -122,7 +122,6 @@ export default {
 	},
 	watch: {
 		'formData.skill_id'(newID) {
-			console.log("watch calling getSkillScope")
 			this.getSkillScope(newID)
 		},
 		'chosenNeed.id'(newID) {
@@ -138,7 +137,6 @@ export default {
 		},
 		filterSkills() {
 			if (this.availableSkills.length) {
-				console.log(this.availableSkills)
 				if (this.chosenNeed.skills.length) {
 					return this.availableSkills.filter(x => !this.chosenNeed.skills.find(y => y.skill_id == x.id));
 				}

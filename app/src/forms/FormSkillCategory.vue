@@ -65,7 +65,6 @@ export default {
 		},
 		async saveSkillCategory() {
 			if (this.formData.parent_id == '') {
-				console.log("no parent")
 				delete this.formData.parent_id;
 			}
 			const category = await this.$api.skills.categories.save(this.formData)
