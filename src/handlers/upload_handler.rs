@@ -20,9 +20,23 @@ pub async fn save_file(
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, Error> {
-	let filename = format!("{}.pdf", logged_user.uid);
+	//let filename = format!("{}.pdf", logged_user.uid); // TODO: use a proper filename. How? I dunno.
+	std::fs::create_dir(logged_user.uid.to_string());
+	let mut tempfilename = String::new();
 	while let Ok(Some(mut field)) = payload.try_next().await {
-		let filepath = format!("./{}", sanitize_filename::sanitize(&filename));
+		match field.content_disposition() {
+            None => trace!("content disposition not set"),
+            Some(content_disposition) => match content_disposition.get_filename() {
+                None => continue, // ignore non-file field
+                Some(filename) => {
+                    //let path = Path::new("./upload");
+                    //let mut file = File::create(path.join(filename)).await?;
+                    //io::copy(&mut field.into_async_read(), &mut file).await?;
+					tempfilename = filename.to_string();
+                }
+            },
+        }
+		let filepath = format!("./{}/{}", logged_user.uid, sanitize_filename::sanitize(&tempfilename));
 
 		let mut f = web::block(|| std::fs::File::create(filepath)).await.unwrap();
 
@@ -31,7 +45,7 @@ pub async fn save_file(
 			f = web::block(move || f.write_all(&data).map(|_| f)).await?;
 		}
 	}
-	web::block(move || useruploads_repository::create_file(logged_user.uid, filename, logged_user.email, &pool))
+	web::block(move || useruploads_repository::create_file(logged_user.uid, tempfilename, logged_user.email, &pool))
 		.await?;
 
 	Ok(HttpResponse::Ok().into())
