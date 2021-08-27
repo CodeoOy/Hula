@@ -29,9 +29,6 @@ pub async fn save_file(
             Some(content_disposition) => match content_disposition.get_filename() {
                 None => continue, // ignore non-file field
                 Some(filename) => {
-                    //let path = Path::new("./upload");
-                    //let mut file = File::create(path.join(filename)).await?;
-                    //io::copy(&mut field.into_async_read(), &mut file).await?;
 					tempfilename = filename.to_string();
                 }
             },
