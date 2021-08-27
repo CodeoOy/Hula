@@ -1,6 +1,6 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
 use log::trace;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 use crate::errors::ServiceError;
 use crate::models::projectmatches::Pool;

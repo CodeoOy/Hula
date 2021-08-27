@@ -6,68 +6,74 @@ export default confirm => async (type, data) => {
 	switch (type) {
 		case 'project':
 			title = data.name
-			apiCall = api.projects.delete
+			apiCall = api.projects.delete.bind(null, data.id)
 			break
 
 		case 'need':
 			title = data.label
-			apiCall = api.needs.delete
+			apiCall = api.needs.delete.bind(null, data.id)
 			break
 
 		case 'need.skill':
 			title = data.label
-			apiCall = api.needs.skills.delete
+			apiCall = api.needs.skills.delete.bind(null, data.id)
 			break
 
 		case 'user':
 			title = 'profile'
-			apiCall = api.users.delete
+			apiCall = api.users.delete.bind(null, data.id)
 			break
 
 		case 'user.file':
 			title = `file ${data.filename}`
-			apiCall = api.users.files.delete
+			apiCall = api.users.files.delete.bind(null, data.id)
 			break
 
 		case 'user.skill':
 			title = data.skill_label
-			apiCall = api.users.skills.delete
+			apiCall = api.users.skills.delete.bind(null, {
+				id: data.id,
+				user_id: data.user_id,
+			})
 			break
 
 		case 'user.reservation':
 			title = data.description
-			apiCall = api.users.reservations.delete
+			apiCall = api.users.reservations.delete.bind(null, {
+				id: data.id,
+				user_id: data.user_id,
+			})
 			break
 
 		case 'skill':
 			title = data.label
-			apiCall = api.skills.delete
+			apiCall = api.skills.delete.bind(null, data.id)
 			break
 
 		case 'skill.category':
 			title = data.label
-			apiCall = api.skills.categories.delete
+			apiCall = api.skills.categories.delete.bind(null, data.id)
 			break
 
 		case 'skill.scope':
 			title = data.label
-			apiCall = api.skills.scopes.delete
+			apiCall = api.skills.scopes.delete.bind(null, data.id)
 			break
 
 		case 'skill.level':
 			title = data.label
-			apiCall = api.skills.levels.delete
+			apiCall = api.skills.levels.delete.bind(null, data.id)
 			break
 
 		case 'offer':
 			title = `${data.project_name}: ${data.user_name}`
-			apiCall = api.offers.delete
+			apiCall = api.offers.delete.bind(null, data.id)
 			break
 	}
 
 	const confirmed = await confirm(`Delete ${title}`)
 
 	return confirmed
-		? apiCall(data.id)
+		? apiCall()
 		: confirmed
 }

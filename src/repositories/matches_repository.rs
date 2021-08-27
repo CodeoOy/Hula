@@ -4,7 +4,7 @@ use diesel::{prelude::*, PgConnection};
 
 use crate::models::matchcandidates::{MatchCandidate, Pool};
 
-pub fn query(pool: &web::Data<Pool>) -> Result<Vec<MatchCandidate>, Error> {
+pub fn _query(pool: &web::Data<Pool>) -> Result<Vec<MatchCandidate>, Error> {
 	use crate::schema::matchcandidates::dsl::{matchcandidates, projectneedskillid, userskillid};
 	let conn: &PgConnection = &pool.get().unwrap();
 
@@ -20,7 +20,7 @@ pub fn query(pool: &web::Data<Pool>) -> Result<Vec<MatchCandidate>, Error> {
 	Ok(items)
 }
 
-pub fn query_by_params(q_project_name: String, pool: &web::Data<Pool>) -> Result<Vec<MatchCandidate>, Error> {
+pub fn _query_by_params(q_project_name: String, pool: &web::Data<Pool>) -> Result<Vec<MatchCandidate>, Error> {
 	use crate::schema::matchcandidates::dsl::{matchcandidates, projectneedskillid, userskillid};
 	let conn: &PgConnection = &pool.get().unwrap();
 
