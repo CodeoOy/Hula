@@ -25,14 +25,14 @@ pub async fn save_file(
 	let mut tempfilename = String::new();
 	while let Ok(Some(mut field)) = payload.try_next().await {
 		match field.content_disposition() {
-            None => trace!("content disposition not set"),
-            Some(content_disposition) => match content_disposition.get_filename() {
-                None => continue, // ignore non-file field
-                Some(filename) => {
+			None => trace!("content disposition not set"),
+			Some(content_disposition) => match content_disposition.get_filename() {
+				None => continue, // ignore non-file field
+				Some(filename) => {
 					tempfilename = filename.to_string();
-                }
-            },
-        }
+				}
+			},
+		}
 		let filepath = format!("./{}/{}", logged_user.uid, sanitize_filename::sanitize(&tempfilename));
 
 		let mut f = web::block(|| std::fs::File::create(filepath)).await.unwrap();
