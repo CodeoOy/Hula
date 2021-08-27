@@ -28,7 +28,7 @@ export default {
 		return {
 			formData: {
 				id: this.chosenOfferID || undefined,
-				sold: false,
+				sold: this.sold || false,
 				comments: '',
 			},
 		}
@@ -40,6 +40,7 @@ export default {
 	},
 	props: {
 		chosenOfferID: '',
+		sold: false,
 	},	
 	methods: {
 		async saveOffer() {
