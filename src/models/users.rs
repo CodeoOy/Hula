@@ -4,7 +4,6 @@ use crate::models;
 use crate::repositories::*;
 use actix_identity::Identity;
 use actix_web::{dev::Payload, web::Data, Error, FromRequest, HttpRequest};
-use diesel::sql_types::Uuid;
 use diesel::{r2d2::ConnectionManager, PgConnection};
 use futures::future::{err, ok, Ready};
 use log::debug;

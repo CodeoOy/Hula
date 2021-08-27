@@ -90,7 +90,11 @@ const getArray = url => id => returnArray(request({ url: `${url}/${id || ''}` })
 const getObject = url => id => returnObject(request({ url: `${url}/${id || ''}` }))
 const get = url => id => (id ? getObject(url) : getArray(url))(id)
 
-const remove = url => id => returnBoolean(request({ url: `${url}/${id || ''}`, method: 'DELETE' }))
+const remove = url => data => returnBoolean(
+	typeof data == 'string'
+		? request({ url: `${url}/${data || ''}`, method: 'DELETE' })
+		: sendJson({ url: `${url}/${data.id || ''}`, method: 'DELETE', body: data })
+)
 
 export const api = {
 
