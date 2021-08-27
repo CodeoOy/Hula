@@ -1,17 +1,17 @@
 use actix_web::{error::BlockingError, web, HttpResponse};
 use log::trace;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 use crate::errors::ServiceError;
 use crate::models::projects::Pool;
 use crate::models::users::LoggedUser;
-use crate::repositories::*;
 use crate::repositories::transactions::*;
 use crate::repositories::transactions::project_structure_transaction::*;
 
 #[derive(Deserialize, Debug)]
 pub struct ProjectStructureData {
 	pub name: String,
+	pub description: Option<String>,
 	pub is_hidden: bool,
 	pub needs: Vec<ProjectStructureNeedData>,
 }
@@ -39,6 +39,7 @@ impl From<ProjectStructureData> for ProjectStructure {
 	fn from(project: ProjectStructureData) -> ProjectStructure {
 		ProjectStructure {
 			name: project.name.clone(),
+			description: project.description.clone(),
 			is_hidden: project.is_hidden,
 			needs: project.needs.iter().map(|x| ProjectStructureNeed {
 				label: x.label.clone(),

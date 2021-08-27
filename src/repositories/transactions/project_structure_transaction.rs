@@ -1,27 +1,15 @@
 use actix_web::web;
-use derive_more::Display;
 use diesel::result::Error;
-use diesel::result::Error::NotFound;
-use diesel::sql_types::Uuid;
-use diesel::{prelude::*, PgConnection};
 use serde::{Serialize, Deserialize};
 
 use crate::models::skills::{Pool};
-use crate::models::projects::{Project};
 
 use crate::repositories::{projectmatches_repository, projectneeds_repository, projectneedskills_repository, projects_repository, projectskills_repository, skills_repository, skillscopelevels_repository};
-
-/*
-#[derive(Debug, Display, Serialize)]
-pub enum ScopeLevelSwapDirection {
-	Better,
-	Worse,
-}
-*/
 
 #[derive(Deserialize, Debug)]
 pub struct ProjectStructure {
 	pub name: String,
+	pub description: Option<String>,
 	pub is_hidden: bool,
 	pub needs: Vec<ProjectStructureNeed>,
 }
@@ -139,7 +127,7 @@ pub fn save_project_structure(
 	}
 
 	if is_update == false {
-		let db_project = projects_repository::create_project(project.name.clone(), email.clone(), &pool)?;
+		let db_project = projects_repository::create_project(project.name.clone(), project.description.clone(), email.clone(), &pool)?;
 		id = Some(db_project.id);
 	}
 
@@ -149,6 +137,7 @@ pub fn save_project_structure(
 	projects_repository::update_project(
 		id,
 		project.name.clone(),
+		project.description.clone(),
 		project.is_hidden,
 		email.clone(),
 		&pool,
