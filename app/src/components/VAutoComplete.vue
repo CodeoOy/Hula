@@ -46,9 +46,6 @@
         },
         computed: {
             matches() {
-                if (!this.suggestions.length) {
-                    return []
-                }
                 var matches = this.suggestions.filter(item => {
                     const selection = this.selection.toUpperCase()
                     const props = Array.isArray(this.filterProperties) ? this.filterProperties : [this.filterProperties]

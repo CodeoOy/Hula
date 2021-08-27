@@ -13,6 +13,18 @@
 				aria-label="Project name"
 			></v-field>
 		</div>
+		<div class="mb-2">
+			<label class="form-label">Description</label>
+			<error-message name="name" class="error"></error-message>
+			<v-field
+				v-model="formData.description"
+				as="input"
+				type="text"
+				name="description"
+				class="form-control"
+				aria-label="Project description"
+			></v-field>
+		</div>
 		<div class="mb-2 form-check" v-if="'is_hidden' in chosenProject">
 			<label class="form-label">Hidden</label>
 			<error-message name="category" class="error"></error-message>
@@ -30,6 +42,7 @@ export default {
 		return {
 			formData: {
 				id: this.chosenProject.id || undefined,
+				description: this.chosenProject.description || '',
 				name: this.chosenProject.name || '',
 				is_hidden: this.chosenProject.is_hidden || false, // TODO: Does this work in both edit and new?
 			},

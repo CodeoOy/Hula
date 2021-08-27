@@ -16,6 +16,7 @@ pub struct QueryData {
 #[derive(Deserialize, Debug)]
 pub struct ProjectData {
 	pub name: String,
+	pub description: Option<String>,
 	pub is_hidden: bool,
 }
 
@@ -43,6 +44,7 @@ pub struct ProjectNeedSkillData {
 pub struct ProjectDTO {
 	pub id: uuid::Uuid,
 	pub name: String,
+	pub description: Option<String>,
 	pub is_hidden: bool,
 	pub skills: Vec<SkillDTO>,
 	pub matches: Vec<MatchDTO>,
@@ -166,9 +168,15 @@ pub async fn create_project(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res =
-		web::block(move || projects_repository::create_project(projectdata.name.clone(), logged_user.email, &pool))
-			.await;
+	let res = web::block(move || {
+		projects_repository::create_project(
+			projectdata.name.clone(),
+			projectdata.description.clone(),
+			logged_user.email,
+			&pool,
+		)
+	})
+	.await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
@@ -337,6 +345,7 @@ pub async fn update_project(
 		projects_repository::update_project(
 			id,
 			projectdata.name.clone(),
+			projectdata.description.clone(),
 			projectdata.is_hidden,
 			logged_user.email,
 			&pool,
@@ -541,6 +550,7 @@ fn query_projects_dto(
 		let project_dto = ProjectDTO {
 			id: project.id.clone(),
 			name: project.name.clone(),
+			description: project.description.clone(),
 			is_hidden: project.is_hidden,
 			skills: skills_vec,
 			matches: matches_vec,

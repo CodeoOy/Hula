@@ -15,6 +15,12 @@ pub struct OfferData {
 	pub comments: Option<String>,
 }
 
+#[derive(Deserialize, Debug)]
+pub struct OfferUpdateData {
+	pub sold: bool,
+	pub comments: Option<String>,
+}
+
 pub async fn get_all_offers(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting all offers: logged_user={:#?}", &_logged_user);
 	let res = web::block(move || offers_repository::query_get_all_offers(&pool)).await;
@@ -87,7 +93,7 @@ pub async fn delete_offer(
 pub async fn update_offer(
 	oid: web::Path<String>,
 	pool: web::Data<Pool>,
-	payload: web::Json<OfferData>,
+	payload: web::Json<OfferUpdateData>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Updating offer: logged_user={:#?}", &logged_user);
@@ -97,15 +103,7 @@ pub async fn update_offer(
 	}
 	let id = uuid::Uuid::parse_str(&oid.into_inner())?;
 	let res = web::block(move || {
-		offers_repository::query_update_offer(
-			id,
-			payload.user_id,
-			payload.project_id,
-			payload.sold,
-			payload.comments.clone(),
-			logged_user.email,
-			&pool,
-		)
+		offers_repository::query_update_offer(id, payload.sold, payload.comments.clone(), logged_user.email, &pool)
 	})
 	.await;
 	match res {

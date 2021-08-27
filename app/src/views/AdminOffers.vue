@@ -4,13 +4,14 @@
 			<component 
 				:is='modalComponent'
 				:url="url"
+				:chosenOfferID="chosenOfferID"
 				:method="method"
 				v-on:form-sent="hideModalUpdate"
 			/>
 		</VModal>
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Offers</h2>
-			<div v-if="offers">
+			<div>
 				<VAutoComplete 
 					:suggestions="offers" 
 					:selection="offerName" 
@@ -21,47 +22,44 @@
 				></VAutoComplete>
 			</div>
 		</div>
-		<transition name="fadeHeight">
-			<div v-if="offers" class="table-responsive">
-				<table class="table table-dark table-striped text-light">
-					<thead>
-						<tr>
-							<th scope="col">Project name</th>
-							<th scope="col">User name</th>
-							<th scope="col">Sold?</th>
-							<th scope="col">Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="offer in filteredOffers" :key="offer.id">
-							<td>{{ offer.project_name }}</td>
-							<td>{{ offer.user_name }}</td>
-							<td>{{ offer.sold }}</td>
-							<td>
-								<a
-									href="#"
-									data-bs-toggle="modal"
-									data-bs-target="#hulaModalOffers" 
-									v-on:click="formTitle = `Delete ${offer.id}?`, chosenForm = 'Delete', url = `/api/offers/${offer.id}`, method = 'DELETE'"
-								><i class="bi-trash-fill me-2"></i></a>
-								<a
-									href="#"
-									data-bs-toggle="modal"
-									data-bs-target="#hulaModalOffers" 
-									v-on:click="formTitle = `Edit offer`, chosenForm = 'Edit', url = `/api/offers/${offer.id}`, method = 'PUT'"
-								><i class="bi-pencil-fill me-2"></i></a>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</transition>
+		<div class="table-responsive">
+			<table class="table table-dark table-striped text-light">
+				<thead>
+					<tr>
+						<th scope="col">Project name</th>
+						<th scope="col">User name</th>
+						<th scope="col">Sold?</th>
+						<th scope="col">Comments</th>
+						<th scope="col">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="offer in filteredOffers" :key="offer.id">
+						<td>{{ offer.project_name }}</td>
+						<td>{{ offer.user_name }}</td>
+						<td>{{ offer.sold }}</td>
+						<td>{{ offer.comments }}</td>
+						<td>
+							<a
+								href="#"
+								v-on:click.prevent="confirmDelete(offer)"
+							><i class="bi-trash-fill me-2"></i></a>
+							<a
+								href="#"
+								data-bs-toggle="modal"
+								data-bs-target="#hulaModalOffers" 
+								v-on:click="formTitle = `Edit offer`, chosenOfferID = offer.id, chosenForm = 'Edit', url = `/api/offers/${offer.id}`, method = 'PUT'"
+							><i class="bi-pencil-fill me-2"></i></a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </template>
 
 <script>
 	import FormOffer from '../forms/FormOffer.vue'
-	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
 	import VModal from '../components/VModal.vue'
 	import { Modal } from 'bootstrap'
@@ -77,11 +75,11 @@
 				method: '',
 				formTitle: '',
 				chosenForm: '',
+				chosenOfferID: '',
 			}
 		},
 		components: {
 			FormOffer,
-			FormConfirmAction,
 			VAutoComplete,
 			VModal,
 		},
@@ -108,22 +106,36 @@
 			autoCompleteAction(value) {
 				this.filteredOffers = value
 			},
+			async confirmDelete(offer) {
+				const success = await this.$confirm.delete('offer', offer)
+				if (success) {
+					this.offers = await this.$api.offers.get()
+					this.addUserNames()
+					this.addProjectNames()
+				}
+			},
 		},
 		computed: {
 			modalComponent() {
 				const components = {
-					Delete: FormConfirmAction,
 					Edit: FormOffer,
 				}
 				return components[this.chosenForm]
 			},
 		},
 		async mounted() {
-			await Promise.all([
+			const [
+				_,
+				users,
+				offers,
+			] = await Promise.all([
 				this.$store.dispatch('getProjects'),
-				this.users = await this.$api.users.get(),
-				this.offers = await this.$api.offers.get(),
+				this.$api.users.get(),
+				this.$api.offers.get(),
 			])
+			this.users = users
+			this.offers = offers
+
 			this.addUserNames()
 			this.addProjectNames()
 		},

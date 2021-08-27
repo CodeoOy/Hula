@@ -73,7 +73,7 @@ export default {
 		},
 	},
 	async mounted() {
-		this.categories = await this.$api.getSkillCategories()
+		this.categories = await this.$api.skills.categories.get()
 	},
 };
 </script>

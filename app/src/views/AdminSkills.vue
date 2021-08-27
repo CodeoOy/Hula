@@ -21,66 +21,60 @@
 				>New category</button>
 			</div>
 		</div>
-		<transition name="fadeHeight">
-			<div class="table-responsive">
-				<table class="table table-dark table-striped text-light">
-					<thead>
-						<tr>
-							<th scope="col">Category</th>
-							<th scope="col">Skills</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="category in categories" :key="category.id">
-							<td class="hoverable-td">
-								<div class="title-actions">
-									<span class="title-actions__maintitle">{{ category.label }}</span>
-									<div class="title-actions__actions">
-										<a 
-											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalSkills"
-											v-on:click="formTitle=`Add skill to ${category.label}`, chosenForm = 'CreateSkill', chosenCategory = category, chosenSkill = {}, url='/api/skills', method='POST'"
-										><i class="bi-plus-circle-fill me-2"></i></a>
-										<a 
-											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalSkills"
-											v-on:click="formTitle='Edit category', chosenForm = 'Category', chosenCategory = category, url=`/api/skills/categories/${category.id}`, method='PUT'"
-										><i class="bi-pencil-fill me-2"></i></a>
-										<a
-											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalSkills" 
-											v-on:click="formTitle = `Delete ${category.label}?`, chosenForm = 'Delete', url = `/api/skills/categories/${category.id}`, method = 'DELETE'"
-										><i class="bi-trash-fill me-2"></i></a>
-									</div>
+		<div class="table-responsive">
+			<table class="table table-dark table-striped text-light">
+				<thead>
+					<tr>
+						<th scope="col">Category</th>
+						<th scope="col">Skills</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="category in categories" :key="category.id">
+						<td class="hoverable-td">
+							<div class="title-actions">
+								<span class="title-actions__maintitle">{{ category.label }}</span>
+								<div class="title-actions__actions">
+									<a 
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalSkills"
+										v-on:click="formTitle=`Add skill to ${category.label}`, chosenForm = 'CreateSkill', chosenCategory = category, chosenSkill = {}, url='/api/skills', method='POST'"
+									><i class="bi-plus-circle-fill me-2"></i></a>
+									<a 
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalSkills"
+										v-on:click="formTitle='Edit category', chosenForm = 'Category', chosenCategory = category, url=`/api/skills/categories/${category.id}`, method='PUT'"
+									><i class="bi-pencil-fill me-2"></i></a>
+									<a
+										href="#"
+										v-on:click.prevent="confirmDelete('skill.category', category)"
+									><i class="bi-trash-fill me-2"></i></a>
 								</div>
-							</td>
-							<td class="hoverable-td">
-								<div class="title-actions" v-for="skill in filterSkills(category.id)" :key="skill" :value="skill.id">
-									<span><span class="title-actions__maintitle">{{ skill.label }}</span><span class="title-actions__maintitle--dimmed"> ({{ getSkillScopeLabel(skill.skillscope_id) }})</span></span>
-									<div class="title-actions__actions">
-										<a 
-											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalSkills"
-											v-on:click="formTitle=skill.label, chosenForm = 'CreateSkill', chosenSkill = skill, url=`/api/skills/${skill.id}`, method='PUT'"
-										><i class="bi-pencil-fill me-2"></i></a>
-										<a
-											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalSkills" 
-											v-on:click="formTitle = `Delete ${skill.label}?`, chosenForm = 'Delete', url = `/api/skills/${skill.id}`, method = 'DELETE'"
-										><i class="bi-trash-fill me-2"></i></a>
-									</div>
+							</div>
+						</td>
+						<td class="hoverable-td">
+							<div class="title-actions" v-for="skill in filterSkills(category.id)" :key="skill" :value="skill.id">
+								<span><span class="title-actions__maintitle">{{ skill.label }}</span><span class="title-actions__maintitle--dimmed"> ({{ getSkillScopeLabel(skill.skillscope_id) }})</span></span>
+								<div class="title-actions__actions">
+									<a 
+										href="#"
+										data-bs-toggle="modal"
+										data-bs-target="#hulaModalSkills"
+										v-on:click="formTitle=skill.label, chosenForm = 'CreateSkill', chosenSkill = skill, url=`/api/skills/${skill.id}`, method='PUT'"
+									><i class="bi-pencil-fill me-2"></i></a>
+									<a
+										href="#"
+										v-on:click.prevent="confirmDelete('skill', skill)"
+									><i class="bi-trash-fill me-2"></i></a>
 								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</transition>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </template>
 
@@ -89,7 +83,6 @@
 	import { Modal } from 'bootstrap'
 	import FormSkill from '../forms/FormSkill.vue'
 	import FormSkillCategory from '../forms/FormSkillCategory.vue'
-	import FormConfirmAction from '../forms/FormConfirmAction.vue'
 	export default {
 		name: 'AdminListSkills',
 		data () {
@@ -108,7 +101,6 @@
 			VModal,
 			FormSkill,
 			FormSkillCategory,
-			FormConfirmAction
 		},
 		methods: {
 			async getSkillCategories() {
@@ -133,7 +125,22 @@
 				this.$store.dispatch('getSkills')
 				let modal = Modal.getInstance(document.querySelector('#hulaModalSkills'))
 				modal.hide()
-			}
+			},
+			async confirmDelete(type, data) {
+				const success = await this.$confirm.delete(type, data)
+				
+				if (success) {
+					switch (type) {
+						case 'skill':
+							this.$store.dispatch('getSkills')
+							break
+
+						case 'skill.category':
+							this.getSkillCategories()
+							break
+					}
+				}
+			},
 		},
 		computed: {
 			skills() {
@@ -144,7 +151,6 @@
 				const components = {
 					CreateSkill: FormSkill,
 					Category: FormSkillCategory,
-					Delete: FormConfirmAction
 				}
 				return components[this.chosenForm]
 			}

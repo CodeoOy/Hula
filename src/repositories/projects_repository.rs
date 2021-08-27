@@ -22,12 +22,18 @@ pub fn query_one(uuid_query: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Proje
 	Ok(project)
 }
 
-pub fn create_project(q_project_name: String, q_email: String, pool: &web::Data<Pool>) -> Result<Project, Error> {
+pub fn create_project(
+	q_project_name: String,
+	q_project_description: Option<String>,
+	q_email: String,
+	pool: &web::Data<Pool>,
+) -> Result<Project, Error> {
 	use crate::schema::projects::dsl::projects;
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let new_project = Project {
 		id: uuid::Uuid::new_v4(),
+		description: q_project_description,
 		is_hidden: false,
 		name: q_project_name,
 		updated_by: q_email,
@@ -43,6 +49,7 @@ pub fn create_project(q_project_name: String, q_email: String, pool: &web::Data<
 pub fn update_project(
 	uuid_data: uuid::Uuid,
 	q_project_name: String,
+	q_project_description: Option<String>,
 	q_project_is_hidden: bool,
 	q_email: String,
 	pool: &web::Data<Pool>,
@@ -55,6 +62,7 @@ pub fn update_project(
 		.filter(id.eq(uuid_data))
 		.set((
 			name.eq(q_project_name),
+			description.eq(q_project_description),
 			is_hidden.eq(q_project_is_hidden),
 			updated_by.eq(q_email.clone()),
 		))

@@ -8,13 +8,12 @@
 			<label class="form-label">Comments</label>
 			<error-message name="name" class="error"></error-message>
 			<v-field
-				v-model="formData.label"
-				:rules="isRequired"
+				v-model="formData.comments"
 				as="input"
 				type="text"
-				name="name"
+				name="comments"
 				class="form-control"
-				aria-label="Skill name"
+				aria-label="Offer comments"
 			></v-field>
 		</div>
 		<button type="submit" class="btn btn-gradient mb-1">Save</button>
@@ -28,6 +27,7 @@ export default {
 	data() {
 		return {
 			formData: {
+				id: this.chosenOfferID || undefined,
 				sold: false,
 				comments: '',
 			},
@@ -36,16 +36,14 @@ export default {
 	components: {
 		'VForm': Form,
 		'VField': Field,
-		ErrorMessage
+		ErrorMessage,
 	},
 	props: {
-		chosenOffer: {}
+		chosenOfferID: '',
 	},	
 	methods: {
-		isRequired(value) {
-			return value ? true : 'This field is required';
-		},
 		async saveOffer() {
+			console.log(this.formData)
 			const offer = await this.$api.offers.save(this.formData)
 			if (offer) this.$emit('formSent')
 		},
