@@ -1,3 +1,5 @@
+drop view projectskills;
+
 create view projectskills as
  SELECT row_number() OVER ()::integer AS idx,
     p.id AS project_id,
