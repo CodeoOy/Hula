@@ -21,7 +21,7 @@ pub async fn save_file(
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, Error> {
 	//let filename = format!("{}.pdf", logged_user.uid); // TODO: use a proper filename. How? I dunno.
-	std::fs::create_dir(logged_user.uid.to_string());
+	let _ = std::fs::create_dir(logged_user.uid.to_string());
 	let mut tempfilename = String::new();
 	while let Ok(Some(mut field)) = payload.try_next().await {
 		match field.content_disposition() {
