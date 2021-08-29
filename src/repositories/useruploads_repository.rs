@@ -3,6 +3,7 @@ use actix_web::web;
 use diesel::result::Error;
 use diesel::result::Error::NotFound;
 use diesel::{prelude::*, PgConnection};
+use std::fs;
 
 pub fn create_file(
 	q_user_id: uuid::Uuid,
@@ -36,9 +37,20 @@ pub fn delete_file(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), 
 	let deleted = diesel::delete(useruploads.filter(id.eq(uuid_data))).execute(conn)?;
 
 	if deleted > 0 {
-		return Ok(());
+		let removed = delete_physical_file(uuid_data);
+		if removed.is_err() {
+			return Err(NotFound);
+		} else {
+			return Ok(());
+		}
 	}
 	Err(NotFound)
+}
+
+fn delete_physical_file(filename: uuid::Uuid) -> std::io::Result<()> {
+	let filename = format!("./{}.pdf", filename);
+	fs::remove_file(filename)?;
+	Ok(())
 }
 
 pub fn get_by_userid(id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Vec<UserUploads>, Error> {

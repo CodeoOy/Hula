@@ -48,9 +48,6 @@ export default {
 		'VField': Field,
 		ErrorMessage
 	},
-	props: {
-
-	},
 	methods: {
 		isRequired(value) {
 			return value ? true : 'This field is required';

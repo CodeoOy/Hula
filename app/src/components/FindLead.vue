@@ -36,7 +36,6 @@
 				// get the projects that have user's user_id in matches
 				let projects = this.$store.state.projects.filter(project => {
 					return project.matches.some(match => {
-						console.log(`p: ${project.name} | m: ${match.user_id} | u: ${user.id}`)
 						return match.user_id === user.id
 					})
 				})

@@ -5,6 +5,7 @@
 				:is='modalComponent'
 				:url="url"
 				:chosenOfferID="chosenOfferID"
+				:sold="sold"
 				:method="method"
 				v-on:form-sent="hideModalUpdate"
 			/>
@@ -48,7 +49,7 @@
 								href="#"
 								data-bs-toggle="modal"
 								data-bs-target="#hulaModalOffers" 
-								v-on:click="formTitle = `Edit offer`, chosenOfferID = offer.id, chosenForm = 'Edit', url = `/api/offers/${offer.id}`, method = 'PUT'"
+								v-on:click="formTitle = `Edit offer`, chosenOfferID = offer.id, sold = offer.sold, chosenForm = 'Edit', url = `/api/offers/${offer.id}`, method = 'PUT'"
 							><i class="bi-pencil-fill me-2"></i></a>
 						</td>
 					</tr>
@@ -76,6 +77,7 @@
 				formTitle: '',
 				chosenForm: '',
 				chosenOfferID: '',
+				sold: Boolean,
 			}
 		},
 		components: {

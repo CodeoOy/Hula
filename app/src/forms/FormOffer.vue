@@ -28,7 +28,7 @@ export default {
 		return {
 			formData: {
 				id: this.chosenOfferID || undefined,
-				sold: false,
+				sold: this.sold || false,
 				comments: '',
 			},
 		}
@@ -40,10 +40,10 @@ export default {
 	},
 	props: {
 		chosenOfferID: '',
+		sold: false,
 	},	
 	methods: {
 		async saveOffer() {
-			console.log(this.formData)
 			const offer = await this.$api.offers.save(this.formData)
 			if (offer) this.$emit('formSent')
 		},

@@ -125,6 +125,7 @@
 					props: {
 						chosenMatch: match,
 						projectName: project.name,
+						projectID: project.id,
 					},
 				}
 			},
