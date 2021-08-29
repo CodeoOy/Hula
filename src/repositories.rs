@@ -13,7 +13,6 @@ pub mod skillcategories_repository;
 pub mod skills_repository;
 pub mod skillscopelevels_repository;
 pub mod skillscopes_repository;
-pub mod transactions;
 pub mod userfavorites_repository;
 pub mod userreservations_repository;
 pub mod users_repository;
