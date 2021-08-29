@@ -58,10 +58,9 @@ pub async fn create_project_structure(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || {
-		save_project_structure(None, projectdata.into_inner(), &pool, logged_user.email, false)
-	})
-	.await;
+	let res =
+		web::block(move || save_project_structure(None, projectdata.into_inner(), &pool, logged_user.email, false))
+			.await;
 	match res {
 		Ok(id) => Ok(HttpResponse::Ok().json(&id)),
 		Err(err) => match err {
@@ -90,16 +89,9 @@ pub async fn update_project_structure(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	let res = web::block(move || {
-		save_project_structure(
-			Some(id),
-			projectdata.into_inner(),
-			&pool,
-			logged_user.email,
-			true,
-		)
-	})
-	.await;
+	let res =
+		web::block(move || save_project_structure(Some(id), projectdata.into_inner(), &pool, logged_user.email, true))
+			.await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
@@ -128,8 +120,7 @@ pub fn save_project_structure(
 			});
 		}
 		trace!("Update is needed. id={}", &id.unwrap());
-	}
-	else {
+	} else {
 		trace!("Creating a project. name={}", &project.name.clone());
 		let db_project = projects_repository::create_project(
 			project.name.clone(),
@@ -182,20 +173,23 @@ pub fn save_project_structure(
 			let mut skill_scope_level_id: Option<uuid::Uuid> = None;
 			if let Some(scopelabel) = skill.skillscopelevel_label.clone() {
 				trace!("Searching a skill level. label={}", scopelabel);
-	
+
 				let db_skill_scope_level = skillscopelevels_repository::get_skill_level_by_label(scopelabel, &pool);
 
 				if db_skill_scope_level.is_err() == false {
 					let db_skill_scope_level = db_skill_scope_level.unwrap();
 					skill_scope_level_id = Some(db_skill_scope_level.id);
 					trace!("Found. id={}", skill_scope_level_id.unwrap());
-				}
-				else {
+				} else {
 					trace!("Skill level not found.");
 				}
 			}
 
-			trace!("Creating a project need skill. need_id={}, skill_id={}", &need_res.id, &db_skill.id);
+			trace!(
+				"Creating a project need skill. need_id={}, skill_id={}",
+				&need_res.id,
+				&db_skill.id
+			);
 			projectneedskills_repository::create_projectneedskill(
 				need_res.id,
 				db_skill.id,
