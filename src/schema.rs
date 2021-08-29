@@ -226,10 +226,12 @@ table! {
 	projectskills(idx){
 		idx -> Int4,
 		project_id -> Uuid,
-		skill_label -> Varchar,
 		pn_id -> Uuid,
+		pn_label -> Nullable<Varchar>,
+		skill_label -> Varchar,
 		is_mandatory -> Bool,
 		required_index -> Nullable<Integer>,
+		required_label -> Nullable<Varchar>,
 		required_minyears -> Nullable<Double>,
 		required_maxyears -> Nullable<Double>,
 	}

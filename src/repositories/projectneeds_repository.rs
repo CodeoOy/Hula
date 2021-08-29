@@ -89,3 +89,12 @@ pub fn delete_projectneed(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Resu
 	}
 	Err(NotFound)
 }
+
+pub fn delete_projectneeds_by_project(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), Error> {
+	let conn: &PgConnection = &pool.get().unwrap();
+	use crate::schema::projectneeds::dsl::project_id;
+	use crate::schema::projectneeds::dsl::*;
+
+	diesel::delete(projectneeds.filter(project_id.eq(uuid_data))).execute(conn)?;
+	Ok(())
+}

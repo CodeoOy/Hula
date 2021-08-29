@@ -22,6 +22,17 @@ pub fn query_skill_levels(pool: &web::Data<Pool>) -> Result<Vec<SkillScopeLevel>
 	Ok(items)
 }
 
+pub fn get_skill_level_by_label(q_label: String, pool: &web::Data<Pool>) -> Result<SkillScopeLevel, Error> {
+	use crate::schema::skillscopelevels::dsl::{label, skillscopelevels};
+	let conn: &PgConnection = &pool.get().unwrap();
+
+	let item = skillscopelevels
+		.filter(label.eq(q_label))
+		.get_result::<SkillScopeLevel>(conn)?;
+
+	Ok(item)
+}
+
 pub fn create_skill_scope_level(
 	q_label: String,
 	q_percentage: Option<i32>,
