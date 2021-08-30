@@ -148,7 +148,9 @@
 							</tr>
 						</tbody>
 					</table>
-					<h3 class="h3">Matches</h3>
+				</div>
+				<div v-if='getUserMatches.length' class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+					<h3 class="h3">Projects matching the skills</h3>
 					<div class="table-responsive">
 						<table class="table table-dark table-striped text-light">
 							<thead>

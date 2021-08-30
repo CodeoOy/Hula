@@ -15,8 +15,14 @@
 			</div>
 		</div>
 		<div class="col-md-8">
-			<ResultsLeads :leads='leadData' v-if="tabToggle == false" />
-			<ResultsPros :matches='matchesData' v-else />
+			<div v-if='matchesData' class="p-3 rounded-2 content-box bg-dark text-light">
+				<ResultsLeads :leads='leadData' v-if="tabToggle == false" />
+				<div v-else>
+					<h2 v-if="matchesData.project">Pro search results for {{ matchesData.project.name }}</h2>
+					<p>Project skills: <span class="badge badge-skill me-2" v-for="skill in matchesData.project.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></p>
+					<ResultsPros :project='matchesData.project' :matches='matchesData.matches' />
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -37,7 +43,7 @@
 		data() {
 			return {
 				tabToggle: true,
-				matchesData: [],
+				matchesData: null,
 				leadData: [],
 			}
 		},

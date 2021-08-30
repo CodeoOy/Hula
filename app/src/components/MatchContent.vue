@@ -45,7 +45,6 @@
 		props: {
 			chosenMatch: {},
 			projectName: '',
-			projectID: '',
 		},
 		methods: {
 			addToOffers() {
@@ -67,9 +66,8 @@
 			}
 		},
 		async mounted() {
-			console.log(this.projectID)
-			if (!this.chosenMatch.project_id) {
-				this.match = await this.$api.matches.get(this.projectID)
+			if (this.chosenMatch.project_id) {
+				this.match = await this.$api.matches.get(this.chosenMatch.project_id)
 			}
 		}
 	}

@@ -35,8 +35,9 @@
 		},
 		methods: {
 			async getMatches(project) {
+				if (!project) return null
 				const matches = await this.$api.matches.get(project.id)
-				if (matches) this.$emit('matchesfetched', matches)
+				if (matches) this.$emit('matchesfetched', { project, matches })
 			},
 		}
 	}

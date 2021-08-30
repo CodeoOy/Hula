@@ -102,6 +102,10 @@
 						</div>
 					</div>
 				</div>
+				<div v-if='matches.length' class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+					<h2 class="h2">Pros matching the needs</h2>
+					<ResultsPros :project='project' :matches='matches' />
+				</div>
 			</div>
 		</div>
 	</div>
@@ -113,6 +117,7 @@
 	import FormProjectNeed from '../forms/FormProjectNeed.vue'
 	import FormProjectNeedSkill from '../forms/FormProjectNeedSkill.vue'
 	import FormProject from '../forms/FormProject.vue'
+	import ResultsPros from '../components/ResultsPros.vue'
 	export default {
 		name: 'Project',
 		data() {
@@ -133,6 +138,7 @@
 				chosenSkill: {},
 				url: '',
 				method: '',
+				matches: [],
 			}
 		},
 		components: {
@@ -179,8 +185,9 @@
 				}
 			},
 		},
-		mounted() {
+		async mounted() {
 			this.$store.dispatch('setChosenProject', this.$route.params.id)
+			this.matches = await this.$api.matches.get(this.$route.params.id)
 		}
 	}
 </script>

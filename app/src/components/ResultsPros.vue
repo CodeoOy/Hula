@@ -1,10 +1,8 @@
 <template>
-	<div v-if="matches[0]" class="p-3 rounded-2 content-box bg-dark text-light">
-		<VModal :modalTitle="'Match'" :modalID="'match'">
-			<MatchContent :chosenMatch="currentMatch" :projectName="projectName"/>
+	<div v-if="matches.length">
+		<VModal :modalTitle="'Match'" :modalID="'match'" @modal-hidden='currentMatch = null'>
+			<MatchContent v-if='currentMatch' :chosenMatch="currentMatch" :projectName="project.name"/>
 		</VModal>
-		<h2 v-if="project[0]">Pro search results for {{ project[0].name }}</h2>
-		<p>Project skills: <span class="badge badge-skill me-2" v-for="skill in this.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></p>
 		<div class="table-responsive">
 			<table v-if="matches" class="table table-dark table-striped text-light">
 				<thead>
@@ -44,14 +42,13 @@
 		data() {
 			return {
 				currentMatch: {},
-				show: false,
-				project: {},
-				skills: [],
-				mandatorySkills: [],
-				projectName: '',
 			}
 		},
 		props: {
+			project: {
+				type: Object,
+				required: true,
+			},
 			matches: {
 				type: Array,
 				required: true,
@@ -64,7 +61,6 @@
 		computed: {
 			users() {
 				if (this.matches.length) {
-					this.getProjectSkills(this.matches[0].project_id)
 					const users = Object.values(this.matches.reduce((users, match) => {
 						const {
 							user_id,
@@ -93,6 +89,19 @@
 					}, {}))
 					return users.sort((a, b) => (a.tier > b.tier) ? 1 : (a.tier === b.tier) ? ((a.isAvailable > b.isAvailable) ? 1 : -1) : -1 )
 				}
+			},
+			mandatorySkills() {
+				const skills = this.project.skills
+					? this.project.skills
+					: this.project.needs.reduce((skills, need) => [
+						...skills,
+						...need.skills.map(skill => ({
+							skill_label: skill.skill_label,
+							skill_mandatory: skill.mandatory,
+						}))
+					], [])
+
+				return skills.filter(skill => skill.skill_mandatory)
 			},
 		},
 		methods: {
@@ -128,16 +137,6 @@
 					return match.required_load >= match.user_load
 				})
 			},
-			getProjectSkills(id) {
-				this.project = this.$store.state.projects.filter(project => {
-					return (project.id == id)
-				})
-				this.skills = this.project[0].skills
-				this.projectName = this.project[0].name
-				this.mandatorySkills = this.skills.filter(skill => {
-					return skill.skill_mandatory === true
-				})
-			}
 		},
 	}
 </script>
