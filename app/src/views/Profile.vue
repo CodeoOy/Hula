@@ -90,7 +90,7 @@
 							<tbody>
 								<tr v-for="skill in user.skills" :key="skill.id">
 									<td>{{ skill.skill_label }}</td>
-									<td>{{ skill.skillscopelevel_id }}</td>
+									<td>{{ skill.levelLabel }}</td>
 									<td>{{ skill.years }}</td>
 									<td>
 										<a 
@@ -190,6 +190,7 @@
 				chosenReservation: {},
 				editingInfo: false,
 				user: {},
+				skillLevels: [],
 				url: '',
 				method: '',
 				reservations: [],
@@ -224,6 +225,10 @@
 				])
 				this.user =  user
 				this.reservations = reservations
+
+				this.user.skills.forEach(skill => {
+					skill.levelLabel = this.skillLevels.find(({ id }) => id == skill.skillscopelevel_id).label
+				})
 			},
 			async getUserUploads(id) {
 				const files = await this.$api.users.files.get(id)
@@ -305,13 +310,14 @@
 				})			
 			},
 		},
-		mounted() {
+		async mounted() {
 			if (this.$route.params.id != this.$store.state.loggeduser.id) {
 				if (this.$store.state.loggeduser.isadmin !== true) {
 					this.$router.push({name: 'page-error'})
 				}
 			}
 			this.checkProfile(this.$route.params.id)
+			this.skillLevels = await this.$api.skills.levels.get()
 		}
 	}
 </script>
