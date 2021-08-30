@@ -7,14 +7,25 @@
 					<tr>
 						<th scope="col">Project</th>
 						<th scope="col">Skills</th>
-						<th scope="col"></th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="lead in leads" :key="lead.pid">
-						<th scope="row"><a :href="`app/project/${lead.id}`">{{ lead.name }}</a></th>
-						<td>{{ lead.name }}</td>
-						<td>{{ lead.is_hidden }}</td>
+					<tr v-for="lead in leads" :key="lead.id">
+						<th scope="row">
+							<router-link :to="{ name: 'page-project', params: { id: lead.id }}">
+								{{ lead.name }}
+								<i v-if='lead.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
+							</router-link>
+						</th>
+						<td>
+							<span
+								v-for="skill in lead.skills"
+								:key="skill.skill_id"
+								class="badge badge-skill me-2"
+							>
+								{{ skill.skill_label }}
+							</span>
+						</td>
 					</tr>
 				</tbody>
 			</table>
@@ -26,7 +37,7 @@
 	export default {
 		name: 'ResultsLeads',
 		props: {
-			leads: {}
+			leads: Array,
 		}
 	}
 </script>

@@ -35,13 +35,16 @@
 				<tbody>
 					<tr v-for="project in filteredProjects" :key="project.id">
 						<td>
-							<router-link :to="{ name: 'page-project', params: { id: project.id }}">{{ project.name }}</router-link>
+							<router-link :to="{ name: 'page-project', params: { id: project.id }}">
+								{{ project.name }}
+								<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
+							</router-link>
 						</td>
 						<td>
 							<span
 								v-for="skill in project.skills" 
 								:key="skill.skill_label"
-								class="badge"
+								class="badge badge-skill me-2"
 							>{{ skill.skill_label }}</span>
 						</td>
 						<td>

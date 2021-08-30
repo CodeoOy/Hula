@@ -14,7 +14,10 @@
 		<div class="row gx-4" v-if='project'>
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					<h2 class="h2">{{ project.name }}</h2>
+					<h2 class="h2">
+						{{ project.name }}
+						<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-3 float-end"></i>
+					</h2>
 					<p v-if="project.description">{{ project.description }}</p>
 					<a 
 						href="#"
