@@ -33,7 +33,14 @@ pub async fn save_file(
 				}
 			},
 		}
-		let filepath = format!("./{}/{}", logged_user.uid, sanitize_filename::sanitize(&tempfilename));
+
+		let cv_path = std::env::var("USER_UPLOAD_PATH").unwrap();
+		trace!("path={}", &cv_path);
+
+		let filepath = format!("{}/{}/{}", cv_path, logged_user.uid, sanitize_filename::sanitize(&tempfilename));
+		trace!("filepath={}", &filepath);
+
+		// TODO: directory must be created (if needed) at this point.
 
 		let mut f = web::block(|| std::fs::File::create(filepath)).await.unwrap();
 
