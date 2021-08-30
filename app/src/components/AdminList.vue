@@ -15,7 +15,7 @@
 			</div>
 		</div>
 		<div class="col-md-8">
-			<div v-if='matchesData' class="p-3 rounded-2 content-box bg-dark text-light">
+			<div v-if='results' class="p-3 rounded-2 content-box bg-dark text-light">
 				<ResultsLeads :leads='leadData' v-if="tabToggle == false" />
 				<div v-else>
 					<h2 v-if="matchesData.project">Pro search results for {{ matchesData.project.name }}</h2>
@@ -46,6 +46,11 @@
 				matchesData: null,
 				leadData: [],
 			}
+		},
+		computed: {
+			results() {
+				return this.tabToggle ? this.matchesData : this.leadData.length
+			},
 		},
 		methods: {
 			passMatches(value) {
