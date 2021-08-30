@@ -317,6 +317,7 @@
 				}
 			}
 			this.checkProfile(this.$route.params.id)
+			if (!this.$store.state.projects.length) this.$store.dispatch('getProjects')
 			this.skillLevels = await this.$api.skills.levels.get()
 		}
 	}
