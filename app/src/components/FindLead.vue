@@ -8,7 +8,6 @@
 			:dropdown="true"
 			dropdownLabel="firstname"
 			:filterProperties="'firstname'"
-			:selection="value"
 			v-on:auto-complete="getMatches"
 		></VAutoComplete>
 	</div>
@@ -20,7 +19,6 @@
 		name: 'FindLead',
 		data() {
 			return {
-				value: '',
 				users: [],
 				selected: {},
 				formData: {

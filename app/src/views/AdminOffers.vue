@@ -15,7 +15,6 @@
 			<div>
 				<VAutoComplete 
 					:suggestions="offers" 
-					:selection="offerName" 
 					:placeholder="'filter offers'"
 					:dropdown="false"
 					:filterProperties="'project_name'"
@@ -69,7 +68,6 @@
 		data () {
 			return {
 				filteredOffers: [],
-				offerName: '',
 				users: [],
 				offers: [],
 				url: '',

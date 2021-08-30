@@ -22,6 +22,7 @@
         name: 'VAutoComplete',
         data() {
             return {
+                selection: '',
                 open: false,
                 current: 0
             }
@@ -30,11 +31,6 @@
             suggestions: {
                 type: Array,
                 required: true
-            },
-            selection: {
-                type: String,
-                required: true,
-                twoWay: true
             },
 			placeholder: String,
             dropdown: Boolean,
@@ -68,8 +64,11 @@
         },
         methods: {
             enter() {
-                this.$emit('autoComplete', this.matches[this.current]);
-                this.open = false;
+                if (this.dropdown && this.selection.length) {
+                    this.selection = this.matches[this.current][this.dropdownLabel]
+                    this.$emit('autoComplete', this.matches[this.current]);
+                    this.open = false;
+                }
             },
             up() {
                 if(this.current > 0)
@@ -89,9 +88,11 @@
                 }
             },
             suggestionClick(project) {
-                this.$emit('autoComplete', project)
-                //this.selection = this.matches[index];
-                this.open = false;
+                if (this.dropdown) {
+                    this.selection = project[this.dropdownLabel]
+                    this.$emit('autoComplete', project)
+                    this.open = false;
+                }
             },
         }
     }

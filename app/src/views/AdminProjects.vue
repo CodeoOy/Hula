@@ -13,7 +13,6 @@
 				<VAutoComplete
 					v-if="$store.state.projects" 
 					:suggestions="$store.state.projects" 
-					:selection="projectName" 
 					:placeholder="'filter projects'"
 					:dropdown="false"
 					:filterProperties="'name'"
@@ -81,7 +80,6 @@
 		data () {
 			return {
 				modal: null,
-				projectName: '',
 				filteredProjects: [],
 				projects: this.$store.state.projects
 			}

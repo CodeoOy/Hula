@@ -6,7 +6,6 @@
 				<VAutoComplete
 					v-if="initialUsers.length" 
 					:suggestions="initialUsers" 
-					:selection="userName" 
 					:placeholder="'filter users'"
 					:dropdown="false"
 					:filterProperties="'firstname'"
@@ -67,7 +66,6 @@
 				initialUsers: [],
 				filteredUsers: [],
 				chosenUser: {},
-				userName: '',
 				url: '',
 				method: '',
 			}

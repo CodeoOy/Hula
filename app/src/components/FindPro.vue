@@ -7,7 +7,6 @@
 			:placeholder="'Start typing the name of project..'" 
 			:dropdown="true"
 			:filterProperties="'name'"
-			:selection="value"
 			v-on:auto-complete="getMatches"
 		></VAutoComplete>
 	</div>
@@ -19,7 +18,6 @@
 		name: 'FindPro',
 		data() {
 			return {
-				value: '',
 				projects: this.$store.state.projects,
 				selected: {},
 				formData: {
