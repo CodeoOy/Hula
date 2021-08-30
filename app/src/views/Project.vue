@@ -66,7 +66,7 @@
 							</div>
 						</div>
 						<div class="table-responsive">
-							<table v-if="skills.length" class="table table-dark table-striped text-light mb-4">
+							<table class="table table-dark table-striped text-light mb-4">
 								<thead>
 									<tr>
 										<th scope="col">Skill</th>
@@ -79,9 +79,9 @@
 								</thead>
 								<tbody>
 									<tr v-for="skill in need.skills" :key="skill.id">
-										<td>{{ getSkillLabel(skill.skill_id) }}</td>
+										<td>{{ skill.skill_label }}</td>
 										<td>{{ skill.mandatory }}</td>
-										<td>{{ getLevelLabel(skill.skillscopelevel_id) }}</td>
+										<td>{{ skill.skillscopelevel_label }}</td>
 										<td>{{ skill.min_years }}</td>
 										<td>{{ skill.max_years }}</td>
 										<td class="hoverable-td">
@@ -89,7 +89,7 @@
 												href="#"
 												data-bs-toggle="modal"
 												data-bs-target="#hulaModalSingleProject"
-												v-on:click="formTitle =`${getSkillLabel(skill.skill_id)}`, chosenForm = 'Skill', chosenSkill = skill, chosenNeed = need, url=`/api/projectskills/${skill.id}`, method='PUT'"
+												v-on:click="formTitle = skill.skill_label, chosenForm = 'Skill', chosenSkill = skill, chosenNeed = need, url=`/api/projectskills/${skill.id}`, method='PUT'"
 											><i class="bi-pencil-fill me-2"></i></a>
 											<a
 												href="#"
@@ -140,16 +140,11 @@
 			FormProjectNeed,
 			FormProjectNeedSkill,
 			FormProject,
+			ResultsPros,
 		},
 		computed: {
 			project() {
 				return this.$store.state.chosenproject
-			},
-			skills() {
-				return this.$store.state.skills
-			},
-			skillLevels() {
-				return this.$store.state.skillLevels
 			},
 			modalComponent() {
 				const components = {
@@ -165,16 +160,6 @@
 				this.$store.dispatch('setChosenProject', this.$route.params.id)
 				let modal = Modal.getInstance(document.querySelector('#hulaModalSingleProject'))
 				modal.hide()
-			},
-			getSkillLabel(id) {
-				var returnedSkill = this.skills.find(skill => skill.id == id)
-				return returnedSkill ? returnedSkill.label : ''
-			},
-			getLevelLabel(id) {
-				if (id) {
-					var returnedLevel = this.skillLevels.find(level => level.id == id)
-					return returnedLevel ? returnedLevel.label : ''
-				}
 			},
 			async confirmDelete(type, data) {
 				const success = await this.$confirm.delete(type, data)
@@ -196,8 +181,6 @@
 		},
 		mounted() {
 			this.$store.dispatch('setChosenProject', this.$route.params.id)
-			this.$store.dispatch('getSkills')
-			this.$store.dispatch('getSkillLevels')
 		}
 	}
 </script>
