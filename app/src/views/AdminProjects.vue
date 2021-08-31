@@ -11,10 +11,10 @@
 			<h2 class="h2">Projects</h2>
 			<div class='d-flex'>
 				<VAutoComplete
-					:suggestions="$store.state.projects" 
+					:suggestions="projects" 
 					:placeholder="'filter projects'"
 					:dropdown="false"
-					:filterProperties="'name'"
+					:filterProperties="['name', 'autoCompleteSkills']"
 					v-on:auto-complete="autoCompleteAction"
 					class='me-2'
 				>
@@ -98,7 +98,6 @@
 				filters: {
 					showHidden: true,
 				},
-				projects: this.$store.state.projects
 			}
 		},
 
@@ -111,6 +110,13 @@
 		},
 
 		computed: {
+			projects() {
+				return this.$store.state.projects.map(project => ({
+					...project,
+					autoCompleteSkills: project.skills.map(skill => skill.skill_label),
+				}))
+			},
+
 			filteredProjects() {
 				return this.autoCompletedProjects
 					.filter(project => project.is_hidden ? this.filters.showHidden : true)
