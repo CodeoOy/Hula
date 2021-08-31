@@ -6,8 +6,8 @@
 			:suggestions="users"
 			placeholder='Pro'
 			:dropdown="true"
-			dropdownLabel="firstname"
-			:filterProperties="'firstname'"
+			:dropdownLabel="user => `${user.firstname} ${user.lastname}`"
+			:filterProperties="['firstname', 'lastname']"
 			v-on:auto-complete="getMatches"
 		></VAutoComplete>
 	</div>
