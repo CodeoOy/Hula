@@ -16,7 +16,7 @@
                     class='dropdown-item'
                     :class="{'active': isActive(index)}"
                 >
-                    {{ suggestion[dropdownLabel] }}
+                    {{ itemLabel(suggestion) }}
                 </a>
             </li>
         </ul>
@@ -40,18 +40,34 @@
 			placeholder: String,
             dropdown: Boolean,
             dropdownLabel: {
-                type: String,
+                type: [String, Function],
                 default: 'name'
             },
             filterProperties: '',
+            singleWords: {
+                type: Boolean,
+                default: true,
+            },
         },
         computed: {
             matches() {
                 var matches = this.suggestions.filter(item => {
-                    const selection = this.selection.toUpperCase()
+                    let words = this.selection
+                        .toUpperCase()
+                        .trim()
+                        .replace(/ +/, ' ')
+
+                    words = this.singleWords ? words.split(' ') : [words]
+
                     const props = Array.isArray(this.filterProperties) ? this.filterProperties : [this.filterProperties]
-                    for (const prop of props) {
-                        if (String(item[prop]).toUpperCase().includes(selection)) return true
+                    for (let prop of props) {
+                        const values = Array.isArray(item[prop]) ? item[prop] : [item[prop]]
+                        for (let value of values) {
+                            value = String(value).toUpperCase()
+                            for (const word of words) {
+                                if (value.includes(word)) return true
+                            }
+                        }
                     }
                 });
                 if (!this.dropdown) {
@@ -69,10 +85,10 @@
         },
         methods: {
             enter() {
-                if (this.dropdown && this.selection.length) {
+                if (this.dropdown && this.selection.length && this.matches[this.current]) {
                     this.$emit('autoComplete', this.matches[this.current]);
                     this.open = false;
-                    this.selection = this.matches[this.current][this.dropdownLabel]
+                    this.selection = this.itemLabel(this.matches[this.current])
                 }
             },
             up() {
@@ -92,12 +108,17 @@
                     this.current = 0;
                 }
             },
-            suggestionClick(project) {
+            suggestionClick(item) {
                 if (this.dropdown) {
-                    this.selection = project[this.dropdownLabel]
-                    this.$emit('autoComplete', project)
+                    this.selection = this.itemLabel(item)
+                    this.$emit('autoComplete', item)
                     this.open = false;
                 }
+            },
+            itemLabel(item) {
+                return typeof this.dropdownLabel == 'function'
+                    ? this.dropdownLabel(item)
+                    : item[this.dropdownLabel]
             },
         }
     }
