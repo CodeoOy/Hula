@@ -1,5 +1,5 @@
 <template>
-<div class="autocomplete me-2 w-100">
+<div class="autocomplete w-100">
     <input class="form-control" type="text" v-model="selection" :placeholder="placeholder"
         @keydown.enter = 'enter'
         @keydown.down = 'down'

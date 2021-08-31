@@ -9,7 +9,7 @@
 		</VModal>
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Projects</h2>
-			<div>
+			<div class='d-flex'>
 				<VAutoComplete
 					v-if="$store.state.projects" 
 					:suggestions="$store.state.projects" 
@@ -17,8 +17,9 @@
 					:dropdown="false"
 					:filterProperties="'name'"
 					v-on:auto-complete="autoCompleteAction"
+					class='me-2'
 				></VAutoComplete>
-				<button class="btn btn-gradient" v-on:click="newProject()">New project</button>
+				<button class="btn btn-gradient flex-shrink-0" v-on:click="newProject()">New project</button>
 			</div>
 		</div>
 		<div class="table-responsive" v-if="filteredProjects.length">

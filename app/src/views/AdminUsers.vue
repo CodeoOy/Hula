@@ -2,17 +2,18 @@
 	<div>
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Users</h2>
-			<div>
+			<div class='d-flex'>
 				<VAutoComplete
 					v-if="initialUsers.length" 
 					:suggestions="initialUsers" 
 					:placeholder="'filter users'"
 					:dropdown="false"
-					:filterProperties="'firstname'"
+					:filterProperties="'name'"
 					v-on:auto-complete="autoCompleteAction"
+					class='me-2'
 				></VAutoComplete>
 				<button
-					class="btn btn-gradient"
+					class="btn btn-gradient flex-shrink-0"
 					data-bs-toggle="modal"
 					data-bs-target="#hulaModalUsers"
 					v-on:click="formTitle = 'New User', chosenForm = 'CreateUser', chosenUser = {}, url='/api/users', method='POST'"
@@ -76,9 +77,13 @@
 			VAutoComplete,
 		},
 		methods: {
-			async hideModalUpdate() {
+			async getUsers() {
 				this.initialUsers = await this.$api.users.get()
+				this.initialUsers.forEach(user => user.name = `${user.firstname} ${user.lastname}`)
+			},
+			async hideModalUpdate() {
 				let modal = Modal.getInstance(document.querySelector('#hulaModalUsers'))
+				this.getUsers()
 				modal.hide()
 			},
 			autoCompleteAction(value) {
@@ -86,11 +91,11 @@
 			},
 			async confirmDelete(user) {
 				const success = await this.$confirm.delete('user', user)
-				if (success) this.initialUsers = await this.$api.users.get()
+				if (success) this.getUsers()
 			},
 		},
 		async mounted() {
-			this.initialUsers = await this.$api.users.get()
+			this.getUsers()
 		}
 	}
 </script>
