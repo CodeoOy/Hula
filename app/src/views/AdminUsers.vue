@@ -8,7 +8,7 @@
 					:suggestions="initialUsers" 
 					:placeholder="'filter users'"
 					:dropdown="false"
-					:filterProperties="'name'"
+					:filterProperties="['firstname', 'lastname']"
 					v-on:auto-complete="autoCompleteAction"
 					class='me-2'
 				>
@@ -102,7 +102,6 @@
 		methods: {
 			async getUsers() {
 				this.initialUsers = await this.$api.users.get()
-				this.initialUsers.forEach(user => user.name = `${user.firstname} ${user.lastname}`)
 			},
 			async hideModalUpdate() {
 				let modal = Modal.getInstance(document.querySelector('#hulaModalUsers'))
