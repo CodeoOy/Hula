@@ -4,7 +4,7 @@
 		<VAutoComplete
 			v-if="users.length"
 			:suggestions="users"
-			:placeholder="'Start typing the name of the pro..'" 
+			placeholder='Pro'
 			:dropdown="true"
 			dropdownLabel="firstname"
 			:filterProperties="'firstname'"

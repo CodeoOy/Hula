@@ -4,7 +4,7 @@
 		<VAutoComplete 
 			v-if="this.$store.state.projects" 
 			:suggestions="this.$store.state.projects"
-			:placeholder="'Start typing the name of project..'" 
+			placeholder='Project'
 			:dropdown="true"
 			:filterProperties="'name'"
 			v-on:auto-complete="getMatches"
