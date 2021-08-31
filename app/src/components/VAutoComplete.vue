@@ -1,21 +1,26 @@
 <template>
-<div class="autocomplete w-100">
-    <input class="form-control" type="text" v-model="selection" :placeholder="placeholder"
-        @keydown.enter = 'enter'
-        @keydown.down = 'down'
-        @keydown.up = 'up'
-        @input = 'change'
-    />
-    <ul class="dropdown-menu" style="width:100%" v-bind:class="{'show':openSuggestion}">
-        <li v-for="(suggestion, index) in matches"
-            v-bind:class="{'active': isActive(index)}"
-            @click="suggestionClick(suggestion)"
-            v-bind:key="suggestion.id"
-        >
-            {{ suggestion[dropdownLabel] }}
-        </li>
-    </ul>
-</div>
+    <div class='position-relative'>
+        <div class="input-group w-100">
+            <input class="form-control" type="text" v-model="selection" :placeholder="placeholder"
+                @keydown.enter = 'enter'
+                @keydown.down = 'down'
+                @keydown.up = 'up'
+                @input = 'change'
+            />
+            <slot name='button' />
+        </div>
+        <ul class="dropdown-menu" style="width:100%" v-bind:class="{'show':openSuggestion}">
+            <li v-for="(suggestion, index) in matches" :key="suggestion.id">
+                <a href='#'
+                    @click="suggestionClick(suggestion)"
+                    class='dropdown-item'
+                    :class="{'active': isActive(index)}"
+                >
+                    {{ suggestion[dropdownLabel] }}
+                </a>
+            </li>
+        </ul>
+    </div>
 </template>
 <script>
     export default {
@@ -65,9 +70,9 @@
         methods: {
             enter() {
                 if (this.dropdown && this.selection.length) {
-                    this.selection = this.matches[this.current][this.dropdownLabel]
                     this.$emit('autoComplete', this.matches[this.current]);
                     this.open = false;
+                    this.selection = this.matches[this.current][this.dropdownLabel]
                 }
             },
             up() {

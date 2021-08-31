@@ -11,7 +11,21 @@
 					:filterProperties="'name'"
 					v-on:auto-complete="autoCompleteAction"
 					class='me-2'
-				></VAutoComplete>
+				>
+					<template v-slot:button>
+						<button class='btn btn-secondary dropdown-toggle' type='button' id='filtersDropdown' data-bs-toggle='dropdown' data-bs-auto-close='outside' aria-expanded='false'>
+							<i aria-label='Filters' class='bi bi-gear-fill'></i>
+						</button>
+						<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='filtersDropdown'>
+							<li class='px-2'>
+								<div class='form-check'>
+									<label for='employees'>Employees only</label>
+									<input v-model='filters.employees' type='checkbox' class='form-check-input' id='employees' />
+								</div>
+							</li>
+						</ul>
+					</template>
+				</VAutoComplete>
 				<button
 					class="btn btn-gradient flex-shrink-0"
 					data-bs-toggle="modal"
@@ -65,16 +79,25 @@
 				formTitle: '',
 				chosenForm: '',
 				initialUsers: [],
-				filteredUsers: [],
+				autoCompletedUsers: [],
 				chosenUser: {},
 				url: '',
 				method: '',
+				filters: {
+					employees: false,
+				},
 			}
 		},
 		components: {
 			VModal,
 			VAvatar,
 			VAutoComplete,
+		},
+		computed: {
+			filteredUsers() {
+				return this.autoCompletedUsers
+					.filter(user => this.filters.employees ? user.is_employee : true)
+			},
 		},
 		methods: {
 			async getUsers() {
@@ -87,7 +110,7 @@
 				modal.hide()
 			},
 			autoCompleteAction(value) {
-				this.filteredUsers = value
+				this.autoCompletedUsers = value
 			},
 			async confirmDelete(user) {
 				const success = await this.$confirm.delete('user', user)

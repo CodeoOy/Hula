@@ -11,14 +11,27 @@
 			<h2 class="h2">Projects</h2>
 			<div class='d-flex'>
 				<VAutoComplete
-					v-if="$store.state.projects" 
 					:suggestions="$store.state.projects" 
 					:placeholder="'filter projects'"
 					:dropdown="false"
 					:filterProperties="'name'"
 					v-on:auto-complete="autoCompleteAction"
 					class='me-2'
-				></VAutoComplete>
+				>
+				<template v-slot:button>
+					<button class='btn btn-secondary dropdown-toggle' type='button' id='filtersDropdown' data-bs-toggle='dropdown' data-bs-auto-close='outside' aria-expanded='false'>
+						<i aria-label='Filters' class='bi bi-gear-fill'></i>
+					</button>
+					<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='filtersDropdown'>
+						<li class='px-2'>
+							<div class='form-check'>
+								<label for='hidden'>Show hidden</label>
+								<input v-model='filters.showHidden' type='checkbox' class='form-check-input' id='hidden' />
+							</div>
+						</li>
+					</ul>
+				</template>
+				</VAutoComplete>
 				<button class="btn btn-gradient flex-shrink-0" v-on:click="newProject()">New project</button>
 			</div>
 		</div>
@@ -81,7 +94,10 @@
 		data () {
 			return {
 				modal: null,
-				filteredProjects: [],
+				autoCompletedProjects: [],
+				filters: {
+					showHidden: true,
+				},
 				projects: this.$store.state.projects
 			}
 		},
@@ -92,6 +108,13 @@
 			VAvatar,
 			FormProject,
 			VAutoComplete,
+		},
+
+		computed: {
+			filteredProjects() {
+				return this.autoCompletedProjects
+					.filter(project => project.is_hidden ? this.filters.showHidden : true)
+			},
 		},
 
 		methods: {
@@ -105,7 +128,7 @@
 			},
 
 			autoCompleteAction(value) {
-				this.filteredProjects = value
+				this.autoCompletedProjects = value
 			},
 
 			newProject() {
