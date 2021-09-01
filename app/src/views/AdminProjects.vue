@@ -10,15 +10,14 @@
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Projects</h2>
 			<div class='d-flex'>
-				<VAutoComplete
-					:suggestions="projects" 
-					:placeholder="'filter projects'"
-					:dropdown="false"
-					:filterProperties="['name', 'autoCompleteSkills']"
-					v-on:auto-complete="autoCompleteAction"
-					class='me-2'
-				>
-				<template v-slot:button>
+				<div class='input-group me-2'>
+					<VAutoComplete
+						:suggestions="projects" 
+						:placeholder="'filter projects'"
+						:dropdown="false"
+						:filterProperties="['name', 'autoCompleteSkills']"
+						v-on:auto-complete="autoCompleteAction"
+					/>
 					<button class='btn btn-secondary dropdown-toggle' type='button' id='filtersDropdown' data-bs-toggle='dropdown' data-bs-auto-close='outside' aria-expanded='false'>
 						<i aria-label='Filters' class='bi bi-gear-fill'></i>
 					</button>
@@ -30,8 +29,7 @@
 							</div>
 						</li>
 					</ul>
-				</template>
-				</VAutoComplete>
+				</div>
 				<button class="btn btn-gradient flex-shrink-0" v-on:click="newProject()">New project</button>
 			</div>
 		</div>
