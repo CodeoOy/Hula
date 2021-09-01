@@ -1,3 +1,5 @@
+import '../scss/main.scss'
+
 import { createApp } from 'vue'
 import store from './store'
 import api from './api.js'

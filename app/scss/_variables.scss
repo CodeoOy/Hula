@@ -29,8 +29,8 @@ $accordion-button-active-color: $link-color;
 
 @font-face {
     font-family: 'salomeitalic';
-    src: url('../assets/salome_italic-webfont.woff2') format('woff2'),
-         url('../assets/salome_italic-webfont.woff') format('woff');
+    src: url('assets/salome_italic-webfont.woff2') format('woff2'),
+         url('assets/salome_italic-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
@@ -39,8 +39,8 @@ $accordion-button-active-color: $link-color;
 // Bootstrap icon fonts
 @font-face {
     font-family: "bootstrap-icons";
-    src: url("../assets/bootstrap-icons.woff2?856008caa5eb66df68595e734e59580d") format("woff2"),
-    url("../assets/bootstrap-icons.woff?856008caa5eb66df68595e734e59580d") format("woff");
+    src: url("assets/bootstrap-icons.woff2?856008caa5eb66df68595e734e59580d") format("woff2"),
+    url("assets/bootstrap-icons.woff?856008caa5eb66df68595e734e59580d") format("woff");
 }
 
 $font-heading: 'salomeitalic', sans-serif;

@@ -9,7 +9,6 @@
 
 // Layout & components
 @import '../node_modules/bootstrap/scss/root';
-@import '../node_modules/bootstrap/scss/utilities/api';
 @import '../node_modules/bootstrap/scss/reboot';
 @import '../node_modules/bootstrap/scss/type';
 // @import '../node_modules/bootstrap/scss/images';
@@ -48,7 +47,7 @@
 // Custom styles
 
 body {
-	background-image: url('../assets/bg4.jpg');
+	background-image: url('assets/bg4.jpg');
 	background-size: cover;
 	background-attachment: fixed;
 }
@@ -87,15 +86,6 @@ a {
 
 .accordion-body {
 	padding: 0;
-}
-
-.autocomplete {
-	position: relative;
-	display: inline-block;
-	vertical-align: middle;
-	.active {
-		background-color: $primary;
-	}
 }
 
 .text-white {
@@ -216,7 +206,7 @@ nav {
 
 .form-control {
 	background-color: #bea7c4;
-	border: 1px solid #000;
+	border: 1px solid #bea7c4;
 }
 
 .font-heading {
