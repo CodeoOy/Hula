@@ -11,12 +11,12 @@
 				</thead>
 				<tbody>
 					<tr v-for="lead in leads" :key="lead.id">
-						<th scope="row">
+						<td>
 							<router-link :to="{ name: 'page-project', params: { id: lead.id }}">
 								{{ lead.name }}
-								<i v-if='lead.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
 							</router-link>
-						</th>
+							<i v-if='lead.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
+						</td>
 						<td>
 							<span
 								v-for="skill in lead.skills"
