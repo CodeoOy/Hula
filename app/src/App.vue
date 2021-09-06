@@ -21,7 +21,6 @@
   		},
 		methods: {
 			logOut() {
-				this.$store.commit('errorHandling')
 				this.$router.push({ name: 'page-login' })
 			},
 			flashIt(errorObject) {
