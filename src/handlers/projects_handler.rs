@@ -172,6 +172,7 @@ pub async fn create_project(
 		projects_repository::create_project(
 			projectdata.name.clone(),
 			projectdata.description.clone(),
+			projectdata.is_hidden,
 			logged_user.email,
 			&pool,
 		)

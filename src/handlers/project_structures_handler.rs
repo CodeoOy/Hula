@@ -125,6 +125,7 @@ pub fn save_project_structure(
 		let db_project = projects_repository::create_project(
 			project.name.clone(),
 			project.description.clone(),
+			project.is_hidden,
 			email.clone(),
 			&pool,
 		)?;

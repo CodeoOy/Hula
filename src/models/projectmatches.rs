@@ -12,6 +12,7 @@ pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 pub struct ProjectMatch {
 	pub idx: i32,
 	pub project_id: uuid::Uuid,
+	pub project_name: String,
 	pub skill_label: String,
 	pub skill_mandatory: bool,
 	pub pn_id: uuid::Uuid,

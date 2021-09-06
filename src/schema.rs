@@ -21,7 +21,7 @@ table! {
 		updated_by -> Varchar,
 	}
 }
-
+ 
 table! {
 	projectneeds (id) {
 		id -> Uuid,
@@ -204,6 +204,7 @@ table! {
 	projectmatches(idx) {
 		idx -> Int4,
 		project_id -> Uuid,
+		project_name -> Varchar,
 		skill_label -> Varchar,
 		skill_mandatory -> Bool,
 		pn_id -> Uuid,
