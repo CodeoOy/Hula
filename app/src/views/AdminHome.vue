@@ -4,10 +4,10 @@
 			<div class="col-md-4">
 				<ul class="nav nav-tabs nav-dark">
 					<li class="nav-item">
-						<a class="nav-link" v-bind:class="{ active: tabToggle }" aria-current="page" href="#" v-on:click="tabToggle = true">Find by project</a>
+						<button class="nav-link" v-bind:class="{ active: tabToggle }" aria-current="page" v-on:click="tabToggle = true">Find by project</button>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" v-bind:class="{ active: !tabToggle }" href="#" v-on:click="tabToggle = false">Find by developer</a>
+						<button class="nav-link" v-bind:class="{ active: !tabToggle }" v-on:click="tabToggle = false">Find by developer</button>
 					</li>
 				</ul>
 				<div class="p-3 rounded-2 content-box bg-dark text-light">

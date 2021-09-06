@@ -52,18 +52,16 @@
 							>{{ skill.skill_label }}</span>
 						</td>
 						<td>
-							<a
+							<button
 								v-for="match in project.matches"
 								:key="match.user_id"
-								href="#"
-								v-on:click.prevent="showMatch(project, match)"
+								v-on:click="showMatch(project, match)"
+								class='btn btn-unstyled'
 							><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" />
-							</a>
+							</button>
 						</td>
 						<td>
-							<a href="#" v-on:click.prevent="confirmDelete(project)">
-								<i class="bi-trash-fill me-2"></i>
-							</a>
+							<button class='btn btn-unstyled' v-on:click="confirmDelete(project)"><i class="bi-trash-fill me-2"></i></button>
 						</td>
 					</tr>
 				</tbody>

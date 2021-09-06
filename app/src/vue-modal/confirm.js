@@ -25,7 +25,7 @@ export default modal => {
 				break
 	
 			case 'need.skill':
-				title = data.label
+				title = data.skill_label
 				apiCall = api.needs.skills.delete.bind(null, data.id)
 				break
 	

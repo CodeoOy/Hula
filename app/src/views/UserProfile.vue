@@ -5,8 +5,8 @@
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h1 class="h1">{{ user.firstname }} {{ user.lastname }}</h1>
 					<p>{{ user.email }}</p>
-					<a href="#" v-on:click.prevent="editUser(user)"><i class="bi-pencil-fill me-2"></i></a>
-					<a href="#" v-on:click.prevent="confirmDelete('user', user)"><i class="bi-trash-fill me-2"></i></a>
+					<button class='btn btn-unstyled' v-on:click="editUser(user)"><i class="bi-pencil-fill me-2"></i></button>
+					<button class='btn btn-unstyled' v-on:click="confirmDelete('user', user)"><i class="bi-trash-fill me-2"></i></button>
 					<hr />
 					<VForm v-on:submit="saveFiles" class='clearfix'>
 						<div class="mb-3">
@@ -21,7 +21,7 @@
 									<tr v-for="file in files" :key="file.id">
 										<td><input type='checkbox' :checked='user.main_upload_id == file.id' @click='setCV(file.id)'></td>
 										<td><a href='#' @click.prevent>{{ file.filename }}</a></td>
-										<td><a href="#" v-on:click.prevent="confirmDelete('user.file', file)"><i class="bi-trash-fill me-2"></i></a></td>
+										<td><button class='btn btn-unstyled' v-on:click="confirmDelete('user.file', file)"><i class="bi-trash-fill me-2"></i></button></td>
 									</tr>
 								</tbody>
 							</table>
@@ -42,7 +42,7 @@
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<div class="d-sm-flex flex-row justify-content-between align-items-start">
 						<h3 class="h3">Skills</h3>
-						<button class="btn btn-gradient" v-on:click.prevent="editSkill()">Add skill</button>
+						<button class="btn btn-gradient" v-on:click="editSkill()">Add skill</button>
 					</div>
 					<div class="table-responsive">
 						<table class="table table-dark table-striped text-light">
@@ -60,8 +60,8 @@
 									<td>{{ skill.levelLabel }}</td>
 									<td>{{ skill.years }}</td>
 									<td>
-										<a href="#" v-on:click.prevent="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></a>
-										<a href="#" v-on:click.prevent="confirmDelete('user.skill', skill)"><i class="bi-trash-fill me-2"></i></a>
+										<button class='btn btn-unstyled' v-on:click="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></button>
+										<button class='btn btn-unstyled' v-on:click="confirmDelete('user.skill', skill)"><i class="bi-trash-fill me-2"></i></button>
 									</td>
 								</tr>
 							</tbody>
@@ -69,7 +69,7 @@
 					</div>
 					<div class="d-sm-flex flex-row justify-content-between align-items-start">
 						<h3 class="h3">Reservations</h3>
-						<button class="btn btn-gradient" v-on:click.prevent="editReservation()">Add reservation</button>
+						<button class="btn btn-gradient" v-on:click="editReservation()">Add reservation</button>
 					</div>
 					<table class="table table-dark table-striped text-light" v-if="reservations.length">
 						<thead>
@@ -88,8 +88,8 @@
 								<td>{{ reservation.end_time }}</td>
 								<td>{{ reservation.percentage }}</td>
 								<td>
-									<a href="#" v-on:click.prevent="editReservation(reservation)"><i class="bi-pencil-fill me-2"></i></a>
-									<a href="#" v-on:click.prevent="confirmDelete('user.reservation', reservation)"><i class="bi-trash-fill me-2"></i></a>
+									<button class='btn btn-unstyled' v-on:click="editReservation(reservation)"><i class="bi-pencil-fill me-2"></i></button>
+									<button class='btn btn-unstyled' v-on:click="confirmDelete('user.reservation', reservation)"><i class="bi-trash-fill me-2"></i></button>
 								</td>
 							</tr>
 						</tbody>

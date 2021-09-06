@@ -3,11 +3,13 @@
 		<VModal ref='modal' :modalTitle='title' modalBackdrop="static">
 			<FormLogin v-if="showSignup == false" @success='navigate' />
 			<FormRegister v-else/>
-			<p>
-				<a href="#" v-if="showSignup == false" v-on:click.prevent="showSignup = true">Or sign up here.</a>
-				<a href="#" v-else v-on:click.prevent="showSignup = false">Already a user? Log in here.</a>
-			</p>
-			<p><router-link :to='{ name: "forgot-password" }'>Forgot password?</router-link></p>
+			<div class='mt-3'>
+				<button class='btn btn-unstyled' v-if="showSignup == false" v-on:click="showSignup = true">Or sign up here.</button>
+				<button class='btn btn-unstyled' v-else v-on:click="showSignup = false">Already a user? Log in here.</button>
+			</div>
+			<div class='mt-3'>
+				<router-link :to='{ name: "forgot-password" }'>Forgot password?</router-link>
+			</div>
 		</VModal>
 	</div>
 </template>

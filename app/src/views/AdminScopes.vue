@@ -2,10 +2,7 @@
 	<div>
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Scopes</h2>
-			<button
-				class="btn btn-gradient"
-				v-on:click.prevent="editScope()"
-			>Add scope</button>
+			<button class="btn btn-gradient" v-on:click="editScope()">Add scope</button>
 		</div>
 		<div class="table-responsive">
 			<table class="table table-dark table-striped text-light">
@@ -21,18 +18,9 @@
 							<div class="title-actions">
 								<span class="title-actions__maintitle">{{ scope.label }}</span>
 								<div class="title-actions__actions">
-									<a 
-										href="#"
-										v-on:click.prevent="editLevel(scope)"
-									><i class="bi-plus-circle-fill me-2"></i></a>
-									<a 
-										href="#"
-										v-on:click.prevent="editScope(scope)"
-									><i class="bi-pencil-fill me-2"></i></a>
-									<a
-										href="#"
-										v-on:click.prevent="confirmDelete('skill.scope', scope)"
-									><i class="bi-trash-fill me-2"></i></a>
+									<button class='btn btn-unstyled' v-on:click="editLevel(scope)"><i class="bi-plus-circle-fill me-2"></i></button>
+									<button class='btn btn-unstyled' v-on:click="editScope(scope)"><i class="bi-pencil-fill me-2"></i></button>
+									<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.scope', scope)"><i class="bi-trash-fill me-2"></i></button>
 								</div>
 							</div>
 						</td>
@@ -41,19 +29,10 @@
 								<li class="title-actions" v-for="lvl in filterLevels(scope.id)" :key="lvl.id" :value="lvl.id">
 									<span class="title-actions__maintitle">{{ lvl.index }}: {{ lvl.label }} - {{ lvl.percentage }}</span>
 									<div class="title-actions__actions">
-										<a 
-											href="#"
-											:data-scope-id="lvl.id" 
-											:data-scope-name="lvl.label" 
-											title="Edit level" 
-											v-on:click.prevent="editLevel(lvl)"
-										><i class="bi-pencil-fill me-2"></i></a>
-										<a
-											href="#"
-											v-on:click.prevent="confirmDelete('skill.level', lvl)"
-										><i class="bi-trash-fill me-2"></i></a>
-										<a href="#" v-on:click.prevent="swapLevels({ ...lvl, swap_direction: 'Better' })"><i class="bi-caret-up-fill me-1"></i></a>
-										<a href="#" v-on:click.prevent="swapLevels({ ...lvl, swap_direction: 'Worse' })"><i class="bi-caret-down-fill me-2"></i></a>
+										<button class='btn btn-unstyled' v-on:click="editLevel(lvl)"><i class="bi-pencil-fill me-2"></i></button>
+										<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.level', lvl)"><i class="bi-trash-fill me-2"></i></button>
+										<button class='btn btn-unstyled' v-on:click="swapLevels({ ...lvl, swap_direction: 'Better' })"><i class="bi-caret-up-fill me-1"></i></button>
+										<button class='btn btn-unstyled' v-on:click="swapLevels({ ...lvl, swap_direction: 'Worse' })"><i class="bi-caret-down-fill me-2"></i></button>
 									</div>
 								</li>
 							</transition-group>

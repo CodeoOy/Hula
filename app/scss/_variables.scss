@@ -27,6 +27,8 @@ $accordion-button-active-bg: darken($primary, 30%);
 $accordion-color: $link-color;
 $accordion-button-active-color: $link-color;
 
+$link-decoration: none;
+
 @font-face {
     font-family: 'salomeitalic';
     src: url('assets/salome_italic-webfont.woff2') format('woff2'),

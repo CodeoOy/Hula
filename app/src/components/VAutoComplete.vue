@@ -8,13 +8,9 @@
         />
         <ul class='dropdown-menu' style='width:100%' v-bind:class='{ show: openSuggestion }'>
             <li v-for='(suggestion, index) in matches' :key='suggestion.id'>
-                <a href='#'
-                    @click='suggestionClick(suggestion)'
-                    class='dropdown-item'
-                    :class='{ active: isActive(index) }'
-                >
+                <button @click='suggestionClick(suggestion)' class='dropdown-item' :class='{ active: isActive(index) }'>
                     {{ itemLabel(suggestion) }}
-                </a>
+                </button>
             </li>
         </ul>
     </div>

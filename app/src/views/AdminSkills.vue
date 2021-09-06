@@ -3,10 +3,7 @@
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Skills</h2>
 			<div>
-				<button
-					class="btn btn-gradient"
-					v-on:click.prevent="editCategory()"
-				>New category</button>
+				<button class="btn btn-gradient" v-on:click="editCategory()">New category</button>
 			</div>
 		</div>
 		<div class="table-responsive">
@@ -23,18 +20,9 @@
 							<div class="title-actions">
 								<span class="title-actions__maintitle">{{ category.label }}</span>
 								<div class="title-actions__actions">
-									<a 
-										href="#"
-										v-on:click.prevent="editSkill(category)"
-									><i class="bi-plus-circle-fill me-2"></i></a>
-									<a 
-										href="#"
-										v-on:click.prevent="editCategory(category)"
-									><i class="bi-pencil-fill me-2"></i></a>
-									<a
-										href="#"
-										v-on:click.prevent="confirmDelete('skill.category', category)"
-									><i class="bi-trash-fill me-2"></i></a>
+									<button class='btn btn-unstyled' v-on:click="editSkill(category)"><i class="bi-plus-circle-fill me-2"></i></button>
+									<button class='btn btn-unstyled' v-on:click="editCategory(category)"><i class="bi-pencil-fill me-2"></i></button>
+									<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.category', category)"><i class="bi-trash-fill me-2"></i></button>
 								</div>
 							</div>
 						</td>
@@ -42,14 +30,8 @@
 							<div class="title-actions" v-for="skill in filterSkills(category.id)" :key="skill" :value="skill.id">
 								<span><span class="title-actions__maintitle">{{ skill.label }}</span><span class="title-actions__maintitle--dimmed"> ({{ getSkillScopeLabel(skill.skillscope_id) }})</span></span>
 								<div class="title-actions__actions">
-									<a 
-										href="#"
-										v-on:click.prevent="editSkill(skill)"
-									><i class="bi-pencil-fill me-2"></i></a>
-									<a
-										href="#"
-										v-on:click.prevent="confirmDelete('skill', skill)"
-									><i class="bi-trash-fill me-2"></i></a>
+									<button class='btn btn-unstyled' v-on:click="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></button>
+									<button class='btn btn-unstyled' v-on:click="confirmDelete('skill', skill)"><i class="bi-trash-fill me-2"></i></button>
 								</div>
 							</div>
 						</td>

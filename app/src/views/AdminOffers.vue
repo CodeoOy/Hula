@@ -30,14 +30,8 @@
 						<td>{{ offer.sold }}</td>
 						<td>{{ offer.comments }}</td>
 						<td>
-							<a
-								href='#'
-								v-on:click.prevent='edit(offer)'
-							><i class='bi-pencil-fill me-2'></i></a>
-							<a
-								href='#'
-								v-on:click.prevent='confirmDelete(offer)'
-							><i class='bi-trash-fill me-2'></i></a>
+							<button class='btn btn-unstyled' v-on:click='edit(offer)'><i class='bi-pencil-fill me-2'></i></button>
+							<button class='btn btn-unstyled' v-on:click='confirmDelete(offer)'><i class='bi-trash-fill me-2'></i></button>
 						</td>
 					</tr>
 				</tbody>

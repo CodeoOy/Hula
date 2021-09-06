@@ -24,10 +24,7 @@
 						</li>
 					</ul>
 				</div>
-				<button
-					class="btn btn-gradient flex-shrink-0"
-					v-on:click.prevent="inviteUser()"
-				>Invite a user</button>
+				<button class="btn btn-gradient flex-shrink-0" v-on:click="inviteUser()">Invite a user</button>
 			</div>
 		</div>
 		<div class="table-responsive">
@@ -51,10 +48,7 @@
 						</td>
 						<td>{{ user.email }}</td>
 						<td class="hoverable-td">
-							<a
-								href="#"
-								v-on:click.prevent="confirmDelete(user)"
-							><i class="bi-trash-fill me-2"></i></a>
+							<button class='btn btn-unstyled' v-on:click="confirmDelete(user)"><i class="bi-trash-fill me-2"></i></button>
 						</td>
 					</tr>
 				</tbody>

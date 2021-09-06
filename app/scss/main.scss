@@ -64,10 +64,6 @@ main {
     flex-direction: column;
 }
 
-a {
-	text-decoration: none;
-}
-
 .db {
 	display: block;
 }
@@ -117,6 +113,14 @@ a {
 	&:hover {
 		background-image: linear-gradient(to bottom, lighten($secondary, 20%) 0%,rgb(14, 191, 185) 100%);
 	}
+}
+
+.btn-unstyled {
+	@extend .btn-link;
+	margin: 0;
+	border: 0;
+	padding: 0;
+	vertical-align: inherit;
 }
 
 .icon {

@@ -27,7 +27,7 @@
 				</tbody>
 			</table>
 		</div>
-		<a href="#" v-on:click.prevent="addOffer"><i class="bi-briefcase-fill"></i></a>
+		<button class='btn btn-link' v-on:click="addOffer"><i class="bi-briefcase-fill"></i></button>
     </div>
 </template>
 

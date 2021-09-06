@@ -24,11 +24,11 @@
 				</svg>
 			</router-link>
 			<div class="dropdown text-end order-1 order-sm-2">
-				<a href="#" class="d-block" id="usermenu" data-bs-toggle="dropdown" aria-expanded="false">
+				<button id="usermenu" class='btn btn-unstyled' data-bs-toggle="dropdown" aria-expanded="false">
 					<svg class="icon" width="16" height="16" viewbox="0 0 16 16" fill="currentColor">
 						<path d="M11 6a3 3 0 11-6 0 3 3 0 016 0z"></path><path fill-rule="evenodd" d="M0 8a8 8 0 1116 0A8 8 0 010 8zm8-7a7 7 0 00-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 008 1z"></path>
 					</svg>
-				</a>
+				</button>
 				<ul v-if="loggedUser" class="dropdown-menu dropdown-menu-end" aria-labelledby="usermenu">
 					<li v-if="loggedUser.isadmin === true">
 						<router-link :to='{ name: "admin-projects", params: { id: loggedUser.id } }' class="dropdown-item">Admin</router-link>
@@ -37,7 +37,7 @@
 						<router-link :to='{ name: "user", params: { id: loggedUser.id } }' class="dropdown-item">Profile</router-link>
 					</li>
 					<li>
-						<a href="#" v-on:click="logOut()" class="dropdown-item">Log out</a>
+						<button v-on:click="logOut()" class="dropdown-item">Log out</button>
 					</li>
 				</ul>
 			</div>

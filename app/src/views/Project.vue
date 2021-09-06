@@ -8,14 +8,8 @@
 						<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-3 float-end"></i>
 					</h2>
 					<p v-if="project.description">{{ project.description }}</p>
-					<a 
-						href='#'
-						v-on:click.prevent='editProject(project)'
-					><i class='bi-pencil-fill me-2'></i></a>
-					<a 
-						href='#'
-						v-on:click.prevent='confirmDelete("project", project)'
-					><i class='bi-trash-fill me-2'></i></a>
+					<button class='btn btn-unstyled' v-on:click='editProject(project)'><i class='bi-pencil-fill me-2'></i></button>
+					<button class='btn btn-unstyled' v-on:click='confirmDelete("project", project)'><i class='bi-trash-fill me-2'></i></button>
                 </div>
 			</div>
 			<div class='col-md-8'>
@@ -24,7 +18,7 @@
 						<h2 class='h2'>Needs</h2>
 						<button
 							class='btn btn-gradient'
-							v-on:click.prevent='editNeed()'
+							v-on:click='editNeed()'
 						>Add need</button>
 					</div>
 					<div class='mt-3' v-for='need in project.needs' :key='need.id'>
@@ -34,19 +28,10 @@
 								<h5 class='h5'>{{ need.label }}</h5>
 								<p>{{ need.count_of_users}} from {{ need.begin_time }} at percentage: {{ need.percentage}}</p>
 							</div>
-							<div class='btn-group' role='group' aria-label='Need actions'>
-								<a 
-									href='#'
-									v-on:click.prevent='editSkill({ need })'
-								><i class='bi-plus-circle-fill me-2'></i></a>
-								<a
-									href='#'
-									v-on:click.prevent='editNeed(need)'
-								><i class='bi-pencil-fill me-2'></i></a>
-								<a
-									href='#'
-									v-on:click.prevent='confirmDelete("need", need)'
-								><i class='bi-trash-fill me-2'></i></a>
+							<div>
+								<button class='btn btn-unstyled' v-on:click='editSkill({ need })'><i class='bi-plus-circle-fill me-2'></i></button>
+								<button class='btn btn-unstyled' v-on:click='editNeed(need)'><i class='bi-pencil-fill me-2'></i></button>
+								<button class='btn btn-unstyled' v-on:click='confirmDelete("need", need)'><i class='bi-trash-fill me-2'></i></button>
 							</div>
 						</div>
 						<div class="table-responsive">
@@ -69,14 +54,8 @@
 										<td>{{ skill.min_years }}</td>
 										<td>{{ skill.max_years }}</td>
 										<td class='hoverable-td'>
-											<a 
-												href='#'
-												v-on:click.prevent='editSkill({ need, skill })'
-											><i class='bi-pencil-fill me-2'></i></a>
-											<a
-												href='#'
-												v-on:click.prevent='confirmDelete("need.skill", skill)'
-											><i class='bi-trash-fill me-2'></i></a>
+											<button class='btn btn-unstyled' v-on:click='editSkill({ need, skill })'><i class='bi-pencil-fill me-2'></i></button>
+											<button class='btn btn-unstyled' v-on:click='confirmDelete("need.skill", skill)'><i class='bi-trash-fill me-2'></i></button>
 										</td>
 									</tr>
 								</tbody>
