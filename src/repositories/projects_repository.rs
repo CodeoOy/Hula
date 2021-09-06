@@ -25,6 +25,7 @@ pub fn query_one(uuid_query: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Proje
 pub fn create_project(
 	q_project_name: String,
 	q_project_description: Option<String>,
+	q_is_hidden: bool,
 	q_email: String,
 	pool: &web::Data<Pool>,
 ) -> Result<Project, Error> {
@@ -34,7 +35,7 @@ pub fn create_project(
 	let new_project = Project {
 		id: uuid::Uuid::new_v4(),
 		description: q_project_description,
-		is_hidden: false,
+		is_hidden: q_is_hidden,
 		name: q_project_name,
 		updated_by: q_email,
 	};
