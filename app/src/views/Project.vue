@@ -120,7 +120,7 @@
 
 		async mounted() {
 			this.$store.dispatch('setChosenProject', this.$route.params.id)
-			this.matches = await this.$api.matches.get(this.$route.params.id)
+			if (this.$store.state.loggeduser.isadmin) this.matches = await this.$api.matches.get(this.$route.params.id)
 		},
 
 		methods: {

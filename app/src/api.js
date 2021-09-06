@@ -52,10 +52,10 @@ async function handleHttpStatus(response) {
 	switch (response.status) {
 		case 401:
 			store.dispatch('setUser', null)
-			router.push({ name: 'page-login' })
+			router.push({ name: 'login' })
 			break
 		case 500:
-			router.push({ name: 'page-error' })
+			router.push({ name: 'error' })
 			break
 	}
 

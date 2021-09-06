@@ -39,7 +39,7 @@
 				<tbody>
 					<tr v-for="project in filteredProjects" :key="project.id">
 						<td>
-							<router-link :to="{ name: 'page-project', params: { id: project.id }}">
+							<router-link :to="{ name: 'project', params: { id: project.id }}">
 								{{ project.name }}
 								<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
 							</router-link>

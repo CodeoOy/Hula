@@ -11,7 +11,7 @@
 <script>
 	import ConfirmUser from '../components/ConfirmUser.vue'
 	export default {
-		name: 'ConfirmUserview',
+		name: 'ConfirmUser',
 		components: {
 			ConfirmUser: ConfirmUser
 		}

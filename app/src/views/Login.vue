@@ -40,7 +40,7 @@
 		},
 		methods: {
 			navigate() {
-				this.$router.replace(this.$route.query.redirect || { name: 'page-home' })
+				this.$router.replace(this.$route.query.redirect || { name: 'home' })
 			},
 		},
 	}

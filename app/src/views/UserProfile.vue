@@ -96,23 +96,8 @@
 					</table>
 				</div>
 				<div v-if='matches.length' class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					<h3 class="h3">Projects matching the skills</h3>
-					<div class="table-responsive">
-						<table class="table table-dark table-striped text-light">
-							<thead>
-								<tr>
-									<th scope="col">Project</th>
-									<th scope="col">Skills</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr v-for="match in matches" :key="match.id">
-									<td><router-link :to='{ name: "page-project", params: { id: match.id } }'>{{ match.name }}</router-link></td>
-									<td><span class="badge badge-skill me-2" v-for="skill in match.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+					<h3 class="h3">Projects matching the user's skills</h3>
+					<VMatchesForUser :matches='matches' />
 				</div>
 			</div>
 		</div>
@@ -123,9 +108,14 @@
 	import FormUserInfo from '../forms/FormUserInfo.vue'
 	import FormUserSkill from '../forms/FormUserSkill.vue'
 	import FormUserReservation from '../forms/FormUserReservation.vue'
+	import VMatchesForUser from '../components/VMatchesForUser.vue'
 
 	export default {
-		name: 'Profile',
+		name: 'UserProfile',
+
+		components: {
+			VMatchesForUser,
+		},
 
 		data() {
 			return {
@@ -148,10 +138,12 @@
 
 		async mounted() {
 			if (this.$route.params.id != this.$store.state.loggeduser.id) {
-				if (!this.$store.state.loggeduser.isadmin) this.$router.push({ name: 'page-error' })
+				if (!this.$store.state.loggeduser.isadmin) this.$router.push({ name: 'error' })
 			}
 
-			if (!this.$store.state.projects.length) this.$store.dispatch('getProjects')
+			if (this.$store.state.loggeduser.isadmin && !this.$store.state.projects.length) {
+				this.$store.dispatch('getProjects')
+			}
 
 			await Promise.all([
 				this.getUser(),

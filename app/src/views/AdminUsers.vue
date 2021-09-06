@@ -44,7 +44,7 @@
 						<td>
 							<span>
 								<VAvatar :user_id="user.id" :firstname="user.firstname" :lastname="user.lastname" />
-								<router-link :to="{ name: 'page-profile', params: { id: user.id}}">
+								<router-link :to="{ name: 'user', params: { id: user.id}}">
 									{{ user.firstname }} {{ user.lastname }}
 								</router-link>
 							</span>

@@ -35,7 +35,7 @@
 				</a>
 				<ul v-if="loggedUser" class="dropdown-menu dropdown-menu-end" aria-labelledby="usermenu">
 					<li v-if="loggedUser.isadmin === true">
-						<a href="/app/admin" class="dropdown-item">Admin</a>
+						<a href="/app/admin/projects" class="dropdown-item">Admin</a>
 					</li>
 					<li>
 						<a :href="`/app/user/${loggedUser.id}`" class="dropdown-item">Profile</a>

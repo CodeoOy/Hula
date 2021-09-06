@@ -21,7 +21,7 @@
   		},
 		methods: {
 			logOut() {
-				this.$router.push({ name: 'page-login' })
+				this.$router.push({ name: 'login' })
 			},
 			flashIt(errorObject) {
 				this.$flashMessage.show({

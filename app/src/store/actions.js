@@ -78,7 +78,7 @@ export default {
 		try {
 			await api.users.log.out()
 			await context.dispatch('setUser', null)
-			router.push({ name: 'page-login' })
+			router.push({ name: 'login' })
 		} catch (error) {
 			console.warn(`Logout failed: ${error.message}`)
 			return false
