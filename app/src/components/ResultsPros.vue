@@ -14,7 +14,7 @@
 				</thead>
 				<tbody>
 					<tr v-for="(user, index) in users" :key="user.user_id" :class="`tier tier--${user.tier}`">
-						<th scope="row" class="tier__index"><span :class="`tier__ball tier__ball--${user.tier}`" :style="`zIndex: ${index}`">{{ index + 1 }}</span></th>
+						<th scope="row" class="tier__index position-relative"><span :class="`tier__ball tier__ball--${user.tier}`" :style="`zIndex: ${index}`">{{ index + 1 }}</span></th>
 						<td><a href="#"
 							v-on:click.prevent='showMatch(user)'
 						>{{ user.user_first_name }} {{ user.user_last_name }}</a></td>
