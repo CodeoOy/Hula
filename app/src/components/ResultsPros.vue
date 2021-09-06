@@ -19,7 +19,7 @@
 							v-on:click.prevent='showMatch(user)'
 						>{{ user.user_first_name }} {{ user.user_last_name }}</a></td>
 						<td>{{ user.hasMandatory }}</td>
-						<td><span class="badge" v-for="match in user.matches" :key="match.skill_id">{{ match.skill_label }}</span></td>
+						<td><span class="badge badge-skill me-2" v-for="match in user.matches" :key="match.skill_id">{{ match.skill_label }}</span></td>
 						<td>{{ user.tier }}</td>
 						<td>{{ user.isAvailable }}</td>
 					</tr>

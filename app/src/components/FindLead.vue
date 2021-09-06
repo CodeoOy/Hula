@@ -4,7 +4,7 @@
 		<VAutoComplete
 			v-if="users.length"
 			:suggestions="users"
-			placeholder='Pro'
+			placeholder='Developer'
 			:dropdown="true"
 			:dropdownLabel="user => `${user.firstname} ${user.lastname}`"
 			:filterProperties="['firstname', 'lastname']"
@@ -37,7 +37,7 @@
 						return match.user_id === user.id
 					})
 				})
-				this.$emit('leadsfetched', projects)
+				this.$emit('leadsfetched', { user, projects })
 			},
 		},
 		async mounted() {

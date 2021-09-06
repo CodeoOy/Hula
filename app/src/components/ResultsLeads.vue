@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<h2 class="h2">Lead search results</h2>
+		<h2 class="h2">Projects for {{ user.firstname }} {{ user.lastname }}</h2>
 		<div class="table-responsive">
-			<table v-if="leads.length" class="table table-dark table-striped text-light">
+			<table v-if="projects.length" class="table table-dark table-striped text-light">
 				<thead>
 					<tr>
 						<th scope="col">Project</th>
@@ -10,16 +10,16 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="lead in leads" :key="lead.id">
+					<tr v-for="project in projects" :key="project.id">
 						<td>
-							<router-link :to="{ name: 'page-project', params: { id: lead.id }}">
-								{{ lead.name }}
+							<router-link :to="{ name: 'page-project', params: { id: project.id }}">
+								{{ project.name }}
 							</router-link>
-							<i v-if='lead.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
+							<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
 						</td>
 						<td>
 							<span
-								v-for="skill in lead.skills"
+								v-for="skill in project.skills"
 								:key="skill.skill_id"
 								class="badge badge-skill me-2"
 							>
@@ -37,7 +37,8 @@
 	export default {
 		name: 'ResultsLeads',
 		props: {
-			leads: Array,
+			user: Object,
+			projects: Array,
 		}
 	}
 </script>
