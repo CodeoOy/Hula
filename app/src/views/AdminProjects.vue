@@ -126,41 +126,15 @@
 			},
 
 			async showMatch(project, match) {
-				if (!(project.id in this.matchSkills)) await this.loadMatchSkills(project)
+				if (!(project.id in this.matchSkills)) {
+					this.matchSkills[project.id] = await this.$api.matches.get(project.id)
+				}
 
 				this.$modal({
 					title: 'Match',
 					component: MatchContent,
-					props: {
-						user_id: match.user_id,
-						user_first_name: match.first_name,
-						user_last_name: match.last_name,
-						project_id: project.id,
-						project_name: project.name,
-						matches: this.matchSkills[project.id][match.user_id],
-					},
+					props: this.matchSkills[project.id][match.user_id],
 				})
-			},
-
-			async loadMatchSkills(project) {
-				const skillProps = [
-					'idx',
-					'skill_label',
-					'required_index',
-					'user_index',
-					'required_years',
-					'user_years',
-				]
-
-				const matches = await this.$api.matches.get(project.id)
-
-				this.matchSkills[project.id] = matches.reduce((users, match) => {
-					if (!(match.user_id in users)) users[match.user_id] = []
-					users[match.user_id].push(Object.fromEntries(
-						skillProps.map(prop => [prop, match[prop]])
-					))
-					return users
-				}, {})
 			},
 
 			async confirmDelete(project) {

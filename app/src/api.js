@@ -216,7 +216,31 @@ export const api = {
 	},
 
 	matches: {
-		get: getArray('/api/matches'),
+		get: async id => {
+			const matches = await returnObject(request({ url: `/api/matches/${id}` }))
+
+			return !matches ? matches : matches.reduce((users, match) => {
+				const { user, skill } = Object.entries(match).reduce((match, [prop, value]) => {
+					match[prop in match.user ? 'user' : 'skill'][prop] = value
+					return match
+				}, { user: {
+					user_id: null,
+					user_first_name: null,
+					user_last_name: null,
+					user_is_hidden: null,
+					project_id: null,
+					project_name: null,
+				}, skill: {} })
+
+				if (user.user_id in users) {
+					users[user.user_id].skills.push(skill)
+				} else {
+					users[user.user_id] = { ...user, skills: [skill] }
+				}
+
+				return users
+			}, {})
+		}
 	},
 
 	offers: {

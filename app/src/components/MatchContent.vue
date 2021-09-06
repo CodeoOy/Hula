@@ -17,12 +17,12 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="match in matches" :key="match.idx">
-						<td>{{ match.skill_label }}</td>
-						<td>{{ match.required_index}}</td>
-						<td>{{ match.user_index }}</td>
-						<td>{{ match.required_years}}</td>
-						<td>{{ match.user_years }}</td>
+					<tr v-for="skill in skills" :key="skill.idx">
+						<td>{{ skill.skill_label }}</td>
+						<td>{{ skill.required_index}}</td>
+						<td>{{ skill.user_index }}</td>
+						<td>{{ skill.required_years}}</td>
+						<td>{{ skill.user_years }}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -56,7 +56,7 @@
 				type: String,
 				required: true,
 			},
-			matches: {
+			skills: {
 				type: Array,
 				required: true,
 			},

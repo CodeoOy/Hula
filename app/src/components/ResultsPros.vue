@@ -1,5 +1,5 @@
 <template>
-	<div v-if="matches.length">
+	<div v-if="users.length">
 		<div class="table-responsive">
 			<table class="table table-dark table-striped text-light">
 				<thead>
@@ -19,7 +19,7 @@
 							v-on:click.prevent='showMatch(user)'
 						>{{ user.user_first_name }} {{ user.user_last_name }}</a></td>
 						<td>{{ user.hasMandatory }}</td>
-						<td><span class="badge badge-skill me-2" v-for="match in user.matches" :key="match.skill_id">{{ match.skill_label }}</span></td>
+						<td><span class="badge badge-skill me-2" v-for="skill in user.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></td>
 						<td>{{ user.tier }}</td>
 						<td>{{ user.isAvailable }}</td>
 					</tr>
@@ -45,7 +45,7 @@
 				required: true,
 			},
 			matches: {
-				type: Array,
+				type: Object,
 				required: true,
 			},
 		},
@@ -55,33 +55,13 @@
 		},
 		computed: {
 			users() {
-				if (this.matches.length) {
-					const users = Object.values(this.matches.reduce((users, match) => {
-						const {
-							user_id,
-							user_first_name,
-							user_last_name,
-							user_is_hidden,
-							project_id,
-							...rest
-						} = match
-						if (user_id in users) {
-							users[user_id].matches.push(rest)
-						} else {
-							users[user_id] = {
-								user_id,
-								user_first_name,
-								user_last_name,
-								user_is_hidden,
-								project_id,
-								matches: [rest],
-							}
-						}
-						users[user_id].hasMandatory = this.hasAllMandatorySkills(users[user_id])
-						users[user_id].tier = this.tier(users[user_id])
-						users[user_id].isAvailable = this.isAvailable(users[user_id])
-						return users
-					}, {}))
+				if (this.matches) {
+					const users = Object.values(this.matches).map(user => {
+						user.hasMandatory = this.hasAllMandatorySkills(user)
+						user.tier = this.tier(user)
+						user.isAvailable = this.isAvailable(user)
+						return user
+					})
 					return users.sort((a, b) => (a.tier > b.tier) ? 1 : (a.tier === b.tier) ? ((a.isAvailable > b.isAvailable) ? 1 : -1) : -1 )
 				}
 			},
@@ -116,7 +96,7 @@
 			hasAllMandatorySkills(user) {
 				if (this.mandatorySkills.length) {
 					return this.mandatorySkills.every(skill => {
-						return user.matches.some(match => {
+						return user.skills.some(match => {
 							return match.skill_label === skill.skill_label
 							&& match.user_index >= match.required_index
 							&& match.user_years >= match.required_minyears
@@ -128,18 +108,15 @@
 				}
 			},
 			isAvailable(user) {
-				return user.matches.every(match => {
+				return user.skills.every(match => {
 					return match.required_load >= match.user_load
 				})
 			},
-			showMatch(user) {
+			showMatch(props) {
 				this.$modal({
 					title: 'Match',
 					component: MatchContent,
-					props: {
-						...user,
-						project_name: this.project.name,
-					},
+					props,
 				})
 			},
 		},

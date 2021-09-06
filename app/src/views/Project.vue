@@ -84,7 +84,7 @@
 						</div>
 					</div>
 				</div>
-				<div v-if='matches.length' class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+				<div v-if='matches' class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h2 class="h2">Pros matching the needs</h2>
 					<ResultsPros :project='project' :matches='matches' />
 				</div>
@@ -108,7 +108,7 @@
 
 		data() {
 			return {
-				matches: [],
+				matches: null,
 			}
 		},
 
