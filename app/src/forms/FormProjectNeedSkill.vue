@@ -1,5 +1,5 @@
 <template>
-	<VForm v-on:submit='onSubmit' v-if='skills.length && levels.length'>
+	<VForm v-on:submit='onSubmit'>
 
 		<div class='mb-2' v-if='!id'>
 			<label for='skill' class='form-label'>Skill</label>
@@ -122,12 +122,18 @@
 
 			return {
 				form: { ...props },
-				skills: {},
-				levels: {},
 			}
 		},
 
 		computed: {
+			skills() {
+				return this.$store.state.skills
+			},
+
+			levels() {
+				return this.$store.state.skillLevels
+			},
+
 			scopeId() {
 				const skill = this.skills.find(skill => skill.id == this.form.skill_id)
 				return skill ? skill.skillscope_id : null
@@ -142,17 +148,9 @@
 			},
 		},
 
-		async mounted() {
-			const [
-				skills,
-				levels,
-			] = await Promise.all([
-				this.$api.skills.get(),
-				this.$api.skills.levels.get(),
-			])
-
-			this.skills = skills
-			this.levels = levels
+		mounted() {
+			if (!this.$store.state.skills.length) this.$store.dispatch('getSkills')
+			if (!this.$store.state.skillLevels.length) this.$store.dispatch('getSkillLevels')
 		},
 
 		methods: {
