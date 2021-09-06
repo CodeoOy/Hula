@@ -1,9 +1,9 @@
 <template>
 	<div>
 		<h4 class="h4">
-			<a :href="`/app/user/${user_id}`">{{ user_first_name }} {{ user_last_name }}</a>
+			<router-link :to='{ name: "user", params: { id: user_id } }'>{{ user_first_name }} {{ user_last_name }}</router-link>
 			<i class="bi-heart-fill mx-2"></i>
-			<a :href="`/app/project/${project_id}`">{{ project_name }}</a>
+			<router-link :to='{ name: "project", params: { id: project_id } }'>{{ project_name }}</router-link>
 		</h4>
 		<div class="table-responsive">
 			<table class="table table-dark table-striped text-light">

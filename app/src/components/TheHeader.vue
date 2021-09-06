@@ -1,11 +1,7 @@
 <template>
 	<nav class="navbar navbar-dark navbar-expand-sm bg-dark">
 		<div class="container-fluid">
-			<!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button> -->
-			<a href="/" class="navbar-brand text-decoration-none hulalogo order-0">
-				<!--<svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>-->
+			<router-link :to='{ name: "home" }' class="navbar-brand text-decoration-none hulalogo order-0">
 				<svg height="50" viewBox="0 0 690 250" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
 					<g transform="matrix(0.862694,0,0,0.862694,-203.255,-257.425)">
 						<circle cx="384.358" cy="446.514" r="44.523"/>
@@ -26,7 +22,7 @@
 						<path d="M0.232,-0.408C0.305,-0.408 0.35,-0.366 0.35,-0.298L0.35,-0.271L0.209,-0.271C0.101,-0.271 0.034,-0.218 0.034,-0.13C0.034,-0.038 0.101,0.013 0.207,0.013C0.267,0.013 0.325,-0.012 0.35,-0.059L0.35,-0.023C0.35,-0.006 0.364,0.008 0.381,0.008C0.398,0.008 0.412,-0.006 0.412,-0.023L0.412,-0.298C0.412,-0.4 0.348,-0.468 0.232,-0.468C0.148,-0.468 0.094,-0.433 0.066,-0.389C0.063,-0.384 0.061,-0.379 0.061,-0.372C0.061,-0.356 0.074,-0.343 0.09,-0.343C0.099,-0.343 0.106,-0.346 0.116,-0.357C0.147,-0.392 0.179,-0.408 0.232,-0.408ZM0.213,-0.045C0.135,-0.045 0.099,-0.078 0.099,-0.13C0.099,-0.188 0.144,-0.215 0.209,-0.215L0.35,-0.215L0.35,-0.173C0.35,-0.088 0.283,-0.045 0.213,-0.045Z" style="fill-rule:nonzero;"/>
 					</g>
 				</svg>
-			</a>
+			</router-link>
 			<div class="dropdown text-end order-1 order-sm-2">
 				<a href="#" class="d-block" id="usermenu" data-bs-toggle="dropdown" aria-expanded="false">
 					<svg class="icon" width="16" height="16" viewbox="0 0 16 16" fill="currentColor">
@@ -35,23 +31,16 @@
 				</a>
 				<ul v-if="loggedUser" class="dropdown-menu dropdown-menu-end" aria-labelledby="usermenu">
 					<li v-if="loggedUser.isadmin === true">
-						<a href="/app/admin/projects" class="dropdown-item">Admin</a>
+						<router-link :to='{ name: "admin-projects", params: { id: loggedUser.id } }' class="dropdown-item">Admin</router-link>
 					</li>
 					<li>
-						<a :href="`/app/user/${loggedUser.id}`" class="dropdown-item">Profile</a>
+						<router-link :to='{ name: "user", params: { id: loggedUser.id } }' class="dropdown-item">Profile</router-link>
 					</li>
 					<li>
 						<a href="#" v-on:click="logOut()" class="dropdown-item">Log out</a>
 					</li>
 				</ul>
 			</div>
-			<!--
-			<div class="collapse navbar-collapse order-2 order-sm-1" id="navbarToggler">
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-					<li class="nav-item"><a href="/app/dashboard" class="nav-link px-2">Dashboard</a></li>
-				</ul>
-			</div>
-			-->
 		</div>
 	</nav>
 </template>
