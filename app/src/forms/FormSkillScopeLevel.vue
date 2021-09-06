@@ -1,74 +1,67 @@
 <template>
-	<v-form v-on:submit="saveSkillLevel">
-		<div class="mb-2">
-			<label class="form-label">Level name</label>
-			<error-message name="name" class="error"></error-message>
-			<v-field
-				v-model="formData.label"
-				:rules="isRequired"
-				as="input"
-				type="text"
-				name="name"
-				class="form-control"
-				placeholder="Rookie"
-				aria-label="Level name"
-			></v-field>
+	<VForm v-on:submit="onSubmit">
+
+		<div class='mb-2'>
+			<label for='label' class='form-label'>Name</label>
+			<ErrorMessage name='label' class='error' />
+			<VField
+				v-model='form.label'
+				rules='required'
+				type='text'
+				id='label'
+				name='label'
+				label='Name'
+				aria-label='Name'
+				placeholder='Rookie' 
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">Percentage</label>
-			<error-message name="percentage" class="error"></error-message>
-			<v-field
-				v-model.number="formData.percentage"
-				:rules="isRequired"
-				as="input"
-				type="number"
-				name="percentage"
-				class="form-control"
-				aria-label="Level percentage"
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='percentage' class='form-label'>Percentage</label>
+			<ErrorMessage name='percentage' class='error' />
+			<VField
+				v-model.number='form.percentage'
+				rules='required'
+				type='number'
+				name='percentage'
+				id='percentage'
+				label='Percentage'
+				aria-label='Percentage'
+				class='form-control'
+			/>
 		</div>
+
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
-	</v-form> 
+	</VForm> 
 </template>
 
 <script>
-import { Field, Form, ErrorMessage } from 'vee-validate';
-export default {
-	name: 'SkillScopeLevel',
-	data() {
-		return {
-			scopes: {},
-			formData: {
-				id: this.chosenLevel.id || undefined,
-				label: this.chosenLevel.label || '',
-				percentage: this.chosenLevel.percentage || 0,
-				skillscope_id: this.chosenScope.id,
-				email: '',
+	export default {
+		name: 'FormSkillScopeLevel',
+
+		props: {
+			id: {
+				type: String,
+				default: undefined,
+			},
+			label: String,
+			percentage: Number,
+			skillscope_id: String,
+			email: String,
+		},
+
+		data() {
+			return {
+				form: { ...this.$props },
 			}
-		};
-	},
-	components: {
-		'VForm': Form,
-		'VField': Field,
-		ErrorMessage
-	},
-	props: {
-		chosenScope: {},
-		chosenLevel: {},
-		url: '',
-		method: ''
-	},	
-	methods: {
-		isRequired(value) {
-			return value ? true : 'This field is required';
 		},
-		async saveSkillLevel() {
-			const level = await this.$api.skills.levels.save(this.formData)
-			if (level) this.$emit('formSent')
+
+		methods: {
+			async onSubmit() {
+				const level = await this.$api.skills.levels.save(this.form)
+				if (level) this.$emit('success', level)
+			},
 		},
-	},
-	async mounted() {
-		this.scopes = await this.$api.skills.scopes.get()
 	}
-};
 </script>

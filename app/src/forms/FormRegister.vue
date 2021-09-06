@@ -1,132 +1,116 @@
 <template>
-	<v-form v-on:submit="inviteUser">
-		<div class="mb-2">
-			<label class="form-label">Email</label>
-			<error-message name="email" class="error"></error-message>
-			<v-field
-				v-model="formData.email"
-				:rules="isRequired"
-				as="input"
-				type="text"
-				name="email"
-				class="form-control"
-				aria-label="email"
-			></v-field>
+	<VForm v-on:submit='onSubmit'>
+
+		<div class='mb-2'>
+			<label for='email' class='form-label'>Email</label>
+			<ErrorMessage name='email' class='error' />
+			<VField
+				v-model='form.email'
+				rules='required|email'
+				type='email'
+				id='email'
+				name='email'
+				label='Email'
+				aria-label='Email'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">First name</label>
-			<error-message name="first_name" class="error"></error-message>
-			<v-field
-				v-model="formData.first_name"
-				:rules="isRequired"
-				as="input"
-				type="text"
-				name="first_name"
-				class="form-control"
-				aria-label="first_name"
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='first_name' class='form-label'>First name</label>
+			<ErrorMessage name='first_name' class='error' />
+			<VField
+				v-model='form.first_name'
+				rules='required'
+				type='text'
+				id='first_name'
+				name='first_name'
+				label='First name'
+				aria-label='First name'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">Last name</label>
-			<error-message name="last_name" class="error"></error-message>
-			<v-field
-				v-model="formData.last_name"
-				:rules="isRequired"
-				as="input"
-				type="text"
-				name="last_name"
-				class="form-control"
-				aria-label="last_name"
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='last_name' class='form-label'>Last name</label>
+			<ErrorMessage name='last_name' class='error' />
+			<VField
+				v-model='form.last_name'
+				rules='required'
+				type='text'
+				id='last_name'
+				name='last_name'
+				label='Last name'
+				aria-label='Last name'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">Password</label>
-			<error-message name="password_plain" class="error"></error-message>
-			<v-field
-				v-model="formData.password_plain"
-				:rules="isRequiredNonAdmin"
-				as="input"
-				type="password"
-				name="password_plain"
-				class="form-control"
-				aria-label="password_plain"
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='password_plain' class='form-label'>Password</label>
+			<ErrorMessage name='password_plain' class='error' />
+			<VField
+				v-model='form.password'
+				rules='requiredNonAdmin'
+				type='password'
+				id='password_plain'
+				name='password_plain'
+				label='Password'
+				aria-label='Password'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">Password again</label>
-			<error-message name="password_plain_again" class="error"></error-message>
-			<v-field
-				v-model="formData.password_plain_again"
-				:rules="doubleCheck"
-				as="input"
-				type="password"
-				name="password_plain_again"
-				class="form-control"
-				aria-label="password"
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='password_confirmation' class='form-label'>Repeat password</label>
+			<ErrorMessage name='password_confirmation' class='error' />
+			<VField
+				rules='confirmed:@password_plain'
+				type='password'
+				id='password_confirmation'
+				name='password_confirmation'
+				label='Password confirmation'
+				aria-label='Password confirmation'
+				class='form-control'
+			/>
 		</div>
-		<button type="submit" class="btn btn-gradient mb-1">Register</button>
-	</v-form>
+
+		<button type='submit' class='btn btn-gradient mb-1'>Register</button>
+	</VForm>
 </template>
 
 <script>
-import { Field, Form, ErrorMessage } from 'vee-validate';
-export default {
-	name: 'FormRegister',
-	data() {
-		return {
-			user: {},
-			formData: {
-				email: '',
-				first_name: '',
-				last_name: '',
-				password_plain: '',
-				password_plain_again: '',
-				password_pending: false,
-			}
-		}
-	},
-	components: {
-		'VForm': Form,
-		'VField': Field,
-		ErrorMessage
-	},
-	methods: {
-		isRequired(value) {
-			return value ? true : 'This field is required';
-		},
-		doubleCheck(value) {
-			if (this.formData.password_plain === value) {
-				return true;
-			} else {
-				return 'Passwords do not match';
-			}
-		},
-		isRequiredNonAdmin(value) {
-			if (this.$store.state.loggeduser && this.$store.state.loggeduser.is_admin) {
-				return true;
-			} else if (value) {
-				return true
-			}
-			return false
-		},
-		async inviteUser() {
-			if (this.formData.password_plain.length == 0) {
-				delete this.formData.password_plain;
-				this.formData.password_pending = true;
-			}
+	export default {
+		name: 'FormRegister',
 
-			const success = this.$api.users.registration.invite(this.formData)
+		data() {
+			return {
+				form: {
+					email: '',
+					first_name: '',
+					last_name: '',
+					password_plain: '',
+					password_pending: undefined,
+				}
+			}
+		},
 
-			if (success) {
-				this.$emit('formSent')
-				this.$flashMessage.show({
-					type: 'success',
-					title: 'Invitation sent. Check your email',
-					time: 5000,
-				})
+		methods: {
+			async onSubmit() {
+				this.form.password_pending = !this.form.password_plain
+
+				const success = await this.$api.users.registration.invite(this.form)
+
+				if (success) {
+					this.$emit('success', success)
+
+					this.$flashMessage.show({
+						type: 'success',
+						title: 'Invitation sent. Check your email',
+						time: 5000,
+					})
+				}
 			}
 		}
 	}
-}
 </script>

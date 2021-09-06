@@ -9,13 +9,43 @@ export default {
 	},
 
 	async setChosenProject(context, data) {
-		if (typeof data == 'string') data = await api.projects.get(data)
+		if (typeof data == 'string') {
+			const promises = [api.projects.get(data)]
+			if (!context.state.skills.length) promises.push(context.dispatch('getSkills'))
+			if (!context.state.skillLevels.length) promises.push(context.dispatch('getSkillLevels'))
+			const [ project ] = await Promise.all(promises)
+
+			project.needs.forEach(need => {
+				need.skills.forEach(skill => {
+					Object.entries({
+						skills: 'skill_id',
+						skillLevels: 'skillscopelevel_id',
+					}).forEach(([ item, prop ]) => {
+						const result = context.state[item].find(({ id }) => skill[prop] == id)
+						skill[prop.replace('id', 'label')] = result ? result.label : ''
+					})
+				})
+			})
+
+			data = project
+		}
+
 		context.commit('setChosenProject', data)
 	},
 
 	async getProjects(context) {
 		const data = await api.projects.get()
 		context.commit('setProjects', data)
+	},
+
+	async getSkillCategories(context) {
+		const data = await api.skills.categories.get()
+		context.commit('setSkillCategories', data)
+	},
+
+	async getSkillScopes(context) {
+		const data = await api.skills.scopes.get()
+		context.commit('setSkillScopes', data)
 	},
 
 	async getSkills(context) {

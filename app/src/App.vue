@@ -2,7 +2,7 @@
 	<div id="mainwrap" :class="this.$route.name">
 		<TheHeader v-on:loggedout="logOut" v-if="this.$store.state.loggeduser"/>
 		<FlashMessage position="right top" />
-		<ConfirmDialog />
+		<TheModal />
 		<main>
 			<router-view />
 		</main>
@@ -21,7 +21,6 @@
   		},
 		methods: {
 			logOut() {
-				this.$store.commit('errorHandling')
 				this.$router.push({ name: 'page-login' })
 			},
 			flashIt(errorObject) {

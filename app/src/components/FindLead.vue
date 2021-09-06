@@ -4,11 +4,10 @@
 		<VAutoComplete
 			v-if="users.length"
 			:suggestions="users"
-			:placeholder="'Start typing the name of the pro..'" 
+			placeholder='Developer'
 			:dropdown="true"
-			dropdownLabel="firstname"
-			:filterProperties="'firstname'"
-			:selection="value"
+			:dropdownLabel="user => `${user.firstname} ${user.lastname}`"
+			:filterProperties="['firstname', 'lastname']"
 			v-on:auto-complete="getMatches"
 		></VAutoComplete>
 	</div>
@@ -20,7 +19,6 @@
 		name: 'FindLead',
 		data() {
 			return {
-				value: '',
 				users: [],
 				selected: {},
 				formData: {
@@ -39,7 +37,7 @@
 						return match.user_id === user.id
 					})
 				})
-				this.$emit('leadsfetched', projects)
+				this.$emit('leadsfetched', { user, projects })
 			},
 		},
 		async mounted() {

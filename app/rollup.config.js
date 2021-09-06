@@ -1,44 +1,46 @@
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import vue from 'rollup-plugin-vue'
+import postcss from 'rollup-plugin-postcss'
+import autoprefixer from 'autoprefixer'
 import replace from '@rollup/plugin-replace'
-import dotenv from 'dotenv'
-//import commonjs from '@rollup/plugin-commonjs';
-import copy from 'rollup-plugin-copy-assets';
-
-const variables = {
-	...dotenv.config({ path: "./src/.env" }).parsed
-}
+import copy from 'rollup-plugin-copy-assets'
 
 const production = !process.env.ROLLUP_WATCH
 
 export default {
-	input: `src/main.js`,
+	input: 'src/main.js',
 	output: {
-		file: '../public/main.js',
-		//dir: '../public',
-		//entryFileNames: '[name].js',
-		format: "iife",
-		//name: "pocRustVue"
+		dir: '../public',
+		format: 'iife',
+		sourcemap: !production,
 	},
 
 	plugins: [
 
-		nodeResolve({ browser: true}),
-		vue(),
+		nodeResolve({ browser: true }),
+		
 		replace({
 			preventAssignment: true,
 			'process.env.NODE_ENV': JSON.stringify('development'),
 			'__VUE_PROD_DEVTOOLS__': !production,
 			'__VUE_OPTIONS_API__': true,
-			...Object.entries(variables).reduce((env, [key, value]) => ({ ...env, [`process.env.${key}`]: JSON.stringify(value) }), {})
+		}),
+		
+		vue(),
+
+		postcss({
+			extract: true,
+			minimize: production,
+			sourceMap: !production,
+			plugins: [
+				autoprefixer(),
+			]
 		}),
 
-		//vue({target: 'browser'}),
-		//commonjs(),
 		copy({
 			assets: [
-				"assets",
-				"index.html"
+				'assets',
+				'index.html',
 			],
 		}),
 	]

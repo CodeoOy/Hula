@@ -42,7 +42,7 @@ const router = createRouter({
 
 // Close modal before navigating
 router.beforeEach((to, from, next) => {
-	const modal = document.querySelector('.show[id^=hulaModal]')
+	const modal = document.querySelector('.modal.show')
 	if (!modal) {
 		next()
 	} else {

@@ -2,21 +2,31 @@
 	<div>
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Users</h2>
-			<div>
+			<div class='d-flex'>
+				<div class='input-group me-2'>
 				<VAutoComplete
 					v-if="initialUsers.length" 
 					:suggestions="initialUsers" 
-					:selection="userName" 
 					:placeholder="'filter users'"
 					:dropdown="false"
-					:filterProperties="'firstname'"
+					:filterProperties="['firstname', 'lastname']"
 					v-on:auto-complete="autoCompleteAction"
-				></VAutoComplete>
+				/>
+					<button class='btn btn-secondary dropdown-toggle' type='button' id='filtersDropdown' data-bs-toggle='dropdown' data-bs-auto-close='outside' aria-expanded='false'>
+						<i aria-label='Filters' class='bi bi-gear-fill'></i>
+					</button>
+					<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='filtersDropdown'>
+						<li class='px-2'>
+							<div class='form-check'>
+								<label for='employees'>Employees only</label>
+								<input v-model='filters.employees' type='checkbox' class='form-check-input' id='employees' />
+							</div>
+						</li>
+					</ul>
+				</div>
 				<button
-					class="btn btn-gradient"
-					data-bs-toggle="modal"
-					data-bs-target="#hulaModalUsers"
-					v-on:click="formTitle = 'New User', chosenForm = 'CreateUser', chosenUser = {}, url='/api/users', method='POST'"
+					class="btn btn-gradient flex-shrink-0"
+					v-on:click.prevent="inviteUser()"
 				>Invite a user</button>
 			</div>
 		</div>
@@ -57,19 +67,16 @@
 	import VAvatar from '../components/VAvatar.vue'
 	import VModal from '../components/VModal.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
-	import { Modal } from 'bootstrap'
+
 	export default {
 		name: 'AdminListUsers',
 		data() {
 			return {
-				formTitle: '',
-				chosenForm: '',
 				initialUsers: [],
-				filteredUsers: [],
-				chosenUser: {},
-				userName: '',
-				url: '',
-				method: '',
+				autoCompletedUsers: [],
+				filters: {
+					employees: false,
+				},
 			}
 		},
 		components: {
@@ -77,22 +84,29 @@
 			VAvatar,
 			VAutoComplete,
 		},
+		computed: {
+			filteredUsers() {
+				return this.autoCompletedUsers
+					.filter(user => this.filters.employees ? user.is_employee : true)
+			},
+		},
 		methods: {
-			async hideModalUpdate() {
+			async getUsers() {
 				this.initialUsers = await this.$api.users.get()
-				let modal = Modal.getInstance(document.querySelector('#hulaModalUsers'))
-				modal.hide()
 			},
 			autoCompleteAction(value) {
-				this.filteredUsers = value
+				this.autoCompletedUsers = value
+			},
+			async inviteUser() {
+				// TODO: Implement this
 			},
 			async confirmDelete(user) {
 				const success = await this.$confirm.delete('user', user)
-				if (success) this.initialUsers = await this.$api.users.get()
+				if (success) this.getUsers()
 			},
 		},
 		async mounted() {
-			this.initialUsers = await this.$api.users.get()
+			this.getUsers()
 		}
 	}
 </script>

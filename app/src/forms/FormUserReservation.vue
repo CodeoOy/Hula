@@ -1,97 +1,101 @@
 <template>
-	<v-form v-on:submit="saveUserReservation">
-		<div class="mb-2">
-			<label class="form-label">Description</label>
-			<error-message name="description" class="error"></error-message>
-			<v-field
-				v-model="formData.description"
-				:rules="isRequired"
-				as="input"
-				type="text"
-				name="description"
-				class="form-control"
-				aria-label="description" 
-			></v-field>
+	<VForm v-on:submit='onSubmit'>
+
+		<div class='mb-2'>
+			<label for='description' class='form-label'>Description</label>
+			<ErrorMessage name='description' class='error' />
+			<VField
+				v-model='form.description'
+				rules='required'
+				type='text'
+				id='description'
+				name='description'
+				label='Description'
+				aria-label='Description'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">When does this reservation start?</label>
-			<error-message name="begintime" class="error"></error-message>
-			<v-field
-				v-model="formData.begin_time"
-				:rules="isRequired"
-				as="input"
-				type="date"
-				name="begintime"
-				class="form-control"
-				aria-label="Date start" 
-			></v-field>
+
+		<div class='mb-2'>
+			<label class='form-label'>Start date</label>
+			<ErrorMessage name='begin_time' class='error' />
+			<VField
+				v-model='form.begin_time'
+				rules='required|date'
+				type='date'
+				id='begin_time'
+				name='begin_time'
+				label='Start date'
+				aria-label='Start date'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">When does this reservation end?</label>
-			<error-message name="endtime" class="error"></error-message>
-			<v-field
-				v-model="formData.end_time"
-				as="input"
-				type="date"
-				name="endtime"
-				class="form-control"
-				aria-label="Date end" 
-			></v-field>
+
+		<div class='mb-2'>
+			<label class='form-label'>End date</label>
+			<ErrorMessage name='end_time' class='error' />
+			<VField
+				v-model='form.end_time'
+				rules='required|date|afterDate:begin_time'
+				type='date'
+				id='end_time'
+				name='end_time'
+				label='End date'
+				aria-label='End date'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">At what percentage?</label>
-			<error-message name="percentage" class="error"></error-message>
-			<v-field
-				v-model.number="formData.percentage"
-				:rules="isRequired"
-				as="input"
-				type="number"
-				name="percentage"
-				class="form-control"
-				aria-label="Percentage" 
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='percentage' class='form-label'>Percentage</label>
+			<ErrorMessage name='percentage' class='error' />
+			<VField
+				v-model.number='form.percentage'
+				rules='required'
+				type='number'
+				name='percentage'
+				id='percentage'
+				label='Percentage'
+				aria-label='Percentage'
+				class='form-control'
+			/>
 		</div>
-		<button type="submit" class="btn btn-gradient mb-1">Save</button>
-	</v-form>
+
+		<button type='submit' class='btn btn-gradient mb-1'>Save</button>
+	</VForm>
 </template>
 
 <script>
-import { Field, Form, ErrorMessage } from 'vee-validate';
-export default {
-	name: 'UserReservation',
-	data() {
-		return {
-			formData: {
-				id: this.chosenReservation.id || undefined,
-				description: this.chosenReservation.description || '',
-				begin_time: this.chosenReservation.begin_time || '',
-				end_time: this.chosenReservation.end_time || '',
-				percentage: this.chosenReservation.percentage || '',
-				user_id: this.userID,
+	export default {
+		name: 'FormUserReservation',
+
+		props: {
+			id: {
+				type: String,
+				default: undefined,
+			},
+			user_id: {
+				type: String,
+				required: true,
+			},
+			description: String,
+			begin_time: String,
+			end_time: String,
+			percentage: Number,
+		},
+
+		data() {
+			return {
+				form: { ...this.$props },
 			}
-		}
-	},
-	components: {
-		'VForm': Form,
-		'VField': Field,
-		ErrorMessage
-	},
-	props: {
-		url: '',
-		method: '',
-		userID: '',
-		chosenReservation: {},
-	},
-	methods: {
-		isRequired(value) {
-			return value ? true : 'This field is required';
 		},
-		async saveUserReservation() {
-			const formData = { ...this.formData }
-			if (formData.end_time == '') delete formData.end_time
-			const reservation = await this.$api.users.reservations.save(formData)
-			if (reservation) this.$emit('formSent')
+
+		methods: {
+			async onSubmit() {
+				for (const prop in this.form) if (this.form[prop] == '') this.form[prop] = undefined
+				const reservation = await this.$api.users.reservations.save(this.form)
+				if (reservation) this.$emit('success', reservation)
+			},
 		},
-	},
-};
+	}
 </script>

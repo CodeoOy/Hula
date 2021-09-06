@@ -4,10 +4,9 @@
 		<VAutoComplete 
 			v-if="this.$store.state.projects" 
 			:suggestions="this.$store.state.projects"
-			:placeholder="'Start typing the name of project..'" 
+			placeholder='Project'
 			:dropdown="true"
 			:filterProperties="'name'"
-			:selection="value"
 			v-on:auto-complete="getMatches"
 		></VAutoComplete>
 	</div>
@@ -19,7 +18,6 @@
 		name: 'FindPro',
 		data() {
 			return {
-				value: '',
 				projects: this.$store.state.projects,
 				selected: {},
 				formData: {
@@ -35,8 +33,9 @@
 		},
 		methods: {
 			async getMatches(project) {
+				if (!project) return null
 				const matches = await this.$api.matches.get(project.id)
-				if (matches) this.$emit('matchesfetched', matches)
+				if (matches) this.$emit('matchesfetched', { project, matches })
 			},
 		}
 	}

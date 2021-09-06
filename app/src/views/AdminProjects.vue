@@ -1,25 +1,29 @@
 <template>
 	<div>
-		<VModal v-if='modal' ref='modal' :showAtStart='true' :modalTitle="modal.title" v-on:modal-hidden="resetModal">
-			<component 
-				:is='modal.component' 
-				v-bind='modal.props'
-				v-on:form-sent="closeModal"
-			/>
-		</VModal>
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Projects</h2>
-			<div>
-				<VAutoComplete
-					v-if="$store.state.projects" 
-					:suggestions="$store.state.projects" 
-					:selection="projectName" 
-					:placeholder="'filter projects'"
-					:dropdown="false"
-					:filterProperties="'name'"
-					v-on:auto-complete="autoCompleteAction"
-				></VAutoComplete>
-				<button class="btn btn-gradient" v-on:click="newProject()">New project</button>
+			<div class='d-flex'>
+				<div class='input-group me-2'>
+					<VAutoComplete
+						:suggestions="projects" 
+						:placeholder="'filter projects'"
+						:dropdown="false"
+						:filterProperties="['name', 'autoCompleteSkills']"
+						v-on:auto-complete="autoCompleteAction"
+					/>
+					<button class='btn btn-secondary dropdown-toggle' type='button' id='filtersDropdown' data-bs-toggle='dropdown' data-bs-auto-close='outside' aria-expanded='false'>
+						<i aria-label='Filters' class='bi bi-gear-fill'></i>
+					</button>
+					<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='filtersDropdown'>
+						<li class='px-2'>
+							<div class='form-check'>
+								<label for='hidden'>Show hidden</label>
+								<input v-model='filters.showHidden' type='checkbox' class='form-check-input' id='hidden' />
+							</div>
+						</li>
+					</ul>
+				</div>
+				<button class="btn btn-gradient flex-shrink-0" v-on:click="newProject()">New project</button>
 			</div>
 		</div>
 		<div class="table-responsive" v-if="filteredProjects.length">
@@ -35,13 +39,16 @@
 				<tbody>
 					<tr v-for="project in filteredProjects" :key="project.id">
 						<td>
-							<router-link :to="{ name: 'page-project', params: { id: project.id }}">{{ project.name }}</router-link>
+							<router-link :to="{ name: 'page-project', params: { id: project.id }}">
+								{{ project.name }}
+								<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
+							</router-link>
 						</td>
 						<td>
 							<span
 								v-for="skill in project.skills" 
 								:key="skill.skill_label"
-								class="badge"
+								class="badge badge-skill me-2"
 							>{{ skill.skill_label }}</span>
 						</td>
 						<td>
@@ -66,7 +73,6 @@
 </template>
 
 <script>
-	import VModal from '../components/VModal.vue'
 	import MatchContent from '../components/MatchContent.vue'
 	import FormProject from '../forms/FormProject.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
@@ -77,57 +83,84 @@
 
 		data () {
 			return {
-				modal: null,
-				projectName: '',
-				filteredProjects: [],
-				projects: this.$store.state.projects
+				autoCompletedProjects: [],
+				filters: {
+					showHidden: true,
+				},
+				matchSkills: {},
 			}
 		},
 
 		components: {
-			VModal,
 			MatchContent,
 			VAvatar,
-			FormProject,
 			VAutoComplete,
 		},
 
+		computed: {
+			projects() {
+				return this.$store.state.projects.map(project => ({
+					...project,
+					autoCompleteSkills: project.skills.map(skill => skill.skill_label),
+				}))
+			},
+
+			filteredProjects() {
+				return this.autoCompletedProjects
+					.filter(project => project.is_hidden ? this.filters.showHidden : true)
+			},
+		},
+
 		methods: {
-			resetModal() {
-				this.modal = null
-			},
-
-			closeModal() {
-				this.$refs.modal.hide()
-				this.$store.dispatch('getProjects')
-			},
-
 			autoCompleteAction(value) {
-				this.filteredProjects = value
+				this.autoCompletedProjects = value
 			},
 
-			newProject() {
-				this.modal = {
+			async newProject() {
+				const result = await this.$modal({
 					title: 'New project',
-					component: 'FormProject',
-					props: {
-						chosenProject: {},
-						url: '/api/projects',
-						method: 'POST',
-					}
-				}
+					component: FormProject,
+				})
+
+				if (result) this.$store.dispatch('getProjects')
 			},
 
-			showMatch(project, match) {
-				this.modal = {
+			async showMatch(project, match) {
+				if (!(project.id in this.matchSkills)) await this.loadMatchSkills(project)
+
+				this.$modal({
 					title: 'Match',
-					component: 'MatchContent',
+					component: MatchContent,
 					props: {
-						chosenMatch: match,
-						projectName: project.name,
-						projectID: project.id,
+						user_id: match.user_id,
+						user_first_name: match.first_name,
+						user_last_name: match.last_name,
+						project_id: project.id,
+						project_name: project.name,
+						matches: this.matchSkills[project.id][match.user_id],
 					},
-				}
+				})
+			},
+
+			async loadMatchSkills(project) {
+				const skillProps = [
+					'idx',
+					'skill_label',
+					'required_index',
+					'user_index',
+					'required_years',
+					'user_years',
+				]
+
+				const matches = await this.$api.matches.get(project.id)
+
+				this.matchSkills[project.id] = matches.reduce((users, match) => {
+					if (!(match.user_id in users)) users[match.user_id] = []
+					users[match.user_id].push(Object.fromEntries(
+						skillProps.map(prop => [prop, match[prop]])
+					))
+					return users
+				}, {})
 			},
 
 			async confirmDelete(project) {

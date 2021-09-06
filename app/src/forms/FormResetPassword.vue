@@ -1,67 +1,55 @@
 <template>
-	<v-form v-on:submit="setPassword">
-		<div class="mb-2">
-			<label class="form-label">Password</label>
-			<error-message name="password" class="error"></error-message>
-			<v-field
-				v-model="formData.password"
-				:rules="isRequired"
-				as="input"
-				type="password"
-				name="password"
-				class="form-control"
-				aria-label="password"
-			></v-field>
+	<VForm v-on:submit="onSubmit">
+
+		<div class='mb-2'>
+			<label for='password' class='form-label'>Password</label>
+			<ErrorMessage name='password' class='error' />
+			<VField
+				v-model='form.password'
+				rules='required'
+				type='password'
+				id='password'
+				name='password'
+				label='Password'
+				aria-label='Password'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">Password again</label>
-			<error-message name="passwordAgain" class="error"></error-message>
-			<v-field
-				v-model="formData.passwordAgain"
-				:rules="doubleCheck"
-				as="input"
-				type="password"
-				name="passwordAgain"
-				class="form-control"
-				aria-label="password"
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='password_confirmation' class='form-label'>Repeat password</label>
+			<ErrorMessage name='password_confirmation' class='error' />
+			<VField
+				rules='confirmed:@password'
+				type='password'
+				id='password_confirmation'
+				name='password_confirmation'
+				label='Password confirmation'
+				aria-label='Password confirmation'
+				class='form-control'
+			/>
 		</div>
+
 		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
-	</v-form>
+	</VForm>
 </template>
 
 <script>
-import { Field, Form, ErrorMessage } from 'vee-validate';
-export default {
-	name: 'FormResetPassword',
-	data() {
-		return {
-			user: {},
-			formData: {
-				password: '',
-				passwordAgain: '',
-			}
-		}
-	},
-	components: {
-		'VForm': Form,
-		'VField': Field,
-		ErrorMessage
-	},
-	methods: {
-		isRequired(value) {
-			return value ? true : 'This field is required';
-		},
-		doubleCheck(value) {
-			if (this.formData.password === value) {
-				return true;
-			} else {
-				return 'Passwords do not match';
+	export default {
+		name: 'FormResetPassword',
+
+		data() {
+			return {
+				form: {
+					password: '',
+				}
 			}
 		},
-		setPassword() {
-			this.$emit('formSent', this.formData.password);
+
+		methods: {
+			onSubmit() {
+				this.$emit('success', this.form.password)
+			}
 		}
 	}
-}
 </script>

@@ -1,95 +1,104 @@
 <template>
-	<v-form v-on:submit="saveSkill">
-		<div class="mb-2">
-			<label class="form-label">Skill name</label>
-			<error-message name="name" class="error"></error-message>
-			<v-field
-				v-model="formData.label"
-				:rules="isRequired"
-				as="input"
-				type="text"
-				name="name"
-				class="form-control"
-				aria-label="Skill name"
-			></v-field>
+	<VForm v-on:submit='onSubmit'>
+
+		<div class='mb-2'>
+			<label for='label' class='form-label'>Name</label>
+			<ErrorMessage name='label' class='error' />
+			<VField
+				v-model='form.label'
+				rules='required'
+				type='text'
+				id='label'
+				name='label'
+				label='Name'
+				aria-label='Name'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2" v-if="!('id' in chosenCategory) && categories.length">
-			<label class="form-label">Skill category</label>
-			<error-message name="category" class="error"></error-message>
-			<v-field
-				v-model="formData.skillcategory_id"
-				:rules="isRequired"
-				as="select"
-				name="category"
-				class="form-select"
-				id="AddNewSkill"
-				aria-label="Skill category"
+
+		<div class='mb-2' v-if='form.id'>
+			<label for='skillcategory_id' class='form-label'>Category</label>
+			<VField
+				v-model='form.skillcategory_id'
+				rules='required'
+				as='select'
+				name='skillcategory_id'
+				id='skillcategory_id'
+				label='Category'
+				aria-label='Category'
+				class='form-select'
 			>
-				<option v-for="category in categories" :key="category.label" :value="category.id">
+				<option v-for="category in categories" :key="category.id" :value="category.id">
 					{{ category.label }}
 				</option>
-			</v-field>
+			</VField>
 		</div>
-		<div class="mb-2" v-if="method == 'POST'">
-			<label class="form-label">Skill scope</label>
-			<error-message name="scope" class="error"></error-message>
-			<v-field
-				v-model="formData.skillscope_id"
-				:rules="isRequired"
-				as="select"
-				name="scope"
-				class="form-select"
-				id="AddExistingSkillScope"
-				aria-label="Pick scope"
+
+		<div class='mb-2' v-if='!form.id'>
+			<label for='skillscope_id' class='form-label'>Scope</label>
+			<VField
+				v-model='form.skillscope_id'
+				rules='required'
+				as='select'
+				name='skillscope_id'
+				id='skillscope_id'
+				label='Scope'
+				aria-label='Scope'
+				class='form-select'
 			>
-				<option v-for="scope in scopes" :key="scope.label" :value="scope.id">
+				<option v-for="scope in scopes" :key="scope.id" :value="scope.id">
 					{{ scope.label }}
 				</option>
-			</v-field>
+			</VField>
 		</div>
-		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
-	</v-form> 
+
+		<button type='submit' class='btn btn-gradient mb-1'>Submit</button>
+	</VForm> 
 </template>
 
 <script>
-import { Field, Form, ErrorMessage } from 'vee-validate';
-export default {
-	name: 'Skill',
-	data() {
-		return {
-			categories: [],
-			scopes: [],
-			formData: {
-				id: this.chosenSkill.id || undefined,
-				label: this.chosenSkill.label || '',
-				skillcategory_id: this.chosenSkill.skillcategory_id || this.chosenCategory.id,
-				skillscope_id: this.chosenSkill.skillscope_id || null,
+	export default {
+		name: 'FormSkill',
+
+		props: {
+			id: {
+				type: String,
+				default: undefined,
 			},
-		}
-	},
-	components: {
-		'VForm': Form,
-		'VField': Field,
-		ErrorMessage
-	},
-	props: {
-		chosenSkill: {},
-		chosenCategory: {},
-		url: '',
-		method: ''
-	},	
-	methods: {
-		isRequired(value) {
-			return value ? true : 'This field is required';
+			skillcategory_id: {
+				type: String,
+				required: true,
+			},
+			skillscope_id: String,
+			label: String
 		},
-		async saveSkill() {
-			const skill = await this.$api.skills.save(this.formData)
-			if (skill) this.$emit('formSent')
+
+		computed: {
+			categories() {
+				return this.$store.state.skillCategories
+			},
+
+			scopes() {
+				return this.$store.state.skillScopes
+			},
 		},
-	},
-	async mounted() {
-		this.categories = await this.$api.skills.categories.get()
-		this.scopes = await this.$api.skills.scopes.get()
-	},
-};
+
+		data() {
+			return {
+				form: { ...this.$props },
+			}
+		},
+		
+		mounted() {
+			if (!this.$store.state.skillCategories.length) this.$store.dispatch('getSkillCategories')
+			if (!this.$store.state.skillScopes.length) this.$store.dispatch('getSkillScopes')
+		},
+
+		methods: {
+			async onSubmit() {
+				const skill = await this.$api.skills.save(this.form)
+				if (skill) this.$emit('success', skill)
+			},
+		},
+	}
 </script>

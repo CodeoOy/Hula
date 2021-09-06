@@ -1,35 +1,14 @@
 <template>
 	<div class="container mt-4">
-		<VModal :modalTitle="formTitle" :modalID="'Profile'" v-on:modal-hidden="chosenForm = '', chosenSkill = {}">
-			<component 
-				:is='modalComponent' 
-				:url="url"
-				:method="method"
-				:chosenUser="user"
-				:chosenSkill="chosenSkill"
-				:chosenReservation="chosenReservation"
-				:userSkills="userSkills"
-				:userID="user.id"
-				v-on:form-sent="hideModalUpdate"
-			/>
-		</VModal>
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<h1 class="h1">{{ user.firstname }} {{ user.lastname }}</h1>
 					<p>{{ user.email }}</p>
-					<a 
-						href="#"
-						data-bs-toggle="modal" 
-						data-bs-target="#hulaModalProfile" 
-						v-on:click="formTitle = 'Edit user info', chosenForm = 'User', chosenUser = user, url=`/api/users/${user.id}`, method='PUT'"
-					><i class="bi-pencil-fill me-2"></i></a>
-					<a 
-						href="#"
-						v-on:click.prevent="confirmDelete('user', user)"
-					><i class="bi-trash-fill me-2"></i></a>
+					<a href="#" v-on:click.prevent="editUser(user)"><i class="bi-pencil-fill me-2"></i></a>
+					<a href="#" v-on:click.prevent="confirmDelete('user', user)"><i class="bi-trash-fill me-2"></i></a>
 					<hr />
-					<v-form v-on:submit="saveFiles" class='clearfix'>
+					<VForm v-on:submit="saveFiles" class='clearfix'>
 						<div class="mb-3">
 							<table v-if='files.length' class="table table-dark table-striped text-light">
 								<thead>
@@ -42,40 +21,28 @@
 									<tr v-for="file in files" :key="file.id">
 										<td><input type='checkbox' :checked='user.main_upload_id == file.id' @click='setCV(file.id)'></td>
 										<td><a href='#' @click.prevent>{{ file.filename }}</a></td>
-										<td>
-											<a 
-												href="#"
-												v-on:click.prevent="confirmDelete('user.file', file)"
-											><i class="bi-trash-fill me-2"></i></a>
-										</td>
+										<td><a href="#" v-on:click.prevent="confirmDelete('user.file', file)"><i class="bi-trash-fill me-2"></i></a></td>
 									</tr>
 								</tbody>
 							</table>
-
 							<label class="form-label">Upload files</label>
-							<error-message name="files" class="error"></error-message>
-							<v-field
+							<VField
 								type="file"
 								name="newFiles[]"
 								multiple
 								class="form-control" 
 								v-model="newFiles"
-							></v-field>
+							/>
 						</div>
 						<button type="submit" class="btn btn-gradient float-end">Upload files</button>
-					</v-form>
+					</VForm>
 				</div>
 			</div>
 			<div class="col-md-8">
 				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
 					<div class="d-sm-flex flex-row justify-content-between align-items-start">
 						<h3 class="h3">Skills</h3>
-						<button
-							class="btn btn-gradient"
-							v-on:click="formTitle = 'Add Skill', chosenSkill = {}, chosenForm = 'Skill', url = `/api/userskills/${user.id}`, method = 'POST'" 
-							data-bs-toggle="modal" 
-							data-bs-target="#hulaModalProfile"
-						>Add skill</button>
+						<button class="btn btn-gradient" v-on:click.prevent="editSkill()">Add skill</button>
 					</div>
 					<div class="table-responsive">
 						<table class="table table-dark table-striped text-light">
@@ -90,19 +57,11 @@
 							<tbody>
 								<tr v-for="skill in user.skills" :key="skill.id">
 									<td>{{ skill.skill_label }}</td>
-									<td>{{ skill.skillscopelevel_id }}</td>
+									<td>{{ skill.levelLabel }}</td>
 									<td>{{ skill.years }}</td>
 									<td>
-										<a 
-											href="#"
-											data-bs-toggle="modal"
-											data-bs-target="#hulaModalProfile"
-											v-on:click="formTitle = skill.skill_label, chosenForm = 'Skill', chosenSkill = skill, url=`/api/userskills/${skill.id}`, method='PUT'"
-										><i class="bi-pencil-fill me-2"></i></a>
-										<a
-											href="#"
-											v-on:click.prevent="confirmDelete('user.skill', skill)"
-										><i class="bi-trash-fill me-2"></i></a>
+										<a href="#" v-on:click.prevent="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></a>
+										<a href="#" v-on:click.prevent="confirmDelete('user.skill', skill)"><i class="bi-trash-fill me-2"></i></a>
 									</td>
 								</tr>
 							</tbody>
@@ -110,12 +69,7 @@
 					</div>
 					<div class="d-sm-flex flex-row justify-content-between align-items-start">
 						<h3 class="h3">Reservations</h3>
-						<button
-							class="btn btn-gradient"
-							v-on:click="formTitle = 'Add Reservation', chosenReservation = {}, chosenForm = 'Reservation', url = `/api/userreservations/${user.id}`, method = 'POST'" 
-							data-bs-toggle="modal" 
-							data-bs-target="#hulaModalProfile"
-						>Add reservation</button>
+						<button class="btn btn-gradient" v-on:click.prevent="editReservation()">Add reservation</button>
 					</div>
 					<table class="table table-dark table-striped text-light" v-if="reservations.length">
 						<thead>
@@ -134,21 +88,15 @@
 								<td>{{ reservation.end_time }}</td>
 								<td>{{ reservation.percentage }}</td>
 								<td>
-									<a 
-										href="#"
-										data-bs-toggle="modal"
-										data-bs-target="#hulaModalProfile"
-										v-on:click="formTitle = reservation.id, chosenForm = 'Reservation', chosenReservation = reservation, url=`/api/userreservations/${reservation.id}`, method='PUT'"
-									><i class="bi-pencil-fill me-2"></i></a>
-									<a
-										href="#"
-										v-on:click.prevent="confirmDelete('user.reservation', reservation)"
-									><i class="bi-trash-fill me-2"></i></a>
+									<a href="#" v-on:click.prevent="editReservation(reservation)"><i class="bi-pencil-fill me-2"></i></a>
+									<a href="#" v-on:click.prevent="confirmDelete('user.reservation', reservation)"><i class="bi-trash-fill me-2"></i></a>
 								</td>
 							</tr>
 						</tbody>
 					</table>
-					<h3 class="h3">Matches</h3>
+				</div>
+				<div v-if='matches.length' class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+					<h3 class="h3">Projects matching the skills</h3>
 					<div class="table-responsive">
 						<table class="table table-dark table-striped text-light">
 							<thead>
@@ -158,8 +106,8 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr v-for="match in getUserMatches" :key="match.id">
-									<td>{{ match.name }}</td>
+								<tr v-for="match in matches" :key="match.id">
+									<td><router-link :to='{ name: "page-project", params: { id: match.id } }'>{{ match.name }}</router-link></td>
 									<td><span class="badge badge-skill me-2" v-for="skill in match.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></td>
 								</tr>
 							</tbody>
@@ -172,63 +120,69 @@
 </template>
 
 <script>
-	import VModal from '../components/VModal.vue'
-	import { Modal } from 'bootstrap'
+	import FormUserInfo from '../forms/FormUserInfo.vue'
 	import FormUserSkill from '../forms/FormUserSkill.vue'
 	import FormUserReservation from '../forms/FormUserReservation.vue'
-	import FormSkill from '../forms/FormSkill.vue'
-	import FormUserBasicInfo from '../forms/FormUserBasicInfo.vue'
-	import { Field, Form, ErrorMessage } from 'vee-validate';
+
 	export default {
 		name: 'Profile',
+
 		data() {
 			return {
-				formTitle: '',
-				chosenForm: '',
-				chosenUser: {},
-				chosenSkill: {},
-				chosenReservation: {},
-				editingInfo: false,
 				user: {},
-				url: '',
-				method: '',
 				reservations: [],
 				files: [],
 				newFiles: [],
 			}
 		},
-		components: {
-			FormUserBasicInfo,
-			FormUserSkill,
-			FormUserReservation,
-			FormSkill,
-			VModal,
-			'VForm': Form,
-			'VField': Field,
-			ErrorMessage
+
+		computed: {
+			matches() {
+				return this.$store.state.projects.filter(project => {
+					return project.matches.some(match =>
+						match.user_id == this.user.id
+					)
+				})			
+			},
 		},
+
+		async mounted() {
+			if (this.$route.params.id != this.$store.state.loggeduser.id) {
+				if (!this.$store.state.loggeduser.isadmin) this.$router.push({ name: 'page-error' })
+			}
+
+			if (!this.$store.state.projects.length) this.$store.dispatch('getProjects')
+
+			await Promise.all([
+				this.getUser(),
+				this.getReservations(),
+				this.getUploads(),
+			])
+		},
+
 		methods: {
-			hideModalUpdate() {
-				this.checkProfile(this.$route.params.id)
-				let modal = Modal.getInstance(document.querySelector('#hulaModalProfile'))
-				modal.hide()
+			async getUser() {
+				const promises = [ this.$api.users.get(this.$route.params.id) ]
+				if (!this.$store.state.skillLevels.length) promises.push(this.$store.dispatch('getSkillLevels'))
+
+				const [ user ] = await Promise.all(promises)
+
+				this.user = user
+
+				this.user.skills.forEach(skill => {
+					skill.levelLabel = this.$store.state.skillLevels.find(({ id }) => id == skill.skillscopelevel_id).label
+				})
 			},
-			async checkProfile(id) {
-				const [
-					user,
-					reservations,
-				] = await Promise.all([
-					this.$api.users.get(id),
-					this.$api.users.reservations.get(id),
-					this.getUserUploads(id),
-				])
-				this.user =  user
-				this.reservations = reservations
+
+			async getReservations() {
+				this.reservations = await this.$api.users.reservations.get(this.$route.params.id)
 			},
-			async getUserUploads(id) {
-				const files = await this.$api.users.files.get(id)
+
+			async getUploads() {
+				const files = await this.$api.users.files.get(this.$route.params.id)
 				this.files = files
 			},
+
 			async saveFiles() {
 				const success = await this.$api.users.files.save(this.newFiles)
 
@@ -248,8 +202,9 @@
 
 				this.newFiles = []
 
-				if (success) this.getUserUploads(this.$route.params.id)
+				if (success) this.getUploads()
 			},
+
 			async setCV(id) {
 				const value = this.user.main_upload_id == id ? null : id
 
@@ -260,6 +215,41 @@
 
 				if (data) this.user.main_upload_id = value
 			},
+
+			async editUser(props = {}) {
+				const result = await this.$modal({
+					title: 'Edit user info',
+					component: FormUserInfo,
+					props,
+				})
+
+				if (result) this.getUser()
+			},
+
+			async editSkill(props = {}) {
+				props.user_id = this.user.id
+
+				const result = await this.$modal({
+					title: props.id ? `Edit skill: ${props.skill_label}` : 'Add skill',
+					component: FormUserSkill,
+					props,
+				})
+
+				if (result) this.getUser()
+			},
+
+			async editReservation(props = {}) {
+				props.user_id = this.user.id
+
+				const result = await this.$modal({
+					title: props.id ? `Edit reservation: ${props.description}` : 'Add reservation',
+					component: FormUserReservation,
+					props,
+				})
+
+				if (result) this.getReservations()
+			},
+
 			async confirmDelete(type, data) {
 				const success = await this.$confirm.delete(type, data)
 				
@@ -271,47 +261,19 @@
 							break
 
 						case 'user.skill':
-							this.user = await this.$api.users.get(this.$route.params.id)
+							this.getUser()
 							break
 						
 						case 'user.reservation':
-							this.reservations = await this.$api.users.reservations.get(this.$route.params.id)
+							this.getReservations()
 							break
 						
 						case 'user.file':
-							this.getUserUploads(this.$route.params.id)
+							this.getUploads()
 							break
 					}
 				}
 			}
 		},
-		computed: {
-			modalComponent() {
-				const components = {
-					User: FormUserBasicInfo,
-					Skill: FormUserSkill,
-					Reservation: FormUserReservation,
-				}
-				return components[this.chosenForm]
-			},
-			userSkills() {
-				return this.user.skills
-			},
-			getUserMatches() {
-				return this.$store.state.projects.filter(project => {
-					return project.matches.some(match =>
-						match.user_id == this.user.id
-					)
-				})			
-			},
-		},
-		mounted() {
-			if (this.$route.params.id != this.$store.state.loggeduser.id) {
-				if (this.$store.state.loggeduser.isadmin !== true) {
-					this.$router.push({name: 'page-error'})
-				}
-			}
-			this.checkProfile(this.$route.params.id)
-		}
 	}
 </script>

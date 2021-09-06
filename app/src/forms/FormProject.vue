@@ -1,71 +1,80 @@
 <template>
-	<v-form v-on:submit="saveProject">
-		<div class="mb-2">
-			<label class="form-label">Project name</label>
-			<error-message name="name" class="error"></error-message>
-			<v-field
-				v-model="formData.name"
-				:rules="isRequired"
-				as="input"
-				type="text"
-				name="name"
-				class="form-control"
-				aria-label="Project name"
-			></v-field>
+	<VForm v-on:submit='onSubmit'>
+
+		<div class='mb-2'>
+			<label for='name' class='form-label'>Project name</label>
+			<ErrorMessage name='name' class='error' />
+			<VField
+				v-model='form.name'
+				rules='required'
+				type='text'
+				id='name'
+				name='name'
+				label='Project name'
+				aria-label='Project name'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2">
-			<label class="form-label">Description</label>
-			<error-message name="name" class="error"></error-message>
-			<v-field
-				v-model="formData.description"
-				as="input"
-				type="text"
-				name="description"
-				class="form-control"
-				aria-label="Project description"
-			></v-field>
+
+		<div class='mb-2'>
+			<label for='description' class='form-label'>Description</label>
+			<ErrorMessage name='description' class='error' />
+			<VField
+				v-model='form.description'
+				type='text'
+				id='description'
+				name='description'
+				label='Project description'
+				aria-label='Project description'
+				class='form-control'
+			/>
 		</div>
-		<div class="mb-2 form-check" v-if="'is_hidden' in chosenProject">
-			<label class="form-label">Hidden</label>
-			<error-message name="category" class="error"></error-message>
-			<input type="checkbox" class="form-check-input" name="is_hidden" v-model="formData.is_hidden" />
+
+		<div class='mb-2 form-check'>
+			<label for='is_hidden' class='form-label'>Hidden</label>
+			<VField
+				v-model='form.is_hidden'
+				:value='true'
+				:unchecked-value='false'
+				type='checkbox'
+				id='is_hidden'
+				name='is_hidden'
+				class='form-check-input'
+			/>
 		</div>
-		<button type="submit" class="btn btn-gradient mb-1">Submit</button>
-	</v-form> 
+
+		<button type='submit' class='btn btn-gradient mb-1'>Submit</button>
+	</VForm>
 </template>
 
 <script>
-import { Field, Form, ErrorMessage } from 'vee-validate';
-export default {
-	name: 'FormProject',
-	data() {
-		return {
-			formData: {
-				id: this.chosenProject.id || undefined,
-				description: this.chosenProject.description || '',
-				name: this.chosenProject.name || '',
-				is_hidden: this.chosenProject.is_hidden || false, // TODO: Does this work in both edit and new?
+	export default {
+		name: 'FormProject',
+
+		props: {
+			id: {
+				type: String,
+				default: undefined,
 			},
-		}
-	},
-	components: {
-		'VForm': Form,
-		'VField': Field,
-		ErrorMessage
-	},
-	props: {
-		chosenProject: {},
-		url: '',
-		method: ''
-	},	
-	methods: {
-		isRequired(value) {
-			return value ? true : 'This field is required';
+			description: String,
+			name: String,
+			is_hidden: {
+				type: Boolean,
+				default: false,
+			},
 		},
-		async saveProject() {
-			const project = await this.$api.projects.save(this.formData)
-			if (project) this.$emit('formSent', project)
+
+		data() {
+			return {
+				form: { ...this.$props },
+			}
+		},
+
+		methods: {
+			async onSubmit() {
+				const project = await this.$api.projects.save(this.form)
+				if (project) this.$emit('success', project)
+			},
 		},
 	}
-};
 </script>
