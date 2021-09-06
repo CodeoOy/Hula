@@ -56,8 +56,7 @@ router.beforeEach((to, from, next) => {
 		&& to.name !== 'page-confirm'
 		&& to.name !== 'page-forgot-password'
 		&& !state.loggeduser) {
-			state.nextpage = to.fullPath
-			next({ name: 'page-login' })
+			next({ name: 'page-login', query: { redirect: to.fullPath } })
 	}
 	else next()
 })

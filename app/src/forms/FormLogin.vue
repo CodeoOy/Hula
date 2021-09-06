@@ -53,10 +53,7 @@
 		methods: {
 			async onSubmit() {
 				const success = await this.$store.dispatch('login', this.form)
-
-				if (success) {
-					this.$router.push(this.$store.state.nextpage || { name: 'page-home' })
-				}
+				if (success) this.$emit('success')
 			},
 		},
 	}

@@ -1,7 +1,7 @@
 <template>
 	<div class="container-fluid mt-4">
 		<VModal ref='modal' :modalTitle='title' modalBackdrop="static">
-			<FormLogin v-if="showSignup == false" />
+			<FormLogin v-if="showSignup == false" @success='navigate' />
 			<FormRegister v-else/>
 			<p>
 				<a href="#" v-if="showSignup == false" v-on:click.prevent="showSignup = true">Or sign up here.</a>
@@ -37,6 +37,11 @@
 			if (!this.$store.state.loggeduser) {
 				this.$refs.modal.show()
 			} 
+		},
+		methods: {
+			navigate() {
+				this.$router.replace(this.$route.query.redirect || { name: 'page-home' })
+			},
 		},
 	}
 </script>
