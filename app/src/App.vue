@@ -1,5 +1,5 @@
 <template>
-	<div id="mainwrap" :class="this.$route.name">
+	<div id="mainwrap">
 		<TheHeader v-on:loggedout="logOut" v-if="this.$store.state.loggeduser"/>
 		<FlashMessage position="right top" />
 		<TheModal />
@@ -23,25 +23,6 @@
 			logOut() {
 				this.$router.push({ name: 'login' })
 			},
-			flashIt(errorObject) {
-				this.$flashMessage.show({
-					type: errorObject.type,
-					title: errorObject.title,
-					time: errorObject.time,
-				})
-			}
 		},
-		computed: {
-			errorObject: {
-				get () {
-					return this.$store.state.errorObject
-				}
-			}
-		},
-		watch: {
-			'errorObject'(newObject) {
-				this.flashIt(newObject)
-			}
-		}
 	}
 </script>

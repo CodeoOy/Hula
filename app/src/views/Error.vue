@@ -13,22 +13,17 @@
 
 <script>
 	export default {
-		name: 'PageError',
-		computed: {
-			title () {
-				if (this.$store.state.errorObject) {
-					return this.$store.state.errorObject.title
-				} else {
-					return "Page not found."
-				}
+		name: 'Error',
+
+		props: {
+			title: {
+				type: String,
+				default: 'Page not found',
 			},
-			message() {
-				if (this.$store.state.errorObject) {
-					return this.$store.state.errorObject.title
-				} else {
-					return "Try the navigation."
-				}
-			}
-		}	
+			message: {
+				type: String,
+				default: 'Try the navigation',
+			},
+		},
 	}
 </script>

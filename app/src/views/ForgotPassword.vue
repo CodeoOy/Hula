@@ -24,21 +24,5 @@ export default {
     components: {
         FormForgotPassword,
     },
-    computed: {
-        title () {
-            if (this.$store.state.errorObject) {
-                return this.$store.state.errorObject.title
-            } else {
-                return "Page not found."
-            }
-        },
-        message() {
-            if (this.$store.state.errorObject) {
-                return this.$store.state.errorObject.title
-            } else {
-                return "Try the navigation."
-            }
-        }
-    }	
 }
 </script>

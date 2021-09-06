@@ -137,10 +137,6 @@
 		},
 
 		async mounted() {
-			if (this.$route.params.id != this.$store.state.loggeduser.id) {
-				if (!this.$store.state.loggeduser.isadmin) this.$router.push({ name: 'error' })
-			}
-
 			if (this.$store.state.loggeduser.isadmin && !this.$store.state.projects.length) {
 				this.$store.dispatch('getProjects')
 			}

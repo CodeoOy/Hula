@@ -35,7 +35,7 @@
 	import ResultsLeads from '../components/ResultsLeads.vue'
 	import ResultsPros from '../components/ResultsPros.vue'
 	export default {
-		name: 'AdminList',
+		name: 'AdminHome',
 		components: {
 			FindPro,
 			FindLead,

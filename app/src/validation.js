@@ -1,3 +1,4 @@
+import state from './store/state.js'
 import { defineRule } from 'vee-validate'
 import { required, email, confirmed, min_value } from '@vee-validate/rules'
 
@@ -17,5 +18,5 @@ defineRule('afterDate', (value, [target], ctx) => {
 })
 
 defineRule('requiredNonAdmin', value => {
-	return !!((store.state.loggeduser && store.state.loggeduser.isadmin) || value)
+	return !!((state.loggeduser && state.loggeduser.isadmin) || value)
 })
