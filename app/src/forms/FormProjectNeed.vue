@@ -2,7 +2,7 @@
 	<VForm v-on:submit='onSubmit'>
 
 		<div class='mb-2'>
-			<label for='label' class='form-label'>Need label</label>
+			<label for='label' class='form-label'>Label</label>
 			<ErrorMessage name='label' class='error' />
 			<VField
 				v-model='form.label'
@@ -17,7 +17,7 @@
 		</div>
 
 		<div class='mb-2'>
-			<label for='count_of_users' class='form-label'>How many pros for this need?</label>
+			<label for='count_of_users' class='form-label'>Number of positions</label>
 			<ErrorMessage name='count_of_users' class='error' />
 			<VField
 				v-model.number='form.count_of_users'
@@ -25,14 +25,14 @@
 				type='number'
 				name='count_of_users'
 				id='count_of_users'
-				label='Number of pros'
-				aria-label='Number of pros'
+				label='Number of positions'
+				aria-label='Number of positions'
 				class='form-control'
 			/>
 		</div>
 
 		<div class='mb-2'>
-			<label for='begin_time' class='form-label'>When does this need start?</label>
+			<label for='begin_time' class='form-label'>Start date</label>
 			{{ begin_time }}<br />
 			<ErrorMessage name='begin_time' class='error' />
 			<VField
@@ -48,7 +48,7 @@
 		</div>
 
 		<div class='mb-2'>
-			<label for='end_time' class='form-label'>When does this need end?</label>
+			<label for='end_time' class='form-label'>End date</label>
 			{{ end_time }}<br />
 			<ErrorMessage name='end_time' class='error' />
 			<VField
@@ -64,7 +64,7 @@
 		</div>
 
 		<div class='mb-2'>
-			<label for='percentage' class='form-label'>At what percentage?</label>
+			<label for='percentage' class='form-label'>Workload as a percentage</label>
 			<ErrorMessage name='percentage' class='error' />
 			<VField
 				v-model.number='form.percentage'

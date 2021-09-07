@@ -15,11 +15,11 @@
 			<div class='col-md-8'>
 				<div class='p-3 mb-4 rounded-2 content-box bg-dark text-light'>
 					<div class='d-sm-flex flex-row justify-content-between align-items-start'>
-						<h2 class='h2'>Needs</h2>
+						<h2 class='h2'>Roles</h2>
 						<button
 							class='btn btn-gradient'
 							v-on:click='editNeed()'
-						>Add need</button>
+						>Add role</button>
 					</div>
 					<div class='mt-3' v-for='need in project.needs' :key='need.id'>
 						<hr />
@@ -64,7 +64,7 @@
 					</div>
 				</div>
 				<div v-if='matches' class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
-					<h2 class="h2">Pros matching the needs</h2>
+					<h2 class="h2">Developers matching the roles</h2>
 					<ResultsPros :project='project' :matches='matches' />
 				</div>
 			</div>
@@ -114,7 +114,7 @@
 
 			async editNeed(props = {}) {
 				const result = await this.$modal({
-					title: props.id ? 'Edit need' : 'Add need',
+					title: props.id ? 'Edit role' : 'Add role',
 					component: FormProjectNeed,
 					props: { ...props, project_id: this.$route.params.id },
 				})
