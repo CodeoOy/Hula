@@ -4,6 +4,7 @@ import postcss from 'rollup-plugin-postcss'
 import autoprefixer from 'autoprefixer'
 import replace from '@rollup/plugin-replace'
 import copy from 'rollup-plugin-copy-assets'
+import skinner from './rollup-plugin-hula-skinner.js'
 
 const production = !process.env.ROLLUP_WATCH
 
@@ -27,6 +28,8 @@ export default {
 		}),
 		
 		vue(),
+
+		skinner(),
 
 		postcss({
 			extract: true,

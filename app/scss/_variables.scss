@@ -1,33 +1,30 @@
-// Variables
+$primary: 			#e838b9 !default;
+$secondary: 		#97ffcb !default;
+$success:			#75ecb1 !default;
+$info:				#54d2e9 !default;
+$warning:			#ffe434 !default;
+$danger:			#ff005e !default;
+$light:				#b4c3c0 !default;
+$dark:				#210e26 !default;
+$link-color:		#00c8a3 !default;
+$link-hover-color:	$primary !default;
+$separator-color:   #800da6 !default;
+$yellow:            #ff9d00 !default;
+$purple:            #9d00ff !default;
 
-$primary: 			#e838b9;
-$secondary: 		#97ffcb;
-$success:			#75ecb1;
-$info:				#54d2e9;
-$warning:			#ffe434;
-$danger:			#ff005e;
-//$light:				#c0b4c3;
-$light:				#b4c3c0;
-$dark:				#210e26;
-$link-color:		#00c8a3;
-$link-hover-color:	$primary;
-$separator-color:   #800da6;
-$yellow:            #ff9d00;
-$purple:            #9d00ff;
+$input-bg:						#eee !default;
+$input-disabled-bg:				#ccc !default;
+$table-striped-color:			$light !default;
+$table-border-width:			0px !default;
+$dropdown-bg:					lighten($secondary, 10%) !default;
+$dropdown-link-hover-bg:		$secondary !default;
 
-$input-bg:						#eee;
-$input-disabled-bg:				#ccc;
-$table-striped-color:			$light;
-$table-border-width:			0px;
-$dropdown-bg:					lighten($secondary, 10%);
-$dropdown-link-hover-bg:		$secondary;
+$accordion-bg: darken($primary, 40%) !default;
+$accordion-button-active-bg: darken($primary, 30%) !default;
+$accordion-color: $link-color !default;
+$accordion-button-active-color: $link-color !default;
 
-$accordion-bg: darken($primary, 40%);
-$accordion-button-active-bg: darken($primary, 30%);
-$accordion-color: $link-color;
-$accordion-button-active-color: $link-color;
-
-$link-decoration: none;
+$link-decoration: none !default;
 
 @font-face {
     font-family: 'salomeitalic';
@@ -45,6 +42,6 @@ $link-decoration: none;
     url("assets/bootstrap-icons.woff?856008caa5eb66df68595e734e59580d") format("woff");
 }
 
-$font-heading: 'salomeitalic', sans-serif;
-$font-family-sans-serif: 'Overpass', sans-serif;
-$font-family-monospace: 'Overpass mono', monospace; 
+$font-heading: 'salomeitalic', sans-serif !default;
+$font-family-sans-serif: 'Overpass', sans-serif !default;
+$font-family-monospace: 'Overpass mono', monospace !default;
