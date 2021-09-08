@@ -2,15 +2,15 @@
 	<div class="container mt-4">
 		<div class="row gx-4">
 			<div class="col-md-4">
-				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+				<div class="p-3 mb-4 rounded shadow bg-dark text-light">
 					<h1 class="h1">{{ user.firstname }} {{ user.lastname }}</h1>
 					<p>{{ user.email }}</p>
 					<button class='btn btn-unstyled' v-on:click="editUser(user)"><i class="bi-pencil-fill me-2"></i></button>
 					<button class='btn btn-unstyled' v-on:click="confirmDelete('user', user)"><i class="bi-trash-fill me-2"></i></button>
 					<hr />
-					<VForm v-on:submit="saveFiles" class='clearfix'>
+					<VForm @submit="saveFiles" class='clearfix'>
 						<div class="mb-3">
-							<table v-if='files.length' class="table table-dark table-striped text-light">
+							<table v-if='files.length' class="table table-dark table-striped">
 								<thead>
 									<tr>
 										<th scope="col">CV</th>
@@ -34,18 +34,18 @@
 								v-model="newFiles"
 							/>
 						</div>
-						<button type="submit" class="btn btn-gradient float-end">Upload files</button>
+						<button type="submit" class="btn btn-primary gradient float-end">Upload files</button>
 					</VForm>
 				</div>
 			</div>
 			<div class="col-md-8">
-				<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+				<div class="p-3 mb-4 rounded shadow bg-dark text-light">
 					<div class="d-sm-flex flex-row justify-content-between align-items-start">
 						<h3 class="h3">Skills</h3>
-						<button class="btn btn-gradient" v-on:click="editSkill()">Add skill</button>
+						<button class="btn btn-primary gradient" v-on:click="editSkill()">Add skill</button>
 					</div>
 					<div class="table-responsive">
-						<table class="table table-dark table-striped text-light">
+						<table class="table table-dark table-striped">
 							<thead>
 								<tr>
 									<th scope="col">Skill</th>
@@ -69,9 +69,9 @@
 					</div>
 					<div class="d-sm-flex flex-row justify-content-between align-items-start">
 						<h3 class="h3">Reservations</h3>
-						<button class="btn btn-gradient" v-on:click="editReservation()">Add reservation</button>
+						<button class="btn btn-primary gradient" v-on:click="editReservation()">Add reservation</button>
 					</div>
-					<table class="table table-dark table-striped text-light" v-if="reservations.length">
+					<table class="table table-dark table-striped" v-if="reservations.length">
 						<thead>
 							<tr>
 								<th scope="col">Description</th>
@@ -95,7 +95,7 @@
 						</tbody>
 					</table>
 				</div>
-				<div v-if='matches.length' class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+				<div v-if='matches.length' class="p-3 mb-4 rounded shadow bg-dark text-light">
 					<h3 class="h3">Projects matching the user's skills</h3>
 					<VMatchesForUser :matches='matches' />
 				</div>

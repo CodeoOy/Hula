@@ -1,9 +1,8 @@
 <template>
-	<VForm v-on:submit='onSubmit'>
+	<VForm @submit='onSubmit' v-slot='{ errors }'>
 
 		<div class='mb-2' v-if='!id'>
 			<label for='skill' class='form-label'>Skill</label>
-			<ErrorMessage name='skill' class='error' />
 			<VField
 				v-model='form.skill_id'
 				rules='required'
@@ -13,12 +12,14 @@
 				label='Skill'
 				aria-label='Skill'
 				class='form-select'
+				:class='{ "is-invalid": errors.skill }'
 			>
 				<option :value='null' disabled selected>Pick a skill</option>
 				<option v-for='skill in filteredSkills' :key='skill.id' :value='skill.id'>
 					{{ skill.label }}
 				</option>
 			</VField>
+			<ErrorMessage name='skill' class='invalid-feedback shake' />
 		</div>
 
 		<div class='mb-2 form-check'>
@@ -37,7 +38,6 @@
 
 		<div class='mb-2'>
 			<label for='skillscopelevel_id' class='form-label'>Minimum level</label>
-			<ErrorMessage name='skillscopelevel_id' class='error' />
 			<VField
 				v-model='form.skillscopelevel_id'
 				:disabled='!form.skill_id'
@@ -56,7 +56,6 @@
 
 		<div class='mb-2'>
 			<label for='min_years' class='form-label'>Min years</label>
-			<ErrorMessage name='min_years' class='error' />
 			<VField
 				v-model.number='form.min_years'
 				type='number'
@@ -70,7 +69,6 @@
 
 		<div class='mb-2'>
 			<label for='max_years' class='form-label'>Max years</label>
-			<ErrorMessage name='max_years' class='error' />
 			<VField
 				v-model.number='form.max_years'
 				:rules='`min_value:${form.min_years}`'
@@ -83,7 +81,7 @@
 			/>
 		</div>
 
-		<button type='submit' class='btn btn-gradient mb-1'>Save</button>
+		<button type='submit' class='btn btn-primary gradient mb-1'>Save</button>
 	</VForm>
 </template>
 

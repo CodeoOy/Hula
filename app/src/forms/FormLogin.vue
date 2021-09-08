@@ -1,10 +1,9 @@
 <template>
 	<div>
-		<VForm v-on:submit='onSubmit'>
+		<VForm @submit='onSubmit' v-slot='{ errors }'>
 
 			<div class='mb-2'>
 				<label for='email' class='form-label'>Email</label>
-				<ErrorMessage name='email' class='error' />
 				<VField
 					v-model='form.email'
 					rules='required|email'
@@ -14,12 +13,13 @@
 					label='Email'
 					aria-label='Email'
 					class='form-control'
+					:class='{ "is-invalid": errors.email }'
 				/>
+				<ErrorMessage name='email' class='invalid-feedback shake' />
 			</div>
 
 			<div class='mb-2'>
 				<label for='password' class='form-label'>Password</label>
-				<ErrorMessage name='password' class='error' />
 				<VField
 					v-model='form.password'
 					rules='required'
@@ -29,10 +29,12 @@
 					label='Password'
 					aria-label='Password'
 					class='form-control'
+					:class='{ "is-invalid": errors.required }'
 				/>
+				<ErrorMessage name='password' class='invalid-feedback shake' />
 			</div>
 
-			<button type='submit' class='btn btn-gradient mb-1'>Login</button>
+			<button type='submit' class='btn btn-primary gradient mb-1'>Login</button>
 		</VForm>
 	</div>
 </template>

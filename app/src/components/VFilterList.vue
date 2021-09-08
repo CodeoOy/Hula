@@ -90,7 +90,7 @@
 
 <style scoped lang='scss'>
 	.active {
-		background-color: var(--bs-primary);
+		background-color: var(--bs-component-active-bg);
 
 		& > .btn {
 			color: var(--bs-white);

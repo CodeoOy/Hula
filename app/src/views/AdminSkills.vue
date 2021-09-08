@@ -3,11 +3,11 @@
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Skills</h2>
 			<div>
-				<button class="btn btn-gradient" v-on:click="editCategory()">New category</button>
+				<button class="btn btn-primary gradient" v-on:click="editCategory()">New category</button>
 			</div>
 		</div>
 		<div class="table-responsive">
-			<table class="table table-dark table-striped text-light">
+			<table class="table table-dark table-striped">
 				<thead>
 					<tr>
 						<th scope="col">Category</th>
@@ -16,24 +16,26 @@
 				</thead>
 				<tbody>
 					<tr v-for="category in categories" :key="category.id">
-						<td class="hoverable-td">
-							<div class="title-actions">
-								<span class="title-actions__maintitle">{{ category.label }}</span>
-								<div class="title-actions__actions">
+						<td>
+							<div class='d-flex justify-content-between m-3'>
+								<div>{{ category.label }}</div>
+								<div class="td-actions">
 									<button class='btn btn-unstyled' v-on:click="editSkill(category)"><i class="bi-plus-circle-fill me-2"></i></button>
 									<button class='btn btn-unstyled' v-on:click="editCategory(category)"><i class="bi-pencil-fill me-2"></i></button>
 									<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.category', category)"><i class="bi-trash-fill me-2"></i></button>
 								</div>
 							</div>
 						</td>
-						<td class="hoverable-td">
-							<div class="title-actions" v-for="skill in filterSkills(category.id)" :key="skill" :value="skill.id">
-								<span><span class="title-actions__maintitle">{{ skill.label }}</span><span class="title-actions__maintitle--dimmed"> ({{ getSkillScopeLabel(skill.skillscope_id) }})</span></span>
-								<div class="title-actions__actions">
-									<button class='btn btn-unstyled' v-on:click="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></button>
-									<button class='btn btn-unstyled' v-on:click="confirmDelete('skill', skill)"><i class="bi-trash-fill me-2"></i></button>
-								</div>
-							</div>
+						<td>
+							<ul class='list-group list-group-flush list-group-transparent ms-n3 my-2'>
+								<li v-for="skill in filterSkills(category.id)" :key="skill" class='list-group-item d-flex justify-content-between'>
+									<div>{{ skill.label }} <small class="fw-light text-muted">({{ getSkillScopeLabel(skill.skillscope_id) }})</small></div>
+									<div class="td-actions">
+										<button class='btn btn-unstyled' v-on:click="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></button>
+										<button class='btn btn-unstyled' v-on:click="confirmDelete('skill', skill)"><i class="bi-trash-fill me-2"></i></button>
+									</div>
+								</li>
+							</ul>
 						</td>
 					</tr>
 				</tbody>

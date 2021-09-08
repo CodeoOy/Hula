@@ -1,8 +1,8 @@
 <template>
-	<nav class="navbar navbar-dark navbar-expand-sm bg-dark">
+	<nav class="navbar navbar-dark navbar-expand-sm bg-dark shadow">
 		<div class="container-fluid">
-			<router-link :to='{ name: "home" }' class="navbar-brand text-decoration-none hulalogo order-0">
-				<svg height="50" viewBox="0 0 690 250" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+			<router-link :to='{ name: "home" }' class="navbar-brand hula-logo">
+				<svg height="50" viewBox="0 0 690 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
 					<g transform="matrix(0.862694,0,0,0.862694,-203.255,-257.425)">
 						<circle cx="384.358" cy="446.514" r="44.523"/>
 					</g>
@@ -23,24 +23,24 @@
 					</g>
 				</svg>
 			</router-link>
-			<div class="dropdown text-end order-1 order-sm-2">
-				<button id="usermenu" class='btn btn-unstyled' data-bs-toggle="dropdown" aria-expanded="false">
-					<svg class="icon" width="16" height="16" viewbox="0 0 16 16" fill="currentColor">
-						<path d="M11 6a3 3 0 11-6 0 3 3 0 016 0z"></path><path fill-rule="evenodd" d="M0 8a8 8 0 1116 0A8 8 0 010 8zm8-7a7 7 0 00-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 008 1z"></path>
-					</svg>
-				</button>
-				<ul v-if="loggedUser" class="dropdown-menu dropdown-menu-end" aria-labelledby="usermenu">
-					<li v-if="loggedUser.isadmin === true">
-						<router-link :to='{ name: "admin-projects", params: { id: loggedUser.id } }' class="dropdown-item">Admin</router-link>
-					</li>
-					<li>
-						<router-link :to='{ name: "user", params: { id: loggedUser.id } }' class="dropdown-item">Profile</router-link>
-					</li>
-					<li>
-						<button v-on:click="logOut()" class="dropdown-item">Log out</button>
-					</li>
-				</ul>
-			</div>
+			<ul class="navbar-nav">
+				<li class="nav-item dropdown">
+					<button id="usermenu" class='nav-link btn btn-unstyled fs-2 rounded-circle' data-bs-toggle="dropdown" aria-expanded="false">
+						<i class='bi-person-circle'></i>
+					</button>
+					<ul v-if="loggedUser" class="dropdown-menu dropdown-menu-end" aria-labelledby="usermenu">
+						<li v-if="loggedUser.isadmin === true">
+							<router-link :to='{ name: "admin-projects", params: { id: loggedUser.id } }' class="dropdown-item">Admin</router-link>
+						</li>
+						<li>
+							<router-link :to='{ name: "user", params: { id: loggedUser.id } }' class="dropdown-item">Profile</router-link>
+						</li>
+						<li>
+							<button v-on:click="logOut()" class="dropdown-item">Log out</button>
+						</li>
+					</ul>
+				</li>
+			</ul>
 		</div>
 	</nav>
 </template>

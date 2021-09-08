@@ -2,7 +2,7 @@
 	<div class="container-fluid mt-4">
 		<div class="row gx-4">
 			<div class="col-md-4">
-				<ul class="nav nav-tabs nav-dark">
+				<ul class="nav nav-tabs">
 					<li class="nav-item">
 						<button class="nav-link" v-bind:class="{ active: tabToggle }" v-on:click="tabToggle = true">Find by project</button>
 					</li>
@@ -10,7 +10,7 @@
 						<button class="nav-link" v-bind:class="{ active: !tabToggle }" v-on:click="tabToggle = false">Find by developer</button>
 					</li>
 				</ul>
-				<div class="p-3 rounded-2 content-box bg-dark text-light">
+				<div class="p-3 rounded shadow bg-dark text-light">
 					<keep-alive>
 						<VFilterList
 							v-if='projects.length && tabToggle'
@@ -28,7 +28,7 @@
 				</div>
 			</div>
 			<div class="col-md-8">
-				<div v-if='results' class="p-3 rounded-2 content-box bg-dark text-light">
+				<div v-if='results' class="p-3 rounded shadow bg-dark text-light">
 					<ResultsLeads v-bind='leadData' v-if="tabToggle == false" />
 					<div v-else>
 						<h2 v-if="matchesData.project">Developers for {{ matchesData.project.name }}</h2>

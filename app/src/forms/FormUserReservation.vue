@@ -1,9 +1,8 @@
 <template>
-	<VForm v-on:submit='onSubmit'>
+	<VForm @submit='onSubmit' v-slot='{ errors }'>
 
 		<div class='mb-2'>
 			<label for='description' class='form-label'>Description</label>
-			<ErrorMessage name='description' class='error' />
 			<VField
 				v-model='form.description'
 				rules='required'
@@ -13,12 +12,13 @@
 				label='Description'
 				aria-label='Description'
 				class='form-control'
+				:class='{ "is-invalid": errors.description }'
 			/>
+			<ErrorMessage name='description' class='invalid-feedback shake' />
 		</div>
 
 		<div class='mb-2'>
 			<label class='form-label'>Start date</label>
-			<ErrorMessage name='begin_time' class='error' />
 			<VField
 				v-model='form.begin_time'
 				rules='required|date'
@@ -28,12 +28,13 @@
 				label='Start date'
 				aria-label='Start date'
 				class='form-control'
+				:class='{ "is-invalid": errors.begin_time }'
 			/>
+			<ErrorMessage name='begin_time' class='invalid-feedback shake' />
 		</div>
 
 		<div class='mb-2'>
 			<label class='form-label'>End date</label>
-			<ErrorMessage name='end_time' class='error' />
 			<VField
 				v-model='form.end_time'
 				rules='required|date|afterDate:begin_time'
@@ -43,12 +44,13 @@
 				label='End date'
 				aria-label='End date'
 				class='form-control'
+				:class='{ "is-invalid": errors.end_time }'
 			/>
+			<ErrorMessage name='end_time' class='invalid-feedback shake' />
 		</div>
 
 		<div class='mb-2'>
 			<label for='percentage' class='form-label'>Percentage</label>
-			<ErrorMessage name='percentage' class='error' />
 			<VField
 				v-model.number='form.percentage'
 				rules='required'
@@ -58,10 +60,12 @@
 				label='Percentage'
 				aria-label='Percentage'
 				class='form-control'
+				:class='{ "is-invalid": errors.percentage }'
 			/>
+			<ErrorMessage name='percentage' class='invalid-feedback shake' />
 		</div>
 
-		<button type='submit' class='btn btn-gradient mb-1'>Save</button>
+		<button type='submit' class='btn btn-primary gradient mb-1'>Save</button>
 	</VForm>
 </template>
 

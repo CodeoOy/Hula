@@ -1,5 +1,5 @@
 <template>
-	<div class="container mt-4 p-3 content-box bg-dark text-light">
+	<div class="container mt-4 p-3 shadow bg-dark text-light">
 		<h1 class="h1">Privacy policy</h1>
 		<br />
 

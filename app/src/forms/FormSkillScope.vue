@@ -1,9 +1,8 @@
 <template>
-	<VForm v-on:submit='onSubmit'>
+	<VForm @submit='onSubmit' v-slot='{ errors }'>
 
 		<div class='mb-2'>
 			<label for='label' class='form-label'>Name</label>
-			<ErrorMessage name='label' class='error' />
 			<VField
 				v-model='form.label'
 				rules='required'
@@ -14,10 +13,12 @@
 				aria-label='Name'
 				placeholder='One to ten' 
 				class='form-control'
+				:class='{ "is-invalid": errors.label }'
 			/>
+			<ErrorMessage name='label' class='invalid-feedback shake' />
 		</div>
 
-		<button type='submit' class='btn btn-gradient mb-1'>Submit</button>
+		<button type='submit' class='btn btn-primary gradient mb-1'>Submit</button>
 	</VForm>  
 </template>
 

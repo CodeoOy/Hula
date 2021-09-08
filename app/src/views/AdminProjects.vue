@@ -23,11 +23,11 @@
 						</li>
 					</ul>
 				</div>
-				<button class="btn btn-gradient flex-shrink-0" v-on:click="newProject()">New project</button>
+				<button class="btn btn-primary gradient flex-shrink-0" v-on:click="newProject()">New project</button>
 			</div>
 		</div>
 		<div class="table-responsive" v-if="filteredProjects.length">
-			<table class="table table-dark table-striped text-light">
+			<table class="table table-dark table-striped">
 				<thead>
 					<tr>
 						<th scope="col">Project name</th>

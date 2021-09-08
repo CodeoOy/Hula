@@ -1,5 +1,5 @@
 <template>	
-	<VForm v-on:submit='onSubmit'>
+	<VForm @submit='onSubmit' v-slot='{ errors }'>
 
 		<div class='mb-2 form-check' v-if='form.id'>
 			<label for='is_hidden' class='form-label'>Hidden</label>
@@ -42,7 +42,6 @@
 
 		<div class='mb-2'>
 			<label for='firstname' class='form-label'>First name</label>
-			<ErrorMessage name='firstname' class='error' />
 			<VField
 				v-model='form.firstname'
 				rules='required'
@@ -52,12 +51,13 @@
 				label='First name'
 				aria-label='First name'
 				class='form-control'
+				:class='{ "is-invalid": errors.firstname }'
 			/>
+			<ErrorMessage name='firstname' class='invalid-feedback shake' />
 		</div>
 
 		<div class='mb-2'>
 			<label for='lastname' class='form-label'>Last name</label>
-			<ErrorMessage name='lastname' class='error' />
 			<VField
 				v-model='form.lastname'
 				rules='required'
@@ -67,12 +67,13 @@
 				label='Last name'
 				aria-label='Last name'
 				class='form-control'
+				:class='{ "is-invalid": errors.lastname }'
 			/>
+			<ErrorMessage name='lastname' class='invalid-feedback shake' />
 		</div>
 
 		<div class='mb-2'>
 			<label for='email' class='form-label'>Email</label>
-			<ErrorMessage name='email' class='error' />
 			<VField
 				v-model='form.email'
 				rules='required|email'
@@ -82,10 +83,12 @@
 				label='Email'
 				aria-label='Email'
 				class='form-control'
+				:class='{ "is-invalid": errors.email }'
 			/>
+			<ErrorMessage name='email' class='invalid-feedback shake' />
 		</div>
 
-		<button type='submit' class='btn btn-gradient'>Save</button>
+		<button type='submit' class='btn btn-primary gradient'>Save</button>
 	</VForm>   
 </template>
 

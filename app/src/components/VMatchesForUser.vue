@@ -1,6 +1,6 @@
 <template>
 	<div class="table-responsive">
-		<table class="table table-dark table-striped text-light">
+		<table class="table table-dark table-striped">
 			<thead>
 				<tr>
 					<th scope="col">Project</th>

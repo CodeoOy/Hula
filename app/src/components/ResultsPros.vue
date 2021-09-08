@@ -1,7 +1,7 @@
 <template>
 	<div v-if="users.length">
 		<div class="table-responsive">
-			<table class="table table-dark table-striped text-light">
+			<table class="table table-dark table-striped">
 				<thead>
 					<tr>
 						<th scope="col"></th>
@@ -13,8 +13,8 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(user, index) in users" :key="user.user_id" :class="`tier tier--${user.tier}`">
-						<th scope="row" class="tier__index position-relative"><span :class="`tier__ball tier__ball--${user.tier}`" :style="`zIndex: ${index}`">{{ index + 1 }}</span></th>
+					<tr v-for="(user, index) in users" :key="user.user_id" :class="`tier tier-${user.tier}`">
+						<th scope="row"><div class="tier-circle shadow-sm" :style='{ zIndex: users.length - index }'>{{ index + 1 }}</div></th>
 						<td>
 							<button v-on:click='showMatch(user)' class='btn btn-unstyled'>
 								{{ user.user_first_name }} {{ user.user_last_name }}

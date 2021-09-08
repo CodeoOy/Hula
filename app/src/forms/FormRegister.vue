@@ -1,9 +1,8 @@
 <template>
-	<VForm v-on:submit='onSubmit'>
+	<VForm @submit='onSubmit' v-slot='{ errors }'>
 
 		<div class='mb-2'>
 			<label for='email' class='form-label'>Email</label>
-			<ErrorMessage name='email' class='error' />
 			<VField
 				v-model='form.email'
 				rules='required|email'
@@ -13,12 +12,13 @@
 				label='Email'
 				aria-label='Email'
 				class='form-control'
+				:class='{ "is-invalid": errors.email }'
 			/>
+			<ErrorMessage name='email' class='invalid-feedback shake' />
 		</div>
 
 		<div class='mb-2'>
 			<label for='first_name' class='form-label'>First name</label>
-			<ErrorMessage name='first_name' class='error' />
 			<VField
 				v-model='form.first_name'
 				rules='required'
@@ -28,12 +28,13 @@
 				label='First name'
 				aria-label='First name'
 				class='form-control'
+				:class='{ "is-invalid": errors.first_name }'
 			/>
+			<ErrorMessage name='first_name' class='invalid-feedback shake' />
 		</div>
 
 		<div class='mb-2'>
 			<label for='last_name' class='form-label'>Last name</label>
-			<ErrorMessage name='last_name' class='error' />
 			<VField
 				v-model='form.last_name'
 				rules='required'
@@ -43,12 +44,13 @@
 				label='Last name'
 				aria-label='Last name'
 				class='form-control'
+				:class='{ "is-invalid": errors.last_name }'
 			/>
+			<ErrorMessage name='last_name' class='invalid-feedback shake' />
 		</div>
 
 		<div class='mb-2'>
 			<label for='password_plain' class='form-label'>Password</label>
-			<ErrorMessage name='password_plain' class='error' />
 			<VField
 				v-model='form.password'
 				rules='requiredNonAdmin'
@@ -58,12 +60,13 @@
 				label='Password'
 				aria-label='Password'
 				class='form-control'
+				:class='{ "is-invalid": errors.password_plain }'
 			/>
+			<ErrorMessage name='password_plain' class='invalid-feedback shake' />
 		</div>
 
 		<div class='mb-2'>
 			<label for='password_confirmation' class='form-label'>Repeat password</label>
-			<ErrorMessage name='password_confirmation' class='error' />
 			<VField
 				rules='confirmed:@password_plain'
 				type='password'
@@ -72,10 +75,12 @@
 				label='Password confirmation'
 				aria-label='Password confirmation'
 				class='form-control'
+				:class='{ "is-invalid": errors.password_confirmation }'
 			/>
+			<ErrorMessage name='password_confirmation' class='invalid-feedback shake' />
 		</div>
 
-		<button type='submit' class='btn btn-gradient mb-1'>Register</button>
+		<button type='submit' class='btn btn-primary gradient mb-1'>Register</button>
 	</VForm>
 </template>
 

@@ -1,9 +1,8 @@
 <template>
-	<VForm v-on:submit='onSubmit'>
+	<VForm @submit='onSubmit' v-slot='{ errors }'>
 
 		<div class='mb-2'>
 			<label for='label' class='form-label'>Name</label>
-			<ErrorMessage name='label' class='error' />
 			<VField
 				v-model='form.label'
 				rules='required'
@@ -13,7 +12,9 @@
 				label='Name'
 				aria-label='Name'
 				class='form-control'
+				:class='{ "is-invalid": errors.label }'
 			/>
+			<ErrorMessage name='label' class='invalid-feedback shake' />
 		</div>
 
 		<div class='mb-2' v-if='form.id'>
@@ -27,11 +28,13 @@
 				label='Category'
 				aria-label='Category'
 				class='form-select'
+				:class='{ "is-invalid": errors.skillcategory_id }'
 			>
 				<option v-for="category in categories" :key="category.id" :value="category.id">
 					{{ category.label }}
 				</option>
 			</VField>
+			<ErrorMessage name='skillcategory_id' class='invalid-feedback shake' />
 		</div>
 
 		<div class='mb-2' v-if='!form.id'>
@@ -45,14 +48,16 @@
 				label='Scope'
 				aria-label='Scope'
 				class='form-select'
+				:class='{ "is-invalid": errors.skillscope_id }'
 			>
 				<option v-for="scope in scopes" :key="scope.id" :value="scope.id">
 					{{ scope.label }}
 				</option>
 			</VField>
+			<ErrorMessage name='skillscope_id' class='invalid-feedback shake' />
 		</div>
 
-		<button type='submit' class='btn btn-gradient mb-1'>Submit</button>
+		<button type='submit' class='btn btn-primary gradient mb-1'>Submit</button>
 	</VForm> 
 </template>
 

@@ -2,10 +2,10 @@
 	<div>
 		<div class="d-sm-flex flex-row justify-content-between align-items-start">
 			<h2 class="h2">Scopes</h2>
-			<button class="btn btn-gradient" v-on:click="editScope()">Add scope</button>
+			<button class="btn btn-primary gradient" v-on:click="editScope()">Add scope</button>
 		</div>
 		<div class="table-responsive">
-			<table class="table table-dark table-striped text-light">
+			<table class="table table-dark table-striped">
 				<thead>
 					<tr>
 						<th scope="col">Scope name</th>
@@ -14,21 +14,21 @@
 				</thead>
 				<tbody>
 					<tr v-for="scope in skillScopes" :key="scope.id">
-						<td class="hoverable-td">
-							<div class="title-actions">
-								<span class="title-actions__maintitle">{{ scope.label }}</span>
-								<div class="title-actions__actions">
+						<td>
+							<div class="d-flex justify-content-between m-3">
+								<div>{{ scope.label }}</div>
+								<div class='td-actions'>
 									<button class='btn btn-unstyled' v-on:click="editLevel(scope)"><i class="bi-plus-circle-fill me-2"></i></button>
 									<button class='btn btn-unstyled' v-on:click="editScope(scope)"><i class="bi-pencil-fill me-2"></i></button>
 									<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.scope', scope)"><i class="bi-trash-fill me-2"></i></button>
 								</div>
 							</div>
 						</td>
-						<td class="hoverable-td">
-							<transition-group name="flip-list" tag="ul">
-								<li class="title-actions" v-for="lvl in filterLevels(scope.id)" :key="lvl.id" :value="lvl.id">
-									<span class="title-actions__maintitle">{{ lvl.index }}: {{ lvl.label }} - {{ lvl.percentage }}</span>
-									<div class="title-actions__actions">
+						<td>
+							<transition-group name="flip-list" tag="ul" class='list-group list-group-flush list-group-transparent ms-n3 my-2'>
+								<li v-for="lvl in filterLevels(scope.id)" :key="lvl.id" class="list-group-item d-flex justify-content-between">
+									<div>{{ lvl.label }} <small class="fw-light text-muted">({{ lvl.percentage }}%)</small></div>
+									<div class='td-actions'>
 										<button class='btn btn-unstyled' v-on:click="editLevel(lvl)"><i class="bi-pencil-fill me-2"></i></button>
 										<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.level', lvl)"><i class="bi-trash-fill me-2"></i></button>
 										<button class='btn btn-unstyled' v-on:click="swapLevels({ ...lvl, swap_direction: 'Better' })"><i class="bi-caret-up-fill me-1"></i></button>

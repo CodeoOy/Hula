@@ -2,7 +2,7 @@
 	<div class='container mt-4' ref='lol'>
 		<div class='row gx-4' v-if='project'>
 			<div class='col-md-4'>
-				<div class='p-3 mb-4 rounded-2 content-box bg-dark text-light'>
+				<div class='p-3 mb-4 rounded shadow bg-dark text-light'>
 					<h2 class="h2">
 						{{ project.name }}
 						<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-3 float-end"></i>
@@ -13,11 +13,11 @@
                 </div>
 			</div>
 			<div class='col-md-8'>
-				<div class='p-3 mb-4 rounded-2 content-box bg-dark text-light'>
+				<div class='p-3 mb-4 rounded shadow bg-dark text-light'>
 					<div class='d-sm-flex flex-row justify-content-between align-items-start'>
 						<h2 class='h2'>Roles</h2>
 						<button
-							class='btn btn-gradient'
+							class='btn btn-primary gradient'
 							v-on:click='editNeed()'
 						>Add role</button>
 					</div>
@@ -35,7 +35,7 @@
 							</div>
 						</div>
 						<div class="table-responsive">
-							<table class="table table-dark table-striped text-light mb-4">
+							<table class="table table-dark table-striped mb-4">
 								<thead>
 									<tr>
 										<th scope='col'>Skill</th>
@@ -63,7 +63,7 @@
 						</div>
 					</div>
 				</div>
-				<div v-if='matches' class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+				<div v-if='matches' class="p-3 mb-4 rounded shadow bg-dark text-light">
 					<h2 class="h2">Developers matching the roles</h2>
 					<ResultsPros :project='project' :matches='matches' />
 				</div>

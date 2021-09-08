@@ -1,13 +1,11 @@
 <template>
-	<div id="mainwrap">
-		<TheHeader v-on:loggedout="logOut" v-if="this.$store.state.loggeduser"/>
-		<FlashMessage position="right top" />
-		<TheModal />
-		<main>
-			<router-view />
-		</main>
-		<TheFooter />
-	</div>
+	<TheHeader v-on:loggedout="logOut" v-if="this.$store.state.loggeduser"/>
+	<FlashMessage position="right top" />
+	<TheModal />
+	<main id='main'>
+		<router-view />
+	</main>
+	<TheFooter />
 </template>
 
 <script>

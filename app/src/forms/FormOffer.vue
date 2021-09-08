@@ -1,5 +1,5 @@
 <template>
-	<VForm v-on:submit='onSubmit'>
+	<VForm @submit='onSubmit' v-slot='{ errors }'>
 
 		<div class='mb-2 form-check'>
 			<label for='sold' class='form-label'>Sold</label>
@@ -16,7 +16,7 @@
 
 		<div class='mb-2'>
 			<label for='comments' class='form-label'>Comments</label>
-			<error-message name='comments' class='error'></error-message>
+			<error-message name='comments' class='invalid-feedback shake'></error-message>
 			<VField
 				v-model='form.comments'
 				type='text'
@@ -28,7 +28,7 @@
 			/>
 		</div>
 
-		<button type='submit' class='btn btn-gradient mb-1'>Save</button>
+		<button type='submit' class='btn btn-primary gradient mb-1'>Save</button>
 	</VForm>
 </template>
 

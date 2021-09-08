@@ -29,7 +29,7 @@
 @import '../node_modules/bootstrap/scss/badge';
 // @import '../node_modules/bootstrap/scss/alert';
 // @import '../node_modules/bootstrap/scss/progress';
-// @import '../node_modules/bootstrap/scss/list-group';
+@import '../node_modules/bootstrap/scss/list-group';
 @import '../node_modules/bootstrap/scss/close';
 // @import '../node_modules/bootstrap/scss/toasts';
 @import '../node_modules/bootstrap/scss/modal';
@@ -44,74 +44,20 @@
 // Utilities
 @import '../node_modules/bootstrap/scss/utilities/api';
 
-// Custom styles
+// Extend Bootstrap
 
-body {
-	background-image: url('assets/bg4.jpg');
-	background-size: cover;
-	background-attachment: fixed;
+:root {
+	--#{$variable-prefix}component-active-bg: #{$component-active-bg} !important;
 }
 
-#mainwrap {
-	height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-main {
-	flex: 1 0 auto;
-    display: flex;
-    flex-direction: column;
-}
-
-.db {
-	display: block;
-}
-
-._vue-flash-msg-body {
-	z-index: 100000 !important;
-}
-
-.modal.show {
-	background-color: rgba(15,0,15,0.1);
-}
-
-.modal-header {
-	border-bottom: 1px solid $separator-color;
-}
-
-.accordion-body {
-	padding: 0;
-}
-
-.text-white {
-	color: #fff;
-}
-
-.error {
-	background-color: $danger;
-	animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
-	transform: translate3d(0, 0, 0);
-	backface-visibility: hidden;
-	perspective: 1000px;
-	padding: 2px;
-    font-weight: 900;
-	font-size: 0.9rem;
-	border-radius: 3px 3px 0px 0px;
-	margin-left: 4px;
-	margin-right: 4px;
-    color: #fff;
-	display: block;
-	& + * {
-		background-color: lighten($danger, 20%) !important;	
+.nav-tabs {
+	.nav-link:not(.active):hover {
+		background-color: rgba($nav-tabs-link-active-bg, 0.5);
 	}
-}
 
-.btn-gradient {
-	background-image: linear-gradient(to bottom, $secondary 0%,rgb(14, 191, 185) 100%);
-	border: none;
-	&:hover {
-		background-image: linear-gradient(to bottom, lighten($secondary, 20%) 0%,rgb(14, 191, 185) 100%);
+	& + .rounded {
+		border-top-right-radius: 0 !important;
+		border-top-left-radius: 0 !important;
 	}
 }
 
@@ -125,188 +71,125 @@ main {
 	text-align: inherit;
 }
 
-.icon {
-	fill: $light;
-	transform: scale(2); // Not exactly a nice way to scale the svg.
-	transition: 0.2s fill ease-in-out;
-	margin-right: 8px;
-	&:hover {
-		fill: $link-color;
-	}
+.list-group-transparent > .list-group-item {
+	background-color: transparent;
+	color: inherit;
 }
 
-nav {
-	box-shadow: 0px 6px 10px rgba(0,0,0,0.8);
-	.hulalogo {
-		svg{
-			fill: $secondary;
-			padding-bottom: 8px;
-			padding-right: 30px;
-			#hoop {
-				transition: 0.7s ease-in-out;
-				transform-origin: 400px 431px;
-				transform: rotate(0);
-			}
-		}
-		&:hover {
-			#hoop {
-				transform: rotate(720deg);
-			}
-		}
-	}
+.badge-skill {
+	background-color: $indigo;
 }
 
-.title-actions {
-	display: flex;
-	flex-direction: row;
-	align-items: flex-start;
-	justify-content: space-between;
-	&:not(:last-child) {
-		border-bottom: 1px solid lighten($dark, 11%);
-	}
-	@include media-breakpoint-up(lg) {
-		width: 50%;
-	}
-	&__actions {
-		opacity: 0.1;
-	}
-	&__maintitle {
-		&--dimmed {
-			color: darken($light, 40%);
-			font-weight: 100;
-			font-size: 0.8rem;
-		}
-	}
+.form-control.is-invalid,
+.form-select.is-invalid {
+	background-color: $input-invalid-bg;
+}
+
+// Custom styles
+
+._vue-flash-msg-body {
+	z-index: $zindex-popover;
 }
 
 .flip-list-move {
 	transition: transform 0.2s;
 }
 
-.hoverable-td {
+.gradient:not([disabled]) {
+	background-image: linear-gradient(to bottom, rgba(white, 0.3), rgba(white, 0) 50%, rgba(black, 0) 50%, rgba(black, 0.1));
+}
+
+.td-actions {
+	opacity: 0.1;
+
+	td:hover &,
+	td:focus-within & {
+		opacity: 1;
+	}
+}
+
+body {
+	background-image: url('assets/bg4.jpg');
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+#hula {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+#main {
+	flex: 1 0 auto;
+	display: flex;
+	flex-direction: column;
+}
+
+.hula-logo {
+	fill: currentColor;
+
+	#hoop {
+		transition: 0.7s ease-in-out;
+		transform-origin: 400px 431px;
+		transform: rotate(0);
+	}
+
 	&:hover {
-		.title-actions__actions {
-			opacity: 1;
-		}
-	}
-	ul {
-		margin-bottom: 0;
-	}
-}
-
-.nav-tabs.nav-dark{
-	border-bottom: 1px solid $separator-color;
-	.nav-link {
-		margin-bottom: 0px;
-		background-color: #330b41;
-		border: none;
-		&.active {
-			background-color: $separator-color;
-			color: lighten($link-color, 10%);
-		}
-		&:hover {
-			background-color: $separator-color;
+		#hoop {
+			transform: rotate(720deg);
 		}
 	}
 }
 
-.form-control {
-	background-color: #bea7c4;
-	border: 1px solid #bea7c4;
-}
-
-.font-heading {
-	font-family: $font-heading;
-	margin-right: 1rem;
-	&--large {
-		font-size: 2.5rem;
-		color: #fff;
-	}
-}
-
-.content-box {
-	box-shadow: 0px 6px 10px rgba(0,0,0,0.9);
-	transition: all 0.4s ease-in-out;
-}
-
-.badge-skill {
-	background-color: $purple;
-}
-
-.table-striped { // Not very pretty but changing the BS variable had no effect
-	> tbody > tr:nth-of-type(#{$table-striped-order}) {
-		--#{$variable-prefix}table-accent-bg: var(--#{$variable-prefix}table-striped-bg);
-		color: $light;
-	}
-}
 .tier {
-	position: relative;
-	&--1 {
-		--#{$variable-prefix}table-accent-bg: #770043 !important;
-		--#{$variable-prefix}table-bg: #770043 !important;
+	--tier-bg-color: #{$tier-bg-color};
+	--tier-text-color: #{$tier-text-color};
+
+	&-1 {
+		--#{$variable-prefix}table-accent-bg: #{$tier-1-row-bg-color} !important;
+		--#{$variable-prefix}table-bg: #{$tier-1-row-bg-color} !important;
+		--tier-bg-color: #{$tier-1-bg-color};
+		--tier-text-color: #{$tier-1-text-color};
 	}
-	&--2 {
-		--#{$variable-prefix}table-accent-bg: #580032 !important;
-		--#{$variable-prefix}table-bg: #580032 !important;
-		//color: $primary !important;
+
+	&-2 {
+		--#{$variable-prefix}table-accent-bg: #{$tier-2-row-bg-color} !important;
+		--#{$variable-prefix}table-bg: #{$tier-2-row-bg-color} !important;
+		--tier-bg-color: #{$tier-2-bg-color};
+		--tier-text-color: #{$tier-2-text-color};
 	}
-	&__index {
-		width: 60px;
+
+	&-circle {
+		position: relative;
+		width: $tier-size;
+		margin: calc((#{$tier-size} - var(--bs-body-line-height) * 1rem) / -2) 0;
+		line-height: $tier-size;
+		text-align: center;
+		border-radius: 50%;
+		background-color: var(--tier-bg-color);
+		color: var(--tier-text-color);
 	}
 }
 
-.tier__ball {
-	border-radius: 50%;
-	background-color: aquamarine;
-	position: absolute;
-	top: -5px;
-	width: 3rem;
-	height: 3rem;
-	line-height: 3rem;
-	text-align: center;
-	color: #000;
-	box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
-	&--1 {
-		background-color: $yellow;
-	}
-	&--2 {
-		background-color: $secondary;
-	}
-	&--3,
-	&--4 {
-		background-color: $separator-color;
-	}
-}
-
-@keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+.shake {
+	animation: shake 1s cubic-bezier(0.75, 0, 0.25, 1);
 }
 
 @keyframes shake {
 	10%, 90% {
-	  transform: translate3d(-1px, 0, 0);
+		transform: translate3d(-1px, 0, 0);
 	}
-	
+
 	20%, 80% {
-	  transform: translate3d(2px, 0, 0);
+		transform: translate3d(2px, 0, 0);
 	}
-  
+
 	30%, 50%, 70% {
-	  transform: translate3d(-4px, 0, 0);
+		transform: translate3d(-4px, 0, 0);
 	}
-  
+
 	40%, 60% {
-	  transform: translate3d(4px, 0, 0);
-	}
-}
-
-
-// PAGE SPECIFIC STYLES
-
-
-.page-login {
-	.modal.show {
-		background-color: rgba(25,0,25,1);
+		transform: translate3d(4px, 0, 0);
 	}
 }

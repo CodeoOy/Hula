@@ -24,11 +24,11 @@
 						</li>
 					</ul>
 				</div>
-				<button class="btn btn-gradient flex-shrink-0" v-on:click="inviteUser()">Invite a user</button>
+				<button class="btn btn-primary gradient flex-shrink-0" v-on:click="inviteUser()">Invite a user</button>
 			</div>
 		</div>
 		<div class="table-responsive">
-			<table class="table table-dark table-striped text-light">
+			<table class="table table-dark table-striped">
 				<thead>
 					<tr>
 						<th scope="col">User</th>

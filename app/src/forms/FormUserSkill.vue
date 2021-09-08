@@ -1,9 +1,8 @@
 <template>
-	<VForm v-on:submit='onSubmit' v-if='skills.length && levels.length'>
+	<VForm v-if='skills.length && levels.length' @submit='onSubmit' v-slot='{ errors }'>
 
 		<div class='mb-2'>
 			<label for='skill' class='form-label'>Skill</label>
-			<ErrorMessage name='skill' class='error' />
 			<VField
 				v-model='form.skill_id'
 				rules='required'
@@ -13,17 +12,18 @@
 				label='Skill'
 				aria-label='Skill'
 				class='form-select'
+				:class='{ "is-invalid": errors.skill }'
 			>
 				<option :value='null' disabled selected>Pick a skill</option>
 				<option v-for='skill in skills' :key='skill.id' :value='skill.id'>
 					{{ skill.label }}
 				</option>
 			</VField>
+			<ErrorMessage name='skill' class='invalid-feedback shake' />
 		</div>
 
 		<div class='mb-2'>
 			<label for='level' class='form-label'>Skill level</label>
-			<ErrorMessage name='level' class='error' />
 			<VField
 				v-model='form.skillscopelevel_id'
 				rules='required'
@@ -33,12 +33,14 @@
 				label='Skill level'
 				aria-label='Skill level'
 				class='form-select'
+				:class='{ "is-invalid": errors.level }'
 			>
 				<option :value='null' disabled selected>No level</option>
 				<option v-for='level in filteredLevels' :key='level.id' :value='level.id'>
 					{{ level.label }}
 				</option>
 			</VField>
+			<ErrorMessage name='level' class='invalid-feedback shake' />
 		</div>
 
 		<div class='mb-2'>
@@ -54,7 +56,7 @@
 			/>
 		</div>
 
-		<button type='submit' class='btn btn-gradient mb-1'>Submit</button>
+		<button type='submit' class='btn btn-primary gradient mb-1'>Submit</button>
 	</VForm>
 </template>
 

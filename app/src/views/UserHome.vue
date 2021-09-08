@@ -1,6 +1,6 @@
 <template>
 	<div class="container mt-4">
-		<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+		<div class="p-3 mb-4 rounded shadow bg-dark text-light">
 			<h1 class="h2">Projects matching your skills</h1>
 			<VMatchesForUser :matches='matches' />
 		</div>

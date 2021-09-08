@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="row mt-4">
 			<div class="col">
-				<div class="p-3 rounded-2 content-box bg-dark text-light">
+				<div class="p-3 rounded shadow bg-dark text-light">
 					<FormForgotPassword v-if="showForm" v-on:success="showForm = false, resetSent = true"/>
                     <h2 v-if="resetSent">Password reset requested successfully, check your email.</h2>
 				</div>

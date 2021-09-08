@@ -1,5 +1,5 @@
 <template>
-	<div class="p-3 rounded-2 content-box bg-dark text-light">
+	<div class="p-3 rounded shadow bg-dark text-light">
 		<VModal ref='modal' :modalTitle="'Enter new password'" modalBackdrop="static">
 			<FormResetPassword v-on:success="changePassword" />
 		</VModal>

@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="row mt-4">
 			<div class="col">
-				<div class="p-3 rounded-2 content-box bg-dark text-light">
+				<div class="p-3 rounded shadow bg-dark text-light">
 					<h1 class="h1">{{ title }}</h1>
 					<p>{{ message }}</p>
 				</div>

@@ -1,11 +1,11 @@
 <template>
 	<div class="container mt-4">
-		<ul class="nav nav-tabs nav-dark">
+		<ul class="nav nav-tabs">
 			<li v-for='{ name, label } of navigation' :key='name' class='nav-item'>
 				<router-link :to='{ name }' class='nav-link'>{{ label }}</router-link>
 			</li>
 		</ul>
-		<div class="p-3 mb-4 rounded-2 content-box bg-dark text-light">
+		<div class="p-3 mb-4 rounded shadow bg-dark text-light">
 			<router-view v-slot='{ Component }'>
 				<keep-alive>
 					<component :is='Component' />
