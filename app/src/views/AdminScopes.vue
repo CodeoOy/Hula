@@ -1,45 +1,49 @@
 <template>
-	<div>
-		<div class="d-sm-flex flex-row justify-content-between align-items-start">
-			<h2 class="h2">Scopes</h2>
-			<button class="btn btn-primary gradient" v-on:click="editScope()">Add scope</button>
+	<div class='card shadow' :class='$colorScheme.card'>
+		<div class='card-header'>
+			<div class="d-sm-flex flex-row justify-content-between align-items-center">
+				<h1 class="h3 mb-0">Scopes &amp; Levels</h1>
+				<button class="btn btn-primary gradient" v-on:click="editScope()">Add scope</button>
+			</div>
 		</div>
-		<div class="table-responsive">
-			<table class="table table-dark table-striped">
-				<thead>
-					<tr>
-						<th scope="col">Scope name</th>
-						<th scope="col">Levels</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="scope in skillScopes" :key="scope.id">
-						<td>
-							<div class="d-flex justify-content-between m-3">
-								<div>{{ scope.label }}</div>
-								<div class='td-actions'>
-									<button class='btn btn-unstyled' v-on:click="editLevel(scope)"><i class="bi-plus-circle-fill me-2"></i></button>
-									<button class='btn btn-unstyled' v-on:click="editScope(scope)"><i class="bi-pencil-fill me-2"></i></button>
-									<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.scope', scope)"><i class="bi-trash-fill me-2"></i></button>
-								</div>
-							</div>
-						</td>
-						<td>
-							<transition-group name="flip-list" tag="ul" class='list-group list-group-flush list-group-transparent ms-n3 my-2'>
-								<li v-for="lvl in filterLevels(scope.id)" :key="lvl.id" class="list-group-item d-flex justify-content-between">
-									<div>{{ lvl.label }} <small class="fw-light text-muted">({{ lvl.percentage }}%)</small></div>
+		<div class='card-body'>
+			<div class="table-responsive">
+				<table class="table table-striped" :class='$colorScheme.table'>
+					<thead>
+						<tr>
+							<th scope="col">Scope name</th>
+							<th scope="col">Levels</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="scope in skillScopes" :key="scope.id">
+							<td>
+								<div class="d-flex justify-content-between m-3">
+									<div>{{ scope.label }}</div>
 									<div class='td-actions'>
-										<button class='btn btn-unstyled' v-on:click="editLevel(lvl)"><i class="bi-pencil-fill me-2"></i></button>
-										<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.level', lvl)"><i class="bi-trash-fill me-2"></i></button>
-										<button class='btn btn-unstyled' v-on:click="swapLevels({ ...lvl, swap_direction: 'Better' })"><i class="bi-caret-up-fill me-1"></i></button>
-										<button class='btn btn-unstyled' v-on:click="swapLevels({ ...lvl, swap_direction: 'Worse' })"><i class="bi-caret-down-fill me-2"></i></button>
+										<button class='btn btn-unstyled' v-on:click="editLevel(scope)"><i class="bi-plus-circle-fill me-2"></i></button>
+										<button class='btn btn-unstyled' v-on:click="editScope(scope)"><i class="bi-pencil-fill me-2"></i></button>
+										<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.scope', scope)"><i class="bi-trash-fill me-2"></i></button>
 									</div>
-								</li>
-							</transition-group>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+								</div>
+							</td>
+							<td>
+								<transition-group name="flip-list" tag="ul" class='list-group list-group-flush list-group-transparent ms-n3 my-2'>
+									<li v-for="lvl in filterLevels(scope.id)" :key="lvl.id" class="list-group-item d-flex justify-content-between">
+										<div>{{ lvl.label }} <small class="fw-light text-muted">({{ lvl.percentage }}%)</small></div>
+										<div class='td-actions'>
+											<button class='btn btn-unstyled' v-on:click="editLevel(lvl)"><i class="bi-pencil-fill me-2"></i></button>
+											<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.level', lvl)"><i class="bi-trash-fill me-2"></i></button>
+											<button class='btn btn-unstyled' v-on:click="swapLevels({ ...lvl, swap_direction: 'Better' })"><i class="bi-caret-up-fill me-1"></i></button>
+											<button class='btn btn-unstyled' v-on:click="swapLevels({ ...lvl, swap_direction: 'Worse' })"><i class="bi-caret-down-fill me-2"></i></button>
+										</div>
+									</li>
+								</transition-group>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 </template>

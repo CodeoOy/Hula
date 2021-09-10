@@ -1,5 +1,5 @@
 <template>
-	<nav class="navbar navbar-dark navbar-expand-sm bg-dark shadow">
+	<nav class="navbar navbar-expand-sm shadow mb-5" :class='$colorScheme.navbar'>
 		<div class="container-fluid">
 			<router-link :to='{ name: "home" }' class="navbar-brand hula-logo">
 				<svg height="50" viewBox="0 0 690 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
@@ -53,6 +53,7 @@ export default {
 			loggedUser: this.$store.state.loggeduser // Here loggedUser will result to menu rendering vs. not if you use the state directly
 		}
 	},
+
 	methods: {
 		async logOut() {
 			const success = await this.$store.dispatch('logout')

@@ -1,14 +1,16 @@
 <template>
-	<div class="p-3 rounded shadow bg-dark text-light">
-		<VModal ref='modal' :modalTitle="'Enter new password'" modalBackdrop="static">
-			<FormResetPassword v-on:success="changePassword" />
-		</VModal>
-		<div v-if="confirmed">
-			<h2 class="h2">Account confirmed.</h2>
+	<div v-if="confirmed" class="card shadow" :class='$colorScheme.card'>
+		<div class='card-header'>
+			<h1 class="h3 mb-0">Account confirmed.</h1>
+		</div>
+		<div class='card-body'>
 			<p>registration data:</p>
 			<pre>{{ registrationData }}</pre>
 		</div>
 	</div>
+	<VModal v-else ref='modal' :modalTitle="'Enter new password'" modalBackdrop="static">
+		<FormResetPassword v-on:success="changePassword" />
+	</VModal>
 </template>
 
 <script>

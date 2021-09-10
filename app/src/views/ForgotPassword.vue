@@ -1,11 +1,12 @@
 <template>
-	<div class="container">
-		<div class="row mt-4">
-			<div class="col">
-				<div class="p-3 rounded shadow bg-dark text-light">
-					<FormForgotPassword v-if="showForm" v-on:success="showForm = false, resetSent = true"/>
-                    <h2 v-if="resetSent">Password reset requested successfully, check your email.</h2>
-				</div>
+	<div class="container mt-5">
+		<div class="card shadow" :class='$colorScheme.card'>
+            <div class='card-header'>
+                <h1 class='h3 mb-0'>Request a password reset</h1>
+            </div>
+			<div class='card-body'>
+				<FormForgotPassword v-if="showForm" v-on:success="showForm = false, resetSent = true"/>
+				<h2 v-if="resetSent">Password reset requested successfully, check your email.</h2>
 			</div>
 		</div>
 	</div>

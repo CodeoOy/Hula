@@ -1,5 +1,5 @@
 <template>
-	<footer class="bg-dark">
+	<footer class="navbar navbar-dark mt-5" :class='$colorScheme.navbar'>
 	<div class="container-fluid">
 		<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
 			<router-link to="/app/Gdpr">Our terms of Service</router-link>

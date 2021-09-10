@@ -1,0 +1,108 @@
+$color-scheme: 'dark';
+
+$white: #fff;
+$gray-100: hsl(199, 10%, 97%);
+$gray-200: hsl(199, 12%, 89%);
+$gray-300: hsl(199, 15%, 82%);
+$gray-400: hsl(199, 18%, 74%);
+$gray-500: hsl(199, 22%, 60%);
+$gray-600: hsl(287, 27%, 37%);
+$gray-700: hsl(287, 33%, 24%);
+$gray-800: hsl(287, 40%, 16%);
+$gray-900: hsl(287, 46%, 10%);
+$black: #000;
+
+$blue: #0d6efd;
+$indigo: #9d00ff;
+$purple: #770043;
+$pink: #e838b9;
+$red: #dc3545;
+$orange: #fd7e14;
+$yellow: #ffc107;
+$green: #00c8a3;
+$teal: #97ffcb;
+$cyan: #0dcaf0;
+
+$primary: mix($green, $teal);
+$secondary: $gray-600;
+$success: $green;
+$info: $cyan;
+$warning: $yellow;
+$danger: $red;
+$light: $gray-400;
+$dark: $gray-900;
+
+$min-contrast-ratio: 4.5;
+$color-contrast-dark: $dark;
+$color-contrast-light: $light;
+
+$body-bg: $white;
+$body-color: $gray-800;
+
+$border-width: 1px;
+$border-color: #800da6;
+$border-radius: .25rem;
+
+$box-shadow: 0 1px 3px rgba(black, 0.1), 0 0.5rem 1rem rgba(black, 0.5);
+$box-shadow-sm: 0 1px 3px rgba(black, 0.05), 0 0.25rem 0.5rem rgba(black, 0.5);
+$box-shadow-lg: 0 1px 3px rgba(0, 0, 0, 0.25), 0 0.75rem 1.5rem rgba(0, 0, 0, 0.5);
+
+$gradient: linear-gradient(to bottom, rgba(white, 0.3), rgba(white, 0) 50%, rgba(black, 0) 50%, rgba(black, 0.1));
+
+$text-muted: $gray-600;
+
+$link-color: $primary;
+$link-hover-color: $pink;
+$link-decoration: none;
+
+$navbar-dark-brand-color: $teal;
+$navbar-dark-brand-hover-color: $navbar-dark-brand-color;
+
+$nav-tabs-border-color: $border-color;
+$nav-tabs-border-width: $border-width;
+$nav-tabs-link-hover-border-color: transparent;
+$nav-tabs-link-active-color: $link-color;
+$nav-tabs-link-active-bg: $border-color;
+$nav-tabs-link-active-border-color: $nav-tabs-link-active-bg $nav-tabs-link-active-bg $nav-tabs-link-active-bg;
+
+$dropdown-link-hover-bg: mix(white, $primary, 75%);
+
+$table-border-width: 0;
+
+$component-active-bg: $pink;
+$input-btn-focus-color-opacity: 0.5;
+
+$input-bg: hsl(hue($dark), saturation($light), lightness($light));
+$input-border-color: $input-bg;
+
+$input-focus-bg: $white;
+
+$input-disabled-bg: rgba($input-bg, 0.70);
+$input-disabled-border-color: null;
+
+$input-placeholder-color: rgba($body-color, 0.5);
+
+$input-invalid-bg: mix($danger, $input-bg, 25%); // Hula
+
+$form-check-input-bg: mix($input-bg, $white);
+$form-check-input-border: none;
+
+$form-select-disabled-bg: $input-disabled-bg;
+$form-select-disabled-border-color: $input-disabled-border-color;
+
+@import url('https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@600&family=Overpass:ital,wght@0,100;0,400;0,900;1,100;1,400;1,900&display=swap');
+
+$font-family-sans-serif: 'Overpass', sans-serif;
+$font-family-monospace: 'Overpass mono', monospace;
+
+// Hula variables
+
+$tier-size: 3rem;
+$tier-bg-color: $border-color;
+$tier-text-color: rgba(black, 0.75);
+$tier-1-row-bg-color: $purple;
+$tier-1-bg-color: $yellow;
+$tier-1-text-color: $tier-text-color;
+$tier-2-row-bg-color: mix($tier-1-row-bg-color, $dark);
+$tier-2-bg-color: $teal;
+$tier-2-text-color: $tier-text-color;

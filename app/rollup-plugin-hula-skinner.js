@@ -8,12 +8,18 @@ export default function hulaSkinner() {
 		transform(code, id) {
 			if (id != path.resolve('.', 'scss/main.scss')) return
 
-			if (fs.existsSync(path.resolve('.', 'scss/custom/_variables.scss'))) {
-				code = `@import 'custom/variables';\n${code}`
+			const scss = path.dirname(id)
+
+			let skin = fs.existsSync(path.join(scss, 'custom'))
+				? path.join(scss, 'custom')
+				: path.join(scss, 'hula')
+
+			if (fs.existsSync(path.join(skin, '_variables.scss'))) {
+				code = `@import '${path.relative(scss, skin)}/variables';\n${code}`
 			}
 
-			if (fs.existsSync(path.resolve('.', 'scss/custom/_main.scss'))) {
-				code = `${code}\n@import 'custom/main';\n`
+			if (fs.existsSync(path.join(skin, '_main.scss'))) {
+				code = `${code}\n@import '${path.relative(scss, skin)}/main';\n`
 			}
 
 			return {

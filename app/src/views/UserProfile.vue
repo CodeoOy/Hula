@@ -1,103 +1,121 @@
 <template>
-	<div class="container mt-4">
+	<div class="container">
 		<div class="row gx-4">
 			<div class="col-md-4">
-				<div class="p-3 mb-4 rounded shadow bg-dark text-light">
-					<h1 class="h1">{{ user.firstname }} {{ user.lastname }}</h1>
-					<p>{{ user.email }}</p>
-					<button class='btn btn-unstyled' v-on:click="editUser(user)"><i class="bi-pencil-fill me-2"></i></button>
-					<button class='btn btn-unstyled' v-on:click="confirmDelete('user', user)"><i class="bi-trash-fill me-2"></i></button>
-					<hr />
-					<VForm @submit="saveFiles" class='clearfix'>
-						<div class="mb-3">
-							<table v-if='files.length' class="table table-dark table-striped">
-								<thead>
-									<tr>
-										<th scope="col">CV</th>
-										<th scope="col" colspan='2'>File</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr v-for="file in files" :key="file.id">
-										<td><input type='checkbox' :checked='user.main_upload_id == file.id' @click='setCV(file.id)'></td>
-										<td><a href='#' @click.prevent>{{ file.filename }}</a></td>
-										<td><button class='btn btn-unstyled' v-on:click="confirmDelete('user.file', file)"><i class="bi-trash-fill me-2"></i></button></td>
-									</tr>
-								</tbody>
-							</table>
-							<label class="form-label">Upload files</label>
-							<VField
-								type="file"
-								name="newFiles[]"
-								multiple
-								class="form-control" 
-								v-model="newFiles"
-							/>
-						</div>
-						<button type="submit" class="btn btn-primary gradient float-end">Upload files</button>
-					</VForm>
+				<div class="card shadow" :class='$colorScheme.card'>
+					<div class='card-header'>
+						<h1 class="h3 mb-0">{{ user.firstname }} {{ user.lastname }}</h1>
+					</div>
+					<div class='card-body'>
+						<p>{{ user.email }}</p>
+						<button class='btn btn-unstyled' v-on:click="editUser(user)"><i class="bi-pencil-fill me-2"></i></button>
+						<button class='btn btn-unstyled' v-on:click="confirmDelete('user', user)"><i class="bi-trash-fill me-2"></i></button>
+						<hr />
+						<VForm @submit="saveFiles" class='clearfix'>
+							<div class="mb-3">
+								<table v-if='files.length' class="table table-striped" :class='$colorScheme.table'>
+									<thead>
+										<tr>
+											<th scope="col">CV</th>
+											<th scope="col" colspan='2'>File</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr v-for="file in files" :key="file.id">
+											<td><input type='checkbox' :checked='user.main_upload_id == file.id' @click='setCV(file.id)'></td>
+											<td><a href='#' @click.prevent>{{ file.filename }}</a></td>
+											<td><button class='btn btn-unstyled' v-on:click="confirmDelete('user.file', file)"><i class="bi-trash-fill me-2"></i></button></td>
+										</tr>
+									</tbody>
+								</table>
+								<label class="form-label">Upload files</label>
+								<VField
+									type="file"
+									name="newFiles[]"
+									multiple
+									class="form-control" 
+									v-model="newFiles"
+								/>
+							</div>
+							<button type="submit" class="btn btn-primary gradient float-end">Upload files</button>
+						</VForm>
+					</div>
 				</div>
 			</div>
 			<div class="col-md-8">
-				<div class="p-3 mb-4 rounded shadow bg-dark text-light">
-					<div class="d-sm-flex flex-row justify-content-between align-items-start">
-						<h3 class="h3">Skills</h3>
-						<button class="btn btn-primary gradient" v-on:click="editSkill()">Add skill</button>
+				<div class="card shadow" :class='$colorScheme.card'>
+					<div class='card-header'>
+						<div class="d-sm-flex flex-row justify-content-between align-items-center">
+							<h3 class="h3 mb-0">Skills</h3>
+							<button class="btn btn-primary gradient" v-on:click="editSkill()">Add skill</button>
+						</div>
 					</div>
-					<div class="table-responsive">
-						<table class="table table-dark table-striped">
+					<div class='card-body'>
+						<div class="table-responsive">
+							<table class="table table-striped" :class='$colorScheme.table'>
+								<thead>
+									<tr>
+										<th scope="col">Skill</th>
+										<th scope="col">Level</th>
+										<th scope="col">Years</th>
+										<th scope="col">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="skill in user.skills" :key="skill.id">
+										<td>{{ skill.skill_label }}</td>
+										<td>{{ skill.levelLabel }}</td>
+										<td>{{ skill.years }}</td>
+										<td>
+											<button class='btn btn-unstyled' v-on:click="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></button>
+											<button class='btn btn-unstyled' v-on:click="confirmDelete('user.skill', skill)"><i class="bi-trash-fill me-2"></i></button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="card shadow mt-4" :class='$colorScheme.card'>
+					<div class='card-header'>
+						<div class="d-sm-flex flex-row justify-content-between align-items-center">
+							<h3 class="h3 mb-0">Reservations</h3>
+							<button class="btn btn-primary gradient" v-on:click="editReservation()">Add reservation</button>
+						</div>
+					</div>
+					<div class='card-body'>
+						<table class="table table-striped" :class='$colorScheme.table' v-if="reservations.length">
 							<thead>
 								<tr>
-									<th scope="col">Skill</th>
-									<th scope="col">Level</th>
-									<th scope="col">Years</th>
+									<th scope="col">Description</th>
+									<th scope="col">From</th>
+									<th scope="col">To</th>
+									<th scope="col">Percentage</th>
 									<th scope="col">Actions</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr v-for="skill in user.skills" :key="skill.id">
-									<td>{{ skill.skill_label }}</td>
-									<td>{{ skill.levelLabel }}</td>
-									<td>{{ skill.years }}</td>
+								<tr v-for="reservation in reservations" :key="reservation.id">
+									<td>{{ reservation.description }}</td>
+									<td>{{ reservation.begin_time }}</td>
+									<td>{{ reservation.end_time }}</td>
+									<td>{{ reservation.percentage }}</td>
 									<td>
-										<button class='btn btn-unstyled' v-on:click="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></button>
-										<button class='btn btn-unstyled' v-on:click="confirmDelete('user.skill', skill)"><i class="bi-trash-fill me-2"></i></button>
+										<button class='btn btn-unstyled' v-on:click="editReservation(reservation)"><i class="bi-pencil-fill me-2"></i></button>
+										<button class='btn btn-unstyled' v-on:click="confirmDelete('user.reservation', reservation)"><i class="bi-trash-fill me-2"></i></button>
 									</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
-					<div class="d-sm-flex flex-row justify-content-between align-items-start">
-						<h3 class="h3">Reservations</h3>
-						<button class="btn btn-primary gradient" v-on:click="editReservation()">Add reservation</button>
-					</div>
-					<table class="table table-dark table-striped" v-if="reservations.length">
-						<thead>
-							<tr>
-								<th scope="col">Description</th>
-								<th scope="col">From</th>
-								<th scope="col">To</th>
-								<th scope="col">Percentage</th>
-								<th scope="col">Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="reservation in reservations" :key="reservation.id">
-								<td>{{ reservation.description }}</td>
-								<td>{{ reservation.begin_time }}</td>
-								<td>{{ reservation.end_time }}</td>
-								<td>{{ reservation.percentage }}</td>
-								<td>
-									<button class='btn btn-unstyled' v-on:click="editReservation(reservation)"><i class="bi-pencil-fill me-2"></i></button>
-									<button class='btn btn-unstyled' v-on:click="confirmDelete('user.reservation', reservation)"><i class="bi-trash-fill me-2"></i></button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
 				</div>
-				<div v-if='matches.length' class="p-3 mb-4 rounded shadow bg-dark text-light">
-					<h3 class="h3">Projects matching the user's skills</h3>
-					<VMatchesForUser :matches='matches' />
+				<div v-if='matches.length' class="card shadow mt-4" :class='$colorScheme.card'>
+					<div class='card-header'>
+						<h3 class="h3 mb-0">Projects matching the user's skills</h3>
+					</div>
+					<div class='card-body'>
+						<VMatchesForUser :matches='matches' />
+					</div>
 				</div>
 			</div>
 		</div>

@@ -1,7 +1,7 @@
 <template>
 	<div class="modal fade" ref="modal" :data-bs-backdrop="modalBackdrop" :data-bs-keyboard='modalBackdrop != "static"'>
 		<div class="modal-dialog modal-lg">
-			<div class="modal-content rounded shadow-lg bg-dark text-light">
+			<div class="modal-content shadow-lg" :class='$colorScheme.modal'>
 				<div class="modal-header" v-if="modalTitle">
 					<h2 class="modal-title">{{ modalTitle }}</h2>
 					<button v-if='modalBackdrop != "static"' type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>

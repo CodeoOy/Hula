@@ -1,0 +1,11 @@
+body {
+	background-image: url('assets/bg4.jpg');
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+.nav-tabs {
+	.nav-link:not(.active):hover {
+		background-color: rgba($nav-tabs-link-active-bg, 0.5);
+	}
+}

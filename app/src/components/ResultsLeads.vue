@@ -2,7 +2,7 @@
 	<div>
 		<h2 class="h2">Projects for {{ user.firstname }} {{ user.lastname }}</h2>
 		<div class="table-responsive">
-			<table v-if="projects.length" class="table table-dark table-striped">
+			<table v-if="projects.length" class="table table-striped" :class='$colorScheme.table'>
 				<thead>
 					<tr>
 						<th scope="col">Project</th>

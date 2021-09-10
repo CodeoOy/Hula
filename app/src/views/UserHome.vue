@@ -1,8 +1,12 @@
 <template>
-	<div class="container mt-4">
-		<div class="p-3 mb-4 rounded shadow bg-dark text-light">
-			<h1 class="h2">Projects matching your skills</h1>
-			<VMatchesForUser :matches='matches' />
+	<div class="container">
+		<div class="card shadow" :class='$colorScheme.card'>
+			<div class='card-header'>
+				<h1 class="h3 mb-0">Projects matching your skills</h1>
+			</div>
+			<div class='card-body'>
+				<VMatchesForUser :matches='matches' />
+			</div>
 		</div>
 	</div>
 </template>

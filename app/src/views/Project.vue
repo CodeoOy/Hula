@@ -1,71 +1,81 @@
 <template>
-	<div class='container mt-4' ref='lol'>
+	<div class='container'>
 		<div class='row gx-4' v-if='project'>
 			<div class='col-md-4'>
-				<div class='p-3 mb-4 rounded shadow bg-dark text-light'>
-					<h2 class="h2">
-						{{ project.name }}
-						<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-3 float-end"></i>
-					</h2>
-					<p v-if="project.description">{{ project.description }}</p>
-					<button class='btn btn-unstyled' v-on:click='editProject(project)'><i class='bi-pencil-fill me-2'></i></button>
-					<button class='btn btn-unstyled' v-on:click='confirmDelete("project", project)'><i class='bi-trash-fill me-2'></i></button>
-                </div>
-			</div>
-			<div class='col-md-8'>
-				<div class='p-3 mb-4 rounded shadow bg-dark text-light'>
-					<div class='d-sm-flex flex-row justify-content-between align-items-start'>
-						<h2 class='h2'>Roles</h2>
-						<button
-							class='btn btn-primary gradient'
-							v-on:click='editNeed()'
-						>Add role</button>
+				<div class='card shadow' :class='$colorScheme.card'>
+					<div class='card-header'>
+						<h1 class="h3 mb-0">
+							{{ project.name }}
+							<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-3 float-end"></i>
+						</h1>
 					</div>
-					<div class='mt-3' v-for='need in project.needs' :key='need.id'>
-						<hr />
-						<div class='d-sm-flex flex-row justify-content-between align-items-baseline mb-3'>
-							<div>
-								<h5 class='h5'>{{ need.label }}</h5>
-								<p>{{ need.count_of_users}} from {{ need.begin_time }} at percentage: {{ need.percentage}}</p>
-							</div>
-							<div>
-								<button class='btn btn-unstyled' v-on:click='editSkill({ need })'><i class='bi-plus-circle-fill me-2'></i></button>
-								<button class='btn btn-unstyled' v-on:click='editNeed(need)'><i class='bi-pencil-fill me-2'></i></button>
-								<button class='btn btn-unstyled' v-on:click='confirmDelete("need", need)'><i class='bi-trash-fill me-2'></i></button>
-							</div>
-						</div>
-						<div class="table-responsive">
-							<table class="table table-dark table-striped mb-4">
-								<thead>
-									<tr>
-										<th scope='col'>Skill</th>
-										<th scope='col'>Mandatory</th>
-										<th scope='col'>Min level</th>
-										<th scope='col'>Min years</th>
-										<th scope='col'>Max years</th>
-										<th scope='col'>Actions</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr v-for="skill in need.skills" :key="skill.id">
-										<td>{{ skill.skill_label }}</td>
-										<td>{{ skill.mandatory }}</td>
-										<td>{{ skill.skillscopelevel_label }}</td>
-										<td>{{ skill.min_years }}</td>
-										<td>{{ skill.max_years }}</td>
-										<td class='hoverable-td'>
-											<button class='btn btn-unstyled' v-on:click='editSkill({ need, skill })'><i class='bi-pencil-fill me-2'></i></button>
-											<button class='btn btn-unstyled' v-on:click='confirmDelete("need.skill", skill)'><i class='bi-trash-fill me-2'></i></button>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+					<div class='card-body'>
+						<p v-if="project.description">{{ project.description }}</p>
+						<button class='btn btn-unstyled' v-on:click='editProject(project)'><i class='bi-pencil-fill me-2'></i></button>
+						<button class='btn btn-unstyled' v-on:click='confirmDelete("project", project)'><i class='bi-trash-fill me-2'></i></button>
 					</div>
 				</div>
-				<div v-if='matches' class="p-3 mb-4 rounded shadow bg-dark text-light">
-					<h2 class="h2">Developers matching the roles</h2>
-					<ResultsPros :project='project' :matches='matches' />
+			</div>
+			<div class='col-md-8'>
+				<div class='card shadow' :class='$colorScheme.card'>
+					<div class='card-header'>
+						<div class='d-sm-flex flex-row justify-content-between align-items-center'>
+							<h2 class='h3 mb-0'>Roles</h2>
+							<button class='btn btn-primary gradient' v-on:click='editNeed()'>Add role</button>
+						</div>
+					</div>
+					<div class='card-body'>
+						<ul class='list-group list-group-flush list-group-transparent mx-n3 my-n2'>
+							<li class='list-group-item' v-for='need in project.needs' :key='need.id'>
+								<div class='d-sm-flex flex-row justify-content-between align-items-baseline mb-3'>
+									<div>
+										<h3 class='h5'>{{ need.label }}</h3>
+										<div>{{ need.count_of_users}} from {{ need.begin_time }} at percentage: {{ need.percentage}}</div>
+									</div>
+									<div>
+										<button class='btn btn-unstyled' v-on:click='editSkill({ need })'><i class='bi-plus-circle-fill me-2'></i></button>
+										<button class='btn btn-unstyled' v-on:click='editNeed(need)'><i class='bi-pencil-fill me-2'></i></button>
+										<button class='btn btn-unstyled' v-on:click='confirmDelete("need", need)'><i class='bi-trash-fill me-2'></i></button>
+									</div>
+								</div>
+								<div class="table-responsive">
+									<table class="table table-striped mb-4" :class='$colorScheme.table'>
+										<thead>
+											<tr>
+												<th scope='col'>Skill</th>
+												<th scope='col'>Mandatory</th>
+												<th scope='col'>Min level</th>
+												<th scope='col'>Min years</th>
+												<th scope='col'>Max years</th>
+												<th scope='col'>Actions</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr v-for="skill in need.skills" :key="skill.id">
+												<td>{{ skill.skill_label }}</td>
+												<td>{{ skill.mandatory }}</td>
+												<td>{{ skill.skillscopelevel_label }}</td>
+												<td>{{ skill.min_years }}</td>
+												<td>{{ skill.max_years }}</td>
+												<td class='hoverable-td'>
+													<button class='btn btn-unstyled' v-on:click='editSkill({ need, skill })'><i class='bi-pencil-fill me-2'></i></button>
+													<button class='btn btn-unstyled' v-on:click='confirmDelete("need.skill", skill)'><i class='bi-trash-fill me-2'></i></button>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div v-if='matches' class="card shadow mt-4" :class='$colorScheme.card'>
+					<div class='card-header'>
+						<h2 class="h3 mb-0">Developers matching the roles</h2>
+					</div>
+					<div class='card-body'>
+						<ResultsPros :project='project' :matches='matches' />
+					</div>
 				</div>
 			</div>
 		</div>

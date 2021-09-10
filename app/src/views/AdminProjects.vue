@@ -1,71 +1,75 @@
 <template>
-	<div>
-		<div class="d-sm-flex flex-row justify-content-between align-items-start">
-			<h2 class="h2">Projects</h2>
-			<div class='d-flex'>
-				<div class='input-group me-2'>
-					<VAutoComplete
-						:suggestions="projects" 
-						:placeholder="'filter projects'"
-						:dropdown="false"
-						:filterProperties="['name', 'autoCompleteSkills']"
-						v-on:auto-complete="autoCompleteAction"
-					/>
-					<button class='btn btn-secondary dropdown-toggle' type='button' id='filtersDropdown' data-bs-toggle='dropdown' data-bs-auto-close='outside' aria-expanded='false'>
-						<i aria-label='Filters' class='bi bi-gear-fill'></i>
-					</button>
-					<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='filtersDropdown'>
-						<li class='px-2'>
-							<div class='form-check'>
-								<label for='hidden'>Show hidden</label>
-								<input v-model='filters.showHidden' type='checkbox' class='form-check-input' id='hidden' />
-							</div>
-						</li>
-					</ul>
+	<div class='card shadow' :class='$colorScheme.card'>
+		<div class='card-header'>
+			<div class="d-sm-flex flex-row justify-content-between align-items-center">
+				<h1 class="h3 mb-0">Projects</h1>
+				<div class='d-flex'>
+					<div class='input-group me-2'>
+						<VAutoComplete
+							:suggestions="projects" 
+							:placeholder="'filter projects'"
+							:dropdown="false"
+							:filterProperties="['name', 'autoCompleteSkills']"
+							v-on:auto-complete="autoCompleteAction"
+						/>
+						<button class='btn btn-secondary dropdown-toggle' type='button' id='filtersDropdown' data-bs-toggle='dropdown' data-bs-auto-close='outside' aria-expanded='false'>
+							<i aria-label='Filters' class='bi bi-gear-fill'></i>
+						</button>
+						<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='filtersDropdown'>
+							<li class='px-2'>
+								<div class='form-check'>
+									<label for='hidden'>Show hidden</label>
+									<input v-model='filters.showHidden' type='checkbox' class='form-check-input' id='hidden' />
+								</div>
+							</li>
+						</ul>
+					</div>
+					<button class="btn btn-primary gradient flex-shrink-0" v-on:click="newProject()">New project</button>
 				</div>
-				<button class="btn btn-primary gradient flex-shrink-0" v-on:click="newProject()">New project</button>
 			</div>
 		</div>
-		<div class="table-responsive" v-if="filteredProjects.length">
-			<table class="table table-dark table-striped">
-				<thead>
-					<tr>
-						<th scope="col">Project name</th>
-						<th scope="col">Skills</th>
-						<th scope="col">Matches</th>
-						<th scope="col">Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="project in filteredProjects" :key="project.id">
-						<td>
-							<router-link :to="{ name: 'project', params: { id: project.id }}">
-								{{ project.name }}
-								<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
-							</router-link>
-						</td>
-						<td>
-							<span
-								v-for="skill in project.skills" 
-								:key="skill.skill_label"
-								class="badge badge-skill me-2"
-							>{{ skill.skill_label }}</span>
-						</td>
-						<td>
-							<button
-								v-for="match in project.matches"
-								:key="match.user_id"
-								v-on:click="showMatch(project, match)"
-								class='btn btn-unstyled'
-							><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" />
-							</button>
-						</td>
-						<td>
-							<button class='btn btn-unstyled' v-on:click="confirmDelete(project)"><i class="bi-trash-fill me-2"></i></button>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+		<div class='card-body'>
+			<div class="table-responsive" v-if="filteredProjects.length">
+				<table class="table table-striped" :class='$colorScheme.table'>
+					<thead>
+						<tr>
+							<th scope="col">Project name</th>
+							<th scope="col">Skills</th>
+							<th scope="col">Matches</th>
+							<th scope="col">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="project in filteredProjects" :key="project.id">
+							<td>
+								<router-link :to="{ name: 'project', params: { id: project.id }}">
+									{{ project.name }}
+									<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
+								</router-link>
+							</td>
+							<td>
+								<span
+									v-for="skill in project.skills" 
+									:key="skill.skill_label"
+									class="badge badge-skill me-2"
+								>{{ skill.skill_label }}</span>
+							</td>
+							<td>
+								<button
+									v-for="match in project.matches"
+									:key="match.user_id"
+									v-on:click="showMatch(project, match)"
+									class='btn btn-unstyled'
+								><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" />
+								</button>
+							</td>
+							<td>
+								<button class='btn btn-unstyled' v-on:click="confirmDelete(project)"><i class="bi-trash-fill me-2"></i></button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 </template>

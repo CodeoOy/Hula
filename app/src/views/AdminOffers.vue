@@ -1,41 +1,45 @@
 <template>
-	<div>
-		<div class='d-sm-flex flex-row justify-content-between align-items-start'>
-			<h2 class='h2'>Offers</h2>
-			<div>
-				<VAutoComplete
-					:suggestions='offers'
-					:dropdown='false'
-					filterProperties='project_name'
-					placeholder='Filter offers'
-					v-on:auto-complete='onAutoComplete'
-				></VAutoComplete>
+	<div class='card shadow' :class='$colorScheme.card'>
+		<div class='card-header'>
+			<div class='d-sm-flex flex-row justify-content-between align-items-center'>
+				<h1 class="h3 mb-0">Offers</h1>
+				<div class='d-flex'>
+					<VAutoComplete
+						:suggestions='offers'
+						:dropdown='false'
+						filterProperties='project_name'
+						placeholder='Filter offers'
+						v-on:auto-complete='onAutoComplete'
+					/>
+				</div>
 			</div>
 		</div>
-		<div class='table-responsive'>
-			<table class='table table-dark table-striped'>
-				<thead>
-					<tr>
-						<th scope='col'>Project name</th>
-						<th scope='col'>User name</th>
-						<th scope='col'>Sold?</th>
-						<th scope='col'>Comments</th>
-						<th scope='col'>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for='offer in filteredOffers' :key='offer.id'>
-						<td>{{ offer.project_name }}</td>
-						<td>{{ offer.user_name }}</td>
-						<td>{{ offer.sold }}</td>
-						<td>{{ offer.comments }}</td>
-						<td>
-							<button class='btn btn-unstyled' v-on:click='edit(offer)'><i class='bi-pencil-fill me-2'></i></button>
-							<button class='btn btn-unstyled' v-on:click='confirmDelete(offer)'><i class='bi-trash-fill me-2'></i></button>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+		<div class='card-body'>
+			<div class='table-responsive'>
+				<table class='table table-striped' :class='$colorScheme.table'>
+					<thead>
+						<tr>
+							<th scope='col'>Project name</th>
+							<th scope='col'>User name</th>
+							<th scope='col'>Sold?</th>
+							<th scope='col'>Comments</th>
+							<th scope='col'>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for='offer in filteredOffers' :key='offer.id'>
+							<td>{{ offer.project_name }}</td>
+							<td>{{ offer.user_name }}</td>
+							<td>{{ offer.sold }}</td>
+							<td>{{ offer.comments }}</td>
+							<td>
+								<button class='btn btn-unstyled' v-on:click='edit(offer)'><i class='bi-pencil-fill me-2'></i></button>
+								<button class='btn btn-unstyled' v-on:click='confirmDelete(offer)'><i class='bi-trash-fill me-2'></i></button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 </template>

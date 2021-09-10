@@ -1,5 +1,5 @@
 <template>
-	<div class="container-fluid mt-4">
+	<div class="container-fluid">
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<ul class="nav nav-tabs">
@@ -10,30 +10,34 @@
 						<button class="nav-link" v-bind:class="{ active: !tabToggle }" v-on:click="tabToggle = false">Find by developer</button>
 					</li>
 				</ul>
-				<div class="p-3 rounded shadow bg-dark text-light">
-					<keep-alive>
-						<VFilterList
-							v-if='projects.length && tabToggle'
-							:items='projects'
-							placeholder='Filter projects'
-							@select="onSelectProject"
-						/>
-						<VFilterList
-							v-else-if="!tabToggle"
-							:items='users'
-							placeholder='Filter developers'
-							@select='onSelectUser'
-						/>
-					</keep-alive>
+				<div class="card shadow" :class='$colorScheme.card'>
+					<div class='card-body'>
+						<keep-alive>
+							<VFilterList
+								v-if='projects.length && tabToggle'
+								:items='projects'
+								placeholder='Filter projects'
+								@select="onSelectProject"
+							/>
+							<VFilterList
+								v-else-if="!tabToggle"
+								:items='users'
+								placeholder='Filter developers'
+								@select='onSelectUser'
+							/>
+						</keep-alive>
+					</div>
 				</div>
 			</div>
 			<div class="col-md-8">
-				<div v-if='results' class="p-3 rounded shadow bg-dark text-light">
-					<ResultsLeads v-bind='leadData' v-if="tabToggle == false" />
-					<div v-else>
-						<h2 v-if="matchesData.project">Developers for {{ matchesData.project.name }}</h2>
-						<p>Project skills: <span class="badge badge-skill me-2" v-for="skill in matchesData.project.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></p>
-						<ResultsPros :project='matchesData.project' :matches='matchesData.matches' />
+				<div v-if='results' class="card shadow" :class='$colorScheme.card'>
+					<div class='card-body'>
+						<ResultsLeads v-bind='leadData' v-if="tabToggle == false" />
+						<div v-else>
+							<h2 v-if="matchesData.project">Developers for {{ matchesData.project.name }}</h2>
+							<p>Project skills: <span class="badge badge-skill me-2" v-for="skill in matchesData.project.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></p>
+							<ResultsPros :project='matchesData.project' :matches='matchesData.matches' />
+						</div>
 					</div>
 				</div>
 			</div>

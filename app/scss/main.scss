@@ -22,7 +22,7 @@
 @import '../node_modules/bootstrap/scss/button-group';
 @import '../node_modules/bootstrap/scss/nav';
 @import '../node_modules/bootstrap/scss/navbar';
-// @import '../node_modules/bootstrap/scss/card';
+@import '../node_modules/bootstrap/scss/card';
 @import '../node_modules/bootstrap/scss/accordion';
 // @import '../node_modules/bootstrap/scss/breadcrumb';
 // @import '../node_modules/bootstrap/scss/pagination';
@@ -47,15 +47,12 @@
 // Extend Bootstrap
 
 :root {
-	--#{$variable-prefix}component-active-bg: #{$component-active-bg} !important;
+	--color-scheme: #{$color-scheme};
+	--#{$variable-prefix}component-active-bg: #{$component-active-bg};
 }
 
 .nav-tabs {
-	.nav-link:not(.active):hover {
-		background-color: rgba($nav-tabs-link-active-bg, 0.5);
-	}
-
-	& + .rounded {
+	& + .card {
 		border-top-right-radius: 0 !important;
 		border-top-left-radius: 0 !important;
 	}
@@ -80,9 +77,11 @@
 	background-color: $indigo;
 }
 
-.form-control.is-invalid,
-.form-select.is-invalid {
-	background-color: $input-invalid-bg;
+@if ($input-invalid-bg) {
+	.form-control.is-invalid,
+	.form-select.is-invalid {
+		background-color: $input-invalid-bg;
+	}
 }
 
 // Custom styles
@@ -96,7 +95,7 @@
 }
 
 .gradient:not([disabled]) {
-	background-image: linear-gradient(to bottom, rgba(white, 0.3), rgba(white, 0) 50%, rgba(black, 0) 50%, rgba(black, 0.1));
+	background-image: var(--bs-gradient);
 }
 
 .td-actions {
@@ -106,12 +105,6 @@
 	td:focus-within & {
 		opacity: 1;
 	}
-}
-
-body {
-	background-image: url('assets/bg4.jpg');
-	background-size: cover;
-	background-attachment: fixed;
 }
 
 #hula {
@@ -143,19 +136,27 @@ body {
 }
 
 .tier {
+	@if ($tier-row-bg-color) {
+		--#{$variable-prefix}table-accent-bg: #{$tier-row-bg-color} !important;
+		--#{$variable-prefix}table-bg: #{$tier-row-bg-color} !important;
+	}
 	--tier-bg-color: #{$tier-bg-color};
 	--tier-text-color: #{$tier-text-color};
 
 	&-1 {
-		--#{$variable-prefix}table-accent-bg: #{$tier-1-row-bg-color} !important;
-		--#{$variable-prefix}table-bg: #{$tier-1-row-bg-color} !important;
+		@if ($tier-1-row-bg-color) {
+			--#{$variable-prefix}table-accent-bg: #{$tier-1-row-bg-color} !important;
+			--#{$variable-prefix}table-bg: #{$tier-1-row-bg-color} !important;
+		}
 		--tier-bg-color: #{$tier-1-bg-color};
 		--tier-text-color: #{$tier-1-text-color};
 	}
 
 	&-2 {
-		--#{$variable-prefix}table-accent-bg: #{$tier-2-row-bg-color} !important;
-		--#{$variable-prefix}table-bg: #{$tier-2-row-bg-color} !important;
+		@if ($tier-2-row-bg-color) {
+			--#{$variable-prefix}table-accent-bg: #{$tier-2-row-bg-color} !important;
+			--#{$variable-prefix}table-bg: #{$tier-2-row-bg-color} !important;
+		}
 		--tier-bg-color: #{$tier-2-bg-color};
 		--tier-text-color: #{$tier-2-text-color};
 	}

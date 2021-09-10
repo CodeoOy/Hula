@@ -1,19 +1,15 @@
 <template>
-	<div class="container">
-		<div class="row mt-4">
-			<div class="col">
-				<ConfirmUser />
-			</div>
-		</div>
-	</div>
+	<ConfirmUser />
 </template>
 
 <script>
 	import ConfirmUser from '../components/ConfirmUser.vue'
+
 	export default {
-		name: 'ConfirmUser',
+		name: 'Confirm',
+
 		components: {
-			ConfirmUser: ConfirmUser
-		}
+			ConfirmUser,
+		},
 	}
 </script>

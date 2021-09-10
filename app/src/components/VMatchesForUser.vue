@@ -1,6 +1,6 @@
 <template>
 	<div class="table-responsive">
-		<table class="table table-dark table-striped">
+		<table class="table table-striped" :class='$colorScheme.table'>
 			<thead>
 				<tr>
 					<th scope="col">Project</th>
