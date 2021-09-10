@@ -56,17 +56,17 @@
 								<thead>
 									<tr>
 										<th scope="col">Skill</th>
-										<th scope="col">Level</th>
-										<th scope="col">Years</th>
-										<th scope="col">Actions</th>
+										<th scope="col" class='text-center'>Level</th>
+										<th scope="col" class='text-center'>Years</th>
+										<th scope="col" class='text-end'>Actions</th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr v-for="skill in user.skills" :key="skill.id">
 										<td>{{ skill.skill_label }}</td>
-										<td>{{ skill.levelLabel }}</td>
-										<td>{{ skill.years }}</td>
-										<td>
+										<td class='text-center'>{{ skill.levelLabel }}</td>
+										<td class='text-center'>{{ skill.years }}</td>
+										<td class='text-end'>
 											<button class='btn btn-unstyled' v-on:click="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></button>
 											<button class='btn btn-unstyled' v-on:click="confirmDelete('user.skill', skill)"><i class="bi-trash-fill me-2"></i></button>
 										</td>
@@ -90,8 +90,8 @@
 									<th scope="col">Description</th>
 									<th scope="col">From</th>
 									<th scope="col">To</th>
-									<th scope="col">Percentage</th>
-									<th scope="col">Actions</th>
+									<th scope="col" class='text-center'>Percentage</th>
+									<th scope="col" class='text-end'>Actions</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -99,8 +99,8 @@
 									<td>{{ reservation.description }}</td>
 									<td>{{ reservation.begin_time }}</td>
 									<td>{{ reservation.end_time }}</td>
-									<td>{{ reservation.percentage }}</td>
-									<td>
+									<td class='text-center'>{{ reservation.percentage }}</td>
+									<td class='text-end'>
 										<button class='btn btn-unstyled' v-on:click="editReservation(reservation)"><i class="bi-pencil-fill me-2"></i></button>
 										<button class='btn btn-unstyled' v-on:click="confirmDelete('user.reservation', reservation)"><i class="bi-trash-fill me-2"></i></button>
 									</td>

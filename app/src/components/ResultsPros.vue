@@ -6,10 +6,10 @@
 					<tr>
 						<th scope="col"></th>
 						<th scope="col">Name</th>
-						<th @click="sort('hasMandatory')" scope="col">Has mandatory skills</th>
+						<th scope="col" class='text-center'>Mandatory skills</th>
 						<th scope="col">Matched skills</th>
-						<th scope="col">Tier</th>
-						<th scope="col">Available?</th>
+						<th scope="col" class='text-center'>Tier</th>
+						<th scope="col" class='text-center'>Available</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -21,10 +21,10 @@
 							</button>
 							<i v-if='user.user_favorite' class='bi-star-fill text-yellow ms-2 float-end'></i>
 						</td>
-						<td>{{ user.hasMandatory }}</td>
+						<td class='text-center'>{{ user.hasMandatory }}</td>
 						<td><span class="badge badge-skill me-2" v-for="skill in user.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></td>
-						<td>{{ user.tier }}</td>
-						<td>{{ user.isAvailable }}</td>
+						<td class='text-center'>{{ user.tier }}</td>
+						<td class='text-center'>{{ user.isAvailable }}</td>
 					</tr>
 				</tbody>
 			</table>

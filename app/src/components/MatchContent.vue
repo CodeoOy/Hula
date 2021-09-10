@@ -10,18 +10,18 @@
 				<thead>
 					<tr>
 						<th scope="col">Skill</th>
-						<th scope="col">Required level</th>
-						<th scope="col">User level</th>
-						<th scope="col">Required years</th>
-						<th scope="col">User years</th>
+						<th scope="col" class='text-center'>Required level</th>
+						<th scope="col" class='text-center'>User level</th>
+						<th scope="col" class='text-center'>Required years</th>
+						<th scope="col" class='text-center'>User years</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="skill in skills" :key="skill.idx">
 						<td>{{ skill.skill_label }}</td>
-						<td>{{ skill.required_index}}</td>
-						<td>{{ skill.user_index }}</td>
-						<td>{{ skill.required_years}}</td>
+						<td class='text-center'>{{ skill.required_index}}</td>
+						<td class='text-center'>{{ skill.user_index }}</td>
+						<td class='text-center'>{{ skill.required_years}}</td>
 						<td>{{ skill.user_years }}</td>
 					</tr>
 				</tbody>

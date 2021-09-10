@@ -21,18 +21,18 @@
 						<tr>
 							<th scope='col'>Project name</th>
 							<th scope='col'>User name</th>
-							<th scope='col'>Sold?</th>
+							<th scope='col' class='text-center'>Sold</th>
 							<th scope='col'>Comments</th>
-							<th scope='col'>Actions</th>
+							<th scope='col' class='text-end'>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr v-for='offer in filteredOffers' :key='offer.id'>
 							<td>{{ offer.project_name }}</td>
 							<td>{{ offer.user_name }}</td>
-							<td>{{ offer.sold }}</td>
+							<td class='text-center'>{{ offer.sold }}</td>
 							<td>{{ offer.comments }}</td>
-							<td>
+							<td class='text-end'>
 								<button class='btn btn-unstyled' v-on:click='edit(offer)'><i class='bi-pencil-fill me-2'></i></button>
 								<button class='btn btn-unstyled' v-on:click='confirmDelete(offer)'><i class='bi-trash-fill me-2'></i></button>
 							</td>

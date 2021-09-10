@@ -36,7 +36,7 @@
 							<th scope="col">Project name</th>
 							<th scope="col">Skills</th>
 							<th scope="col">Matches</th>
-							<th scope="col">Actions</th>
+							<th scope="col" class='text-end'>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -63,7 +63,7 @@
 								><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" :favorite='match.is_favorite' />
 								</button>
 							</td>
-							<td>
+							<td class='text-end'>
 								<button class='btn btn-unstyled' v-on:click="confirmDelete(project)"><i class="bi-trash-fill me-2"></i></button>
 							</td>
 						</tr>

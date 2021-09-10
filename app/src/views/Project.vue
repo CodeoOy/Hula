@@ -46,21 +46,21 @@
 										<thead>
 											<tr>
 												<th scope='col'>Skill</th>
-												<th scope='col'>Mandatory</th>
-												<th scope='col'>Min level</th>
-												<th scope='col'>Min years</th>
-												<th scope='col'>Max years</th>
-												<th scope='col'>Actions</th>
+												<th scope='col' class='text-center'>Mandatory</th>
+												<th scope='col' class='text-center'>Min level</th>
+												<th scope='col' class='text-center'>Min years</th>
+												<th scope='col' class='text-center'>Max years</th>
+												<th scope='col' class='text-end'>Actions</th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr v-for="skill in need.skills" :key="skill.id">
 												<td>{{ skill.skill_label }}</td>
-												<td>{{ skill.mandatory }}</td>
-												<td>{{ skill.skillscopelevel_label }}</td>
-												<td>{{ skill.min_years }}</td>
-												<td>{{ skill.max_years }}</td>
-												<td class='hoverable-td'>
+												<td class='text-center'>{{ skill.mandatory }}</td>
+												<td class='text-center'>{{ skill.skillscopelevel_label }}</td>
+												<td class='text-center'>{{ skill.min_years }}</td>
+												<td class='text-center'>{{ skill.max_years }}</td>
+												<td class='text-end'>
 													<button class='btn btn-unstyled' v-on:click='editSkill({ need, skill })'><i class='bi-pencil-fill me-2'></i></button>
 													<button class='btn btn-unstyled' v-on:click='confirmDelete("need.skill", skill)'><i class='bi-trash-fill me-2'></i></button>
 												</td>

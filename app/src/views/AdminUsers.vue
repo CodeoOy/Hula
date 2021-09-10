@@ -36,7 +36,7 @@
 						<tr>
 							<th scope="col">User</th>
 							<th scope="col">Email</th>
-							<th scope="col">Actions</th>
+							<th scope="col" class='text-end'>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -50,7 +50,7 @@
 								</span>
 							</td>
 							<td>{{ user.email }}</td>
-							<td class="hoverable-td">
+							<td class='text-end'>
 								<button class='btn btn-unstyled' v-on:click="confirmDelete(user)"><i class="bi-trash-fill me-2"></i></button>
 							</td>
 						</tr>
