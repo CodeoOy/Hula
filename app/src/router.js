@@ -7,7 +7,6 @@ import ForgotPassword from './views/ForgotPassword.vue'
 import UserHome from './views/UserHome.vue'
 import UserProfile from './views/UserProfile.vue'
 import Admin from './views/Admin.vue'
-import AdminHome from './views/AdminHome.vue'
 import AdminProjects from './views/AdminProjects.vue'
 import AdminSkills from './views/AdminSkills.vue'
 import AdminUsers from './views/AdminUsers.vue'
@@ -34,14 +33,13 @@ const needAdminOrSelf = to => state.loggeduser.isadmin || to.params.id == state.
 
 const router = createRouter({
 	routes: [
-		{ path: '/', name: 'home', redirect: () => ({ name: state.loggeduser && state.loggeduser.isadmin ? 'admin-home' : 'user-home' }) },
+		{ path: '/', name: 'home', redirect: () => ({ name: state.loggeduser && state.loggeduser.isadmin ? 'admin-projects' : 'user-home' }) },
 		{ path: '/app/confirm', component: Confirm, name: 'confirm' },
 		{ path: '/app/forgotpassword', component: ForgotPassword, name: 'forgot-password' },
 		{ path: '/app/gdpr', component: Gdpr, name: 'gdpr' },
 		{ path: '/app/login', component: Login, name: 'login' },
 		{ path: '/app/user', component: UserHome, name: 'user-home', beforeEnter: [needLogin] },
 		{ path: '/app/user/:id', component: UserProfile, name: 'user', beforeEnter: [needLogin, needAdminOrSelf] },
-		{ path: '/app/admin', component: AdminHome, name: 'admin-home', beforeEnter: [needLogin, needAdmin] },
 		{ path: '/app/admin', component: Admin, beforeEnter: [needLogin, needAdmin], children: [
 			{ path: 'projects', component: AdminProjects, name: 'admin-projects' },
 			{ path: 'skills', component: AdminSkills, name: 'admin-skills' },

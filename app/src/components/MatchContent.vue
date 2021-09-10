@@ -22,7 +22,7 @@
 						<td class='text-center'>{{ skill.required_index}}</td>
 						<td class='text-center'>{{ skill.user_index }}</td>
 						<td class='text-center'>{{ skill.required_years}}</td>
-						<td>{{ skill.user_years }}</td>
+						<td class='text-center'>{{ skill.user_years }}</td>
 					</tr>
 				</tbody>
 			</table>

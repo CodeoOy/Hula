@@ -77,7 +77,7 @@
 						<h2 class="h3 mb-0">Developers matching the roles</h2>
 					</div>
 					<div class='card-body'>
-						<ResultsPros :project='project' :matches='matches' />
+						<VMatchesForProject :project='project' :matches='matches' />
 					</div>
 				</div>
 			</div>
@@ -89,13 +89,13 @@
 	import FormProject from '../forms/FormProject.vue'
 	import FormProjectNeed from '../forms/FormProjectNeed.vue'
 	import FormProjectNeedSkill from '../forms/FormProjectNeedSkill.vue'
-	import ResultsPros from '../components/ResultsPros.vue'
+	import VMatchesForProject from '../components/VMatchesForProject.vue'
 
 	export default {
 		name: 'Project',
 
 		components: {
-			ResultsPros,
+			VMatchesForProject,
 		},
 
 		data() {

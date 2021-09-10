@@ -33,15 +33,11 @@
 </template>
 
 <script>
-	import VModal from '../components/VModal.vue'
-	import MatchContent from '../components/MatchContent.vue'
+	import MatchContent from './MatchContent.vue'
+
 	export default {
-		name: 'ResultsPros',
-		data() {
-			return {
-				currentMatch: {},
-			}
-		},
+		name: 'VMatchesForProject',
+
 		props: {
 			project: {
 				type: Object,
@@ -52,69 +48,62 @@
 				required: true,
 			},
 		},
-		components: {
-			VModal,
-			MatchContent
-		},
+
 		computed: {
 			users() {
 				if (this.matches) {
 					const users = Object.values(this.matches).map(user => {
-						user.hasMandatory = this.hasAllMandatorySkills(user)
-						user.tier = this.tier(user)
+						user.hasMandatory = this.hasMandatorySkills(user)
 						user.isAvailable = this.isAvailable(user)
+						user.tier = this.tier(user)
 						return user
 					})
-					return users.sort((a, b) => (a.tier > b.tier) ? 1 : (a.tier === b.tier) ? ((a.isAvailable > b.isAvailable) ? 1 : -1) : -1 )
+
+					return users.sort((a, b) => {
+						if (a.tier != b.tier) return a.tier < b.tier ? -1 : 1
+						if (a.skills.length != b.skills.length) return a.skills.length > b.skills.length ? -1 : 1
+						return 0
+					})
 				}
 			},
-			mandatorySkills() {
-				const skills = this.project.skills
-					? this.project.skills
-					: this.project.needs.reduce((skills, need) => [
-						...skills,
-						...need.skills.map(skill => ({
-							skill_label: skill.skill_label,
-							skill_mandatory: skill.mandatory,
-						}))
-					], [])
 
-				return skills.filter(skill => skill.skill_mandatory)
+			mandatorySkills() {
+				const skills = this.project.needs.reduce((skills, need) => {
+					const needSkills = need.skills.reduce((skills, skill) => {
+						if (skill.mandatory) skills.push(skill.skill_label)
+						return skills
+					}, [])
+
+					return skills.concat(needSkills)
+				}, [])
+
+				return skills
 			},
 		},
+
 		methods: {
 			tier(user) {
-				let hasMandatory = this.hasAllMandatorySkills(user)
-				let isAvailable = this.isAvailable(user)
-				if (hasMandatory == true && isAvailable == true) {
-					return 1
-				} else if (hasMandatory == true && isAvailable == false) {
-					return 2
-				} else if (hasMandatory == false && isAvailable == true) {
-					return 3
-				} else {
-					return 4
-				}
+				return user.hasMandatory
+					? user.isAvailable ? 1 : 2
+					: user.isAvailable ? 3 : 4
 			},
-			hasAllMandatorySkills(user) {
-				if (this.mandatorySkills.length) {
-					return this.mandatorySkills.every(skill => {
-						return user.skills.some(match => {
-							return match.skill_label === skill.skill_label
+
+			hasMandatorySkills(user) {
+				if (!this.mandatorySkills.length) return false
+				return this.mandatorySkills.every(skill => {
+					return user.skills.some(match => {
+						return match.skill_label == skill
 							&& match.user_index >= match.required_index
 							&& match.user_years >= match.required_minyears
-							&& (match.user_years <= match.required_maxyears || match.required_maxyears === null)
-						})
+							&& (match.user_years <= match.required_maxyears || !match.required_maxyears)
 					})
-				} else {
-					return false
-				}
-			},
-			isAvailable(user) {
-				return user.skills.every(match => {
-					return match.required_load >= match.user_load
 				})
 			},
+
+			isAvailable(user) {
+				return user.skills.every(match => match.required_load >= match.user_load)
+			},
+
 			showMatch(props) {
 				this.$modal({
 					title: 'Match',

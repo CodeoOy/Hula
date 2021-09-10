@@ -29,9 +29,6 @@
 						<i class='bi-person-circle'></i>
 					</button>
 					<ul v-if="loggedUser" class="dropdown-menu dropdown-menu-end" aria-labelledby="usermenu">
-						<li v-if="loggedUser.isadmin === true">
-							<router-link :to='{ name: "admin-projects", params: { id: loggedUser.id } }' class="dropdown-item">Admin</router-link>
-						</li>
 						<li>
 							<router-link :to='{ name: "user", params: { id: loggedUser.id } }' class="dropdown-item">Profile</router-link>
 						</li>
