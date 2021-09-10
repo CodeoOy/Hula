@@ -100,6 +100,11 @@ $utilities: map-merge(
 
 // Custom styles
 
+// Date fields are too tall in Safari
+.form-control::-webkit-datetime-edit {
+	vertical-align: middle;
+}
+
 ._vue-flash-msg-body {
 	z-index: $zindex-popover;
 }

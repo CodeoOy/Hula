@@ -1,3 +1,10 @@
+// HACK: Make Safari's unfilled date field's sub inputs more readable
+.form-control::-webkit-datetime-edit-day-field,
+.form-control::-webkit-datetime-edit-month-field,
+.form-control::-webkit-datetime-edit-year-field {
+	mix-blend-mode: multiply;
+}
+
 body {
 	background-image: url('assets/bg4.jpg');
 	background-size: cover;
