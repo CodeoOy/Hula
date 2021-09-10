@@ -18,8 +18,8 @@
 						<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='filtersDropdown'>
 							<li class='px-2'>
 								<div class='form-check'>
-									<label for='hidden'>Show hidden</label>
-									<input v-model='filters.showHidden' type='checkbox' class='form-check-input' id='hidden' />
+									<label for='hidden'>Don't show hidden</label>
+									<input v-model='filters.hideHidden' type='checkbox' class='form-check-input' id='hidden' />
 								</div>
 							</li>
 						</ul>
@@ -44,8 +44,8 @@
 							<td>
 								<router-link :to="{ name: 'project', params: { id: project.id }}">
 									{{ project.name }}
-									<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
 								</router-link>
+								<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
 							</td>
 							<td>
 								<span
@@ -87,7 +87,7 @@
 			return {
 				autoCompletedProjects: [],
 				filters: {
-					showHidden: true,
+					hideHidden: false,
 				},
 				matchSkills: {},
 			}
@@ -109,7 +109,7 @@
 
 			filteredProjects() {
 				return this.autoCompletedProjects
-					.filter(project => project.is_hidden ? this.filters.showHidden : true)
+					.filter(project => project.is_hidden ? !this.filters.hideHidden : true)
 			},
 		},
 

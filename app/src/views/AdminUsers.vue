@@ -19,8 +19,14 @@
 						<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='filtersDropdown'>
 							<li class='px-2'>
 								<div class='form-check'>
+									<label for='hidden'>Don't show hidden</label>
+									<input v-model='filters.hideHidden' type='checkbox' class='form-check-input' id='hidden' />
+								</div>
+							</li>
+							<li class='px-2'>
+								<div class='form-check'>
 									<label for='employees'>Employees only</label>
-									<input v-model='filters.employees' type='checkbox' class='form-check-input' id='employees' />
+									<input v-model='filters.employeesOnly' type='checkbox' class='form-check-input' id='employees' />
 								</div>
 							</li>
 						</ul>
@@ -43,10 +49,11 @@
 						<tr v-for="user in filteredUsers" :key="user.id">
 							<td>
 								<span>
-									<VAvatar :user_id="user.id" :firstname="user.firstname" :lastname="user.lastname" />
 									<router-link :to="{ name: 'user', params: { id: user.id}}">
+										<VAvatar :user_id="user.id" :firstname="user.firstname" :lastname="user.lastname" />
 										{{ user.firstname }} {{ user.lastname }}
 									</router-link>
+									<i v-if='user.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
 								</span>
 							</td>
 							<td>{{ user.email }}</td>
@@ -73,7 +80,8 @@
 				initialUsers: [],
 				autoCompletedUsers: [],
 				filters: {
-					employees: false,
+					hideHidden: false,
+					employeesOnly: false,
 				},
 			}
 		},
@@ -85,7 +93,8 @@
 		computed: {
 			filteredUsers() {
 				return this.autoCompletedUsers
-					.filter(user => this.filters.employees ? user.is_employee : true)
+					.filter(user => user.is_hidden ? !this.filters.hideHidden : true)
+					.filter(user => this.filters.employeesOnly ? user.is_employee : true)
 			},
 		},
 		methods: {

@@ -3,8 +3,11 @@
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="card shadow" :class='$colorScheme.card'>
-					<div class='card-header'>
-						<h1 class="h3 mb-0">{{ user.firstname }} {{ user.lastname }}</h1>
+					<div class='card-header d-flex align-items-center'>
+						<h1 class="h3 mb-0 flex-grow-1">
+							{{ user.firstname }} {{ user.lastname }}
+						</h1>
+						<i v-if='user.is_hidden' class="bi-eye-slash-fill ms-3 fs-3 lh-1"></i>
 					</div>
 					<div class='card-body'>
 						<p>{{ user.email }}</p>
