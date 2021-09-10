@@ -6,7 +6,7 @@
 					<div class="modal-title h2">{{ title }}</div>
 					<button v-if='backdrop != "static"' type="button" class="btn-close" :class='$colorScheme.modalClose' data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div class="modal-body">
+				<div ref='body' class="modal-body">
 					<slot></slot>
 				</div>
 			</div>
@@ -32,12 +32,17 @@
 
 		mounted() {
 			this.modal = Modal.getOrCreateInstance(this.$refs.modal)
-			if (this.showAtStart) this.modal.show()
 
 			this.$refs.modal.addEventListener('hide.bs.modal', () => { this.$emit('modal-hiding') })
 			this.$refs.modal.addEventListener('hidden.bs.modal', () => { this.$emit('modal-hidden') })
 			this.$refs.modal.addEventListener('show.bs.modal', () => { this.$emit('modal-showing') })
-			this.$refs.modal.addEventListener('shown.bs.modal', () => { this.$emit('modal-shown') })
+			this.$refs.modal.addEventListener('shown.bs.modal', () => {
+				this.$emit('modal-shown')
+				const input = this.$refs.body.querySelector('input, select, button, a')
+				if (input) input.focus()
+			})
+
+			if (this.showAtStart) this.modal.show()
 		},
 
 		methods: {
