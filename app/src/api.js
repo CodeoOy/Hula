@@ -233,6 +233,7 @@ export const api = {
 					user_first_name: null,
 					user_last_name: null,
 					user_is_hidden: null,
+					user_favorite: false,
 					project_id: null,
 					project_name: null,
 				}, skill: {} })

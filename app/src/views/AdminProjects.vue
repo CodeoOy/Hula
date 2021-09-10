@@ -60,7 +60,7 @@
 									:key="match.user_id"
 									v-on:click="showMatch(project, match)"
 									class='btn btn-unstyled'
-								><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" />
+								><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" :favorite='match.is_favorite' />
 								</button>
 							</td>
 							<td>

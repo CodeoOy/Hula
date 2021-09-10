@@ -17,8 +17,9 @@
 						<th scope="row"><div class="tier-circle shadow-sm" :style='{ zIndex: users.length - index }'>{{ index + 1 }}</div></th>
 						<td>
 							<button v-on:click='showMatch(user)' class='btn btn-unstyled'>
-								{{ user.user_first_name }} {{ user.user_last_name }}
+								{{ user.user_first_name }} {{ user.user_last_name }} 
 							</button>
+							<i v-if='user.user_favorite' class='bi-star-fill text-yellow ms-2 float-end'></i>
 						</td>
 						<td>{{ user.hasMandatory }}</td>
 						<td><span class="badge badge-skill me-2" v-for="skill in user.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></td>

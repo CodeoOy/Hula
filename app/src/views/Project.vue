@@ -3,11 +3,14 @@
 		<div class='row gx-4' v-if='project'>
 			<div class='col-md-4'>
 				<div class='card shadow' :class='$colorScheme.card'>
-					<div class='card-header'>
-						<h1 class="h3 mb-0">
+					<div class='card-header d-flex align-items-center'>
+						<h1 class="h3 mb-0 flex-grow-1">
 							{{ project.name }}
-							<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-3 float-end"></i>
 						</h1>
+						<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-3 fs-3 lh-1"></i>
+						<button class='btn btn-unstyled' @click='setFavorite'>
+							<i :class='favoriteClass' class="ms-3 fs-3 lh-1"></i>
+						</button>
 					</div>
 					<div class='card-body'>
 						<p v-if="project.description">{{ project.description }}</p>
@@ -98,6 +101,7 @@
 		data() {
 			return {
 				matches: null,
+				is_favorite: false,
 			}
 		},
 
@@ -105,6 +109,12 @@
 			project() {
 				return this.$store.state.chosenproject
 			},
+
+			favoriteClass() {
+				return this.is_favorite
+					? ['bi-star-fill', 'text-yellow']
+					: ['bi-star']
+			}
 		},
 
 		async mounted() {
@@ -120,6 +130,10 @@
 					props,
 				})
 				if (result) this.$store.dispatch('setChosenProject', this.$route.params.id)
+			},
+
+			setFavorite() {
+				this.is_favorite = !this.is_favorite
 			},
 
 			async editNeed(props = {}) {

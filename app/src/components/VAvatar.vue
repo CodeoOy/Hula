@@ -1,6 +1,7 @@
 <template>
-	<div class="hula-avatar" :style="avatarStyle">
+	<div class="hula-avatar position-relative" :style="avatarStyle">
         {{ initials }}
+        <i v-if='favorite' class='bi-star-fill text-yellow position-absolute bottom-0 end-0 mb-n2 me-n1'></i>
 	</div>
 </template>
 
@@ -18,7 +19,11 @@ export default {
         user_id: '',
         firstname: '',
         lastname: '',
-        size: Number
+        size: Number,
+        favorite: {
+            type: Boolean,
+            default: false,
+        },
 	},
     computed: {
         initials() {
