@@ -153,6 +153,7 @@
 
 		methods: {
 			async onSubmit() {
+				for (const prop in this.form) if (this.form[prop] == '') this.form[prop] = undefined
 				const skill = await this.$api.needs.skills.save(this.form)
 				if (skill) this.$emit('success', skill)
 			},
