@@ -5,8 +5,8 @@
 			v-for='modal in modals'
 			:key='modal.id'
 			:showAtStart='true'
-			:modalTitle='modal.title'
-			:modalBackdrop='modal.backdrop'
+			:title='modal.title'
+			:backdrop='modal.backdrop'
 			@modal-hidden='removeModal(modal)'>
 			<component :is='modal.component' v-bind='modal.props' @success='onSuccess(modal, $event)' />
 		</VModal>

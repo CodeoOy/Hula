@@ -1,10 +1,10 @@
 <template>
-	<div class="modal fade" ref="modal" :data-bs-backdrop="modalBackdrop" :data-bs-keyboard='modalBackdrop != "static"'>
+	<div class="modal fade" ref="modal" :data-bs-backdrop="backdrop" :data-bs-keyboard='backdrop != "static"'>
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content shadow-lg" :class='$colorScheme.modal'>
-				<div class="modal-header" v-if="modalTitle">
-					<h2 class="modal-title">{{ modalTitle }}</h2>
-					<button v-if='modalBackdrop != "static"' type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="modal-header" v-if="title">
+					<div class="modal-title h2">{{ title }}</div>
+					<button v-if='backdrop != "static"' type="button" class="btn-close" :class='$colorScheme.modalClose' data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
 					<slot></slot>
@@ -21,8 +21,8 @@
 		name: 'VModal',
 		
 		props: {
-			modalTitle: String,
-			modalBackdrop: {
+			title: String,
+			backdrop: {
 				type: [Boolean, String],
 				default: true,
 				validator :value => typeof value == 'boolean' || value == 'static',

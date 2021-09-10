@@ -1,5 +1,5 @@
 <template>
-	<VModal ref='modal' :modalTitle='title' modalBackdrop="static">
+	<VModal ref='modal' :title='title' backdrop="static">
 		<FormLogin v-if="showSignup == false" @success='navigate' />
 		<FormRegister v-else/>
 		<div class='mt-3'>

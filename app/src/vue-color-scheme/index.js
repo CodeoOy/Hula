@@ -17,6 +17,10 @@ const classes = {
 	modal: {
 		dark: ['bg-dark', 'text-light'],
 	},
+
+	modalClose: {
+		dark: ['btn-close-white'],
+	}
 }
 
 export default {
@@ -29,7 +33,7 @@ export default {
 		watch(scheme, (value, previous) => {
 			document.body.classList.add(value)
 			document.body.classList.remove(previous)
-		})
+		}, { immediate: true })
 
 		app.config.globalProperties.$colorScheme = colorScheme
 	},

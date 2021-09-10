@@ -8,7 +8,7 @@
 			<pre>{{ registrationData }}</pre>
 		</div>
 	</div>
-	<VModal v-else ref='modal' :modalTitle="'Enter new password'" modalBackdrop="static">
+	<VModal v-else ref='modal' :title="'Enter new password'" backdrop="static">
 		<FormResetPassword v-on:success="changePassword" />
 	</VModal>
 </template>
