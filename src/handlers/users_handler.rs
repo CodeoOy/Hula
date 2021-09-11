@@ -568,16 +568,16 @@ pub async fn update_password(
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Resetting password for: email = {:#?}", &payload.email,);
 
-	// TODO: if not admin, limit by user id.
-
 	let id = reset_requests_repository::get_by_reset_request(payload.id.clone(), &pool);
 	match id {
 		Ok(_) => println!("Reset request found"),
 		Err(_) => return Err(ServiceError::InternalServerError),
 	}
 
+	let id = id.unwrap();
+
 	let res =
-		web::block(move || users_repository::set_password(payload.email.clone(), payload.password.clone(), &pool))
+		web::block(move || users_repository::set_password(id.email.clone(), payload.password.clone(), &pool))
 			.await;
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
