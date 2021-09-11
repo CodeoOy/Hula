@@ -1,5 +1,3 @@
-drop view userskilldetails;
-
 create view userskilldetails as
  SELECT row_number() OVER ()::integer AS idx,
     u.id AS user_id,
