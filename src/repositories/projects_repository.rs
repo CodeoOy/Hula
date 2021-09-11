@@ -14,11 +14,16 @@ pub fn query_all_projects(pool: &web::Data<Pool>) -> Result<Vec<Project>, Error>
 	Ok(items)
 }
 
-pub fn query_one(uuid_query: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Project, Error> {
+pub fn query_one(uuid_query: uuid::Uuid, is_admin: bool, pool: &web::Data<Pool>) -> Result<Project, Error> {
 	use crate::schema::projects::dsl::{id, projects};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let project = projects.filter(id.eq(uuid_query)).get_result::<Project>(conn)?;
+
+	if project.is_hidden == true && is_admin == false {
+		return Err(NotFound);
+	}
+
 	Ok(project)
 }
 

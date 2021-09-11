@@ -115,7 +115,7 @@ pub async fn get_all(
 
 	let mut is_include = false;
 
-	if q_query_data.is_include_skills && logged_user.isadmin == true {
+	if q_query_data.is_include_skills {
 		is_include = true;
 	}
 

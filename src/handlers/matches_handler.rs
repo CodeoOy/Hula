@@ -46,7 +46,7 @@ pub async fn get_project_matchdata(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let project = projects_repository::query_one(id, &pool)?;
+	let project = projects_repository::query_one(id, true, &pool)?;
 	let res = web::block(move || projectmatches_repository::find_by_project(&project, &pool)).await;
 
 	match res {
