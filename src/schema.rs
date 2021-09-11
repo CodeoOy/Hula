@@ -233,6 +233,7 @@ table! {
 		is_mandatory -> Bool,
 		required_index -> Nullable<Integer>,
 		required_label -> Nullable<Varchar>,
+		required_percentage -> Nullable<Integer>,
 		required_minyears -> Nullable<Double>,
 		required_maxyears -> Nullable<Double>,
 	}
