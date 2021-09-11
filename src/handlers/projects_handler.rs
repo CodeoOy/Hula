@@ -78,7 +78,7 @@ pub async fn get_all_projects(
 		is_include = true;
 	}
 
-	let res = web::block(move || query_projects_dto(is_include, &pool)).await;
+	let res = web::block(move || query_projects_dto(is_include, logged_user.isadmin, &pool)).await;
 
 	match res {
 		Ok(projects) => {
@@ -304,13 +304,13 @@ pub async fn update_projectneedskill(
 pub async fn get_by_pid(
 	pid: web::Path<String>,
 	pool: web::Data<Pool>,
-	_logged_user: LoggedUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Getting project by pid: pid={:#?}", &pid);
 
 	let id = uuid::Uuid::parse_str(&pid.into_inner())?;
 
-	let res = web::block(move || projects_repository::query_one(id, &pool)).await;
+	let res = web::block(move || projects_repository::query_one(id, logged_user.isadmin, &pool)).await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {
@@ -484,6 +484,7 @@ pub async fn delete_projectneedskill(
 
 fn query_projects_dto(
 	include_matches_and_skills: bool,
+	is_admin: bool,
 	pool: &web::Data<Pool>,
 ) -> Result<Vec<ProjectDTO>, ServiceError> {
 	use crate::models::projectmatches::ProjectMatch;
@@ -502,6 +503,10 @@ fn query_projects_dto(
 
 	for idx in 0..projects.len() {
 		let project = &projects[idx];
+
+		if project.is_hidden == true && is_admin == false {
+			continue;
+		}
 
 		let mut skills_vec: Vec<SkillDTO> = vec![];
 		let mut matches_vec: Vec<MatchDTO> = vec![];

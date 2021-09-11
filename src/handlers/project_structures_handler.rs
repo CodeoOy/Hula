@@ -211,7 +211,7 @@ pub fn save_project_structure(
 }
 
 fn get_project_matches_count(id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<i32, ServiceError> {
-	let db_project = projects_repository::query_one(id, &pool)?;
+	let db_project = projects_repository::query_one(id, true, &pool)?;
 	let db_matches = projectmatches_repository::find_by_project(&db_project, &pool)?;
 
 	Ok(db_matches.len() as i32)
@@ -222,7 +222,7 @@ fn test_project_structure_equals(
 	project: &ProjectStructureData,
 	pool: &web::Data<Pool>,
 ) -> Result<bool, ServiceError> {
-	let db_project = projects_repository::query_one(id, &pool)?;
+	let db_project = projects_repository::query_one(id, true, &pool)?;
 
 	if db_project.name != project.name || db_project.is_hidden != project.is_hidden {
 		trace!("Project fields differ.");
