@@ -36,11 +36,15 @@ pub struct MatchDTO {
 pub async fn get_project_matchdata(
 	pid: web::Path<String>,
 	pool: web::Data<Pool>,
-	_logged_user: LoggedUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Getting all matches: logged_user={:#?}", &_logged_user);
+	trace!("Getting all matches: logged_user={:#?}", &logged_user);
 
 	let id = uuid::Uuid::parse_str(&pid.into_inner())?;
+
+	if logged_user.isadmin == false {
+		return Err(ServiceError::AdminRequired);
+	}
 
 	let project = projects_repository::query_one(id, &pool)?;
 	let res = web::block(move || projectmatches_repository::find_by_project(&project, &pool)).await;

@@ -21,7 +21,7 @@ table! {
 		updated_by -> Varchar,
 	}
 }
- 
+
 table! {
 	projectneeds (id) {
 		id -> Uuid,
