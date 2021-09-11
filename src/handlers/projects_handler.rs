@@ -68,18 +68,15 @@ pub struct MatchDTO {
 pub async fn get_all_projects(
 	web::Query(q_query_data): web::Query<QueryData>,
 	pool: web::Data<Pool>,
-	_logged_user: LoggedUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	trace!("Getting all projects: logged_user={:#?}", &_logged_user);
+	trace!("Getting all projects: logged_user={:#?}", &logged_user);
 
 	let mut is_include = false;
 
-	//if let Some(query_data) = q_query_data {
-	if q_query_data.is_include_skills_and_matches {
-		trace!("IS INCLUDE");
+	if q_query_data.is_include_skills_and_matches && logged_user.isadmin == true {
 		is_include = true;
 	}
-	//}
 
 	let res = web::block(move || query_projects_dto(is_include, &pool)).await;
 

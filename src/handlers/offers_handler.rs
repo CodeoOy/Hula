@@ -21,9 +21,13 @@ pub struct OfferUpdateData {
 	pub comments: Option<String>,
 }
 
-pub async fn get_all_offers(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
-	trace!("Getting all offers: logged_user={:#?}", &_logged_user);
+pub async fn get_all_offers(pool: web::Data<Pool>, logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
+	trace!("Getting all offers: logged_user={:#?}", &logged_user);
 	let res = web::block(move || offers_repository::query_get_all_offers(&pool)).await;
+
+	if logged_user.isadmin == false {
+		return Err(ServiceError::AdminRequired);
+	}
 
 	match res {
 		Ok(offers) => {
@@ -45,9 +49,11 @@ pub async fn add_offer(
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!("Posting offer: logged_user={:#?}", &logged_user);
+
 	if logged_user.isadmin == false {
 		return Err(ServiceError::AdminRequired);
 	}
+
 	let res = web::block(move || {
 		offers_repository::query_add_offer(
 			payload.user_id,
@@ -78,6 +84,7 @@ pub async fn delete_offer(
 	if logged_user.isadmin == false {
 		return Err(ServiceError::AdminRequired);
 	}
+
 	let id = uuid::Uuid::parse_str(&oid.into_inner())?;
 
 	let res = web::block(move || offers_repository::query_delete_offer(id, &pool)).await;
@@ -101,6 +108,7 @@ pub async fn update_offer(
 	if logged_user.isadmin == false {
 		return Err(ServiceError::AdminRequired);
 	}
+
 	let id = uuid::Uuid::parse_str(&oid.into_inner())?;
 	let res = web::block(move || {
 		offers_repository::query_update_offer(id, payload.sold, payload.comments.clone(), logged_user.email, &pool)

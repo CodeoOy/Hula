@@ -94,9 +94,13 @@ pub struct ForgotPasswordData {
 	pub id: uuid::Uuid,
 }
 
-pub async fn get_all(pool: web::Data<Pool>, _logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
-	trace!("Getting all users: logged_user = {:#?}", &_logged_user);
+pub async fn get_all(pool: web::Data<Pool>, logged_user: LoggedUser) -> Result<HttpResponse, ServiceError> {
+	trace!("Getting all users: logged_user = {:#?}", &logged_user);
 	let res = web::block(move || users_repository::query_all(&pool)).await;
+
+	if logged_user.isadmin == false {
+		return Err(ServiceError::AdminRequired);
+	}
 
 	match res {
 		Ok(users) => {
@@ -269,7 +273,13 @@ pub async fn get_reservations(
 		&uuid_data,
 		&logged_user
 	);
+
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
+
+	if logged_user.isadmin == false && logged_user.uid != uuid_query {
+		return Err(ServiceError::AdminRequired);
+	}
+
 	let user = users_repository::get(uuid_query, &pool)?;
 	let res = web::block(move || userreservations_repository::query_belong_to_user(&user.into(), &pool)).await;
 
@@ -302,7 +312,6 @@ pub async fn add_reservation(
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
-	// todo: create a macro to simplify this
 	if logged_user.isadmin == false && logged_user.uid != id {
 		return Err(ServiceError::AdminRequired);
 	}
@@ -399,14 +408,21 @@ pub async fn update_reservation(
 pub async fn get_by_uuid(
 	uuid_data: web::Path<String>,
 	pool: web::Data<Pool>,
-	_logged_user: LoggedUser,
+	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!(
 		"Getting a user by uuid: uuid_data = {:#?} logged_user = {:#?}",
 		&uuid_data,
-		&_logged_user
+		&logged_user
 	);
-	let res = web::block(move || query_one(uuid_data.into_inner(), pool)).await;
+
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	if logged_user.isadmin == false && logged_user.uid != id {
+		return Err(ServiceError::AdminRequired);
+	}
+
+	let res = web::block(move || query_one(id.to_string(), pool)).await;
 
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
@@ -419,7 +435,6 @@ pub async fn get_by_uuid(
 
 fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, ServiceError> {
 	let uuid_query = uuid::Uuid::parse_str(&uuid_data)?;
-
 	let user = users_repository::get(uuid_query, &pool)?;
 	let allskills = skills_repository::query_all_skills(&pool)?;
 	let mut skills_dto: Vec<SkillDTO> = Vec::new();
@@ -559,8 +574,10 @@ pub async fn update_password(
 		Err(_) => return Err(ServiceError::InternalServerError),
 	}
 
+	let id = id.unwrap();
+
 	let res =
-		web::block(move || users_repository::set_password(payload.email.clone(), payload.password.clone(), &pool))
+		web::block(move || users_repository::set_password(id.email.clone(), payload.password.clone(), &pool))
 			.await;
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
