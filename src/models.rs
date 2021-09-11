@@ -6,3 +6,4 @@ pub mod projects;
 pub mod projectskills;
 pub mod skills;
 pub mod users;
+pub mod userskilldetails;

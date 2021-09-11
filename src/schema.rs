@@ -238,6 +238,18 @@ table! {
 	}
 }
 
+table! {
+	userskilldetails(idx){
+		idx -> Int4,
+		user_id -> Uuid,
+		skill_label -> Varchar,
+		level_index -> Nullable<Integer>,
+		level_label -> Nullable<Varchar>,
+		level_percentage -> Nullable<Integer>,
+		years -> Nullable<Double>,
+	}
+}
+
 joinable!(projectneeds -> projects (project_id));
 joinable!(projectneedskills -> projectneeds (projectneed_id));
 joinable!(projectneedskills -> skills (skill_id));
