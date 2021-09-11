@@ -462,9 +462,7 @@ fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, Servic
 	for user_skill in user_skills.iter() {
 		let mut allskills_iter = allskills.iter(); // Iterator might cause problems when there are many skills
 
-		let real_skill = allskills_iter
-			.find(|&x| x.id == user_skill.skill_id)
-			.unwrap();
+		let real_skill = allskills_iter.find(|&x| x.id == user_skill.skill_id).unwrap();
 
 		let skilldata = SkillDTO {
 			id: user_skill.id,
@@ -607,10 +605,7 @@ pub async fn update_password(
 	}
 }
 
-fn query_users_dto(
-	include_skills: bool,
-	pool: &web::Data<Pool>,
-) -> Result<Vec<UserDTO>, ServiceError> {
+fn query_users_dto(include_skills: bool, pool: &web::Data<Pool>) -> Result<Vec<UserDTO>, ServiceError> {
 	use crate::models::userskilldetails::UserSkillDetail;
 
 	let users = users_repository::query_all(&pool)?;
