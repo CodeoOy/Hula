@@ -17,4 +17,5 @@ pub mod userfavorites_repository;
 pub mod userreservations_repository;
 pub mod users_repository;
 pub mod userskills_repository;
+pub mod userskilldetails_repository;
 pub mod useruploads_repository;

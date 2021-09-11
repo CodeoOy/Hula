@@ -12,5 +12,6 @@ pub struct UserSkillDetail {
 	pub skill_label: String,
 	pub level_index: Option<i32>,
 	pub level_label: Option<String>,
+	pub level_percentage: Option<i32>,
 	pub years: Option<f64>,
 }

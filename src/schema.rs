@@ -245,6 +245,7 @@ table! {
 		skill_label -> Varchar,
 		level_index -> Nullable<Integer>,
 		level_label -> Nullable<Varchar>,
+		level_percentage -> Nullable<Integer>,
 		years -> Nullable<Double>,
 	}
 }
