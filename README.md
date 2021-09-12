@@ -1,4 +1,4 @@
-# Rust/Actix/Postgres/Vue Proof of Concept
+# Hula
 
 This POC is made for an open source project which I will link here once it is launched. Idea is to have a web server that can manipulate a Postgres database and well, do whatever web servers do. Actix was chosen for the server and Vue for the frontend.
 
@@ -20,6 +20,11 @@ The web server part is essentially a direct clone of [Harry Gill's](https://gill
 DATABASE_URL=postgres://user:password@server/dbname
 SPARKPOST_API_KEY='xxxxx'
 SENDING_EMAIL_ADDRESS='your.sendingaddress@yourdomain.com'
+SERVER_URL='localhost:8086'
+PUBLIC_URL='http://localhost:8086'
+RUST_LOG='trace'
+USER_UPLOAD_PATH='/'
+PROJECT_EXPIRY_SECS=2592000
 ```
 3. From the root, `mkdir public`
 4. Go to App folder and run `npm install`
@@ -28,5 +33,4 @@ SENDING_EMAIL_ADDRESS='your.sendingaddress@yourdomain.com'
 7. Still in the app folder, run `npm run dev`
 8. From the root, setup diesel: `diesel migration run` and then `diesel setup`
 9. From the root, run `cargo run`
-10. App SHOULD be up at 127.0.0.1:8086.
-11. Not everything works, this is very much a WIP at this state.
+10. App SHOULD be up at localhost:8086.
