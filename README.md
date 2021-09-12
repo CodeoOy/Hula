@@ -14,8 +14,9 @@ The web server part is essentially a direct clone of [Harry Gill's](https://gill
 
 ### Deployment
 
-1. Clone this repo
-2. Create .env file to the root:
+1. Create a postgres database
+2. Clone this repo
+3. Create .env file to the root:
 ```
 DATABASE_URL=postgres://user:password@server/dbname
 SPARKPOST_API_KEY='xxxxx'
@@ -26,11 +27,11 @@ RUST_LOG='trace'
 USER_UPLOAD_PATH='/'
 PROJECT_EXPIRY_SECS=2592000
 ```
-3. From the root, `mkdir public`
-4. Go to App folder and run `npm install`
-5. Because of reasons, Flashmessages won't install as expected. Run `npm i @smartweb/vue-flash-message@1.0.0-alpha.12`
-6. Bootstrap needs Popper bu doesn't include it. Still in app folder, run `npm i @popperjs/core`
-7. Still in the app folder, run `npm run dev`
-8. From the root, setup diesel: `diesel migration run` and then `diesel setup`
-9. From the root, run `cargo run`
-10. App SHOULD be up at localhost:8086.
+4. From the root, `mkdir public`
+5. Go to App folder and run `npm install`
+6. Because of reasons, Flashmessages won't install as expected. Run `npm i @smartweb/vue-flash-message@1.0.0-alpha.12`
+7. Bootstrap needs Popper but doesn't include it. Still in app folder, run `npm i @popperjs/core`
+8. Still in the app folder, run `npm run dev`
+9. From the root, setup diesel: `diesel migration run` and then `diesel setup`
+10. From the root, run `cargo run`
+11. App SHOULD be up at localhost:8086.
