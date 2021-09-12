@@ -193,7 +193,10 @@
 			},
 
 			async saveFiles() {
-				const success = await this.$api.users.files.save(this.newFiles)
+				const success = await this.$api.users.files.save({
+					id: this.user.id,
+					files: this.newFiles,
+				})
 
 				const message = success ? {
 					type: 'success',

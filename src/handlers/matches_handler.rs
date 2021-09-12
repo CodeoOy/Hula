@@ -12,6 +12,7 @@ pub struct ProjectDTO {
 	pub id: uuid::Uuid,
 	pub name: String,
 	pub is_hidden: bool,
+	pub is_active: bool,
 	pub skills: Vec<SkillDTO>,
 	pub matches: Vec<MatchDTO>,
 }

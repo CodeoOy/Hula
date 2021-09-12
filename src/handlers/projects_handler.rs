@@ -46,6 +46,7 @@ pub struct ProjectDTO {
 	pub name: String,
 	pub description: Option<String>,
 	pub is_hidden: bool,
+	pub is_active: bool,
 	pub skills: Vec<SkillDTO>,
 	pub matches: Vec<MatchDTO>,
 }
@@ -508,6 +509,11 @@ fn query_projects_dto(
 		if project.is_hidden == true && is_admin == false {
 			continue;
 		}
+		let mut is_active = true;
+		let expiry = std::env::var("PROJECT_EXPIRY_SECS").unwrap().parse::<i64>().unwrap();
+		if chrono::Local::now().naive_local().signed_duration_since(project.inserted_at).num_seconds() > expiry {
+			is_active = false;
+		}
 
 		let mut skills_vec: Vec<SkillDTO> = vec![];
 		let mut matches_vec: Vec<MatchDTO> = vec![];
@@ -557,6 +563,7 @@ fn query_projects_dto(
 			name: project.name.clone(),
 			description: project.description.clone(),
 			is_hidden: project.is_hidden,
+			is_active: is_active,
 			skills: skills_vec,
 			matches: matches_vec,
 		};

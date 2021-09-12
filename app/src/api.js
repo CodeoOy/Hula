@@ -187,9 +187,10 @@ export const api = {
 		files: {
 			get: getArray('/api/useruploads'),
 
-			save: files => {
+			save: data => {
 				const body = new FormData()
-				if (files.length) files.forEach(file => body.append('files[]', file))
+				body.append('id', data.id)
+				if (data.files.length) data.files.forEach(file => body.append('files[]', file))
 				return returnBoolean(request({
 					url: '/api/upload',
 					method: 'POST',

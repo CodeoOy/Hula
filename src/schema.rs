@@ -51,6 +51,7 @@ table! {
 table! {
 	projects (id) {
 		id -> Uuid,
+		inserted_at -> Timestamp,
 		is_hidden-> Bool,
 		name -> Varchar,
 		description -> Nullable<Varchar>,

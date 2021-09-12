@@ -40,6 +40,7 @@ pub fn create_project(
 	let new_project = Project {
 		id: uuid::Uuid::new_v4(),
 		description: q_project_description,
+		inserted_at: chrono::Local::now().naive_local(),
 		is_hidden: q_is_hidden,
 		name: q_project_name,
 		updated_by: q_email,
