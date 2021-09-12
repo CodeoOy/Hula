@@ -15,6 +15,11 @@ pub struct File {
 	name: String,
 }
 
+#[derive(Deserialize, Debug)]
+pub struct UploadData {
+	pub user_id: uuid::Uuid,
+}
+
 pub async fn save_file(
 	mut payload: Multipart,
 	pool: web::Data<Pool>,

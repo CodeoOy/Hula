@@ -189,7 +189,7 @@ export const api = {
 
 			save: data => {
 				const body = new FormData()
-				body.append('id', data.id)
+				body.append('user_id', data.id)
 				if (data.files.length) data.files.forEach(file => body.append('files[]', file))
 				return returnBoolean(request({
 					url: '/api/upload',

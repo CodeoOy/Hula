@@ -194,7 +194,7 @@
 
 			async saveFiles() {
 				const success = await this.$api.users.files.save({
-					id: this.user.id,
+					user_id: this.user.id,
 					files: this.newFiles,
 				})
 
