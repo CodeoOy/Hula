@@ -18,7 +18,13 @@
 						<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='filtersDropdown'>
 							<li class='px-2'>
 								<div class='form-check'>
-									<label for='hidden'>Don't show hidden</label>
+									<label for='inactive'>Exclude inactive</label>
+									<input v-model='filters.hideInactive' type='checkbox' class='form-check-input' id='inactive' />
+								</div>
+							</li>
+							<li class='px-2'>
+								<div class='form-check'>
+									<label for='hidden'>Exclude hidden</label>
 									<input v-model='filters.hideHidden' type='checkbox' class='form-check-input' id='hidden' />
 								</div>
 							</li>
@@ -41,11 +47,14 @@
 					</thead>
 					<tbody>
 						<tr v-for="project in filteredProjects" :key="project.id">
-							<td>
-								<router-link :to="{ name: 'project', params: { id: project.id }}">
-									{{ project.name }}
-								</router-link>
-								<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
+							<td class='d-flex align-items-center'>
+								<div class='flex-grow-1'>
+									<router-link :to="{ name: 'project', params: { id: project.id }}">
+										{{ project.name }}
+									</router-link>
+								</div>
+								<i v-if='!project.is_active' class="bi-clock-fill ms-2"></i>
+								<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2"></i>
 							</td>
 							<td>
 								<span
@@ -90,6 +99,7 @@
 			return {
 				autoCompletedProjects: [],
 				filters: {
+					hideInactive: false,
 					hideHidden: false,
 				},
 				matchSkills: {},
@@ -112,6 +122,7 @@
 
 			filteredProjects() {
 				return this.autoCompletedProjects
+					.filter(project => project.is_active ? true : !this.filters.hideInactive)
 					.filter(project => project.is_hidden ? !this.filters.hideHidden : true)
 			},
 

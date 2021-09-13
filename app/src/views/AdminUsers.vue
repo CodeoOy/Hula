@@ -19,13 +19,13 @@
 						<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='filtersDropdown'>
 							<li class='px-2'>
 								<div class='form-check'>
-									<label for='hidden'>Don't show hidden</label>
+									<label for='hidden'>Exclude hidden</label>
 									<input v-model='filters.hideHidden' type='checkbox' class='form-check-input' id='hidden' />
 								</div>
 							</li>
 							<li class='px-2'>
 								<div class='form-check'>
-									<label for='employees'>Employees only</label>
+									<label for='employees'>Exclude nonemployees</label>
 									<input v-model='filters.employeesOnly' type='checkbox' class='form-check-input' id='employees' />
 								</div>
 							</li>
