@@ -7,36 +7,40 @@
 			</div>
 		</div>
 		<div class='card-body'>
-			<div v-if='categories.length' class="table-responsive">
-				<table class="table table-striped" :class='$colorScheme.table'>
+			<div v-if='categories.length'>
+				<table class="table table-striped table-stack-mobile" :class='$colorScheme.table'>
 					<thead>
 						<tr>
-							<th scope="col">Category</th>
+							<th scope="col" class='ps-3'>Category</th>
 							<th scope="col">Skills</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr v-for="category in categories" :key="category.id">
 							<td>
-								<div class='d-flex justify-content-between m-3'>
-									<div>{{ category.label }}</div>
-									<div class="td-actions">
-										<button class='btn btn-unstyled' v-on:click="editSkill(category)"><i class="bi-plus-circle-fill me-2"></i></button>
-										<button class='btn btn-unstyled' v-on:click="editCategory(category)"><i class="bi-pencil-fill me-2"></i></button>
-										<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.category', category)"><i class="bi-trash-fill me-2"></i></button>
+								<div class='table-stack-mobile-cell'>
+									<div class='d-flex justify-content-between m-md-2'>
+										<div>{{ category.label }}</div>
+										<div class="td-actions">
+											<button class='btn btn-unstyled' v-on:click="editSkill(category)"><i class="bi-plus-circle-fill me-2"></i></button>
+											<button class='btn btn-unstyled' v-on:click="editCategory(category)"><i class="bi-pencil-fill me-2"></i></button>
+											<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.category', category)"><i class="bi-trash-fill"></i></button>
+										</div>
 									</div>
 								</div>
 							</td>
 							<td>
-								<ul class='list-group list-group-flush list-group-transparent ms-n3 my-2'>
-									<li v-for="skill in filterSkills(category.id)" :key="skill" class='list-group-item d-flex justify-content-between'>
-										<div>{{ skill.label }} <small class="fw-light text-muted">({{ getSkillScopeLabel(skill.skillscope_id) }})</small></div>
-										<div class="td-actions">
-											<button class='btn btn-unstyled' v-on:click="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></button>
-											<button class='btn btn-unstyled' v-on:click="confirmDelete('skill', skill)"><i class="bi-trash-fill me-2"></i></button>
-										</div>
-									</li>
-								</ul>
+								<div class='table-stack-mobile-cell p-0 pe-md-2'>
+									<ul class='list-group list-group-flush list-group-transparent'>
+										<li v-for="skill in filterSkills(category.id)" :key="skill" class='list-group-item d-flex justify-content-between ps-4 pe-2 px-md-0'>
+											<div>{{ skill.label }} <small class="fw-light text-muted">({{ getSkillScopeLabel(skill.skillscope_id) }})</small></div>
+											<div class="td-actions">
+												<button class='btn btn-unstyled' v-on:click="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></button>
+												<button class='btn btn-unstyled' v-on:click="confirmDelete('skill', skill)"><i class="bi-trash-fill"></i></button>
+											</div>
+										</li>
+									</ul>
+								</div>
 							</td>
 						</tr>
 					</tbody>
