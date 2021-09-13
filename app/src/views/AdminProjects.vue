@@ -29,7 +29,7 @@
 			</div>
 		</div>
 		<div class='card-body'>
-			<div class="table-responsive" v-if="filteredProjects.length">
+			<div v-if="filteredProjects.length" class="table-responsive">
 				<table class="table table-striped" :class='$colorScheme.table'>
 					<thead>
 						<tr>
@@ -69,6 +69,9 @@
 						</tr>
 					</tbody>
 				</table>
+			</div>
+			<div v-else>
+				<div class='fs-3 fw-light text-muted text-center p-4'>{{ noProjectsMessage }}</div>
 			</div>
 		</div>
 	</div>
@@ -111,6 +114,12 @@
 				return this.autoCompletedProjects
 					.filter(project => project.is_hidden ? !this.filters.hideHidden : true)
 			},
+
+			noProjectsMessage() {
+				return this.projects.length
+					? 'No projects matching the filter'
+					: 'No projects'
+			}
 		},
 
 		methods: {

@@ -28,7 +28,7 @@
 						</div>
 					</div>
 					<div class='card-body'>
-						<ul class='list-group list-group-flush list-group-transparent mx-n3 my-n2'>
+						<ul v-if='project.needs.length' class='list-group list-group-flush list-group-transparent mx-n3 my-n2'>
 							<li class='list-group-item' v-for='need in project.needs' :key='need.id'>
 								<div class='d-sm-flex flex-row justify-content-between align-items-baseline mb-3'>
 									<div>
@@ -70,14 +70,16 @@
 								</div>
 							</li>
 						</ul>
+						<div v-else class='fs-3 fw-light text-muted text-center p-4'>No roles</div>
 					</div>
 				</div>
-				<div v-if='matches' class="card shadow mt-4" :class='$colorScheme.card'>
+				<div class="card shadow mt-4" :class='$colorScheme.card'>
 					<div class='card-header'>
 						<h2 class="h3 mb-0">Developers matching the roles</h2>
 					</div>
 					<div class='card-body'>
-						<VMatchesForProject :project='project' :matches='matches' />
+						<VMatchesForProject v-if='matches' :project='project' :matches='matches' />
+						<div v-else class='fs-3 fw-light text-muted text-center p-4'>No matches</div>
 					</div>
 				</div>
 			</div>

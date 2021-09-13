@@ -54,7 +54,7 @@
 						</div>
 					</div>
 					<div class='card-body'>
-						<div class="table-responsive">
+						<div v-if='user.skills && user.skills.length' class="table-responsive">
 							<table class="table table-striped" :class='$colorScheme.table'>
 								<thead>
 									<tr>
@@ -77,6 +77,7 @@
 								</tbody>
 							</table>
 						</div>
+						<div v-else class='fs-3 fw-light text-muted text-center p-4'>No skills</div>
 					</div>
 				</div>
 				<div class="card shadow mt-4" :class='$colorScheme.card'>
@@ -110,14 +111,16 @@
 								</tr>
 							</tbody>
 						</table>
+						<div v-else class='fs-3 fw-light text-muted text-center p-4'>No reservations</div>
 					</div>
 				</div>
-				<div v-if='matches.length' class="card shadow mt-4" :class='$colorScheme.card'>
+				<div class="card shadow mt-4" :class='$colorScheme.card'>
 					<div class='card-header'>
 						<h3 class="h3 mb-0">Projects matching the user's skills</h3>
 					</div>
 					<div class='card-body'>
-						<VMatchesForUser :matches='matches' />
+						<VMatchesForUser v-if='matches.length' :matches='matches' />
+						<div v-else class='fs-3 fw-light text-muted text-center p-4'>No matches</div>
 					</div>
 				</div>
 			</div>

@@ -36,7 +36,7 @@
 			</div>
 		</div>
 		<div class='card-body'>
-			<div class="table-responsive">
+			<div v-if='filteredUsers.length' class="table-responsive">
 				<table class="table table-striped" :class='$colorScheme.table'>
 					<thead>
 						<tr>
@@ -63,6 +63,9 @@
 						</tr>
 					</tbody>
 				</table>
+			</div>
+			<div v-else>
+				<div class='fs-3 fw-light text-muted text-center p-4'>{{ noUsersMessage }}</div>
 			</div>
 		</div>
 	</div>
@@ -96,6 +99,11 @@
 					.filter(user => user.is_hidden ? !this.filters.hideHidden : true)
 					.filter(user => this.filters.employeesOnly ? user.is_employee : true)
 			},
+			noUsersMessage() {
+				return this.initialUsers.length
+					? 'No users matching the filter'
+					: 'No users'
+			}
 		},
 		methods: {
 			async getUsers() {

@@ -7,7 +7,7 @@
 			</div>
 		</div>
 		<div class='card-body'>
-			<div class="table-responsive">
+			<div v-if='skillScopes.length' class="table-responsive">
 				<table class="table table-striped" :class='$colorScheme.table'>
 					<thead>
 						<tr>
@@ -43,6 +43,9 @@
 						</tr>
 					</tbody>
 				</table>
+			</div>
+			<div v-else>
+				<div class='fs-3 fw-light text-muted text-center p-4'>No skill scopes</div>
 			</div>
 		</div>
 	</div>

@@ -7,7 +7,7 @@
 			</div>
 		</div>
 		<div class='card-body'>
-			<div class="table-responsive">
+			<div v-if='categories.length' class="table-responsive">
 				<table class="table table-striped" :class='$colorScheme.table'>
 					<thead>
 						<tr>
@@ -41,6 +41,9 @@
 						</tr>
 					</tbody>
 				</table>
+			</div>
+			<div v-else>
+				<div class='fs-3 fw-light text-muted text-center p-4'>No skills</div>
 			</div>
 		</div>
 	</div>
