@@ -1,17 +1,16 @@
 <template>
 	<div class='card shadow' :class='$colorScheme.card'>
 		<div class='card-header'>
-			<div class='d-sm-flex flex-row justify-content-between align-items-center'>
-				<h1 class="h3 mb-0">Offers</h1>
-				<div class='d-flex'>
-					<VAutoComplete
-						:suggestions='offers'
-						:dropdown='false'
-						:filterProperties='["project_name", "user_name", "comments"]'
-						placeholder='Filter offers'
-						v-on:auto-complete='onAutoComplete'
-					/>
-				</div>
+			<div class="d-flex justify-content-between align-items-center flex-wrap">
+				<h1 class="h3 flex-grow-1 mb-0">Offers</h1>
+				<VAutoComplete
+					:suggestions='offers'
+					:dropdown='false'
+					:filterProperties='["project_name", "user_name", "comments"]'
+					placeholder='Filter offers'
+					v-on:auto-complete='onAutoComplete'
+					class='mt-3 w-sm-auto mt-sm-0'
+				/>
 			</div>
 		</div>
 		<div class='card-body'>

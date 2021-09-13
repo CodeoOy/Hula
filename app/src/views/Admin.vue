@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
-		<ul class="nav nav-tabs">
-			<li v-for='{ name, label } of navigation' :key='name' class='nav-item'>
+		<ul class="nav nav-tabs flex-nowrap overflow-auto">
+			<li v-for='{ name, label } of navigation' :key='name' class='nav-item text-nowrap'>
 				<router-link :to='{ name }' class='nav-link'>{{ label }}</router-link>
 			</li>
 		</ul>

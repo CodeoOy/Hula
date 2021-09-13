@@ -1,8 +1,8 @@
 <template>
 	<div class='card shadow' :class='$colorScheme.card'>
 		<div class='card-header'>
-			<div class="d-sm-flex flex-row justify-content-between align-items-center">
-				<h1 class="h3 mb-0">Scopes &amp; Levels</h1>
+			<div class="d-flex justify-content-between align-items-center flex-wrap">
+				<h1 class="h3 flex-grow-1 mb-0">Scopes &amp; Levels</h1>
 				<button class="btn btn-primary gradient" v-on:click="editScope()">Add scope</button>
 			</div>
 		</div>

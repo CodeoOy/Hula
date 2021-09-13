@@ -1,38 +1,36 @@
 <template>
 	<div class='card shadow' :class='$colorScheme.card'>
 		<div class='card-header'>
-			<div class="d-sm-flex flex-row justify-content-between align-items-center">
-				<h1 class="h3 mb-0">Users</h1>
-				<div class='d-flex'>
-					<div class='input-group me-2'>
-						<VAutoComplete
-							v-if="initialUsers.length" 
-							:suggestions="initialUsers" 
-							:placeholder="'filter users'"
-							:dropdown="false"
-							:filterProperties="['firstname', 'lastname']"
-							v-on:auto-complete="autoCompleteAction"
-						/>
-						<button class='btn btn-secondary dropdown-toggle' type='button' id='filtersDropdown' data-bs-toggle='dropdown' data-bs-auto-close='outside' aria-expanded='false'>
-							<i aria-label='Filters' class='bi bi-gear-fill'></i>
-						</button>
-						<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='filtersDropdown'>
-							<li class='px-2'>
-								<div class='form-check'>
-									<label for='hidden'>Exclude hidden</label>
-									<input v-model='filters.hideHidden' type='checkbox' class='form-check-input' id='hidden' />
-								</div>
-							</li>
-							<li class='px-2'>
-								<div class='form-check'>
-									<label for='employees'>Exclude nonemployees</label>
-									<input v-model='filters.employeesOnly' type='checkbox' class='form-check-input' id='employees' />
-								</div>
-							</li>
-						</ul>
-					</div>
-					<button class="btn btn-primary gradient flex-shrink-0" v-on:click="inviteUser()">Invite a user</button>
+			<div class="d-flex justify-content-between align-items-center flex-wrap">
+				<h1 class="h3 flex-grow-1 mb-0">Users</h1>
+				<div class='input-group order-last mt-3 order-md-0 me-md-2 w-md-auto mt-md-0'>
+					<VAutoComplete
+						v-if="initialUsers.length" 
+						:suggestions="initialUsers" 
+						:placeholder="'filter users'"
+						:dropdown="false"
+						:filterProperties="['firstname', 'lastname']"
+						v-on:auto-complete="autoCompleteAction"
+					/>
+					<button class='btn btn-secondary dropdown-toggle' type='button' id='filtersDropdown' data-bs-toggle='dropdown' data-bs-auto-close='outside' aria-expanded='false'>
+						<i aria-label='Filters' class='bi bi-gear-fill'></i>
+					</button>
+					<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='filtersDropdown'>
+						<li class='px-2'>
+							<div class='form-check'>
+								<label for='hidden'>Exclude hidden</label>
+								<input v-model='filters.hideHidden' type='checkbox' class='form-check-input' id='hidden' />
+							</div>
+						</li>
+						<li class='px-2'>
+							<div class='form-check'>
+								<label for='employees'>Exclude nonemployees</label>
+								<input v-model='filters.employeesOnly' type='checkbox' class='form-check-input' id='employees' />
+							</div>
+						</li>
+					</ul>
 				</div>
+				<button class="btn btn-primary gradient flex-shrink-0" v-on:click="inviteUser()">Invite a user</button>
 			</div>
 		</div>
 		<div class='card-body'>
