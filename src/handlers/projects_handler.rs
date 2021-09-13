@@ -76,11 +76,17 @@ pub async fn get_all_projects(
 
 	let mut is_include = false;
 
-	if q_query_data.is_include_skills_and_matches && logged_user.isadmin == true {
+	if q_query_data.is_include_skills_and_matches {
 		is_include = true;
 	}
 
-	let res = web::block(move || query_projects_dto(is_include, logged_user.isadmin, &pool)).await;
+	let mut filter_user_id :Option<uuid::Uuid> = None;
+
+	if logged_user.isadmin == false {
+		filter_user_id = Some(logged_user.uid);
+	}
+
+	let res = web::block(move || query_projects_dto(is_include, logged_user.isadmin, filter_user_id, &pool)).await;
 
 	match res {
 		Ok(projects) => {
@@ -487,6 +493,7 @@ pub async fn delete_projectneedskill(
 fn query_projects_dto(
 	include_matches_and_skills: bool,
 	is_admin: bool,
+	filter_user_id: Option<uuid::Uuid>,
 	pool: &web::Data<Pool>,
 ) -> Result<Vec<ProjectDTO>, ServiceError> {
 	use crate::models::projectmatches::ProjectMatch;
@@ -510,7 +517,7 @@ fn query_projects_dto(
 			continue;
 		}
 		let mut is_active = true;
-		let expiry = std::env::var("PROJECT_EXPIRY_SECS").unwrap().parse::<i64>().unwrap();
+		let expiry = std::env::var("PROJECT_EXPIRY_SECS").unwrap_or("10000".to_string()).parse::<i64>().unwrap();
 		if chrono::Local::now().naive_local().signed_duration_since(project.inserted_at).num_seconds() > expiry {
 			is_active = false;
 		}
@@ -533,6 +540,12 @@ fn query_projects_dto(
 			for s in matches {
 				if matches_vec.iter().any(|x| x.user_id == s.user_id) {
 					continue;
+				}
+
+				if let Some(uid) = filter_user_id { 
+					if uid != s.user_id {
+						continue;
+					}
 				}
 
 				let user_matches = matches.iter().filter(|x| x.user_id == s.user_id);
