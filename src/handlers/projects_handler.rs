@@ -541,7 +541,7 @@ fn query_projects_dto(
 					.all(|x| user_matches.clone().any(|y| x.skill_label == y.skill_label));
 				let is_user_available = user_matches
 					.clone()
-					.any(|x| x.required_load.unwrap_or_default() >= x.user_load);
+					.any(|x| x.required_load.unwrap_or_default() <= (100 - x.user_load));
 
 				let ss2 = MatchDTO {
 					user_id: s.user_id.clone(),
