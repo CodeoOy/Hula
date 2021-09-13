@@ -14,8 +14,8 @@
 			</div>
 		</div>
 		<div class='card-body'>
-			<div v-if='filteredOffers.length' class='table-responsive'>
-				<table class='table table-striped' :class='$colorScheme.table'>
+			<div v-if='filteredOffers.length'>
+				<table class='table table-striped table-stack-mobile' :class='$colorScheme.table'>
 					<thead>
 						<tr>
 							<th scope='col'>Project name</th>
@@ -27,14 +27,14 @@
 					</thead>
 					<tbody>
 						<tr v-for='offer in filteredOffers' :key='offer.id'>
-							<td>{{ offer.project_name }}</td>
-							<td>{{ offer.user_name }}</td>
-							<td class='text-center'>{{ offer.sold }}</td>
-							<td>{{ offer.comments }}</td>
-							<td class='text-end'>
+							<td data-label='Project'><div class='table-stack-mobile-cell'>{{ offer.project_name }}</div></td>
+							<td data-label='User'><div class='table-stack-mobile-cell'>{{ offer.user_name }}</div></td>
+							<td class='text-center' data-label='Sold'><div class='table-stack-mobile-cell'>{{ offer.sold }}</div></td>
+							<td data-label='Comments'><div class='table-stack-mobile-cell'>{{ offer.comments }}</div></td>
+							<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 								<button class='btn btn-unstyled' v-on:click='edit(offer)'><i class='bi-pencil-fill me-2'></i></button>
 								<button class='btn btn-unstyled' v-on:click='confirmDelete(offer)'><i class='bi-trash-fill me-2'></i></button>
-							</td>
+							</div></td>
 						</tr>
 					</tbody>
 				</table>

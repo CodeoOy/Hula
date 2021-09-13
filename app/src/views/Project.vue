@@ -41,8 +41,8 @@
 										<button class='btn btn-unstyled' v-on:click='confirmDelete("need", need)'><i class='bi-trash-fill me-2'></i></button>
 									</div>
 								</div>
-								<div class="table-responsive">
-									<table class="table table-striped mb-4" :class='$colorScheme.table'>
+								<div>
+									<table class="table table-striped mb-0 table-stack-mobile" :class='$colorScheme.table'>
 										<thead>
 											<tr>
 												<th scope='col'>Skill</th>
@@ -55,15 +55,15 @@
 										</thead>
 										<tbody>
 											<tr v-for="skill in need.skills" :key="skill.id">
-												<td>{{ skill.skill_label }}</td>
-												<td class='text-center'>{{ skill.mandatory }}</td>
-												<td class='text-center'>{{ skill.skillscopelevel_label }}</td>
-												<td class='text-center'>{{ skill.min_years }}</td>
-												<td class='text-center'>{{ skill.max_years }}</td>
-												<td class='text-end'>
+												<td data-label='Skill'><div class='table-stack-mobile-cell'>{{ skill.skill_label }}</div></td>
+												<td class='text-center' data-label='Mandatory'><div class='table-stack-mobile-cell'>{{ skill.mandatory }}</div></td>
+												<td class='text-center' data-label='Min level'><div class='table-stack-mobile-cell'>{{ skill.skillscopelevel_label }}</div></td>
+												<td class='text-center' data-label='Min years'><div class='table-stack-mobile-cell'>{{ skill.min_years }}</div></td>
+												<td class='text-center' data-label='Max years'><div class='table-stack-mobile-cell'>{{ skill.max_years }}</div></td>
+												<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 													<button class='btn btn-unstyled' v-on:click='editSkill({ need, skill })'><i class='bi-pencil-fill me-2'></i></button>
-													<button class='btn btn-unstyled' v-on:click='confirmDelete("need.skill", skill)'><i class='bi-trash-fill me-2'></i></button>
-												</td>
+													<button class='btn btn-unstyled' v-on:click='confirmDelete("need.skill", skill)'><i class='bi-trash-fill'></i></button>
+												</div></td>
 											</tr>
 										</tbody>
 									</table>

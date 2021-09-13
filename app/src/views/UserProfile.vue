@@ -88,7 +88,7 @@
 						</div>
 					</div>
 					<div class='card-body'>
-						<table class="table table-striped" :class='$colorScheme.table' v-if="reservations.length">
+						<table class="table table-striped table-stack-mobile" :class='$colorScheme.table' v-if="reservations.length">
 							<thead>
 								<tr>
 									<th scope="col">Description</th>
@@ -100,14 +100,14 @@
 							</thead>
 							<tbody>
 								<tr v-for="reservation in reservations" :key="reservation.id">
-									<td>{{ reservation.description }}</td>
-									<td>{{ reservation.begin_time }}</td>
-									<td>{{ reservation.end_time }}</td>
-									<td class='text-center'>{{ reservation.percentage }}</td>
-									<td class='text-end'>
+									<td data-label='Description'><div class='table-stack-mobile-cell'>{{ reservation.description }}</div></td>
+									<td data-label='From'><div class='table-stack-mobile-cell'>{{ reservation.begin_time }}</div></td>
+									<td data-label='To'><div class='table-stack-mobile-cell'>{{ reservation.end_time }}</div></td>
+									<td class='text-center' data-label='Percentage'><div class='table-stack-mobile-cell'>{{ reservation.percentage }}</div></td>
+									<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 										<button class='btn btn-unstyled' v-on:click="editReservation(reservation)"><i class="bi-pencil-fill me-2"></i></button>
 										<button class='btn btn-unstyled' v-on:click="confirmDelete('user.reservation', reservation)"><i class="bi-trash-fill me-2"></i></button>
-									</td>
+									</div></td>
 								</tr>
 							</tbody>
 						</table>

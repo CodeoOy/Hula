@@ -33,8 +33,8 @@
 			</div>
 		</div>
 		<div class='card-body'>
-			<div v-if="filteredProjects.length" class="table-responsive">
-				<table class="table table-striped" :class='$colorScheme.table'>
+			<div v-if="filteredProjects.length">
+				<table class="table table-striped table-stack-mobile" :class='$colorScheme.table'>
 					<thead>
 						<tr>
 							<th scope="col">Project name</th>
@@ -45,33 +45,43 @@
 					</thead>
 					<tbody>
 						<tr v-for="project in filteredProjects" :key="project.id">
-							<td class='d-flex align-items-center'>
-								<div class='flex-grow-1'>
-									<router-link :to="{ name: 'project', params: { id: project.id }}">
-										{{ project.name }}
-									</router-link>
+							<td data-label='Project'>
+								<div class='table-stack-mobile-cell'>
+									<div class='d-flex align-items-center'>
+										<div class='flex-grow-1'>
+											<router-link :to="{ name: 'project', params: { id: project.id }}">
+												{{ project.name }}
+											</router-link>
+										</div>
+										<i v-if='!project.is_active' class="bi-clock-fill ms-2"></i>
+										<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2"></i>
+									</div>
 								</div>
-								<i v-if='!project.is_active' class="bi-clock-fill ms-2"></i>
-								<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2"></i>
 							</td>
-							<td>
-								<span
-									v-for="skill in project.skills" 
-									:key="skill.skill_label"
-									class="badge badge-skill me-2"
-								>{{ skill.skill_label }}</span>
+							<td data-label='Skills'>
+								<div class='table-stack-mobile-cell'>
+									<span
+										v-for="skill in project.skills" 
+										:key="skill.skill_label"
+										class="badge badge-skill me-2"
+									>{{ skill.skill_label }}</span>
+								</div>
 							</td>
-							<td>
-								<button
-									v-for="match in project.matches"
-									:key="match.user_id"
-									v-on:click="showMatch(project, match)"
-									class='btn btn-unstyled'
-								><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" :favorite='match.is_favorite' />
-								</button>
+							<td data-label='Matches'>
+								<div class='table-stack-mobile-cell'>
+									<button
+										v-for="match in project.matches"
+										:key="match.user_id"
+										v-on:click="showMatch(project, match)"
+										class='btn btn-unstyled'
+									><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" :favorite='match.is_favorite' />
+									</button>
+								</div>
 							</td>
-							<td class='text-end'>
-								<button class='btn btn-unstyled' v-on:click="confirmDelete(project)"><i class="bi-trash-fill me-2"></i></button>
+							<td class='text-end' data-label='Actions'>
+								<div class='table-stack-mobile-cell'>
+									<button class='btn btn-unstyled' v-on:click="confirmDelete(project)"><i class="bi-trash-fill"></i></button>
+								</div>
 							</td>
 						</tr>
 					</tbody>

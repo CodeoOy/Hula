@@ -10,19 +10,15 @@
 				<thead>
 					<tr>
 						<th scope="col">Skill</th>
-						<th scope="col" class='text-center'>Required level</th>
-						<th scope="col" class='text-center'>User level</th>
-						<th scope="col" class='text-center'>Required years</th>
-						<th scope="col" class='text-center'>User years</th>
+						<th scope="col" class='text-center'>Level</th>
+						<th scope="col" class='text-center'>Years</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="skill in skills" :key="skill.idx">
 						<td>{{ skill.skill_label }}</td>
-						<td class='text-center'>{{ skill.required_index}}</td>
-						<td class='text-center'>{{ skill.user_index }}</td>
-						<td class='text-center'>{{ skill.required_years}}</td>
-						<td class='text-center'>{{ skill.user_years }}</td>
+						<td class='text-center'>{{ format(skill.user_index, skill.required_index) }}</td>
+						<td class='text-center'>{{ format(skill.user_years, skill.required_years) }}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -63,6 +59,10 @@
 		},
 
 		methods: {
+			format(user, project) {
+				return `${user || '–'} / ${project || '–'}`
+			},
+
 			async addOffer() {
 				const offer = await this.$api.offers.save({
 					user_id: this.user_id,
