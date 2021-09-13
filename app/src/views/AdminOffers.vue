@@ -7,7 +7,7 @@
 					<VAutoComplete
 						:suggestions='offers'
 						:dropdown='false'
-						filterProperties='project_name'
+						:filterProperties='["project_name", "user_name", "comments"]'
 						placeholder='Filter offers'
 						v-on:auto-complete='onAutoComplete'
 					/>
@@ -15,7 +15,7 @@
 			</div>
 		</div>
 		<div class='card-body'>
-			<div class='table-responsive'>
+			<div v-if='filteredOffers.length' class='table-responsive'>
 				<table class='table table-striped' :class='$colorScheme.table'>
 					<thead>
 						<tr>
@@ -40,6 +40,9 @@
 					</tbody>
 				</table>
 			</div>
+			<div v-else>
+				<div class='fs-3 fw-light text-muted text-center p-4'>{{ noOffersMessage }}</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -60,6 +63,14 @@
 				filteredOffers: [],
 				users: [],
 				offers: [],
+			}
+		},
+
+		computed: {
+			noOffersMessage() {
+				return this.offers.length
+					? 'No offers matching the filter'
+					: 'No offers'
 			}
 		},
 
