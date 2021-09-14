@@ -14,8 +14,10 @@
 					</div>
 					<div class='card-body'>
 						<p v-if="project.description">{{ project.description }}</p>
-						<button class='btn btn-unstyled' v-on:click='editProject(project)'><i class='bi-pencil-fill me-2'></i></button>
-						<button class='btn btn-unstyled' v-on:click='confirmDelete("project", project)'><i class='bi-trash-fill me-2'></i></button>
+						<div v-if='isAdmin'>
+							<button class='btn btn-unstyled' v-on:click='editProject(project)'><i class='bi-pencil-fill me-2'></i></button>
+							<button class='btn btn-unstyled' v-on:click='confirmDelete("project", project)'><i class='bi-trash-fill me-2'></i></button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -24,7 +26,7 @@
 					<div class='card-header'>
 						<div class='d-flex flex-wrap justify-content-between align-items-center'>
 							<h2 class='h3 mb-0'>Roles</h2>
-							<button class='btn btn-primary gradient' v-on:click='editNeed()'>Add role</button>
+							<button v-if='isAdmin' class='btn btn-primary gradient' v-on:click='editNeed()'>Add role</button>
 						</div>
 					</div>
 					<div class='card-body'>
@@ -35,7 +37,7 @@
 										<h3 class='h5'>{{ need.label }}</h3>
 										<div>{{ need.count_of_users}} from {{ need.begin_time }} at percentage: {{ need.percentage}}</div>
 									</div>
-									<div>
+									<div v-if='isAdmin'>
 										<button class='btn btn-unstyled' v-on:click='editSkill({ need })'><i class='bi-plus-circle-fill me-2'></i></button>
 										<button class='btn btn-unstyled' v-on:click='editNeed(need)'><i class='bi-pencil-fill me-2'></i></button>
 										<button class='btn btn-unstyled' v-on:click='confirmDelete("need", need)'><i class='bi-trash-fill me-2'></i></button>
@@ -50,7 +52,7 @@
 												<th scope='col' class='text-center'>Min level</th>
 												<th scope='col' class='text-center'>Min years</th>
 												<th scope='col' class='text-center'>Max years</th>
-												<th scope='col' class='text-end'>Actions</th>
+												<th v-if='isAdmin' scope='col' class='text-end'>Actions</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -60,7 +62,7 @@
 												<td class='text-center' data-label='Min level'><div class='table-stack-mobile-cell'>{{ skill.skillscopelevel_label }}</div></td>
 												<td class='text-center' data-label='Min years'><div class='table-stack-mobile-cell'>{{ skill.min_years }}</div></td>
 												<td class='text-center' data-label='Max years'><div class='table-stack-mobile-cell'>{{ skill.max_years }}</div></td>
-												<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
+												<td v-if='isAdmin' class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 													<button class='btn btn-unstyled' v-on:click='editSkill({ need, skill })'><i class='bi-pencil-fill me-2'></i></button>
 													<button class='btn btn-unstyled' v-on:click='confirmDelete("need.skill", skill)'><i class='bi-trash-fill'></i></button>
 												</div></td>
@@ -73,7 +75,7 @@
 						<div v-else class='fs-3 fw-light text-muted text-center p-4'>No roles</div>
 					</div>
 				</div>
-				<div class="card shadow mt-4" :class='$colorScheme.card'>
+				<div v-if='isAdmin' class="card shadow mt-4" :class='$colorScheme.card'>
 					<div class='card-header'>
 						<h2 class="h3 mb-0">Developers matching the roles</h2>
 					</div>
@@ -108,6 +110,10 @@
 		},
 
 		computed: {
+			isAdmin() {
+				return this.$store.state.loggeduser.isadmin
+			},
+
 			project() {
 				return this.$store.state.chosenproject
 			},
