@@ -73,7 +73,7 @@
 			}
 		},
 
-		async mounted() {
+		async activated() {
 			const [
 				_,
 				users,

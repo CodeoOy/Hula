@@ -118,9 +118,9 @@
 				return this.$store.state.skillLevels
 			},
 		},
-		mounted() {
-			if (!this.$store.state.skillLevels.length) this.$store.dispatch('getSkillLevels')
-			if (!this.$store.state.skillScopes.length) this.$store.dispatch('getSkillScopes')
+		activated() {
+			this.$store.dispatch('getSkillLevels')
+			this.$store.dispatch('getSkillScopes')
 		}
 	}
 </script>

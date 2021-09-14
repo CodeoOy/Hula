@@ -173,8 +173,8 @@
 			},
 		},
 
-		mounted() {
-			if (!this.$store.state.projects.length) this.$store.dispatch('getProjects')
+		activated() {
+			this.$store.dispatch('getProjects')
 		},
 	}
 </script>

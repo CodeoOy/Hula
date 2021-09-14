@@ -117,10 +117,10 @@
 				return this.$store.state.skills
 			},
 		},
-		mounted() {
+		activated() {
 			this.$store.dispatch('getSkills')
-			if (!this.$store.state.skillCategories.length) this.$store.dispatch('getSkillCategories')
-			if (!this.$store.state.skillScopes.length) this.$store.dispatch('getSkillScopes')
+			this.$store.dispatch('getSkillCategories')
+			this.$store.dispatch('getSkillScopes')
 		}
 	}
 </script>

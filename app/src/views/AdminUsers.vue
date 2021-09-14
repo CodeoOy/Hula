@@ -118,7 +118,7 @@
 				if (success) this.getUsers()
 			},
 		},
-		async mounted() {
+		activated() {
 			this.getUsers()
 		}
 	}
