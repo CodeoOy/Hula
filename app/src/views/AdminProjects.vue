@@ -11,25 +11,24 @@
 						:filterProperties="['name', 'autoCompleteSkills']"
 						v-on:auto-complete="autoCompleteAction"
 					/>
-					<button class='btn btn-secondary dropdown-toggle' type='button' id='filtersDropdown' data-bs-toggle='dropdown' data-bs-auto-close='outside' aria-expanded='false'>
+					<button class='btn btn-secondary' type='button' data-bs-toggle="collapse" data-bs-target="#filters" aria-expanded="false" aria-controls="filters">
 						<i aria-label='Filters' class='bi bi-gear-fill'></i>
 					</button>
-					<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='filtersDropdown'>
-						<li class='px-2'>
-							<div class='form-check'>
-								<label for='inactive'>Exclude inactive</label>
-								<input v-model='filters.hideInactive' type='checkbox' class='form-check-input' id='inactive' />
-							</div>
-						</li>
-						<li class='px-2'>
-							<div class='form-check'>
-								<label for='hidden'>Exclude hidden</label>
-								<input v-model='filters.hideHidden' type='checkbox' class='form-check-input' id='hidden' />
-							</div>
-						</li>
-					</ul>
 				</div>
 				<button class="btn btn-primary gradient flex-shrink-0" v-on:click="newProject()">New project</button>
+			</div>
+			<div class="collapse float-end" id="filters">
+				<div class='mt-3 mb-2'>
+					<span class='fw-bold me-3'>Include:</span>
+					<div class='form-check form-check-inline'>
+						<label for='inactive'>inactive</label>
+						<input v-model='filters.inactive' type='checkbox' class='form-check-input' id='inactive' />
+					</div>
+					<div class='form-check form-check-inline'>
+						<label for='hidden'>hidden</label>
+						<input v-model='filters.hidden' type='checkbox' class='form-check-input' id='hidden' />
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class='card-body'>
@@ -113,8 +112,8 @@
 			return {
 				autoCompletedProjects: [],
 				filters: {
-					hideInactive: false,
-					hideHidden: false,
+					inactive: true,
+					hidden: true,
 				},
 				matchSkills: {},
 			}
@@ -137,8 +136,8 @@
 
 			filteredProjects() {
 				return this.autoCompletedProjects
-					.filter(project => project.is_active ? true : !this.filters.hideInactive)
-					.filter(project => project.is_hidden ? !this.filters.hideHidden : true)
+					.filter(project => project.is_active ? true : this.filters.inactive)
+					.filter(project => project.is_hidden ? this.filters.hidden : true)
 			},
 
 			noProjectsMessage() {

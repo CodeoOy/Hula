@@ -12,25 +12,24 @@
 						:filterProperties="['firstname', 'lastname', 'autoCompleteSkills']"
 						v-on:auto-complete="autoCompleteAction"
 					/>
-					<button class='btn btn-secondary dropdown-toggle' type='button' id='filtersDropdown' data-bs-toggle='dropdown' data-bs-auto-close='outside' aria-expanded='false'>
+					<button class='btn btn-secondary' type='button' data-bs-toggle="collapse" data-bs-target="#filters" aria-expanded="false" aria-controls="filters">
 						<i aria-label='Filters' class='bi bi-gear-fill'></i>
 					</button>
-					<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='filtersDropdown'>
-						<li class='px-2'>
-							<div class='form-check'>
-								<label for='hidden'>Exclude hidden</label>
-								<input v-model='filters.hideHidden' type='checkbox' class='form-check-input' id='hidden' />
-							</div>
-						</li>
-						<li class='px-2'>
-							<div class='form-check'>
-								<label for='employees'>Exclude nonemployees</label>
-								<input v-model='filters.employeesOnly' type='checkbox' class='form-check-input' id='employees' />
-							</div>
-						</li>
-					</ul>
 				</div>
 				<button class="btn btn-primary gradient flex-shrink-0" v-on:click="inviteUser()">Invite a user</button>
+			</div>
+			<div class="collapse float-end" id="filters">
+				<div class='mt-3 mb-2'>
+					<span class='fw-bold me-3'>Include:</span>
+					<div class='form-check form-check-inline'>
+						<label for='hidden'>hidden</label>
+						<input v-model='filters.hidden' type='checkbox' class='form-check-input' id='hidden' />
+					</div>
+					<div class='form-check form-check-inline'>
+						<label for='employees'>employees only</label>
+						<input v-model='filters.employees' type='checkbox' class='form-check-input' id='employees' />
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class='card-body'>
@@ -94,8 +93,8 @@ import VSkillBadge from '../components/VSkillBadge.vue'
 				initialUsers: [],
 				autoCompletedUsers: [],
 				filters: {
-					hideHidden: false,
-					employeesOnly: false,
+					hidden: true,
+					employees: false,
 				},
 			}
 		},
@@ -108,8 +107,8 @@ VSkillBadge,
 		computed: {
 			filteredUsers() {
 				return this.autoCompletedUsers
-					.filter(user => user.is_hidden ? !this.filters.hideHidden : true)
-					.filter(user => this.filters.employeesOnly ? user.is_employee : true)
+					.filter(user => user.is_hidden ? this.filters.hidden : true)
+					.filter(user => this.filters.employees ? user.is_employee : true)
 			},
 			noUsersMessage() {
 				return this.initialUsers.length
