@@ -88,7 +88,8 @@ $utilities: map-merge(
 
 .nav-tabs {
 	overflow-y: hidden !important;
-
+	
+    scrollbar-width: none;
 	&::-webkit-scrollbar {
 		display: none;
 	}
