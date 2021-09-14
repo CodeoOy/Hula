@@ -101,7 +101,7 @@
 			},
 
 			isAvailable(user) {
-				return user.skills.every(match => match.required_load >= match.user_load)
+				return user.skills.every(match => match.required_load <= 100 - match.user_load)
 			},
 
 			showMatch(props) {
