@@ -9,7 +9,7 @@
 						:suggestions="initialUsers" 
 						:placeholder="'filter users'"
 						:dropdown="false"
-						:filterProperties="['firstname', 'lastname']"
+						:filterProperties="['firstname', 'lastname', 'autoCompleteSkills']"
 						v-on:auto-complete="autoCompleteAction"
 					/>
 					<button class='btn btn-secondary dropdown-toggle' type='button' id='filtersDropdown' data-bs-toggle='dropdown' data-bs-auto-close='outside' aria-expanded='false'>
@@ -118,6 +118,9 @@ VSkillBadge,
 		methods: {
 			async getUsers() {
 				this.initialUsers = await this.$api.users.get()
+				this.initialUsers.forEach(user => {
+					user.autoCompleteSkills = user.skills.map(skill => skill.skill_label)
+				})
 			},
 			autoCompleteAction(value) {
 				this.autoCompletedUsers = value
