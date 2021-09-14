@@ -52,9 +52,11 @@ async function handleHttpStatus(response) {
 	switch (response.status) {
 		case 401:
 			store.dispatch('setUser', null)
-			router.push({ name: 'login', query: {
-				redirect: router.currentRoute.value.fullPath,
-			}})
+			if (router.currentRoute.value.name !== 'login') {
+				router.push({ name: 'login', query: {
+					redirect: router.currentRoute.value.fullPath,
+				}})
+			}
 			break
 		case 500:
 			router.push({ name: 'error', params: {

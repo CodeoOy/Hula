@@ -33,7 +33,7 @@ const needAdminOrSelf = to => state.loggeduser.isadmin || to.params.id == state.
 
 const router = createRouter({
 	routes: [
-		{ path: '/', name: 'home', redirect: () => ({ name: state.loggeduser && state.loggeduser.isadmin ? 'admin-projects' : 'user-home' }) },
+		{ path: '/', name: 'home', redirect: () => ({ name: !state.loggeduser ? 'login' : state.loggeduser.isadmin ? 'admin-projects' : 'user-home' }) },
 		{ path: '/app/confirm', component: Confirm, name: 'confirm' },
 		{ path: '/app/forgotpassword', component: ForgotPassword, name: 'forgot-password' },
 		{ path: '/app/gdpr', component: Gdpr, name: 'gdpr' },
