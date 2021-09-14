@@ -60,11 +60,14 @@
 							</td>
 							<td data-label='Skills'>
 								<div class='table-stack-mobile-cell'>
-									<span
+									<VSkillBadge
 										v-for="skill in project.skills" 
 										:key="skill.skill_label"
-										class="badge badge-skill me-2"
-									>{{ skill.skill_label }}</span>
+										:label='skill.skill_label'
+										:mandatory='skill.skill_mandatory'
+										:percentage='skill.skill_percentage'
+										class="me-2"
+									/>
 								</div>
 							</td>
 							<td data-label='Matches'>
@@ -99,6 +102,7 @@
 	import FormProject from '../forms/FormProject.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
 	import VAvatar from '../components/VAvatar.vue'
+	import VSkillBadge from '../components/VSkillBadge.vue'
 
 	export default {
 		name: 'AdminListProjects',
@@ -118,6 +122,7 @@
 			MatchContent,
 			VAvatar,
 			VAutoComplete,
+			VSkillBadge,
 		},
 
 		computed: {

@@ -97,6 +97,11 @@ $font-family-monospace: 'Overpass mono', monospace;
 
 // Hula variables
 
+$skill-badge-bg-color: var(--bs-indigo);
+$skill-badge-text-color: var(--bs-white);
+$skill-badge-mandatory-bg-color: var(--bs-pink);
+$skill-badge-mandatory-text-color: var(--bs-white);
+
 $tier-size: 3rem;
 $tier-bg-color: $border-color;
 $tier-text-color: rgba(black, 0.75);

@@ -10,7 +10,16 @@
 			<tbody>
 				<tr v-for="match in matches" :key="match.id">
 					<td><router-link :to='{ name: "project", params: { id: match.id } }'>{{ match.name }}</router-link></td>
-					<td><span class="badge badge-skill me-2" v-for="skill in match.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></td>
+					<td>
+						<VSkillBadge
+							v-for="skill in match.skills"
+							:key="skill.skill_id"
+							:label='skill.skill_label'
+							:mandatory='skill.skill_mandatory'
+							:percentage='skill.skill_percentage'
+							class='me-2'
+						/>
+					</td>
 				</tr>
 			</tbody>
 		</table>
@@ -18,8 +27,14 @@
 </template>
 
 <script>
+	import VSkillBadge from './VSkillBadge.vue'
+
 	export default {
 		name: 'VMatchesForUser',
+
+		components: {
+			VSkillBadge,
+		},
 
 		props: {
 			matches: Array,

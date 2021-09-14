@@ -4,6 +4,11 @@ $color-scheme: 'light' !default;
 
 $input-invalid-bg: null !default;
 
+$skill-badge-bg-color: var(--bs-secondary) !default;
+$skill-badge-text-color: var(--bs-white) !default;
+$skill-badge-mandatory-bg-color: var(--bs-primary) !default;
+$skill-badge-mandatory-text-color: var(--bs-white) !default;
+
 $tier-size: 3rem !default;
 
 $tier-row-bg-color: null !default;

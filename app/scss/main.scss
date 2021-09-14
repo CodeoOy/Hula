@@ -115,7 +115,26 @@ $utilities: map-merge(
 }
 
 .badge-skill {
-	background-color: $indigo;
+	position: relative;
+	background-color: $skill-badge-bg-color;
+	color: $skill-badge-text-color;
+	overflow: hidden;
+
+	&-mandatory {
+		background-color: $skill-badge-mandatory-bg-color;
+		color: $skill-badge-mandatory-text-color;
+	}
+
+	&::before {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: var(--progress);
+		height: 0.2rem;
+		background: currentColor;
+		opacity: 0.66;
+	}
 }
 
 @if ($input-invalid-bg) {

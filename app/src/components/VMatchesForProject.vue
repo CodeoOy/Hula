@@ -22,7 +22,16 @@
 							<i v-if='user.user_favorite' class='bi-star-fill text-yellow ms-2 float-end'></i>
 						</td>
 						<td class='text-center'>{{ user.hasMandatory }}</td>
-						<td><span class="badge badge-skill me-2" v-for="skill in user.skills" :key="skill.skill_id">{{ skill.skill_label }}</span></td>
+						<td>
+							<VSkillBadge
+								v-for="skill in user.skills"
+								:key="skill.skill_id"
+								:label='skill.skill_label'
+								:mandatory='skill.skill_mandatory'
+								:percentage='skill.skill_percentage'
+								class='me-2'
+							/>
+						</td>
 						<td class='text-center'>{{ user.tier }}</td>
 						<td class='text-center'>{{ user.isAvailable }}</td>
 					</tr>
@@ -34,9 +43,14 @@
 
 <script>
 	import MatchContent from './MatchContent.vue'
+	import VSkillBadge from './VSkillBadge.vue'
 
 	export default {
 		name: 'VMatchesForProject',
+
+		components: {
+			VSkillBadge,
+		},
 
 		props: {
 			project: {
