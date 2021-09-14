@@ -28,7 +28,7 @@
 					<button id="usermenu" class='nav-link btn btn-unstyled fs-2 rounded-circle' data-bs-toggle="dropdown" aria-expanded="false">
 						<i class='bi-person-circle'></i>
 					</button>
-					<ul v-if="loggedUser" class="dropdown-menu dropdown-menu-end" aria-labelledby="usermenu">
+					<ul v-if="loggedUser" class="dropdown-menu dropdown-menu-end position-absolute" aria-labelledby="usermenu">
 						<li>
 							<router-link :to='{ name: "user", params: { id: loggedUser.id } }' class="dropdown-item">Profile</router-link>
 						</li>
