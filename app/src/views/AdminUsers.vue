@@ -45,7 +45,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="user in filteredUsers" :key="user.id">
+						<tr v-for="user in filteredUsers" :key="user.id" class='context'>
 							<td data-label='User'><div class='table-stack-mobile-cell'>
 								<span>
 									<router-link :to="{ name: 'user', params: { id: user.id}}">
@@ -66,7 +66,9 @@
 								/>
 							</div></td>
 							<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
-								<button class='btn btn-unstyled' v-on:click="confirmDelete(user)"><i class="bi-trash-fill me-2"></i></button>
+								<div class='context-actions'>
+									<button class='btn btn-unstyled' v-on:click="confirmDelete(user)"><i class="bi-trash-fill"></i></button>
+								</div>
 							</div></td>
 						</tr>
 					</tbody>

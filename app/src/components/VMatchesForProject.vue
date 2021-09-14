@@ -1,43 +1,41 @@
 <template>
 	<div v-if="users.length">
-		<div class="table-responsive">
-			<table class="table table-striped mb-0" :class='$colorScheme.table'>
-				<thead>
-					<tr>
-						<th scope="col"></th>
-						<th scope="col">Name</th>
-						<th scope="col" class='text-center'>Mandatory skills</th>
-						<th scope="col">Matched skills</th>
-						<th scope="col" class='text-center'>Tier</th>
-						<th scope="col" class='text-center'>Available</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="(user, index) in users" :key="user.user_id" :class="`tier tier-${user.tier}`">
-						<th scope="row"><div class="tier-circle shadow-sm" :style='{ zIndex: users.length - index }'>{{ index + 1 }}</div></th>
-						<td>
-							<button v-on:click='showMatch(user)' class='btn btn-unstyled'>
-								{{ user.user_first_name }} {{ user.user_last_name }} 
-							</button>
-							<i v-if='user.user_favorite' class='bi-star-fill text-yellow ms-2 float-end'></i>
-						</td>
-						<td class='text-center'>{{ user.hasMandatory }}</td>
-						<td>
-							<VSkillBadge
-								v-for="skill in user.skills"
-								:key="skill.skill_id"
-								:label='skill.skill_label'
-								:mandatory='skill.skill_mandatory'
-								:percentage='skill.skill_percentage'
-								class='me-2'
-							/>
-						</td>
-						<td class='text-center'>{{ user.tier }}</td>
-						<td class='text-center'>{{ user.isAvailable }}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+		<table class="table table-striped mb-0" :class='$colorScheme.table'>
+			<thead>
+				<tr>
+					<th scope="col"></th>
+					<th scope="col">Name</th>
+					<th scope="col" class='text-center'>Mandatory skills</th>
+					<th scope="col">Matched skills</th>
+					<th scope="col" class='text-center'>Tier</th>
+					<th scope="col" class='text-center'>Available</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="(user, index) in users" :key="user.user_id" :class="`tier tier-${user.tier}`">
+					<th scope="row"><div class="tier-circle shadow-sm" :style='{ zIndex: users.length - index }'>{{ index + 1 }}</div></th>
+					<td>
+						<button v-on:click='showMatch(user)' class='btn btn-unstyled'>
+							{{ user.user_first_name }} {{ user.user_last_name }} 
+						</button>
+						<i v-if='user.user_favorite' class='bi-star-fill text-yellow ms-2 float-end'></i>
+					</td>
+					<td class='text-center'>{{ user.hasMandatory }}</td>
+					<td>
+						<VSkillBadge
+							v-for="skill in user.skills"
+							:key="skill.skill_id"
+							:label='skill.skill_label'
+							:mandatory='skill.skill_mandatory'
+							:percentage='skill.skill_percentage'
+							class='me-2'
+						/>
+					</td>
+					<td class='text-center'>{{ user.tier }}</td>
+					<td class='text-center'>{{ user.isAvailable }}</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </template>
 

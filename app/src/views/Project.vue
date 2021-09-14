@@ -2,7 +2,7 @@
 	<div class='container'>
 		<div class='row gx-4' v-if='project'>
 			<div class='col-md-4'>
-				<div class='card shadow' :class='$colorScheme.card'>
+				<div class='card shadow context' :class='$colorScheme.card'>
 					<div class='card-header d-flex align-items-center'>
 						<h1 class="h3 mb-0 flex-grow-1">
 							{{ project.name }}
@@ -13,10 +13,10 @@
 						</button>
 					</div>
 					<div class='card-body'>
-						<p v-if="project.description">{{ project.description }}</p>
-						<div v-if='isAdmin'>
+						<p v-if="project.description" class='mb-0'>{{ project.description }}</p>
+						<div v-if='isAdmin' class='context-actions text-end'>
 							<button class='btn btn-unstyled' v-on:click='editProject(project)'><i class='bi-pencil-fill me-2'></i></button>
-							<button class='btn btn-unstyled' v-on:click='confirmDelete("project", project)'><i class='bi-trash-fill me-2'></i></button>
+							<button class='btn btn-unstyled' v-on:click='confirmDelete("project", project)'><i class='bi-trash-fill'></i></button>
 						</div>
 					</div>
 				</div>
@@ -32,12 +32,12 @@
 					<div class='card-body'>
 						<ul v-if='project.needs.length' class='list-group list-group-flush list-group-transparent mx-n3 my-n2'>
 							<li class='list-group-item' v-for='need in project.needs' :key='need.id'>
-								<div class='d-flex flex-wrap justify-content-between align-items-baseline mb-3'>
+								<div class='context d-flex flex-wrap justify-content-between align-items-baseline mb-3'>
 									<div>
 										<h3 class='h5'>{{ need.label }}</h3>
 										<div>{{ need.count_of_users}} from {{ need.begin_time }} at percentage: {{ need.percentage}}</div>
 									</div>
-									<div v-if='isAdmin'>
+									<div v-if='isAdmin' class='context-actions'>
 										<button class='btn btn-unstyled' v-on:click='editSkill({ need })'><i class='bi-plus-circle-fill me-2'></i></button>
 										<button class='btn btn-unstyled' v-on:click='editNeed(need)'><i class='bi-pencil-fill me-2'></i></button>
 										<button class='btn btn-unstyled' v-on:click='confirmDelete("need", need)'><i class='bi-trash-fill me-2'></i></button>
@@ -56,15 +56,17 @@
 											</tr>
 										</thead>
 										<tbody>
-											<tr v-for="skill in need.skills" :key="skill.id">
+											<tr v-for="skill in need.skills" :key="skill.id" class='context'>
 												<td data-label='Skill'><div class='table-stack-mobile-cell'>{{ skill.skill_label }}</div></td>
 												<td class='text-center' data-label='Mandatory'><div class='table-stack-mobile-cell'>{{ skill.mandatory }}</div></td>
 												<td class='text-center' data-label='Min level'><div class='table-stack-mobile-cell'>{{ skill.skillscopelevel_label }}</div></td>
 												<td class='text-center' data-label='Min years'><div class='table-stack-mobile-cell'>{{ skill.min_years }}</div></td>
 												<td class='text-center' data-label='Max years'><div class='table-stack-mobile-cell'>{{ skill.max_years }}</div></td>
 												<td v-if='isAdmin' class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
-													<button class='btn btn-unstyled' v-on:click='editSkill({ need, skill })'><i class='bi-pencil-fill me-2'></i></button>
-													<button class='btn btn-unstyled' v-on:click='confirmDelete("need.skill", skill)'><i class='bi-trash-fill'></i></button>
+													<div class='context-actions'>
+														<button class='btn btn-unstyled' v-on:click='editSkill({ need, skill })'><i class='bi-pencil-fill me-2'></i></button>
+														<button class='btn btn-unstyled' v-on:click='confirmDelete("need.skill", skill)'><i class='bi-trash-fill'></i></button>
+													</div>
 												</div></td>
 											</tr>
 										</tbody>

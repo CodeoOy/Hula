@@ -3,17 +3,22 @@
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="card shadow" :class='$colorScheme.card'>
-					<div class='card-header d-flex align-items-center'>
-						<h1 class="h3 mb-0 flex-grow-1">
-							{{ user.firstname }} {{ user.lastname }}
-						</h1>
-						<i v-if='user.is_hidden' class="bi-eye-slash-fill ms-3 fs-3 lh-1"></i>
+					<div class='context'>
+						<div class='card-header d-flex align-items-center'>
+							<h1 class="h3 mb-0 flex-grow-1">
+								{{ user.firstname }} {{ user.lastname }}
+							</h1>
+							<i v-if='user.is_hidden' class="bi-eye-slash-fill ms-3 fs-3 lh-1"></i>
+						</div>
+						<div class='card-body'>
+							<div>{{ user.email }}</div>
+							<div class='context-actions text-end'>
+								<button class='btn btn-unstyled' v-on:click="editUser(user)"><i class="bi-pencil-fill me-2"></i></button>
+								<button class='btn btn-unstyled' v-on:click="confirmDelete('user', user)"><i class="bi-trash-fill"></i></button>
+							</div>
+						</div>
 					</div>
-					<div class='card-body'>
-						<p>{{ user.email }}</p>
-						<button class='btn btn-unstyled' v-on:click="editUser(user)"><i class="bi-pencil-fill me-2"></i></button>
-						<button class='btn btn-unstyled' v-on:click="confirmDelete('user', user)"><i class="bi-trash-fill me-2"></i></button>
-						<hr />
+					<div class='card-body border-top border-inherit'>
 						<VForm @submit="saveFiles" class='clearfix'>
 							<div class="mb-3">
 								<table v-if='files.length' class="table table-striped" :class='$colorScheme.table'>
@@ -24,10 +29,14 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr v-for="file in files" :key="file.id">
+										<tr v-for="file in files" :key="file.id" class='context'>
 											<td><input type='checkbox' :checked='user.main_upload_id == file.id' @click='setCV(file.id)'></td>
 											<td><a href='#' @click.prevent>{{ file.filename }}</a></td>
-											<td class='text-end'><button class='btn btn-unstyled' v-on:click="confirmDelete('user.file', file)"><i class="bi-trash-fill me-2"></i></button></td>
+											<td class='text-end'>
+												<div class='context-actions'>
+													<button class='btn btn-unstyled' v-on:click="confirmDelete('user.file', file)"><i class="bi-trash-fill"></i></button>
+												</div>
+											</td>
 										</tr>
 									</tbody>
 								</table>
@@ -65,13 +74,15 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr v-for="skill in user.skills" :key="skill.id">
+									<tr v-for="skill in user.skills" :key="skill.id" class='context'>
 										<td>{{ skill.skill_label }}</td>
 										<td class='text-center'>{{ skill.levelLabel }}</td>
 										<td class='text-center'>{{ skill.years }}</td>
 										<td class='text-end'>
-											<button class='btn btn-unstyled' v-on:click="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></button>
-											<button class='btn btn-unstyled' v-on:click="confirmDelete('user.skill', skill)"><i class="bi-trash-fill me-2"></i></button>
+											<div class='context-actions'>
+												<button class='btn btn-unstyled' v-on:click="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></button>
+												<button class='btn btn-unstyled' v-on:click="confirmDelete('user.skill', skill)"><i class="bi-trash-fill"></i></button>
+											</div>
 										</td>
 									</tr>
 								</tbody>
@@ -99,14 +110,16 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr v-for="reservation in reservations" :key="reservation.id">
+								<tr v-for="reservation in reservations" :key="reservation.id" class='context'>
 									<td data-label='Description'><div class='table-stack-mobile-cell'>{{ reservation.description }}</div></td>
 									<td data-label='From'><div class='table-stack-mobile-cell'>{{ reservation.begin_time }}</div></td>
 									<td data-label='To'><div class='table-stack-mobile-cell'>{{ reservation.end_time }}</div></td>
 									<td class='text-center' data-label='Percentage'><div class='table-stack-mobile-cell'>{{ reservation.percentage }}</div></td>
 									<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
-										<button class='btn btn-unstyled' v-on:click="editReservation(reservation)"><i class="bi-pencil-fill me-2"></i></button>
-										<button class='btn btn-unstyled' v-on:click="confirmDelete('user.reservation', reservation)"><i class="bi-trash-fill me-2"></i></button>
+										<div class='context-actions'>
+											<button class='btn btn-unstyled' v-on:click="editReservation(reservation)"><i class="bi-pencil-fill me-2"></i></button>
+											<button class='btn btn-unstyled' v-on:click="confirmDelete('user.reservation', reservation)"><i class="bi-trash-fill"></i></button>
+										</div>
 									</div></td>
 								</tr>
 							</tbody>

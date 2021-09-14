@@ -17,11 +17,11 @@
 					</thead>
 					<tbody>
 						<tr v-for="scope in skillScopes" :key="scope.id">
-							<td>
+							<td class='context'>
 								<div class='table-stack-mobile-cell'>
 									<div class="d-flex justify-content-between m-md-2">
 										<div>{{ scope.label }}</div>
-										<div class='td-actions'>
+										<div class='context-actions'>
 											<button class='btn btn-unstyled' v-on:click="editLevel(scope)"><i class="bi-plus-circle-fill me-2"></i></button>
 											<button class='btn btn-unstyled' v-on:click="editScope(scope)"><i class="bi-pencil-fill me-2"></i></button>
 											<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.scope', scope)"><i class="bi-trash-fill"></i></button>
@@ -32,9 +32,9 @@
 							<td>
 								<div class='table-stack-mobile-cell p-0 pe-md-2'>
 									<transition-group name="flip-list" tag="ul" class='list-group list-group-flush list-group-transparent'>
-										<li v-for="lvl in filterLevels(scope.id)" :key="lvl.id" class="list-group-item d-flex justify-content-between ps-4 pe-2 px-md-0">
+										<li v-for="lvl in filterLevels(scope.id)" :key="lvl.id" class="list-group-item d-flex justify-content-between ps-4 pe-2 px-md-0 context">
 											<div>{{ lvl.label }} <small class="fw-light text-muted">({{ lvl.percentage }}%)</small></div>
-											<div class='td-actions'>
+											<div class='context-actions'>
 												<button class='btn btn-unstyled' v-on:click="swapLevels({ ...lvl, swap_direction: 'Better' })"><i class="bi-caret-up-fill me-1"></i></button>
 												<button class='btn btn-unstyled' v-on:click="swapLevels({ ...lvl, swap_direction: 'Worse' })"><i class="bi-caret-down-fill me-2"></i></button>
 												<button class='btn btn-unstyled' v-on:click="editLevel(lvl)"><i class="bi-pencil-fill me-2"></i></button>

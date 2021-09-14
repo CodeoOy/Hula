@@ -26,14 +26,16 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for='offer in filteredOffers' :key='offer.id'>
+						<tr v-for='offer in filteredOffers' :key='offer.id' class='context'>
 							<td data-label='Project'><div class='table-stack-mobile-cell'>{{ offer.project_name }}</div></td>
 							<td data-label='User'><div class='table-stack-mobile-cell'>{{ offer.user_name }}</div></td>
 							<td class='text-center' data-label='Sold'><div class='table-stack-mobile-cell'>{{ offer.sold }}</div></td>
 							<td data-label='Comments'><div class='table-stack-mobile-cell'>{{ offer.comments }}</div></td>
 							<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
-								<button class='btn btn-unstyled' v-on:click='edit(offer)'><i class='bi-pencil-fill me-2'></i></button>
-								<button class='btn btn-unstyled' v-on:click='confirmDelete(offer)'><i class='bi-trash-fill me-2'></i></button>
+								<div class='context-actions'>
+									<button class='btn btn-unstyled' v-on:click='edit(offer)'><i class='bi-pencil-fill me-2'></i></button>
+									<button class='btn btn-unstyled' v-on:click='confirmDelete(offer)'><i class='bi-trash-fill'></i></button>
+								</div>
 							</div></td>
 						</tr>
 					</tbody>

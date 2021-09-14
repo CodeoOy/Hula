@@ -44,7 +44,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="project in filteredProjects" :key="project.id">
+						<tr v-for="project in filteredProjects" :key="project.id" class='context'>
 							<td data-label='Project'>
 								<div class='table-stack-mobile-cell'>
 									<div class='d-flex align-items-center'>
@@ -83,7 +83,9 @@
 							</td>
 							<td class='text-end' data-label='Actions'>
 								<div class='table-stack-mobile-cell'>
-									<button class='btn btn-unstyled' v-on:click="confirmDelete(project)"><i class="bi-trash-fill"></i></button>
+									<div class='context-actions'>
+										<button class='btn btn-unstyled' v-on:click="confirmDelete(project)"><i class="bi-trash-fill"></i></button>
+									</div>
 								</div>
 							</td>
 						</tr>

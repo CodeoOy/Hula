@@ -17,11 +17,11 @@
 					</thead>
 					<tbody>
 						<tr v-for="category in categories" :key="category.id">
-							<td>
+							<td class='context'>
 								<div class='table-stack-mobile-cell'>
 									<div class='d-flex justify-content-between m-md-2'>
 										<div>{{ category.label }}</div>
-										<div class="td-actions">
+										<div class="context-actions">
 											<button class='btn btn-unstyled' v-on:click="editSkill(category)"><i class="bi-plus-circle-fill me-2"></i></button>
 											<button class='btn btn-unstyled' v-on:click="editCategory(category)"><i class="bi-pencil-fill me-2"></i></button>
 											<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.category', category)"><i class="bi-trash-fill"></i></button>
@@ -32,9 +32,9 @@
 							<td>
 								<div class='table-stack-mobile-cell p-0 pe-md-2'>
 									<ul class='list-group list-group-flush list-group-transparent'>
-										<li v-for="skill in filterSkills(category.id)" :key="skill" class='list-group-item d-flex justify-content-between ps-4 pe-2 px-md-0'>
+										<li v-for="skill in filterSkills(category.id)" :key="skill" class='list-group-item d-flex justify-content-between ps-4 pe-2 px-md-0 context'>
 											<div>{{ skill.label }} <small class="fw-light text-muted">({{ getSkillScopeLabel(skill.skillscope_id) }})</small></div>
-											<div class="td-actions">
+											<div class="context-actions">
 												<button class='btn btn-unstyled' v-on:click="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></button>
 												<button class='btn btn-unstyled' v-on:click="confirmDelete('skill', skill)"><i class="bi-trash-fill"></i></button>
 											</div>
