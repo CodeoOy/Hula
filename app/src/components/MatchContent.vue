@@ -6,7 +6,7 @@
 			<router-link :to='{ name: "project", params: { id: project_id } }'>{{ project_name }}</router-link>
 		</h4>
 		<div class="table-responsive">
-			<table class="table table-striped" :class='$colorScheme.table'>
+			<table class="table table-striped mb-0" :class='$colorScheme.table'>
 				<thead>
 					<tr>
 						<th scope="col">Skill</th>

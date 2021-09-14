@@ -1,5 +1,5 @@
 <template>
-	<nav class="navbar navbar-expand-sm shadow mb-5" :class='$colorScheme.navbar'>
+	<nav class="navbar navbar-expand-sm shadow mb-4 mb-md-5" :class='$colorScheme.navbar'>
 		<div class="container-fluid">
 			<router-link :to='{ name: "home" }' class="navbar-brand hula-logo">
 				<svg height="50" viewBox="0 0 690 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">

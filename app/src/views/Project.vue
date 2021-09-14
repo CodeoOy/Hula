@@ -19,10 +19,10 @@
 					</div>
 				</div>
 			</div>
-			<div class='col-md-8'>
+			<div class='mt-4 mt-md-0 col-md-8'>
 				<div class='card shadow' :class='$colorScheme.card'>
 					<div class='card-header'>
-						<div class='d-sm-flex flex-row justify-content-between align-items-center'>
+						<div class='d-flex flex-wrap justify-content-between align-items-center'>
 							<h2 class='h3 mb-0'>Roles</h2>
 							<button class='btn btn-primary gradient' v-on:click='editNeed()'>Add role</button>
 						</div>
@@ -30,7 +30,7 @@
 					<div class='card-body'>
 						<ul v-if='project.needs.length' class='list-group list-group-flush list-group-transparent mx-n3 my-n2'>
 							<li class='list-group-item' v-for='need in project.needs' :key='need.id'>
-								<div class='d-sm-flex flex-row justify-content-between align-items-baseline mb-3'>
+								<div class='d-flex flex-wrap justify-content-between align-items-baseline mb-3'>
 									<div>
 										<h3 class='h5'>{{ need.label }}</h3>
 										<div>{{ need.count_of_users}} from {{ need.begin_time }} at percentage: {{ need.percentage}}</div>

@@ -27,7 +27,7 @@
 										<tr v-for="file in files" :key="file.id">
 											<td><input type='checkbox' :checked='user.main_upload_id == file.id' @click='setCV(file.id)'></td>
 											<td><a href='#' @click.prevent>{{ file.filename }}</a></td>
-											<td><button class='btn btn-unstyled' v-on:click="confirmDelete('user.file', file)"><i class="bi-trash-fill me-2"></i></button></td>
+											<td class='text-end'><button class='btn btn-unstyled' v-on:click="confirmDelete('user.file', file)"><i class="bi-trash-fill me-2"></i></button></td>
 										</tr>
 									</tbody>
 								</table>
@@ -45,17 +45,17 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-8">
+			<div class="mt-4 mt-md-0 col-md-8">
 				<div class="card shadow" :class='$colorScheme.card'>
 					<div class='card-header'>
-						<div class="d-sm-flex flex-row justify-content-between align-items-center">
+						<div class="d-flex flex-wrap justify-content-between align-items-center">
 							<h3 class="h3 mb-0">Skills</h3>
 							<button class="btn btn-primary gradient" v-on:click="editSkill()">Add skill</button>
 						</div>
 					</div>
 					<div class='card-body'>
 						<div v-if='user.skills && user.skills.length' class="table-responsive">
-							<table class="table table-striped" :class='$colorScheme.table'>
+							<table class="table table-striped mb-0" :class='$colorScheme.table'>
 								<thead>
 									<tr>
 										<th scope="col">Skill</th>
@@ -82,13 +82,13 @@
 				</div>
 				<div class="card shadow mt-4" :class='$colorScheme.card'>
 					<div class='card-header'>
-						<div class="d-sm-flex flex-row justify-content-between align-items-center">
+						<div class="d-flex flex-wrap justify-content-between align-items-center">
 							<h3 class="h3 mb-0">Reservations</h3>
 							<button class="btn btn-primary gradient" v-on:click="editReservation()">Add reservation</button>
 						</div>
 					</div>
 					<div class='card-body'>
-						<table class="table table-striped table-stack-mobile" :class='$colorScheme.table' v-if="reservations.length">
+						<table class="table table-striped table-stack-mobile mb-0" :class='$colorScheme.table' v-if="reservations.length">
 							<thead>
 								<tr>
 									<th scope="col">Description</th>

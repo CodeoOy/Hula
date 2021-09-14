@@ -8,7 +8,7 @@
 		</div>
 		<div class='card-body'>
 			<div v-if='categories.length'>
-				<table class="table table-striped table-stack-mobile" :class='$colorScheme.table'>
+				<table class="table table-striped table-stack-mobile mb-0" :class='$colorScheme.table'>
 					<thead>
 						<tr>
 							<th scope="col" class='ps-3'>Category</th>

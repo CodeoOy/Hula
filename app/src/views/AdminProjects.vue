@@ -34,7 +34,7 @@
 		</div>
 		<div class='card-body'>
 			<div v-if="filteredProjects.length">
-				<table class="table table-striped table-stack-mobile" :class='$colorScheme.table'>
+				<table class="table table-striped table-stack-mobile mb-0" :class='$colorScheme.table'>
 					<thead>
 						<tr>
 							<th scope="col">Project name</th>
