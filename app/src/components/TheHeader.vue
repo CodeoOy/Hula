@@ -29,6 +29,12 @@
 						<i class='bi-person-circle'></i>
 					</button>
 					<ul v-if="loggedUser" class="dropdown-menu dropdown-menu-end position-absolute" aria-labelledby="usermenu">
+						<template v-if='loggedUser.isadmin'>
+							<li v-for='{ name, label } of navigation' :key='name'>
+								<router-link :to='{ name }' class='dropdown-item'>{{ label }}</router-link>
+							</li>
+							<li><hr class='dropdown-divider'></li>
+						</template>
 						<li>
 							<router-link :to='{ name: "user", params: { id: loggedUser.id } }' class="dropdown-item">Profile</router-link>
 						</li>
@@ -43,10 +49,13 @@
 </template>
 
 <script>
+import { navigation } from '../views/Admin.vue'
+
 export default {
 	name: 'TheHeader',
 	data() {
 		return {
+			navigation,
 			loggedUser: this.$store.state.loggeduser // Here loggedUser will result to menu rendering vs. not if you use the state directly
 		}
 	},
