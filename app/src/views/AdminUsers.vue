@@ -40,6 +40,7 @@
 						<tr>
 							<th scope="col">User</th>
 							<th scope="col">Email</th>
+							<th scope="col">Skills</th>
 							<th scope="col" class='text-end'>Actions</th>
 						</tr>
 					</thead>
@@ -55,6 +56,15 @@
 								</span>
 							</div></td>
 							<td data-label='Email'><div class='table-stack-mobile-cell' :set='email = user.email.split("@")'>{{ email[0] }}<wbr />@{{ email[1] }}</div></td>
+							<td data-label='Skills'><div class='table-stack-mobile-cell'>
+								<VSkillBadge
+									v-for='skill in user.skills'
+									:key='skill.id'
+									:label='skill.skill_label'
+									:percentage="skill.level_percentage"
+									class='me-2'
+								/>
+							</div></td>
 							<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 								<button class='btn btn-unstyled' v-on:click="confirmDelete(user)"><i class="bi-trash-fill me-2"></i></button>
 							</div></td>
@@ -73,6 +83,7 @@
 	import VAvatar from '../components/VAvatar.vue'
 	import VModal from '../components/VModal.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
+import VSkillBadge from '../components/VSkillBadge.vue'
 
 	export default {
 		name: 'AdminListUsers',
@@ -90,6 +101,7 @@
 			VModal,
 			VAvatar,
 			VAutoComplete,
+VSkillBadge,
 		},
 		computed: {
 			filteredUsers() {

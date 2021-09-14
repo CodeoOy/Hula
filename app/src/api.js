@@ -171,7 +171,10 @@ export const api = {
 	},
 
 	users: {
-		get: get('/api/users'),
+		get: async id => {
+			if (!id) return returnArray(request({ url: '/api/users?is_include_skills=true' }))
+			return returnObject(request({ url: `/api/users/${id}` }))
+		},
 		save: save('/api/users'),
 		delete: remove('/api/users'),
 
