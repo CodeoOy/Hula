@@ -97,6 +97,8 @@ $utilities: map-merge(
 :root {
 	--color-scheme: #{$color-scheme};
 	--#{$variable-prefix}component-active-bg: #{$component-active-bg};
+	--avatar-bg-saturation: #{$avatar-bg-saturation};
+	--avatar-bg-lightness: #{$avatar-bg-lightness};
 }
 
 .nav-tabs {
@@ -287,6 +289,18 @@ $utilities: map-merge(
 		background-color: var(--tier-bg-color);
 		color: var(--tier-text-color);
 	}
+}
+
+.avatar {
+	display: inline-block;
+	width: 1.875em;
+	height: 1.875em;
+	line-height: 1.875em;
+	font-size: 0.8em;
+	text-align: center;
+	color: $avatar-text-color;
+	background-color: var(--avatar-bg-color);
+	border-radius: 50%;
 }
 
 .shake {

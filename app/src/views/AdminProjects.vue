@@ -71,13 +71,20 @@
 							</td>
 							<td data-label='Matches'>
 								<div class='table-stack-mobile-cell'>
-									<button
-										v-for="match in project.matches"
-										:key="match.user_id"
-										v-on:click="showMatch(project, match)"
-										class='btn btn-unstyled'
-									><VAvatar :user_id="match.user_id" :firstname="match.first_name" :lastname="match.last_name" :favorite='match.is_favorite' />
-									</button>
+									<div class='hstack gap-1'>
+										<button
+											v-for="match in project.matches"
+											:key="match.user_id"
+											v-on:click="showMatch(project, match)"
+											class='btn btn-unstyled'
+										><VAvatar
+												:id="match.user_id"
+												:firstName="match.first_name"
+												:lastName="match.last_name"
+												:favorite='match.is_favorite'
+											/>
+										</button>
+									</div>
 								</div>
 							</td>
 							<td class='text-end' data-label='Actions'>

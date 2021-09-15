@@ -23,6 +23,10 @@ $tier-2-row-bg-color: null !default;
 $tier-2-bg-color: var(--bs-warning) !default;
 $tier-2-text-color: $tier-text-color !default;
 
+$avatar-bg-saturation: 75 !default;
+$avatar-bg-lightness: 60 !default;
+$avatar-text-color: rgba(white, 0.75) !default;
+
 @font-face {
     font-family: "bootstrap-icons";
     src: url("assets/bootstrap-icons.woff2?856008caa5eb66df68595e734e59580d") format("woff2"),

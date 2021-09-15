@@ -45,11 +45,18 @@
 					<tbody>
 						<tr v-for="user in filteredUsers" :key="user.id" class='context'>
 							<td data-label='User'><div class='table-stack-mobile-cell text-nowrap'>
-								<router-link :to="{ name: 'user', params: { id: user.id}}">
-									<VAvatar :user_id="user.id" :firstname="user.firstname" :lastname="user.lastname" class='d-none d-md-inline-block' />
-									{{ user.firstname }} {{ user.lastname }}
-								</router-link>
-								<i v-if='user.is_hidden' class="bi-eye-slash-fill ms-2 float-end"></i>
+								<div class='hstack gap-2'>
+									<router-link :to="{ name: 'user', params: { id: user.id}}">
+										<VAvatar
+											:id="user.id"
+											:firstName="user.firstname"
+											:lastName="user.lastname"
+											class='d-none d-md-inline-block me-2'
+										/>
+										<span>{{ user.firstname }} {{ user.lastname }}</span>
+									</router-link>
+									<i v-if='user.is_hidden' class='bi-eye-slash-fill flex-grow-1 text-end'></i>
+								</div>
 								<div>{{ user.email }}</div>
 							</div></td>
 							<td data-label='Skills'><div class='table-stack-mobile-cell'>
@@ -99,7 +106,7 @@ import VSkillBadge from '../components/VSkillBadge.vue'
 			VModal,
 			VAvatar,
 			VAutoComplete,
-VSkillBadge,
+			VSkillBadge,
 		},
 		computed: {
 			filteredUsers() {
