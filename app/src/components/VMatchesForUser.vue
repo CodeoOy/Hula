@@ -11,7 +11,7 @@
 				<tr v-for="match in matches" :key="match.id">
 					<td><router-link :to='{ name: "project", params: { id: match.id } }'>{{ match.name }}</router-link></td>
 					<td class='align-middle'>
-						<div class='hstack gap-2'>
+						<div class='hstack gap-2 flex-wrap'>
 							<VSkillBadge
 								v-for="skill in match.skills"
 								:key="skill.skill_id"

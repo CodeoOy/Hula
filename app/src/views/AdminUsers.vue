@@ -60,7 +60,7 @@
 								<div>{{ user.email }}</div>
 							</div></td>
 							<td data-label='Skills'><div class='table-stack-mobile-cell'>
-								<div class='hstack gap-2'>
+								<div class='hstack gap-2 flex-wrap'>
 									<VSkillBadge
 										v-for='skill in user.skills'
 										:key='skill.id'

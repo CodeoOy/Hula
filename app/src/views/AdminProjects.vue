@@ -59,7 +59,7 @@
 							</td>
 							<td data-label='Skills'>
 								<div class='table-stack-mobile-cell'>
-									<div class='hstack gap-2'>
+									<div class='hstack gap-2 flex-wrap'>
 										<VSkillBadge
 											v-for="skill in project.skills" 
 											:key="skill.skill_label"
@@ -72,7 +72,7 @@
 							</td>
 							<td data-label='Matches'>
 								<div class='table-stack-mobile-cell'>
-									<div class='hstack gap-1'>
+									<div class='hstack gap-1 flex-wrap'>
 										<button
 											v-for="match in project.matches"
 											:key="match.user_id"
