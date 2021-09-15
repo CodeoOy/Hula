@@ -60,17 +60,18 @@
 								<div>{{ user.email }}</div>
 							</div></td>
 							<td data-label='Skills'><div class='table-stack-mobile-cell'>
-								<VSkillBadge
-									v-for='skill in user.skills'
-									:key='skill.id'
-									:label='skill.skill_label'
-									:percentage="skill.level_percentage"
-									class='me-2'
-								/>
+								<div class='hstack gap-2'>
+									<VSkillBadge
+										v-for='skill in user.skills'
+										:key='skill.id'
+										:label='skill.skill_label'
+										:percentage="skill.level_percentage"
+									/>
+								</div>
 							</div></td>
 							<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 								<div class='context-actions'>
-									<button class='btn btn-unstyled' v-on:click="confirmDelete(user)"><i class="bi-trash-fill"></i></button>
+									<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete(user)"><i class="bi-trash-fill"></i></button>
 								</div>
 							</div></td>
 						</tr>

@@ -3,20 +3,20 @@
 		<div class='row gx-4' v-if='project'>
 			<div class='col-md-4'>
 				<div class='card shadow context' :class='$colorScheme.card'>
-					<div class='card-header d-flex align-items-center'>
+					<div class='card-header hstack gap-2'>
 						<h1 class="h3 mb-0 flex-grow-1">
 							{{ project.name }}
 						</h1>
-						<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-3 fs-3 lh-1"></i>
-						<button class='btn btn-unstyled' @click='setFavorite'>
-							<i :class='favoriteClass' class="ms-3 fs-3 lh-1"></i>
+						<i v-if='project.is_hidden' class="bi-eye-slash-fill fs-3 lh-1"></i>
+						<button class='btn btn-unstyled rounded' @click='setFavorite'>
+							<i :class='favoriteClass' class="fs-3 lh-1"></i>
 						</button>
 					</div>
 					<div class='card-body'>
 						<p v-if="project.description" class='mb-0'>{{ project.description }}</p>
-						<div v-if='isAdmin' class='context-actions text-end'>
-							<button class='btn btn-unstyled' v-on:click='editProject(project)'><i class='bi-pencil-fill me-2'></i></button>
-							<button class='btn btn-unstyled' v-on:click='confirmDelete("project", project)'><i class='bi-trash-fill'></i></button>
+						<div v-if='isAdmin' class='context-actions hstack gap-1 justify-content-end'>
+							<button class='btn btn-unstyled px-1 rounded' v-on:click='editProject(project)'><i class='bi-pencil-fill'></i></button>
+							<button class='btn btn-unstyled px-1 rounded' v-on:click='confirmDelete("project", project)'><i class='bi-trash-fill'></i></button>
 						</div>
 					</div>
 				</div>
@@ -48,10 +48,10 @@
 										</div>
 										<div>{{ formatPositions(need.count_of_users) }} at workload of {{ need.percentage }}%</div>
 									</div>
-									<div v-if='isAdmin' class='context-actions'>
-										<button class='btn btn-unstyled' v-on:click='editSkill({ need })'><i class='bi-plus-circle-fill me-2'></i></button>
-										<button class='btn btn-unstyled' v-on:click='editNeed(need)'><i class='bi-pencil-fill me-2'></i></button>
-										<button class='btn btn-unstyled' v-on:click='confirmDelete("need", need)'><i class='bi-trash-fill me-2'></i></button>
+									<div v-if='isAdmin' class='context-actions hstack gap-1 justify-content-end'>
+										<button class='btn btn-unstyled px-1 rounded' v-on:click='editSkill({ need })'><i class='bi-plus-circle-fill'></i></button>
+										<button class='btn btn-unstyled px-1 rounded' v-on:click='editNeed(need)'><i class='bi-pencil-fill'></i></button>
+										<button class='btn btn-unstyled px-1 rounded' v-on:click='confirmDelete("need", need)'><i class='bi-trash-fill'></i></button>
 									</div>
 								</div>
 								<div>
@@ -74,9 +74,9 @@
 												<td class='text-center' data-label='Min years'><div class='table-stack-mobile-cell'>{{ skill.min_years }}</div></td>
 												<td class='text-center' data-label='Max years'><div class='table-stack-mobile-cell'>{{ skill.max_years }}</div></td>
 												<td v-if='isAdmin' class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
-													<div class='context-actions'>
-														<button class='btn btn-unstyled' v-on:click='editSkill({ need, skill })'><i class='bi-pencil-fill me-2'></i></button>
-														<button class='btn btn-unstyled' v-on:click='confirmDelete("need.skill", skill)'><i class='bi-trash-fill'></i></button>
+													<div class='context-actions hstack gap-1 justify-content-end'>
+														<button class='btn btn-unstyled px-1 rounded' v-on:click='editSkill({ need, skill })'><i class='bi-pencil-fill'></i></button>
+														<button class='btn btn-unstyled px-1 rounded' v-on:click='confirmDelete("need.skill", skill)'><i class='bi-trash-fill'></i></button>
 													</div>
 												</div></td>
 											</tr>

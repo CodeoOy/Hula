@@ -59,14 +59,15 @@
 							</td>
 							<td data-label='Skills'>
 								<div class='table-stack-mobile-cell'>
-									<VSkillBadge
-										v-for="skill in project.skills" 
-										:key="skill.skill_label"
-										:label='skill.skill_label'
-										:mandatory='skill.skill_mandatory'
-										:percentage='skill.skill_percentage'
-										class="me-2"
-									/>
+									<div class='hstack gap-2'>
+										<VSkillBadge
+											v-for="skill in project.skills" 
+											:key="skill.skill_label"
+											:label='skill.skill_label'
+											:mandatory='skill.skill_mandatory'
+											:percentage='skill.skill_percentage'
+										/>
+									</div>
 								</div>
 							</td>
 							<td data-label='Matches'>
@@ -76,7 +77,7 @@
 											v-for="match in project.matches"
 											:key="match.user_id"
 											v-on:click="showMatch(project, match)"
-											class='btn btn-unstyled'
+											class='btn btn-unstyled rounded-circle'
 										><VAvatar
 												:id="match.user_id"
 												:firstName="match.first_name"
@@ -90,7 +91,7 @@
 							<td class='text-end' data-label='Actions'>
 								<div class='table-stack-mobile-cell'>
 									<div class='context-actions'>
-										<button class='btn btn-unstyled' v-on:click="confirmDelete(project)"><i class="bi-trash-fill"></i></button>
+										<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete(project)"><i class="bi-trash-fill"></i></button>
 									</div>
 								</div>
 							</td>

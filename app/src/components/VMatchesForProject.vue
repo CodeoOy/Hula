@@ -21,15 +21,16 @@
 						<i v-if='user.user_favorite' class='bi-star-fill text-yellow ms-2 float-end'></i>
 					</td>
 					<td class='text-center'>{{ user.hasMandatory }}</td>
-					<td>
-						<VSkillBadge
-							v-for="skill in user.skills"
-							:key="skill.skill_id"
-							:label='skill.skill_label'
-							:mandatory='skill.skill_mandatory'
-							:percentage='skill.skill_percentage'
-							class='me-2'
-						/>
+					<td class='align-middle'>
+						<div class='hstack gap-2'>
+							<VSkillBadge
+								v-for="skill in user.skills"
+								:key="skill.skill_id"
+								:label='skill.skill_label'
+								:mandatory='skill.skill_mandatory'
+								:percentage='skill.skill_percentage'
+							/>
+						</div>
 					</td>
 					<td class='text-center'>{{ user.tier }}</td>
 					<td class='text-center'>{{ user.isAvailable }}</td>

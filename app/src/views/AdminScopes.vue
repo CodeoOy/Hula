@@ -21,10 +21,10 @@
 								<div class='table-stack-mobile-cell'>
 									<div class="d-flex justify-content-between m-md-2">
 										<div>{{ scope.label }}</div>
-										<div class='context-actions'>
-											<button class='btn btn-unstyled' v-on:click="editLevel(scope)"><i class="bi-plus-circle-fill me-2"></i></button>
-											<button class='btn btn-unstyled' v-on:click="editScope(scope)"><i class="bi-pencil-fill me-2"></i></button>
-											<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.scope', scope)"><i class="bi-trash-fill"></i></button>
+										<div class='context-actions hstack gap-1 justify-content-end'>
+											<button class='btn btn-unstyled px-1 rounded' v-on:click="editLevel(scope)"><i class="bi-plus-circle-fill"></i></button>
+											<button class='btn btn-unstyled px-1 rounded' v-on:click="editScope(scope)"><i class="bi-pencil-fill"></i></button>
+											<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('skill.scope', scope)"><i class="bi-trash-fill"></i></button>
 										</div>
 									</div>
 								</div>
@@ -34,11 +34,11 @@
 									<transition-group name="flip-list" tag="ul" class='list-group list-group-flush list-group-transparent'>
 										<li v-for="lvl in filterLevels(scope.id)" :key="lvl.id" class="list-group-item d-flex justify-content-between ps-4 pe-2 px-md-0 context">
 											<div>{{ lvl.label }} <small class="fw-light text-muted">({{ lvl.percentage }}%)</small></div>
-											<div class='context-actions'>
-												<button class='btn btn-unstyled' v-on:click="swapLevels({ ...lvl, swap_direction: 'Better' })"><i class="bi-caret-up-fill me-1"></i></button>
-												<button class='btn btn-unstyled' v-on:click="swapLevels({ ...lvl, swap_direction: 'Worse' })"><i class="bi-caret-down-fill me-2"></i></button>
-												<button class='btn btn-unstyled' v-on:click="editLevel(lvl)"><i class="bi-pencil-fill me-2"></i></button>
-												<button class='btn btn-unstyled' v-on:click="confirmDelete('skill.level', lvl)"><i class="bi-trash-fill"></i></button>
+											<div class='context-actions hstack gap-1 justify-content-end'>
+												<button class='btn btn-unstyled px-1 rounded' v-on:click="swapLevels({ ...lvl, swap_direction: 'Better' })"><i class="bi-caret-up-fill"></i></button>
+												<button class='btn btn-unstyled px-1 rounded' v-on:click="swapLevels({ ...lvl, swap_direction: 'Worse' })"><i class="bi-caret-down-fill"></i></button>
+												<button class='btn btn-unstyled px-1 rounded' v-on:click="editLevel(lvl)"><i class="bi-pencil-fill"></i></button>
+												<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('skill.level', lvl)"><i class="bi-trash-fill"></i></button>
 											</div>
 										</li>
 									</transition-group>

@@ -12,9 +12,9 @@
 						</div>
 						<div class='card-body'>
 							<div>{{ user.email }}</div>
-							<div class='context-actions text-end'>
-								<button class='btn btn-unstyled' v-on:click="editUser(user)"><i class="bi-pencil-fill me-2"></i></button>
-								<button class='btn btn-unstyled' v-on:click="confirmDelete('user', user)"><i class="bi-trash-fill"></i></button>
+							<div class='context-actions hstack gap-1 justify-content-end'>
+								<button class='btn btn-unstyled px-1 rounded' v-on:click="editUser(user)"><i class="bi-pencil-fill"></i></button>
+								<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('user', user)"><i class="bi-trash-fill"></i></button>
 							</div>
 						</div>
 					</div>
@@ -34,7 +34,7 @@
 											<td><a href='#' @click.prevent>{{ file.filename }}</a></td>
 											<td class='text-end'>
 												<div class='context-actions'>
-													<button class='btn btn-unstyled' v-on:click="confirmDelete('user.file', file)"><i class="bi-trash-fill"></i></button>
+													<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('user.file', file)"><i class="bi-trash-fill"></i></button>
 												</div>
 											</td>
 										</tr>
@@ -79,9 +79,9 @@
 										<td>{{ skill.levelLabel }}</td>
 										<td class='text-center'>{{ skill.years }}</td>
 										<td class='text-end'>
-											<div class='context-actions'>
-												<button class='btn btn-unstyled' v-on:click="editSkill(skill)"><i class="bi-pencil-fill me-2"></i></button>
-												<button class='btn btn-unstyled' v-on:click="confirmDelete('user.skill', skill)"><i class="bi-trash-fill"></i></button>
+											<div class='context-actions hstack gap-1 justify-content-end'>
+												<button class='btn btn-unstyled px-1 rounded' v-on:click="editSkill(skill)"><i class="bi-pencil-fill"></i></button>
+												<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('user.skill', skill)"><i class="bi-trash-fill"></i></button>
 											</div>
 										</td>
 									</tr>
@@ -126,9 +126,9 @@
 									</div></td>
 									<td class='text-center' data-label='Workload'><div class='table-stack-mobile-cell'>{{ reservation.percentage }}%</div></td>
 									<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
-										<div class='context-actions'>
-											<button class='btn btn-unstyled' v-on:click="editReservation(reservation)"><i class="bi-pencil-fill me-2"></i></button>
-											<button class='btn btn-unstyled' v-on:click="confirmDelete('user.reservation', reservation)"><i class="bi-trash-fill"></i></button>
+										<div class='context-actions hstack gap-1 justify-content-end'>
+											<button class='btn btn-unstyled px-1 rounded' v-on:click="editReservation(reservation)"><i class="bi-pencil-fill"></i></button>
+											<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('user.reservation', reservation)"><i class="bi-trash-fill"></i></button>
 										</div>
 									</div></td>
 								</tr>

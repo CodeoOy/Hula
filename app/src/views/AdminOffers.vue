@@ -36,9 +36,9 @@
 							<td class='text-center' data-label='Sold'><div class='table-stack-mobile-cell'>{{ offer.sold }}</div></td>
 							<td data-label='Comments'><div class='table-stack-mobile-cell'>{{ offer.comments }}</div></td>
 							<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
-								<div class='context-actions'>
-									<button class='btn btn-unstyled' v-on:click='edit(offer)'><i class='bi-pencil-fill me-2'></i></button>
-									<button class='btn btn-unstyled' v-on:click='confirmDelete(offer)'><i class='bi-trash-fill'></i></button>
+								<div class='context-actions hstack gap-1 justify-content-end'>
+									<button class='btn btn-unstyled px-1 rounded' v-on:click='edit(offer)'><i class='bi-pencil-fill'></i></button>
+									<button class='btn btn-unstyled px-1 rounded' v-on:click='confirmDelete(offer)'><i class='bi-trash-fill'></i></button>
 								</div>
 							</div></td>
 						</tr>
