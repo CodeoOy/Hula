@@ -68,7 +68,7 @@
 								<thead>
 									<tr>
 										<th scope="col">Skill</th>
-										<th scope="col" class='text-center'>Level</th>
+										<th scope="col">Level</th>
 										<th scope="col" class='text-center'>Years</th>
 										<th scope="col" class='text-end'>Actions</th>
 									</tr>
@@ -76,7 +76,7 @@
 								<tbody>
 									<tr v-for="skill in user.skills" :key="skill.id" class='context'>
 										<td>{{ skill.skill_label }}</td>
-										<td class='text-center'>{{ skill.levelLabel }}</td>
+										<td>{{ skill.levelLabel }}</td>
 										<td class='text-center'>{{ skill.years }}</td>
 										<td class='text-end'>
 											<div class='context-actions'>
@@ -103,18 +103,28 @@
 							<thead>
 								<tr>
 									<th scope="col">Description</th>
-									<th scope="col">From</th>
-									<th scope="col">To</th>
-									<th scope="col" class='text-center'>Percentage</th>
+									<th scope="col">Time</th>
+									<th scope="col" class='text-center'>Workload</th>
 									<th scope="col" class='text-end'>Actions</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr v-for="reservation in reservations" :key="reservation.id" class='context'>
 									<td data-label='Description'><div class='table-stack-mobile-cell'>{{ reservation.description }}</div></td>
-									<td data-label='From'><div class='table-stack-mobile-cell'>{{ reservation.begin_time }}</div></td>
-									<td data-label='To'><div class='table-stack-mobile-cell'>{{ reservation.end_time }}</div></td>
-									<td class='text-center' data-label='Percentage'><div class='table-stack-mobile-cell'>{{ reservation.percentage }}</div></td>
+									<td data-label='Time'><div class='table-stack-mobile-cell'>
+										<div>
+											<time :datetime='reservation.begin_time.toISOString()'>
+												{{ reservation.begin_time.toLocaleDateString() }}
+											</time>
+											<template v-if='reservation.end_time'>
+												<span>&nbsp;&mdash; </span>
+												<time :datetime='reservation.end_time.toISOString()'>
+													{{ reservation.end_time.toLocaleDateString() }}
+												</time>
+											</template>
+										</div>
+									</div></td>
+									<td class='text-center' data-label='Workload'><div class='table-stack-mobile-cell'>{{ reservation.percentage }}%</div></td>
 									<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 										<div class='context-actions'>
 											<button class='btn btn-unstyled' v-on:click="editReservation(reservation)"><i class="bi-pencil-fill me-2"></i></button>

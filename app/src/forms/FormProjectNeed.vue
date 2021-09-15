@@ -35,7 +35,6 @@
 
 		<div class='mb-2'>
 			<label for='begin_time' class='form-label'>Start date</label>
-			{{ begin_time }}<br />
 			<VField
 				v-model='form.begin_time'
 				rules='required|date'
@@ -52,10 +51,9 @@
 
 		<div class='mb-2'>
 			<label for='end_time' class='form-label'>End date</label>
-			{{ end_time }}<br />
 			<VField
 				v-model='form.end_time'
-				rules='required|date|afterDate:begin_time'
+				rules='date|afterDate:begin_time'
 				type='date'
 				name='end_time'
 				id='end_time'
@@ -102,19 +100,28 @@
 			},
 			label: String,
 			count_of_users: Number,
-			begin_time: String,
-			end_time: String,
+			begin_time: Date,
+			end_time: Date,
 			percentage: Number,
 		},
 
 		data() {
-			return {
-				form: { ...this.$props },
+			const form = { ...this.$props }
+
+			for (const prop in form) {
+				if (form[prop] instanceof Date) form[prop] = [
+					form[prop].getFullYear(),
+					form[prop].getMonth() + 1,
+					form[prop].getDate(),
+				].map(nr => String(nr).padStart(2, 0)).join('-')
 			}
+
+			return { form }
 		},
 
 		methods: {
 			async onSubmit() {
+				for (const prop in this.form) if (this.form[prop] == '') this.form[prop] = undefined
 				const need = await this.$api.needs.save(this.form)
 				if (need) this.$emit('success', need)
 			},

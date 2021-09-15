@@ -37,7 +37,7 @@
 			<label class='form-label'>End date</label>
 			<VField
 				v-model='form.end_time'
-				rules='required|date|afterDate:begin_time'
+				rules='date|afterDate:begin_time'
 				type='date'
 				id='end_time'
 				name='end_time'
@@ -83,15 +83,23 @@
 				required: true,
 			},
 			description: String,
-			begin_time: String,
-			end_time: String,
+			begin_time: Date,
+			end_time: Date,
 			percentage: Number,
 		},
 
 		data() {
-			return {
-				form: { ...this.$props },
+			const form = { ...this.$props }
+
+			for (const prop in form) {
+				if (form[prop] instanceof Date) form[prop] = [
+					form[prop].getFullYear(),
+					form[prop].getMonth() + 1,
+					form[prop].getDate(),
+				].map(nr => String(nr).padStart(2, 0)).join('-')
 			}
+
+			return { form }
 		},
 
 		methods: {

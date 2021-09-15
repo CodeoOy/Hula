@@ -35,7 +35,18 @@
 								<div class='context d-flex flex-wrap justify-content-between align-items-baseline mb-3'>
 									<div>
 										<h3 class='h5'>{{ need.label }}</h3>
-										<div>{{ need.count_of_users}} from {{ need.begin_time }} at percentage: {{ need.percentage}}</div>
+										<div>
+											<time :datetime='need.begin_time.toISOString()'>
+												{{ need.begin_time.toLocaleDateString() }}
+											</time>
+											<template v-if='need.end_time'>
+												<span>&nbsp;&mdash; </span>
+												<time :datetime='need.end_time.toISOString()'>
+													{{ need.end_time.toLocaleDateString() }}
+												</time>
+											</template>
+										</div>
+										<div>{{ formatPositions(need.count_of_users) }} at workload of {{ need.percentage }}%</div>
 									</div>
 									<div v-if='isAdmin' class='context-actions'>
 										<button class='btn btn-unstyled' v-on:click='editSkill({ need })'><i class='bi-plus-circle-fill me-2'></i></button>
@@ -133,6 +144,10 @@
 		},
 
 		methods: {
+			formatPositions(nr) {
+				return `${nr} position${nr == 1 ? '' : 's'}`
+			},
+
 			async editProject(props = {}) {
 				const result = await this.$modal({
 					title: 'Edit project',

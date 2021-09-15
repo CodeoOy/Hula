@@ -83,11 +83,21 @@ const sendJson = ({ method = 'POST', ...args } = {}) => request({
 	body: JSON.stringify(args.body),
 })
 
-const save = (url, { post = '', put = 'id' } = {}) => data => sendJson({
-	url: `${url}/${data[put] || data[post] || ''}`,
-	method: data[put] ? 'PUT' : 'POST',
-	body: data,
-})
+const save = (url, { post = '', put = 'id' } = {}) => data => {
+	for (const prop in data) {
+		if (data[prop] instanceof Date) data[prop] = [
+			data[prop].getFullYear(),
+			data[prop].getMonth() + 1,
+			data[prop].getDate(),
+		].map(nr => String(nr).padStart(2, 0)).join('-')
+	}
+
+	return sendJson({
+		url: `${url}/${data[put] || data[post] || ''}`,
+		method: data[put] ? 'PUT' : 'POST',
+		body: data,
+	})
+}
 
 const returnBoolean = promise => promise.then(() => true).catch(() => false)
 const returnObject = promise => promise.then(response => response.json()).catch(() => null)
@@ -129,6 +139,11 @@ export const api = {
 	needs: {
 		get: async id => {
 			const needs = await returnArray(request({ url: `/api/projectneeds/${id}` }))
+
+			needs.forEach(need => {
+				if (need.begin_time) need.begin_time = new Date(need.begin_time)
+				if (need.end_time) need.end_time = new Date(need.end_time)
+			})
 
 			const addSkills = async need => need.skills = await api.needs.skills.get(need.id)
 			await Promise.all(needs.map(addSkills))
@@ -184,7 +199,17 @@ export const api = {
 		},
 
 		reservations: {
-			get: getArray('/api/userreservations'),
+			get: async id => {
+				const reservations = await returnArray(request({ url: `/api/userreservations/${id}` }))
+
+				reservations.forEach(reservation => {
+					if (reservation.begin_time) reservation.begin_time = new Date(reservation.begin_time)
+					if (reservation.end_time) reservation.end_time = new Date(reservation.end_time)
+				})
+
+				return reservations
+			},
+
 			save: save('/api/userreservations', { post: 'user_id' }),
 			delete: remove('/api/userreservations'),
 		},
