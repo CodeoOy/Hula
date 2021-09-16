@@ -19,7 +19,8 @@
 			</div>
 
 			<div class='mb-2'>
-				<label for='password' class='form-label'>Password</label>
+				<label for='password' class='form-label me-3'>Password</label>
+				<router-link :to='{ name: "forgot-password" }'>Forgot password?</router-link>
 				<VField
 					v-model='form.password'
 					rules='required'
@@ -36,6 +37,10 @@
 
 			<button type='submit' class='btn btn-primary gradient mb-1'>Login</button>
 		</VForm>
+
+		<div class='mt-3'>
+			No account? <router-link :to='{ name: "register" }'>Sign up</router-link>
+		</div>
 	</div>
 </template>
 

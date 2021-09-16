@@ -16,6 +16,7 @@ import Error from './views/Error.vue'
 import Project from './views/Project.vue'
 import Gdpr from './views/Gdpr.vue'
 import Login from './views/Login.vue'
+import Register from './views/Register.vue'
 
 const error = (to, props = {}) => ({
 	name: 'error',
@@ -38,6 +39,7 @@ const router = createRouter({
 		{ path: '/app/forgotpassword', component: ForgotPassword, name: 'forgot-password' },
 		{ path: '/app/gdpr', component: Gdpr, name: 'gdpr' },
 		{ path: '/app/login', component: Login, name: 'login' },
+		{ path: '/app/register', component: Register, name: 'register' },
 		{ path: '/app/user', component: UserHome, name: 'user-home', beforeEnter: [needLogin] },
 		{ path: '/app/user/:id', component: UserProfile, name: 'user', beforeEnter: [needLogin, needAdminOrSelf] },
 		{ path: '/app/admin', component: Admin, beforeEnter: [needLogin, needAdmin], children: [

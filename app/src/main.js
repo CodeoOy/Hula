@@ -9,8 +9,12 @@ import FlashMessage from '@smartweb/vue-flash-message'
 import router from './router.js'
 import App from './App.vue'
 import 'bootstrap'
-import { Form, Field, ErrorMessage } from 'vee-validate'
+import { Form, Field, ErrorMessage, configure } from 'vee-validate'
 import './validation.js'
+
+configure({
+	validateOnBlur: false, // Empty required fields make the forms grow -> Forgot password link etc. will dodge the click
+})
 
 const app = createApp(App)
 	.use(router)
