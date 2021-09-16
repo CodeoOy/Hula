@@ -1,9 +1,9 @@
 <template>
 	<div>
-		<VForm @submit='onSubmit' v-slot='{ errors }'>
+		<VForm @submit='onSubmit' v-slot='{ errors }' class='vstack gap-2'>
 
-			<div class='mb-2'>
-				<label for='email' class='form-label'>The email you used to register</label>
+			<label for='email' class='form-label'>The email you used to register</label>
+			<div class='input-group' :class='{ "has-validation": errors.email }'>
 				<VField
 					v-model='form.email'
 					rules='required|email'
@@ -15,13 +15,13 @@
 					class='form-control'
 					:class='{ "is-invalid": errors.email }'
 				/>
+				<button type='submit' class='btn btn-primary gradient'>Submit</button>
 				<ErrorMessage name='email' class='invalid-feedback shake' />
 			</div>
 
-			<button type='submit' class='btn btn-primary gradient mb-1'>Submit</button>
 		</VForm>
 
-		<div class='mt-3'>
+		<div class='mt-label'>
 			Suddenly remember? <router-link :to='{ name: "login" }'>Log in</router-link>
 		</div>
 	</div>

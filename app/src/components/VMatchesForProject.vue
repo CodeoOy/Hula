@@ -121,6 +121,7 @@
 				this.$modal({
 					title: 'Match',
 					component: MatchContent,
+					size: 'lg',
 					props,
 				})
 			},

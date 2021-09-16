@@ -1,7 +1,7 @@
 <template>
-	<VForm @submit='onSubmit' v-slot='{ errors }'>
+	<VForm @submit='onSubmit' v-slot='{ errors }' class='vstack gap-2'>
 
-		<div class='mb-2'>
+		<div>
 			<label for='label' class='form-label'>Label</label>
 			<VField
 				v-model='form.label'
@@ -17,7 +17,7 @@
 			<ErrorMessage name='label' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='count_of_users' class='form-label'>Number of positions</label>
 			<VField
 				v-model.number='form.count_of_users'
@@ -33,7 +33,7 @@
 			<ErrorMessage name='count_of_users' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='begin_time' class='form-label'>Start date</label>
 			<VField
 				v-model='form.begin_time'
@@ -49,7 +49,7 @@
 			<ErrorMessage name='begin_time' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='end_time' class='form-label'>End date</label>
 			<VField
 				v-model='form.end_time'
@@ -65,7 +65,7 @@
 			<ErrorMessage name='end_time' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='percentage' class='form-label'>Workload as a percentage</label>
 			<VField
 				v-model.number='form.percentage'
@@ -81,7 +81,9 @@
 			<ErrorMessage name='percentage' class='invalid-feedback shake' />
 		</div>
 
-		<button type='submit' class='btn btn-primary gradient mb-1'>Save</button>
+		<div class='mt-label'>
+			<button type='submit' class='btn btn-primary gradient float-end'>Save</button>
+		</div>
 	</VForm>
 </template>
 

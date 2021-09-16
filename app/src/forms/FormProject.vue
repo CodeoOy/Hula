@@ -1,7 +1,7 @@
 <template>
-	<VForm @submit='onSubmit' v-slot='{ errors }'>
+	<VForm @submit='onSubmit' v-slot='{ errors }' class='vstack gap-2'>
 
-		<div class='mb-2'>
+		<div>
 			<label for='name' class='form-label'>Project name</label>
 			<VField
 				v-model='form.name'
@@ -17,7 +17,7 @@
 			<ErrorMessage name='name' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='description' class='form-label'>Description</label>
 			<VField
 				v-model='form.description'
@@ -30,8 +30,8 @@
 			/>
 		</div>
 
-		<div class='mb-2 form-check'>
-			<label for='is_hidden' class='form-label'>Hidden</label>
+		<div class='form-check mb-0 py-2'>
+			<label for='is_hidden' class='form-label mb-0'>Hidden</label>
 			<VField
 				v-model='form.is_hidden'
 				:value='true'
@@ -43,7 +43,9 @@
 			/>
 		</div>
 
-		<button type='submit' class='btn btn-primary gradient mb-1'>Submit</button>
+		<div>
+			<button type='submit' class='btn btn-primary gradient float-end'>Submit</button>
+		</div>
 	</VForm>
 </template>
 

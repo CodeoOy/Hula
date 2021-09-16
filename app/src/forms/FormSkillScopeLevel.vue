@@ -1,7 +1,7 @@
 <template>
-	<VForm @submit="onSubmit" v-slot='{ errors }'>
+	<VForm @submit="onSubmit" v-slot='{ errors }' class='vstack gap-2'>
 
-		<div class='mb-2'>
+		<div>
 			<label for='label' class='form-label'>Name</label>
 			<VField
 				v-model='form.label'
@@ -18,7 +18,7 @@
 			<ErrorMessage name='label' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='percentage' class='form-label'>Percentage</label>
 			<VField
 				v-model.number='form.percentage'
@@ -34,7 +34,9 @@
 			<ErrorMessage name='percentage' class='invalid-feedback shake' />
 		</div>
 
-		<button type="submit" class="btn btn-primary gradient mb-1">Submit</button>
+		<div class='mt-label'>
+			<button type='submit' class='btn btn-primary gradient float-end'>Submit</button>
+		</div>
 	</VForm> 
 </template>
 

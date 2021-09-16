@@ -1,7 +1,7 @@
 <template>
-	<VForm @submit='onSubmit' v-slot='{ errors }'>
+	<VForm @submit='onSubmit' v-slot='{ errors }' class='vstack gap-2'>
 
-		<div class='mb-2' v-if='!id'>
+		<div v-if='!id'>
 			<label for='skill' class='form-label'>Skill</label>
 			<VField
 				v-model='form.skill_id'
@@ -22,8 +22,8 @@
 			<ErrorMessage name='skill' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2 form-check'>
-			<label for='mandatory' class='form-label'>Mandatory requirement</label>
+		<div class='form-check py-2 mb-0'>
+			<label for='mandatory' class='form-label mb-0'>Mandatory requirement</label>
 			<VField
 				v-model.boolean='form.mandatory'
 				:value='true'
@@ -36,7 +36,7 @@
 			/>
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='skillscopelevel_id' class='form-label'>Minimum level</label>
 			<VField
 				v-model='form.skillscopelevel_id'
@@ -54,7 +54,7 @@
 			</VField>
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='min_years' class='form-label'>Min years</label>
 			<VField
 				v-model.number='form.min_years'
@@ -67,7 +67,7 @@
 			/>
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='max_years' class='form-label'>Max years</label>
 			<VField
 				v-model.number='form.max_years'
@@ -81,7 +81,9 @@
 			/>
 		</div>
 
-		<button type='submit' class='btn btn-primary gradient mb-1'>Save</button>
+		<div class='mt-label'>
+			<button type='submit' class='btn btn-primary gradient float-end'>Save</button>
+		</div>
 	</VForm>
 </template>
 

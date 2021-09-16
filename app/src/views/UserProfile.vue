@@ -49,7 +49,7 @@
 									v-model="newFiles"
 								/>
 							</div>
-							<button type="submit" :disabled='!newFiles.length' class="btn btn-primary gradient float-end">Upload files</button>
+							<button type='submit' :disabled='!newFiles.length' class='btn btn-primary gradient float-end'>Upload files</button>
 						</VForm>
 					</div>
 				</div>

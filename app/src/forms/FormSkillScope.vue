@@ -1,8 +1,8 @@
 <template>
-	<VForm @submit='onSubmit' v-slot='{ errors }'>
+	<VForm @submit='onSubmit' v-slot='{ errors }' class='vstack gap-2'>
 
-		<div class='mb-2'>
-			<label for='label' class='form-label'>Name</label>
+		<label for='label' class='form-label'>Name</label>
+		<div class='input-group' :class='{ "has-validation": errors.label }'>
 			<VField
 				v-model='form.label'
 				rules='required'
@@ -15,10 +15,10 @@
 				class='form-control'
 				:class='{ "is-invalid": errors.label }'
 			/>
+			<button type='submit' class='btn btn-primary gradient'>Submit</button>
 			<ErrorMessage name='label' class='invalid-feedback shake' />
 		</div>
 
-		<button type='submit' class='btn btn-primary gradient mb-1'>Submit</button>
 	</VForm>  
 </template>
 

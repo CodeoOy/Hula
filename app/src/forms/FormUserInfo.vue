@@ -1,7 +1,7 @@
 <template>	
-	<VForm @submit='onSubmit' v-slot='{ errors }'>
+	<VForm @submit='onSubmit' v-slot='{ errors }' class='vstack gap-2'>
 
-		<div class='mb-2 form-check' v-if='form.id'>
+		<div class='form-check' v-if='form.id'>
 			<label for='is_hidden' class='form-label'>Hidden</label>
 			<VField
 				v-model='form.is_hidden'
@@ -14,7 +14,7 @@
 			/>
 		</div>
 
-		<div class='mb-2 form-check' v-if='$store.state.loggeduser.isadmin'>
+		<div class='form-check' v-if='$store.state.loggeduser.isadmin'>
 			<label for='isadmin' class='form-label'>Admin</label>
 			<VField
 				v-model='form.isadmin'
@@ -27,7 +27,7 @@
 			/>
 		</div>
 
-		<div class='mb-2 form-check' v-if='$store.state.loggeduser.isadmin'>
+		<div class='form-check' v-if='$store.state.loggeduser.isadmin'>
 			<label for='is_employee' class='form-label'>Employee</label>
 			<VField
 				v-model='form.is_employee'
@@ -40,7 +40,7 @@
 			/>
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='firstname' class='form-label'>First name</label>
 			<VField
 				v-model='form.firstname'
@@ -56,7 +56,7 @@
 			<ErrorMessage name='firstname' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='lastname' class='form-label'>Last name</label>
 			<VField
 				v-model='form.lastname'
@@ -72,7 +72,7 @@
 			<ErrorMessage name='lastname' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='email' class='form-label'>Email</label>
 			<VField
 				v-model='form.email'
@@ -88,7 +88,9 @@
 			<ErrorMessage name='email' class='invalid-feedback shake' />
 		</div>
 
-		<button type='submit' class='btn btn-primary gradient'>Save</button>
+		<div class='mt-label'>
+			<button type='submit' class='btn btn-primary gradient float-end'>Save</button>
+		</div>
 	</VForm>   
 </template>
 

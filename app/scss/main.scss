@@ -105,6 +105,11 @@ $utilities: map-merge(
 	--avatar-palette: #{$avatar-palette};
 }
 
+// Fake a label's height
+.mt-label {
+	margin-top: calc(var(--bs-body-line-height) * var(--bs-body-font-size) + #{$form-label-margin-bottom});
+}
+
 .nav-tabs {
 	overflow-y: hidden !important;
 	

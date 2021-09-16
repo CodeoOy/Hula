@@ -128,7 +128,6 @@
 		},
 
 		components: {
-			MatchContent,
 			VAvatar,
 			VAutoComplete,
 			VSkillBadge,
@@ -177,6 +176,7 @@
 				this.$modal({
 					title: 'Match',
 					component: MatchContent,
+					size: 'lg',
 					props: this.matchSkills[project.id][match.user_id],
 				})
 			},

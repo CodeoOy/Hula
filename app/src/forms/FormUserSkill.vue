@@ -1,7 +1,7 @@
 <template>
-	<VForm v-if='skills.length && levels.length' @submit='onSubmit' v-slot='{ errors }'>
+	<VForm v-if='skills.length && levels.length' @submit='onSubmit' v-slot='{ errors }' class='vstack gap-2'>
 
-		<div class='mb-2'>
+		<div>
 			<label for='skill' class='form-label'>Skill</label>
 			<VField
 				v-model='form.skill_id'
@@ -22,7 +22,7 @@
 			<ErrorMessage name='skill' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='level' class='form-label'>Skill level</label>
 			<VField
 				v-model='form.skillscopelevel_id'
@@ -43,7 +43,7 @@
 			<ErrorMessage name='level' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='years' class='form-label'>Years</label>
 			<VField
 				v-model.number='form.years'
@@ -56,7 +56,9 @@
 			/>
 		</div>
 
-		<button type='submit' class='btn btn-primary gradient mb-1'>Submit</button>
+		<div class='mt-label'>
+			<button type='submit' class='btn btn-primary gradient float-end'>Submit</button>
+		</div>
 	</VForm>
 </template>
 

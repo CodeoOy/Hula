@@ -16,7 +16,7 @@ export default {
 			}
 		})
 
-		const modal = ({ title, component, props = {}, backdrop = true } = {}) => {
+		const modal = ({ title, component, props = {}, backdrop = true, size } = {}) => {
 			if ('props' in component) props = Object.keys(component.props).reduce((used, key) => ({ ...used, [key]: props[key] }), {})
 
 			return new Promise(resolve => {
@@ -27,6 +27,7 @@ export default {
 					component: shallowRef(component),
 					props,
 					backdrop,
+					size,
 				})
 			})
 		}

@@ -1,7 +1,7 @@
 <template>
-	<VForm @submit='onSubmit' v-slot='{ errors }'>
+	<VForm @submit='onSubmit' v-slot='{ errors }' class='vstack gap-2'>
 
-		<div class='mb-2'>
+		<div>
 			<label for='label' class='form-label'>Name</label>
 			<VField
 				v-model='form.label'
@@ -18,7 +18,7 @@
 			<ErrorMessage name='label' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2' v-if='categories.length'>
+		<div v-if='categories.length'>
 			<label for='parent_id' class='form-label'>Parent category <span class='fw-light text-muted'>(optional)</span></label>
 			<VField
 				v-model='form.parent_id'
@@ -36,7 +36,9 @@
 			</VField>
 		</div>
 
-		<button type='submit' class='btn btn-primary gradient'>Submit</button>
+		<div class='mt-label'>
+			<button type='submit' class='btn btn-primary gradient float-end'>Submit</button>
+		</div>
 	</VForm>   
 </template>
 

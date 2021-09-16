@@ -1,7 +1,7 @@
 <template>
-	<VForm @submit='onSubmit' v-slot='{ errors }'>
+	<VForm @submit='onSubmit' v-slot='{ errors }' class='vstack gap-2'>
 
-		<div class='mb-2'>
+		<div>
 			<label for='password' class='form-label'>Password</label>
 			<VField
 				v-model='form.password'
@@ -17,7 +17,7 @@
 			<ErrorMessage name='password' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='password_confirmation' class='form-label'>Repeat password</label>
 			<VField
 				rules='confirmed:@password'
@@ -32,7 +32,9 @@
 			<ErrorMessage name='password_confirmation' class='invalid-feedback shake' />
 		</div>
 
-		<button type="submit" class="btn btn-primary gradient mb-1">Submit</button>
+		<div class='mt-label'>
+			<button type='submit' class='btn btn-primary gradient float-end'>Submit</button>
+		</div>
 	</VForm>
 </template>
 

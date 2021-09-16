@@ -1,7 +1,7 @@
 <template>
-	<VForm @submit='onSubmit' v-slot='{ errors }'>
+	<VForm @submit='onSubmit' class='vstack gap-2'>
 
-		<div class='mb-2 form-check'>
+		<div class='form-check'>
 			<label for='sold' class='form-label'>Sold</label>
 			<VField
 				v-model='form.sold'
@@ -14,7 +14,7 @@
 			/>
 		</div>
 
-		<div class='mb-2'>
+		<div>
 			<label for='comments' class='form-label'>Comments</label>
 			<error-message name='comments' class='invalid-feedback shake'></error-message>
 			<VField
@@ -28,7 +28,9 @@
 			/>
 		</div>
 
-		<button type='submit' class='btn btn-primary gradient mb-1'>Save</button>
+		<div class='mt-label'>
+			<button type='submit' class='btn btn-primary gradient float-end'>Save</button>
+		</div>
 	</VForm>
 </template>
 

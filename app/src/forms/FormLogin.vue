@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<VForm @submit='onSubmit' v-slot='{ errors }'>
+		<VForm @submit='onSubmit' v-slot='{ errors }' class='vstack gap-2'>
 
-			<div class='mb-2'>
+			<div>
 				<label for='email' class='form-label'>Email</label>
 				<VField
 					v-model='form.email'
@@ -18,9 +18,8 @@
 				<ErrorMessage name='email' class='invalid-feedback shake' />
 			</div>
 
-			<div class='mb-2'>
+			<div>
 				<label for='password' class='form-label me-3'>Password</label>
-				<router-link :to='{ name: "forgot-password" }'>Forgot password?</router-link>
 				<VField
 					v-model='form.password'
 					rules='required'
@@ -35,12 +34,15 @@
 				<ErrorMessage name='password' class='invalid-feedback shake' />
 			</div>
 
-			<button type='submit' class='btn btn-primary gradient mb-1'>Login</button>
+			<div class='mt-label d-flex gap-3 align-items-center justify-content-between'>
+				<button type='submit' class='btn btn-primary gradient order-last align-self-start'>Login</button>
+				<div class='d-flex gap-3'>
+					<div><router-link :to='{ name: "forgot-password" }'>Forgot password?</router-link></div>
+					<div class='vr' />
+					<div>No account? <router-link :to='{ name: "register" }'>Sign&nbsp;up</router-link></div>
+				</div>
+			</div>
 		</VForm>
-
-		<div class='mt-3'>
-			No account? <router-link :to='{ name: "register" }'>Sign up</router-link>
-		</div>
 	</div>
 </template>
 

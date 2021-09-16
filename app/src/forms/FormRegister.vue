@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<VForm @submit='onSubmit' v-slot='{ errors }'>
+		<VForm @submit='onSubmit' v-slot='{ errors }' class='vstack gap-2'>
 
-			<div class='mb-2'>
+			<div>
 				<label for='email' class='form-label'>Email</label>
 				<VField
 					v-model='form.email'
@@ -18,7 +18,7 @@
 				<ErrorMessage name='email' class='invalid-feedback shake' />
 			</div>
 
-			<div class='mb-2'>
+			<div>
 				<label for='first_name' class='form-label'>First name</label>
 				<VField
 					v-model='form.first_name'
@@ -34,7 +34,7 @@
 				<ErrorMessage name='first_name' class='invalid-feedback shake' />
 			</div>
 
-			<div class='mb-2'>
+			<div>
 				<label for='last_name' class='form-label'>Last name</label>
 				<VField
 					v-model='form.last_name'
@@ -50,7 +50,7 @@
 				<ErrorMessage name='last_name' class='invalid-feedback shake' />
 			</div>
 
-			<div v-if='!isAdmin' class='mb-2'>
+			<div v-if='!isAdmin'>
 				<label for='password_plain' class='form-label'>Password</label>
 				<VField
 					v-model='form.password'
@@ -66,7 +66,7 @@
 				<ErrorMessage name='password_plain' class='invalid-feedback shake' />
 			</div>
 
-			<div v-if='!isAdmin' class='mb-2'>
+			<div v-if='!isAdmin'>
 				<label for='password_confirmation' class='form-label'>Repeat password</label>
 				<VField
 					rules='confirmed:@password_plain'
@@ -81,10 +81,9 @@
 				<ErrorMessage name='password_confirmation' class='invalid-feedback shake' />
 			</div>
 
-			<button type='submit' class='btn btn-primary gradient mb-1'>Register</button>
-
-			<div class='mt-3'>
-				Already a user? <router-link :to='{ name: "login" }'>Log in</router-link>
+			<div class='mt-label d-flex gap-3 flex-row-reverse align-items-center justify-content-between'>
+				<button type='submit' class='btn btn-primary gradient align-self-start'>{{ submitLabel }}</button>
+				<div v-if='!isAdmin'>Already a user? <router-link :to='{ name: "login" }'>Log in</router-link></div>
 			</div>
 		</VForm>
 	</div>
@@ -109,6 +108,10 @@
 		computed: {
 			isAdmin() {
 				return this.$store.state.loggeduser && this.$store.state.loggeduser.isadmin
+			},
+
+			submitLabel() {
+				return this.isAdmin ? 'Invite' : 'Register'
 			},
 		},
 

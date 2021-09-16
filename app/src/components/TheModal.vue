@@ -7,6 +7,7 @@
 			:showAtStart='true'
 			:title='modal.title'
 			:backdrop='modal.backdrop'
+			:size='modal.size'
 			@modal-hidden='removeModal(modal)'>
 			<component :is='modal.component' v-bind='modal.props' @success='onSuccess(modal, $event)' />
 		</VModal>

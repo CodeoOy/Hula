@@ -1,5 +1,5 @@
 <template>
-	<button type="submit" class="btn btn-primary gradient mb-1" @click='confirm'>{{ button }}</button>
+	<button type='submit' class='btn btn-primary gradient' @click='confirm'>{{ button }}</button>
 </template>
 
 <script>
