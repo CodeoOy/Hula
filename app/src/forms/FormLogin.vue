@@ -60,7 +60,7 @@
 		methods: {
 			async onSubmit() {
 				const success = await this.$store.dispatch('login', this.form)
-				if (success) this.$emit('success')
+				if (success) this.$emit('success', success)
 			},
 		},
 	}
