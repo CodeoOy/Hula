@@ -1,6 +1,6 @@
 <template>
-	<div class='avatar position-relative' :style='{ "--avatar-bg-color": color }'>
-		<div class='avatar-initials'>{{ initials }}</div>
+	<div class='avatar position-relative' :style='avatarStyles'>
+		<div class='avatar-initials' :class='initialClasses'>{{ initials }}</div>
 		<i v-if='favorite' class='bi-star-fill text-yellow position-absolute bottom-0 end-0 mb-n2 me-n1'></i>
 	</div>
 </template>
@@ -33,47 +33,28 @@
 				return this.firstName[0] + this.lastName[0]
 			},
 
-			color() {
-				const adjust = (value, angle, arc, factor) => {
-					if (h > angle - arc / 2 && h < angle + arc / 2) {
-						const offset = h - (angle - arc / 2)
-						value*= 1 + Math.sin(offset / arc * Math.PI) * factor
-					}
-					return value
-				}
-
-				let hash = 0
+			colors() {
+				let hash = 1
 				for (let i = 0; i < this.id.length; i++) {
 					hash = this.id.charCodeAt(i) + ((hash << 5) - hash)
 				}
 
 				const styles = getComputedStyle(document.documentElement)
+				const palette = styles.getPropertyValue('--avatar-palette').trim().split(',').map(color => color.trim().split('/'))
 
-				const h = Math.abs(hash % 360)
-				let s = parseFloat(styles.getPropertyValue('--avatar-bg-saturation'))
-				let l = parseFloat(styles.getPropertyValue('--avatar-bg-lightness'))
+				const [bg, text] = palette[Math.abs(hash % palette.length)]
 
-				// Yellow
-				l = adjust(l, 60, 120, -0.3)
-				s = adjust(s, 60, 120, 0.25)
+				return { bg, text }
+			},
 
-				// Green
-				l = adjust(l, 120, 120, -0.3)
-				s = adjust(s, 120, 120, 0.25)
+			avatarStyles() {
+				return `--avatar-bg-color: ${this.colors.bg}`
+			},
 
-				// Cyan
-				l = adjust(l, 180, 120, -0.3)
-				s = adjust(s, 180, 120, 0.25)
-
-				// Blue
-				l = adjust(l, 240, 120, 0.2)
-				s = adjust(s, 240, 120, 0.5)
-
-
-				l = Math.min(l, 100)
-				s = Math.min(s, 100)
-
-				return `hsl(${h}, ${s}%, ${l}%)`
+			initialClasses() {
+				return this.colors.text == 'light'
+					? 'avatar-initials-light'
+					: 'avatar-initials-dark'
 			},
 		},
 	}

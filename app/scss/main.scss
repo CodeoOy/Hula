@@ -94,11 +94,15 @@ $utilities: map-merge(
 
 // Extend Bootstrap
 
+@each $color in $avatar-palette {
+	$index: index($avatar-palette, $color);
+	$avatar-palette: set-nth($avatar-palette, $index, ($color/if(contrast-ratio($color, #fff) > $avatar-contrast-ratio, light, dark)));
+}
+
 :root {
 	--color-scheme: #{$color-scheme};
 	--#{$variable-prefix}component-active-bg: #{$component-active-bg};
-	--avatar-bg-saturation: #{$avatar-bg-saturation};
-	--avatar-bg-lightness: #{$avatar-bg-lightness};
+	--avatar-palette: #{$avatar-palette};
 }
 
 .nav-tabs {
@@ -298,9 +302,18 @@ $utilities: map-merge(
 	line-height: 1.875em;
 	font-size: 0.8em;
 	text-align: center;
-	color: $avatar-text-color;
-	background-color: var(--avatar-bg-color);
+	background-color: var(--avatar-bg-color, $secondary);
 	border-radius: 50%;
+
+	&-initials {
+		color: color-contrast($secondary);
+
+		@each $class, $color in $avatar-text-colors {
+			&-#{$class} {
+				color: $color;
+			}
+		}
+	}
 }
 
 .shake {
