@@ -3,7 +3,6 @@ use actix_web::web;
 use diesel::result::Error;
 use diesel::result::Error::NotFound;
 use diesel::{prelude::*, PgConnection};
-use std::fs;
 
 pub fn create_file(
 	q_user_id: uuid::Uuid,
@@ -37,20 +36,9 @@ pub fn delete_file(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), 
 	let deleted = diesel::delete(useruploads.filter(id.eq(uuid_data))).execute(conn)?;
 
 	if deleted > 0 {
-		let removed = delete_physical_file(uuid_data);
-		if removed.is_err() {
-			return Err(NotFound);
-		} else {
-			return Ok(());
-		}
+		return Ok(());
 	}
 	Err(NotFound)
-}
-
-fn delete_physical_file(filename: uuid::Uuid) -> std::io::Result<()> {
-	let filename = format!("./{}.pdf", filename);
-	fs::remove_file(filename)?;
-	Ok(())
 }
 
 pub fn get_by_userid(id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Vec<UserUploads>, Error> {
@@ -58,6 +46,15 @@ pub fn get_by_userid(id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Vec<UserU
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let files = useruploads.filter(user_id.eq(&id)).load::<UserUploads>(conn)?;
+
+	Ok(files)
+}
+
+pub fn _get_by_fileid(q_id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<UserUploads, Error> {
+	use crate::schema::useruploads::dsl::{id, useruploads};
+	let conn: &PgConnection = &pool.get().unwrap();
+
+	let files = useruploads.filter(id.eq(&q_id)).get_result::<UserUploads>(conn)?;
 
 	Ok(files)
 }

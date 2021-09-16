@@ -34,7 +34,7 @@
 											<td><a href='#' @click.prevent>{{ file.filename }}</a></td>
 											<td class='text-end'>
 												<div class='context-actions'>
-													<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('user.file', file)"><i class="bi-trash-fill"></i></button>
+													<button class='btn btn-unstyled px-1 rounded' v-on:click.prevent="confirmDelete('user.file', file)"><i class="bi-trash-fill"></i></button>
 												</div>
 											</td>
 										</tr>
