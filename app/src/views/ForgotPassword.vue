@@ -6,7 +6,7 @@
             </div>
 			<div class='card-body'>
 				<FormForgotPassword v-if="showForm" v-on:success="showForm = false, resetSent = true"/>
-				<h2 v-if="resetSent">Password reset requested successfully, check your email.</h2>
+				<p v-if="resetSent" class='mb-0'>Password reset requested successfully, check your email.</p>
 			</div>
 		</div>
 	</div>

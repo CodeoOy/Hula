@@ -17,7 +17,7 @@ export default {
 		})
 
 		const modal = ({ title, component, props = {}, backdrop = true } = {}) => {
-			props = Object.keys(component.props).reduce((used, key) => ({ ...used, [key]: props[key] }), {})
+			if ('props' in component) props = Object.keys(component.props).reduce((used, key) => ({ ...used, [key]: props[key] }), {})
 
 			return new Promise(resolve => {
 				modals.value.push({

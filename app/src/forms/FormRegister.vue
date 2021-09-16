@@ -49,7 +49,7 @@
 			<ErrorMessage name='last_name' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2'>
+		<div v-if='!isAdmin' class='mb-2'>
 			<label for='password_plain' class='form-label'>Password</label>
 			<VField
 				v-model='form.password'
@@ -65,7 +65,7 @@
 			<ErrorMessage name='password_plain' class='invalid-feedback shake' />
 		</div>
 
-		<div class='mb-2'>
+		<div v-if='!isAdmin' class='mb-2'>
 			<label for='password_confirmation' class='form-label'>Repeat password</label>
 			<VField
 				rules='confirmed:@password_plain'
@@ -100,6 +100,12 @@
 			}
 		},
 
+		computed: {
+			isAdmin() {
+				return this.$store.state.loggeduser && this.$store.state.loggeduser.isadmin
+			},
+		},
+
 		methods: {
 			async onSubmit() {
 				this.form.password_pending = !this.form.password_plain
@@ -111,7 +117,7 @@
 
 					this.$flashMessage.show({
 						type: 'success',
-						title: 'Invitation sent. Check your email',
+						title: 'Invitation sent',
 						time: 5000,
 					})
 				}

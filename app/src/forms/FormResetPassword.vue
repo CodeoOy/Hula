@@ -40,17 +40,45 @@
 	export default {
 		name: 'FormResetPassword',
 
+		props: {
+			id: {
+				type: String,
+				required: true,
+			},
+			email: {
+				type: String,
+				required: true,
+			},
+		},
+
 		data() {
 			return {
 				form: {
+					...this.$props,
 					password: '',
 				}
 			}
 		},
 
 		methods: {
-			onSubmit() {
-				this.$emit('success', this.form.password)
+			async onSubmit() {
+				for (const prop in this.form) if (this.form[prop] == '') this.form[prop] = undefined
+				const success = await this.$api.users.password.save(this.form)
+				
+				const message = success ? {
+					type: 'success',
+					title: 'Password changed',
+				} : {
+					type: 'error',
+					title: 'Updating password failed',
+				}
+
+				this.$flashMessage.show({
+					...message,
+					time: 5000,
+				})
+				
+				if (success) this.$emit('success', success)
 			}
 		}
 	}

@@ -87,9 +87,9 @@
 
 <script>
 	import VAvatar from '../components/VAvatar.vue'
-	import VModal from '../components/VModal.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
-import VSkillBadge from '../components/VSkillBadge.vue'
+	import VSkillBadge from '../components/VSkillBadge.vue'
+	import FormRegister from '../forms/FormRegister.vue'
 
 	export default {
 		name: 'AdminListUsers',
@@ -104,7 +104,6 @@ import VSkillBadge from '../components/VSkillBadge.vue'
 			}
 		},
 		components: {
-			VModal,
 			VAvatar,
 			VAutoComplete,
 			VSkillBadge,
@@ -132,7 +131,12 @@ import VSkillBadge from '../components/VSkillBadge.vue'
 				this.autoCompletedUsers = value
 			},
 			async inviteUser() {
-				// TODO: Implement this
+				const result = await this.$modal({
+					title: 'Invite a user',
+					component: FormRegister,
+				})
+
+				if (result) this.$store.dispatch('getProjects')
 			},
 			async confirmDelete(user) {
 				const success = await this.$confirm.delete('user', user)

@@ -1,9 +1,11 @@
 <template>
-	<div class="container">
+	<div class="container mt-5">
 		<div class="card shadow" :class='$colorScheme.card'>
+			<div class='card-header'>
+				<h1 class='h3 mb-0'>{{ title }}</h1>
+			</div>
 			<div class='card-body'>
-				<h1 class="h1">{{ title }}</h1>
-				<p>{{ message }}</p>
+				<p class='mb-0'>{{ message }}</p>
 			</div>
 		</div>
 	</div>
