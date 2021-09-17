@@ -42,15 +42,18 @@ pub fn delete_file(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), 
 }
 
 pub fn get_by_userid(id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Vec<UserUploads>, Error> {
-	use crate::schema::useruploads::dsl::{user_id, useruploads};
+	use crate::schema::useruploads::dsl::{user_id, filename, useruploads};
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let files = useruploads.filter(user_id.eq(&id)).load::<UserUploads>(conn)?;
+	let files = useruploads
+		.filter(user_id.eq(&id))
+		.order(filename.asc())
+		.load::<UserUploads>(conn)?;
 
 	Ok(files)
 }
 
-pub fn _get_by_fileid(q_id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<UserUploads, Error> {
+pub fn get_by_fileid(q_id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<UserUploads, Error> {
 	use crate::schema::useruploads::dsl::{id, useruploads};
 	let conn: &PgConnection = &pool.get().unwrap();
 
