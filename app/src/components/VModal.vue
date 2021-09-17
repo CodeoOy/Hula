@@ -54,8 +54,18 @@
 			this.$refs.modal.addEventListener('show.bs.modal', () => { this.$emit('modal-showing') })
 			this.$refs.modal.addEventListener('shown.bs.modal', () => {
 				this.$emit('modal-shown')
-				const input = this.$refs.body.querySelector('input, select, button, a')
-				if (input) input.focus()
+				const selectors = [
+					'input, select',
+					'button.btn-primary',
+					'button',
+				]
+				for (const selector of selectors) {
+					const input = this.$refs.body.querySelector(selector)
+					if (input) {
+						input.focus()
+						break
+					}
+				}
 			})
 
 			if (this.showAtStart) this.modal.show()

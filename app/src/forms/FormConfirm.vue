@@ -1,5 +1,8 @@
 <template>
-	<button type='submit' class='btn btn-primary gradient' @click='confirm'>{{ button }}</button>
+	<div class='d-flex justify-content-between'>
+		<button type='submit' class='btn btn-secondary' @click='confirm(false)'>{{ cancel }}</button>
+		<button type='submit' class='btn btn-primary gradient' @click='confirm(true)'>{{ ok }}</button>
+	</div>
 </template>
 
 <script>
@@ -7,15 +10,19 @@
 		name: 'FormConfirm',
 
 		props: {
-			button: {
+			ok: {
 				type: String,
-				default: 'Confirm',
-			}
+				default: 'OK',
+			},
+			cancel: {
+				type: String,
+				default: 'Cancel',
+			},
 		},
 
 		methods: {
-			async confirm() {
-				this.$emit('success', true)
+			confirm(choice) {
+				this.$emit('success', choice)
 			},
 		},
 	}

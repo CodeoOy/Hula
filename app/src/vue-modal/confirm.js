@@ -2,11 +2,12 @@ import FormConfirm from '../forms/FormConfirm.vue'
 import { api } from '../api.js'
 
 export default modal => {
-	const confirm = ({ title, button } = {}) => modal({
+	const confirm = ({ title, ok = 'OK', cancel = 'Cancel' } = {}) => modal({
 		component: FormConfirm,
 		title,
 		props: {
-			button,
+			ok,
+			cancel,
 		},
 	})
 
@@ -83,7 +84,7 @@ export default modal => {
 	
 		const confirmed = await confirm({
 			title: `Delete ${title}?`,
-			button: 'Delete',
+			ok: 'Delete',
 		})
 	
 		return confirmed
