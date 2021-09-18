@@ -49,7 +49,7 @@
 									v-model="newFiles"
 								/>
 							</div>
-							<button type='submit' :disabled='!newFiles.length' class='btn btn-primary gradient float-end'>Upload files</button>
+							<button type='submit' :disabled='sending || !newFiles.length' class='btn btn-primary gradient float-end'>{{ submitLabel }}</button>
 						</VForm>
 					</div>
 				</div>
@@ -170,16 +170,21 @@
 				reservations: [],
 				files: [],
 				newFiles: [],
+				sending: false,
 			}
 		},
 
 		computed: {
+			submitLabel() {
+				return this.sending ? 'Uploading' : 'Upload files'
+			},
+
 			matches() {
 				return this.$store.state.projects.filter(project => {
 					return project.matches.some(match =>
 						match.user_id == this.user.id
 					)
-				})			
+				})
 			},
 		},
 
@@ -219,6 +224,8 @@
 			},
 
 			async saveFiles() {
+				this.sending = true
+
 				const success = await this.$api.users.files.save({
 					user_id: this.user.id,
 					files: this.newFiles,
@@ -241,6 +248,8 @@
 				this.newFiles = []
 
 				if (success) this.getUploads()
+
+				this.sending = false
 			},
 
 			async setCV(id) {

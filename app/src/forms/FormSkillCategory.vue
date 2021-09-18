@@ -37,7 +37,7 @@
 		</div>
 
 		<div class='mt-label'>
-			<button type='submit' class='btn btn-primary gradient float-end'>Submit</button>
+			<button type='submit' :disabled='sending' class='btn btn-primary gradient float-end'>{{ submitLabel }}</button>
 		</div>
 	</VForm>   
 </template>
@@ -60,9 +60,16 @@
 
 		data() {
 			return {
+				sending: false,
 				form: { ...this.$props },
 				categories: {},
 			}
+		},
+
+		computed: {
+			submitLabel() {
+				return this.sending ? 'Saving' : 'Save'
+			},
 		},
 
 		async mounted() {
@@ -71,8 +78,12 @@
 
 		methods: {
 			async onSubmit() {
+				this.sending = true
+
 				const category = await this.$api.skills.categories.save(this.form)
 				if (category) this.$emit('success', category)
+
+				this.sending = false
 			},
 		},
 	}

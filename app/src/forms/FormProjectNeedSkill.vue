@@ -82,7 +82,7 @@
 		</div>
 
 		<div class='mt-label'>
-			<button type='submit' class='btn btn-primary gradient float-end'>Save</button>
+			<button type='submit' :disabled='sending' class='btn btn-primary gradient float-end'>{{ submitLabel }}</button>
 		</div>
 	</VForm>
 </template>
@@ -121,11 +121,16 @@
 			} = this.$props
 
 			return {
+				sending: false,
 				form: { ...props },
 			}
 		},
 
 		computed: {
+			submitLabel() {
+				return this.sending ? 'Saving' : 'Save'
+			},
+
 			skills() {
 				return this.$store.state.skills
 			},
@@ -155,10 +160,14 @@
 
 		methods: {
 			async onSubmit() {
+				this.sending = true
+
 				// Remove empty strings from payload but preserve false booleans
 				for (const prop in this.form) if (this.form[prop] === '') this.form[prop] = undefined
 				const skill = await this.$api.needs.skills.save(this.form)
 				if (skill) this.$emit('success', skill)
+
+				this.sending = false
 			},
 		},
 	}

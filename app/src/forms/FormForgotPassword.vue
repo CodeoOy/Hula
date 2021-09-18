@@ -15,7 +15,7 @@
 					class='form-control'
 					:class='{ "is-invalid": errors.email }'
 				/>
-				<button type='submit' class='btn btn-primary gradient'>Submit</button>
+				<button type='submit' :disabled='sending' class='btn btn-primary gradient'>{{ submitLabel }}</button>
 				<ErrorMessage name='email' class='invalid-feedback shake' />
 			</div>
 
@@ -33,16 +33,27 @@
 
 		data() {
 			return {
+				sending: false,
 				form: {
 					email: '',
 				},
 			}
 		},
 
+		computed: {
+			submitLabel() {
+				return this.sending ? 'Requesting' : 'Request'
+			},
+		},
+
 		methods: {
 			async onSubmit() {
+				this.sending = true
+
 				const success = await this.$api.users.password.requestReset(this.form)
 				if (success) this.$emit('success', success)
+
+				this.sending = false
 			},
 		}
 	}

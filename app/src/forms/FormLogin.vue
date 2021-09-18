@@ -35,7 +35,7 @@
 			</div>
 
 			<div class='mt-label d-flex gap-3 align-items-center justify-content-between'>
-				<button type='submit' class='btn btn-primary gradient order-last align-self-start'>Login</button>
+				<button type='submit' :disabled='sending' class='btn btn-primary gradient order-last align-self-start'>{{ submitLabel }}</button>
 				<div class='d-flex gap-3'>
 					<div><router-link :to='{ name: "forgot-password" }'>Forgot password?</router-link></div>
 					<div class='vr' />
@@ -52,6 +52,7 @@
 
 		data() {
 			return {
+				sending: false,
 				form: {
 					email: '',
 					password: '',
@@ -59,10 +60,20 @@
 			}
 		},
 
+		computed: {
+			submitLabel() {
+				return this.sending ? 'Logging in' : 'Log in'
+			},
+		},
+
 		methods: {
 			async onSubmit() {
+				this.sending = true
+
 				const success = await this.$store.dispatch('login', this.form)
 				if (success) this.$emit('success', success)
+
+				this.sending = false
 			},
 		},
 	}

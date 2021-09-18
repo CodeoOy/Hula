@@ -15,7 +15,7 @@
 				class='form-control'
 				:class='{ "is-invalid": errors.label }'
 			/>
-			<button type='submit' class='btn btn-primary gradient'>Submit</button>
+			<button type='submit' :disabled='sending' class='btn btn-primary gradient'>{{ submitLabel }}</button>
 			<ErrorMessage name='label' class='invalid-feedback shake' />
 		</div>
 
@@ -36,14 +36,25 @@
 
 		data() {
 			return {
+				sending: false,
 				form: { ...this.$props },
 			}
 		},
 
+		computed: {
+			submitLabel() {
+				return this.sending ? 'Saving' : 'Save'
+			},
+		},
+
 		methods: {
 			async onSubmit() {
+				this.sending = true
+
 				const scope = await this.$api.skills.scopes.save(this.form)
 				if (scope) this.$emit('success', scope)
+
+				this.sending = false
 			}
 		},
 	}

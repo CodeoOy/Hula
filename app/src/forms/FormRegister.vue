@@ -82,7 +82,7 @@
 			</div>
 
 			<div class='mt-label d-flex gap-3 flex-row-reverse align-items-center justify-content-between'>
-				<button type='submit' class='btn btn-primary gradient align-self-start'>{{ submitLabel }}</button>
+				<button type='submit' :disabled='sending' class='btn btn-primary gradient align-self-start'>{{ submitLabel }}</button>
 				<div v-if='!isAdmin'>Already a user? <router-link :to='{ name: "login" }'>Log in</router-link></div>
 			</div>
 		</VForm>
@@ -95,6 +95,7 @@
 
 		data() {
 			return {
+				sending: false,
 				form: {
 					email: '',
 					first_name: '',
@@ -111,12 +112,16 @@
 			},
 
 			submitLabel() {
-				return this.isAdmin ? 'Invite' : 'Register'
+				return this.isAdmin
+					? this.sending ? 'Inviting' : 'Invite'
+					: this.sending ? 'Registering' : 'Register'
 			},
 		},
 
 		methods: {
 			async onSubmit() {
+				this.sending = true
+
 				this.form.password_pending = !this.form.password_plain
 
 				const success = await this.$api.users.registration.invite(this.form)
@@ -130,6 +135,8 @@
 						time: 5000,
 					})
 				}
+
+				this.sending = false
 			}
 		}
 	}

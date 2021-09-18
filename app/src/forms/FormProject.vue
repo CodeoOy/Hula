@@ -44,7 +44,7 @@
 		</div>
 
 		<div>
-			<button type='submit' class='btn btn-primary gradient float-end'>Submit</button>
+			<button type='submit' :disabled='sending' class='btn btn-primary gradient float-end'>{{ submitLabel }}</button>
 		</div>
 	</VForm>
 </template>
@@ -68,14 +68,25 @@
 
 		data() {
 			return {
+				sending: false,
 				form: { ...this.$props },
 			}
 		},
 
+		computed: {
+			submitLabel() {
+				return this.sending ? 'Saving' : 'Save'
+			},
+		},
+
 		methods: {
 			async onSubmit() {
+				this.sending = true
+
 				const project = await this.$api.projects.save(this.form)
 				if (project) this.$emit('success', project)
+
+				this.sending = false
 			},
 		},
 	}

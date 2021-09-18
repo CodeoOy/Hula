@@ -66,7 +66,7 @@
 		</div>
 
 		<div class='mt-label'>
-			<button type='submit' class='btn btn-primary gradient float-end'>Save</button>
+			<button type='submit' :disabled='sending' class='btn btn-primary gradient float-end'>{{ submitLabel }}</button>
 		</div>
 	</VForm>
 </template>
@@ -101,14 +101,27 @@
 				].map(nr => String(nr).padStart(2, 0)).join('-')
 			}
 
-			return { form }
+			return {
+				sending: false,
+				form,
+			}
+		},
+
+		computed: {
+			submitLabel() {
+				return this.sending ? 'Saving' : 'Save'
+			},
 		},
 
 		methods: {
 			async onSubmit() {
+				this.sending = true
+
 				for (const prop in this.form) if (this.form[prop] == '') this.form[prop] = undefined
 				const reservation = await this.$api.users.reservations.save(this.form)
 				if (reservation) this.$emit('success', reservation)
+
+				this.sending = false
 			},
 		},
 	}
