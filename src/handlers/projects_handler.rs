@@ -156,6 +156,36 @@ pub async fn get_project_needs(
 	}
 }
 
+pub async fn get_favorites(
+	uuid_data: web::Path<String>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!(
+		"Getting favorite projects: uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&logged_user
+	);
+
+	let project_id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	if logged_user.isadmin == false {
+		return Err(ServiceError::AdminRequired);
+	}
+
+	let res = web::block(move || {
+		userfavorites_repository::query_by_project(project_id, &pool)
+	})
+	.await;
+	match res {
+		Ok(favorites) => Ok(HttpResponse::Ok().json(&favorites)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
 pub async fn create_project(
 	projectdata: web::Json<ProjectData>,
 	pool: web::Data<Pool>,

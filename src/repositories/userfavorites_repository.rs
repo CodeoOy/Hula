@@ -15,6 +15,17 @@ pub fn query_belong_to_user(user: &User, pool: &web::Data<Pool>) -> Result<Vec<U
 	Ok(items)
 }
 
+pub fn query_by_project(q_project_id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Vec<UserFavorite>, Error> {
+	use crate::schema::userfavorites::dsl::{userfavorites, project_id};
+	let conn: &PgConnection = &pool.get().unwrap();
+
+	let items = userfavorites
+		.filter(project_id.eq(q_project_id))
+		.load::<UserFavorite>(conn)?;
+
+	Ok(items)
+}
+
 pub fn add_favorite_project(
 	user_id: uuid::Uuid,
 	project_id: uuid::Uuid,
