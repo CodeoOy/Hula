@@ -15,11 +15,18 @@ pub struct File {
 }
 
 pub async fn save_file(
+	uuid_data: web::Path<String>, 
 	mut payload: Multipart,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
-	let upload_path = get_upload_path(logged_user.uid);
+	let user_id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	if logged_user.isadmin == false && logged_user.uid != user_id {
+		return Err(ServiceError::AdminRequired);
+	}
+
+	let upload_path = get_upload_path(user_id);
 	let upload_path = match upload_path {
 		Ok(x) => x,
 		Err(_) => 
@@ -31,7 +38,7 @@ pub async fn save_file(
 		match field.content_disposition() {
 			None => trace!("content disposition not set"),
 			Some(content_disposition) => match content_disposition.get_filename() {
-				None => continue, // ignore non-file field
+				None => continue,
 				Some(filename) => {
 					tempfilename = filename.to_string();
 				}
@@ -52,7 +59,7 @@ pub async fn save_file(
 			f = web::block(move || f.write_all(&data).map(|_| f)).await.unwrap();
 		}
 
-		let _ = useruploads_repository::create_file(logged_user.uid.clone(), tempfilename.clone(), logged_user.email.clone(), &pool)?;
+		let _ = useruploads_repository::create_file(user_id, tempfilename.clone(), logged_user.email.clone(), &pool)?;
 	}
 
 	Ok(HttpResponse::Ok().into())
@@ -67,7 +74,11 @@ pub async fn delete_file(
 
 	let file = useruploads_repository::get_by_fileid(id, &pool)?;
 
-	let upload_path = get_upload_path(logged_user.uid);
+	if logged_user.isadmin == false && logged_user.uid != file.user_id {
+		return Err(ServiceError::AdminRequired);
+	}
+
+	let upload_path = get_upload_path(file.user_id);
 	let upload_path = match upload_path {
 		Ok(x) => x,
 		Err(_) => 
@@ -101,7 +112,11 @@ pub async fn download_file(
 
 	let file = useruploads_repository::get_by_fileid(id, &pool)?;
 
-	let upload_path = get_upload_path(logged_user.uid);
+	if logged_user.isadmin == false && logged_user.uid != file.user_id {
+		return Err(ServiceError::AdminRequired);
+	}
+
+	let upload_path = get_upload_path(file.user_id);
 	let upload_path = match upload_path {
 		Ok(x) => x,
 		Err(_) => 
