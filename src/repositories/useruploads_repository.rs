@@ -42,7 +42,7 @@ pub fn delete_file(uuid_data: uuid::Uuid, pool: &web::Data<Pool>) -> Result<(), 
 }
 
 pub fn get_by_userid(id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Vec<UserUploads>, Error> {
-	use crate::schema::useruploads::dsl::{user_id, filename, useruploads};
+	use crate::schema::useruploads::dsl::{filename, user_id, useruploads};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let files = useruploads

@@ -15,7 +15,7 @@ pub struct File {
 }
 
 pub async fn save_file(
-	uuid_data: web::Path<String>, 
+	uuid_data: web::Path<String>,
 	mut payload: Multipart,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
@@ -29,8 +29,7 @@ pub async fn save_file(
 	let upload_path = get_upload_path(user_id);
 	let upload_path = match upload_path {
 		Ok(x) => x,
-		Err(_) => 
-			return Err(ServiceError::InternalServerError)
+		Err(_) => return Err(ServiceError::InternalServerError),
 	};
 
 	let mut tempfilename = String::new();
@@ -45,11 +44,7 @@ pub async fn save_file(
 			},
 		}
 
-		let filepath = format!(
-			"{}/{}",
-			upload_path,
-			sanitize_filename::sanitize(&tempfilename)
-		);
+		let filepath = format!("{}/{}", upload_path, sanitize_filename::sanitize(&tempfilename));
 		trace!("filepath={}", &filepath);
 
 		let mut f = web::block(|| std::fs::File::create(filepath)).await.unwrap();
@@ -66,10 +61,10 @@ pub async fn save_file(
 }
 
 pub async fn delete_file(
-	uuid_data: web::Path<String>, 
+	uuid_data: web::Path<String>,
 	logged_user: LoggedUser,
-	pool: web::Data<Pool>) 
--> Result<HttpResponse, ServiceError> {
+	pool: web::Data<Pool>,
+) -> Result<HttpResponse, ServiceError> {
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
 
 	let file = useruploads_repository::get_by_fileid(id, &pool)?;
@@ -81,15 +76,10 @@ pub async fn delete_file(
 	let upload_path = get_upload_path(file.user_id);
 	let upload_path = match upload_path {
 		Ok(x) => x,
-		Err(_) => 
-			return Err(ServiceError::InternalServerError)
+		Err(_) => return Err(ServiceError::InternalServerError),
 	};
 
-	let filepath = format!(
-		"{}/{}",
-		upload_path,
-		file.filename
-	);
+	let filepath = format!("{}/{}", upload_path, file.filename);
 
 	let _ = std::fs::remove_file(filepath);
 
@@ -119,19 +109,17 @@ pub async fn download_file(
 	let upload_path = get_upload_path(file.user_id);
 	let upload_path = match upload_path {
 		Ok(x) => x,
-		Err(_) => 
-			return Err(ServiceError::InternalServerError)
+		Err(_) => return Err(ServiceError::InternalServerError),
 	};
 
-	let filepath = format!(
-		"{}/{}",
-		upload_path,
-		file.filename
-	);
+	let filepath = format!("{}/{}", upload_path, file.filename);
 
 	let data = std::fs::read(filepath).unwrap();
 	Ok(HttpResponse::Ok()
-		.header("Content-Disposition", format!("form-data; filename={}", file.filename.clone()))
+		.header(
+			"Content-Disposition",
+			format!("form-data; filename={}", file.filename.clone()),
+		)
 		.body(data))
 }
 
@@ -159,7 +147,7 @@ fn get_upload_path(uid: uuid::Uuid) -> std::io::Result<String> {
 	let mut upload_path = std::env::var("USER_UPLOAD_PATH").unwrap();
 
 	if upload_path.chars().last().unwrap() != '/' {
-		upload_path.push_str("/");	
+		upload_path.push_str("/");
 	}
 
 	upload_path.push_str(&uid.to_string());

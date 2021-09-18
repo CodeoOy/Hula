@@ -80,7 +80,7 @@ pub async fn get_all_projects(
 		is_include = true;
 	}
 
-	let mut filter_user_id :Option<uuid::Uuid> = None;
+	let mut filter_user_id: Option<uuid::Uuid> = None;
 
 	if logged_user.isadmin == false {
 		filter_user_id = Some(logged_user.uid);
@@ -509,7 +509,10 @@ fn query_projects_dto(
 	}
 
 	let mut dtos: Vec<ProjectDTO> = vec![];
-	let expiry = std::env::var("PROJECT_EXPIRY_WEEKS").unwrap_or("10".to_string()).parse::<i64>().unwrap();
+	let expiry = std::env::var("PROJECT_EXPIRY_WEEKS")
+		.unwrap_or("10".to_string())
+		.parse::<i64>()
+		.unwrap();
 
 	for idx in 0..projects.len() {
 		let project = &projects[idx];
@@ -518,7 +521,11 @@ fn query_projects_dto(
 			continue;
 		}
 		let mut is_active = true;
-		if chrono::Local::now().naive_local().signed_duration_since(project.inserted_at).num_weeks() > expiry {
+		if chrono::Local::now()
+			.naive_local()
+			.signed_duration_since(project.inserted_at)
+			.num_weeks() > expiry
+		{
 			is_active = false;
 		}
 
@@ -530,7 +537,7 @@ fn query_projects_dto(
 				let ss = SkillDTO {
 					skill_label: s.skill_label.clone(),
 					skill_mandatory: s.is_mandatory,
-					skill_percentage: s.required_percentage
+					skill_percentage: s.required_percentage,
 				};
 				skills_vec.push(ss);
 			}
@@ -542,7 +549,7 @@ fn query_projects_dto(
 					continue;
 				}
 
-				if let Some(uid) = filter_user_id { 
+				if let Some(uid) = filter_user_id {
 					if uid != s.user_id {
 						continue;
 					}
