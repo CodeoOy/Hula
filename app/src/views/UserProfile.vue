@@ -31,7 +31,7 @@
 									<tbody>
 										<tr v-for="file in files" :key="file.id" class='context'>
 											<td><input type='checkbox' :checked='user.main_upload_id == file.id' @click='setCV(file.id)'></td>
-											<td><a href='#' @click.prevent>{{ file.filename }}</a></td>
+											<td><a :href='downloadUrl(file.id)' target='_blank' rel='noopener noreferrer'>{{ file.filename }}</a></td>
 											<td class='text-end'>
 												<div class='context-actions'>
 													<button class='btn btn-unstyled px-1 rounded' v-on:click.prevent="confirmDelete('user.file', file)"><i class="bi-trash-fill"></i></button>
@@ -208,7 +208,7 @@
 
 		methods: {
 			async getUser() {
-				const promises = [ this.$api.users.get(this.$route.params.id) ]
+				const promises = [ this.$api.users.get({ id: this.$route.params.id }) ]
 				if (!this.$store.state.skillLevels.length) promises.push(this.$store.dispatch('getSkillLevels'))
 
 				const [ user ] = await Promise.all(promises)
@@ -221,11 +221,11 @@
 			},
 
 			async getReservations() {
-				this.reservations = await this.$api.users.reservations.get(this.$route.params.id)
+				this.reservations = await this.$api.users.reservations.get({ id: this.$route.params.id })
 			},
 
 			async getUploads() {
-				const files = await this.$api.users.files.get(this.$route.params.id)
+				const files = await this.$api.users.files.get({ user_id: this.$route.params.id })
 				this.files = files
 			},
 
@@ -267,6 +267,10 @@
 				})
 
 				if (data) this.user.main_upload_id = value
+			},
+
+			downloadUrl(id) {
+				return this.$api.users.files.get({ id })
 			},
 
 			async editUser(props = {}) {

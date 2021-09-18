@@ -132,11 +132,15 @@ async fn main() -> std::io::Result<()> {
 							.route(web::put().to(handlers::users_handler::update_reservation))
 							.route(web::delete().to(handlers::users_handler::delete_reservation)),
 					)
-					.service(web::resource("/useruploads").route(web::post().to(handlers::upload_handler::save_file)))
 					.service(
-						web::resource("/useruploads/{id}")
+						web::resource("/users/{id}/uploads")
+							.route(web::post().to(handlers::upload_handler::save_file))
 							.route(web::get().to(handlers::upload_handler::get_userfiles))
-							.route(web::delete().to(handlers::upload_handler::delete_file)),
+					)
+					.service(
+						web::resource("/users/uploads/{id}")
+							.route(web::get().to(handlers::upload_handler::download_file))
+							.route(web::delete().to(handlers::upload_handler::delete_file))
 					)
 					.service(
 						web::resource("/resetpassword")

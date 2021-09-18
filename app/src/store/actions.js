@@ -4,13 +4,13 @@ import router from '../router.js'
 
 export default {
 	async setUser(context, data) {
-		if (typeof data == 'string') data = await api.users.get(data)
+		if (typeof data == 'string') data = await api.users.get({ id: data })
 		context.commit('setUser', data)
 	},
 
 	async setChosenProject(context, data) {
 		if (typeof data == 'string') {
-			const promises = [api.projects.get(data)]
+			const promises = [api.projects.get({ id: data })]
 			if (!context.state.skills.length) promises.push(context.dispatch('getSkills'))
 			if (!context.state.skillLevels.length) promises.push(context.dispatch('getSkillLevels'))
 			const [ project ] = await Promise.all(promises)
