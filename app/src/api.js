@@ -69,6 +69,38 @@ async function handleHttpStatus(response) {
 	throw Error(response.statusText)
 }
 
+const populateUrl = (url, data) => {
+	const isObject = typeof data === 'object' && data !== null && !Array.isArray(data)
+
+	return url.replace(/\{[^}]*?\}/g, tag => {
+		const mandatory = !tag.includes('?')
+		tag = tag.slice(1, mandatory ? -1 : -2)
+
+		const value = isObject
+			? data[tag]
+			: data
+
+		if (mandatory && !value) {
+			throw Error(`No "${tag}" provided for url "${url}"`)
+		}
+
+		return value || ''
+	})
+}
+
+const prepareBody = body => {
+	for (const key in body) {
+		// Back end want's YYYY-MM-DD dates
+		if (body[key] instanceof Date) body[key] = [
+			body[key].getFullYear(),
+			body[key].getMonth() + 1,
+			body[key].getDate(),
+		].map(nr => String(nr).padStart(2, 0)).join('-')
+	}
+
+	return body
+}
+
 const request = ({ url, onError, ...options } = {}) => fetch(url.replace(/\/+$/, ''), options)
 	.then(handleHttpStatus)
 	.catch(error => {
@@ -80,51 +112,51 @@ const sendJson = ({ method = 'POST', ...args } = {}) => request({
 	...args,
 	method,
 	headers: { 'Content-Type': 'application/json' },
-	body: JSON.stringify(args.body),
+	body: JSON.stringify(prepareBody(args.body)),
 })
 
-const save = (url, { post = '', put = 'id' } = {}) => data => {
-	for (const prop in data) {
-		if (data[prop] instanceof Date) data[prop] = [
-			data[prop].getFullYear(),
-			data[prop].getMonth() + 1,
-			data[prop].getDate(),
-		].map(nr => String(nr).padStart(2, 0)).join('-')
-	}
+const create = url => body => sendJson({ url: populateUrl(url, body), method: 'POST', body })
+const update = url => body => sendJson({ url: populateUrl(url, body), method: 'PUT', body })
 
-	return sendJson({
-		url: `${url}/${data[put] || data[post] || ''}`,
-		method: data[put] ? 'PUT' : 'POST',
-		body: data,
-	})
+const save = urls => {
+	if (typeof urls == 'string') urls = { create: urls.replace('/{id}', ''), update: urls }
+
+	// Prioritize update because it could have the same key that is used to create
+	// create /api/user/{user_id}/thing: { user_id: 'abc123', name: 'Foo' }
+	// update /api/user/thing/{id}:      { user_id: 'abc123', name: 'Bar', id: '321cba' }
+	const updateKey = (urls.update.match(/{([^}]*?)}/) || []).pop()
+
+	const c = create(urls.create)
+	const u = update(urls.update)
+
+	return data => data[updateKey] ? u(data) : c(data)
 }
 
 const returnBoolean = promise => promise.then(() => true).catch(() => false)
 const returnObject = promise => promise.then(response => response.json()).catch(() => null)
 const returnArray = promise => promise.then(response => response.json()).catch(() => [])
 
-const getArray = url => id => returnArray(request({ url: `${url}/${id || ''}` }))
-const getObject = url => id => returnObject(request({ url: `${url}/${id || ''}` }))
-const get = url => id => (id ? getObject(url) : getArray(url))(id)
+const getArray = url => data => returnArray(request({ url: populateUrl(url, data) }))
+const getObject = url => data => returnObject(request({ url: populateUrl(url, data) }))
 
 const remove = url => data => returnBoolean(
 	typeof data == 'string'
-		? request({ url: `${url}/${data || ''}`, method: 'DELETE' })
-		: sendJson({ url: `${url}/${data.id || ''}`, method: 'DELETE', body: data })
+		? request({ url: populateUrl(url, data), method: 'DELETE' })
+		: sendJson({ url: populateUrl(url, data), method: 'DELETE', body: data })
 )
 
 export const api = {
 
 	projects: {
-		get: async id => {
-			if (!id) return returnArray(request({ url: '/api/projects?is_include_skills_and_matches=true' }))
+		get: async (data = {}) => {
+			if (!data.id) return getArray('/api/projects?is_include_skills_and_matches=true')()
 
 			const [
 				project,
 				needs,
 			] = await Promise.all([
-				returnObject(request({ url: `/api/projects/${id}` })),
-				api.needs.get(id),
+				getObject('/api/projects/{id}')(data),
+				api.needs.get({ id: data.id }),
 			])
 
 			if (project) project.needs = needs
@@ -132,75 +164,79 @@ export const api = {
 			return project
 		},
 
-		save: save('/api/projects'),
-		delete: remove('/api/projects'),
+		save: save('/api/projects/{id}'),
+		delete: remove('/api/projects/{id}'),
 	},
 
 	needs: {
-		get: async id => {
-			const needs = await returnArray(request({ url: `/api/projectneeds/${id}` }))
+		get: async (data = {}) => {
+			const needs = await getArray('/api/projectneeds/{id}')(data)
 
 			needs.forEach(need => {
 				if (need.begin_time) need.begin_time = new Date(need.begin_time)
 				if (need.end_time) need.end_time = new Date(need.end_time)
 			})
 
-			const addSkills = async need => need.skills = await api.needs.skills.get(need.id)
+			const addSkills = async need => need.skills = await api.needs.skills.get({ id: need.id })
 			await Promise.all(needs.map(addSkills))
 
 			return needs
 		},
 
-		save: save('/api/projectneeds'),
-		delete: remove('/api/projectneeds'),
+		save: save('/api/projectneeds/{id}'),
+		delete: remove('/api/projectneeds/{id}'),
 
 		skills: {
-			get: getArray('/api/projectskills'),
-			save: save('/api/projectskills'),
-			delete: remove('/api/projectskills'),
+			get: getArray('/api/projectskills/{id}'),
+			save: save('/api/projectskills/{id}'),
+			delete: remove('/api/projectskills/{id}'),
 		},
 	},
 
 	skills: {
-		get: get('/api/skills'),
-		save: save('/api/skills'),
-		delete: remove('/api/skills'),
+		get: getArray('/api/skills'),
+		save: save('/api/skills/{id}'),
+		delete: remove('/api/skills/{id}'),
 
 		levels: {
-			get: get('/api/skills/levels'),
-			save: save('/api/skills/levels'),
-			delete: remove('/api/skills/levels'),
+			get: getArray('/api/skills/levels'),
+			save: save('/api/skills/levels/{id}'),
+			delete: remove('/api/skills/levels/{id}'),
 		},
 
 		scopes: {
-			get: get('/api/skills/scopes'),
-			save: save('/api/skills/scopes'),
-			delete: remove('/api/skills/scopes'),
+			get: getArray('/api/skills/scopes'),
+			save: save('/api/skills/scopes/{id}'),
+			delete: remove('/api/skills/scopes/{id}'),
 		},
 
 		categories: {
-			get: get('/api/skills/categories'),
-			save: save('/api/skills/categories'),
-			delete: remove('/api/skills/categories'),
+			get: getArray('/api/skills/categories'),
+			save: save('/api/skills/categories/{id}'),
+			delete: remove('/api/skills/categories/{id}'),
 		},
 	},
 
 	users: {
-		get: async id => {
-			if (!id) return returnArray(request({ url: '/api/users?is_include_skills=true' }))
-			return returnObject(request({ url: `/api/users/${id}` }))
+		get: async (data = {}) => {
+			if (!data.id) return getArray('/api/users?is_include_skills=true')()
+			return getObject('/api/users/{id}')(data)
 		},
-		save: save('/api/users'),
-		delete: remove('/api/users'),
+
+		save: save('/api/users/{id}'),
+		delete: remove('/api/users/{id}'),
 
 		skills: {
-			save: save('/api/userskills', { post: 'user_id' }),
-			delete: remove('/api/userskills'),
+			save: save({
+				create: '/api/userskills/{user_id}',
+				update: '/api/userskills/{id}',
+			}),
+			delete: remove('/api/userskills/{id}'),
 		},
 
 		reservations: {
-			get: async id => {
-				const reservations = await returnArray(request({ url: `/api/userreservations/${id}` }))
+			get: async (data = {}) => {
+				const reservations = await getArray('/api/userreservations/{id}')(data)
 
 				reservations.forEach(reservation => {
 					if (reservation.begin_time) reservation.begin_time = new Date(reservation.begin_time)
@@ -210,25 +246,32 @@ export const api = {
 				return reservations
 			},
 
-			save: save('/api/userreservations', { post: 'user_id' }),
-			delete: remove('/api/userreservations'),
+			save: save({
+				create: '/api/userreservations/{user_id}',
+				update: '/api/userreservations/{id}',
+			}),
+
+			delete: remove('/api/userreservations/{id}'),
 		},
 
 		files: {
-			get: getArray('/api/useruploads'),
+			get: (data = {}) => {
+				if ('user_id' in data) return getArray('/api/users/{user_id}/uploads')(data)
+				return populateUrl('/api/users/uploads/{id}', data)
+			},
 
 			save: data => {
 				const body = new FormData()
 				body.append('user_id', data.user_id)
 				if (data.files.length) data.files.forEach(file => body.append('files[]', file))
 				return returnBoolean(request({
-					url: '/api/upload',
+					url: populateUrl('/api/users/{user_id}/uploads', data),
 					method: 'POST',
 					body,
 				}))
 			},
 
-			delete: remove('/api/useruploads'),
+			delete: remove('/api/users/uploads/{id}'),
 		},
 
 		password: {
@@ -238,7 +281,7 @@ export const api = {
 
 		registration: {
 			invite: body => sendJson({ url: '/api/invitations', body }),
-			confirm: body => returnBoolean(sendJson({ url: `/api/register/${body.id}`, body })),
+			confirm: body => returnBoolean(sendJson({ url: populateUrl('/api/register/{id}', body), body })),
 		},
 
 		log: {
@@ -252,8 +295,8 @@ export const api = {
 	},
 
 	matches: {
-		get: async id => {
-			const matches = await returnObject(request({ url: `/api/matches/${id}` }))
+		get: async (data = {}) => {
+			const matches = await getObject('/api/matches/{id}')(data)
 
 			return !matches ? matches : matches.reduce((users, match) => {
 				const { user, skill } = Object.entries(match).reduce((match, [prop, value]) => {
@@ -277,13 +320,13 @@ export const api = {
 
 				return users
 			}, {})
-		}
+		},
 	},
 
 	offers: {
 		get: getArray('/api/offers'),
-		save: save('/api/offers'),
-		delete: remove('/api/offers'),
+		save: save('/api/offers/{id}'),
+		delete: remove('/api/offers/{id}'),
 	},
 }
 

@@ -170,7 +170,7 @@
 
 			async showMatch(project, match) {
 				if (!(project.id in this.matchSkills)) {
-					this.matchSkills[project.id] = await this.$api.matches.get(project.id)
+					this.matchSkills[project.id] = await this.$api.matches.get({ id: project.id })
 				}
 
 				this.$modal({
