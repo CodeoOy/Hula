@@ -34,6 +34,12 @@
 			}
 		},
 
+		watch: {
+			items() {
+				this.change()
+			}
+		},
+
 		methods: {
 			change() {
 				const matches = this.items.filter(item => {

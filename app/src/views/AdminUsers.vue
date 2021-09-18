@@ -4,13 +4,11 @@
 			<div class="d-flex justify-content-between align-items-center flex-wrap">
 				<h1 class="h3 flex-grow-1 mb-0">Users</h1>
 				<div class='input-group order-last mt-3 order-md-0 me-md-2 w-md-auto mt-md-0'>
-					<VAutoComplete
-						v-if="initialUsers.length" 
-						:suggestions="initialUsers" 
-						:placeholder="'filter users'"
-						:dropdown="false"
-						:filterProperties="['firstname', 'lastname', 'autoCompleteSkills']"
-						v-on:auto-complete="autoCompleteAction"
+					<VFilter
+						:items='users'
+						:props='["firstname", "lastname", "skillLabels"]'
+						placeholder='filter users'
+						@filter='filterUsers'
 					/>
 					<button class='btn btn-secondary' type='button' data-bs-toggle="collapse" data-bs-target="#filters" aria-expanded="false" aria-controls="filters">
 						<i aria-label='Filters' class='bi bi-gear-fill'></i>
@@ -87,7 +85,7 @@
 
 <script>
 	import VAvatar from '../components/VAvatar.vue'
-	import VAutoComplete from '../components/VAutoComplete.vue'
+	import VFilter from '../components/VFilter.vue'
 	import VSkillBadge from '../components/VSkillBadge.vue'
 	import FormRegister from '../forms/FormRegister.vue'
 	import { onBeforeTrLeave } from '../transitions.js'
@@ -96,8 +94,8 @@
 		name: 'AdminListUsers',
 		data() {
 			return {
-				initialUsers: [],
-				autoCompletedUsers: [],
+				users: [],
+				usersByKeyword: [],
 				filters: {
 					hidden: true,
 					employees: false,
@@ -106,17 +104,17 @@
 		},
 		components: {
 			VAvatar,
-			VAutoComplete,
+			VFilter,
 			VSkillBadge,
 		},
 		computed: {
 			filteredUsers() {
-				return this.autoCompletedUsers
+				return this.usersByKeyword
 					.filter(user => user.is_hidden ? this.filters.hidden : true)
 					.filter(user => this.filters.employees ? user.is_employee : true)
 			},
 			noUsersMessage() {
-				return this.initialUsers.length
+				return this.users.length
 					? 'No users matching the filter'
 					: 'No users'
 			}
@@ -124,13 +122,13 @@
 		methods: {
 			onBeforeTrLeave,
 			async getUsers() {
-				this.initialUsers = await this.$api.users.get()
-				this.initialUsers.forEach(user => {
-					user.autoCompleteSkills = user.skills.map(skill => skill.skill_label)
+				this.users = await this.$api.users.get()
+				this.users.forEach(user => {
+					user.skillLabels = user.skills.map(skill => skill.skill_label)
 				})
 			},
-			autoCompleteAction(value) {
-				this.autoCompletedUsers = value
+			filterUsers(value) {
+				this.usersByKeyword = value
 			},
 			async inviteUser() {
 				const result = await this.$modal({

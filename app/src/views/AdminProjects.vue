@@ -4,12 +4,11 @@
 			<div class="d-flex justify-content-between align-items-center flex-wrap">
 				<h1 class="h3 flex-grow-1 mb-0">Projects</h1>
 				<div class='input-group order-last mt-3 order-md-0 me-md-2 w-md-auto mt-md-0'>
-					<VAutoComplete
-						:suggestions="projects" 
-						:placeholder="'filter projects'"
-						:dropdown="false"
-						:filterProperties="['name', 'autoCompleteSkills']"
-						v-on:auto-complete="autoCompleteAction"
+					<VFilter
+						:items='projects'
+						:props='["name", "skillLabels"]'
+						placeholder='filter projects'
+						@filter="filterProjects"
 					/>
 					<button class='btn btn-secondary' type='button' data-bs-toggle="collapse" data-bs-target="#filters" aria-expanded="false" aria-controls="filters">
 						<i aria-label='Filters' class='bi bi-gear-fill'></i>
@@ -109,7 +108,7 @@
 <script>
 	import MatchContent from '../components/MatchContent.vue'
 	import FormProject from '../forms/FormProject.vue'
-	import VAutoComplete from '../components/VAutoComplete.vue'
+	import VFilter from '../components/VFilter.vue'
 	import VAvatar from '../components/VAvatar.vue'
 	import VSkillBadge from '../components/VSkillBadge.vue'
 	import { onBeforeTrLeave } from '../transitions.js'
@@ -119,7 +118,7 @@
 
 		data () {
 			return {
-				autoCompletedProjects: [],
+				projectsByKeyword: [],
 				filters: {
 					inactive: true,
 					hidden: true,
@@ -130,7 +129,7 @@
 
 		components: {
 			VAvatar,
-			VAutoComplete,
+			VFilter,
 			VSkillBadge,
 		},
 
@@ -138,12 +137,12 @@
 			projects() {
 				return this.$store.state.projects.map(project => ({
 					...project,
-					autoCompleteSkills: project.skills.map(skill => skill.skill_label),
+					skillLabels: project.skills.map(skill => skill.skill_label),
 				}))
 			},
 
 			filteredProjects() {
-				return this.autoCompletedProjects
+				return this.projectsByKeyword
 					.filter(project => project.is_active ? true : this.filters.inactive)
 					.filter(project => project.is_hidden ? this.filters.hidden : true)
 			},
@@ -158,8 +157,8 @@
 		methods: {
 			onBeforeTrLeave,
 
-			autoCompleteAction(value) {
-				this.autoCompletedProjects = value
+			filterProjects(value) {
+				this.projectsByKeyword = value
 			},
 
 			async newProject() {
