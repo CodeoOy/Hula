@@ -188,6 +188,12 @@
 			},
 		},
 
+		watch: {
+			$route(to, from) {
+				if (to.name == from.name) this.$options.mounted.call(this)
+			},
+		},
+
 		async mounted() {
 			if (this.$store.state.loggeduser.isadmin && !this.$store.state.projects.length) {
 				this.$store.dispatch('getProjects')
