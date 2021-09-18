@@ -509,6 +509,7 @@ fn query_projects_dto(
 	}
 
 	let mut dtos: Vec<ProjectDTO> = vec![];
+	let expiry = std::env::var("PROJECT_EXPIRY_WEEKS").unwrap_or("10".to_string()).parse::<i64>().unwrap();
 
 	for idx in 0..projects.len() {
 		let project = &projects[idx];
@@ -517,8 +518,7 @@ fn query_projects_dto(
 			continue;
 		}
 		let mut is_active = true;
-		let expiry = std::env::var("PROJECT_EXPIRY_SECS").unwrap_or("10000".to_string()).parse::<i64>().unwrap();
-		if chrono::Local::now().naive_local().signed_duration_since(project.inserted_at).num_seconds() > expiry {
+		if chrono::Local::now().naive_local().signed_duration_since(project.inserted_at).num_weeks() > expiry {
 			is_active = false;
 		}
 
