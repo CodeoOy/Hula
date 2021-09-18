@@ -58,18 +58,6 @@ pub struct UserReservationDeleteData {
 	pub user_id: uuid::Uuid,
 }
 
-#[derive(Deserialize, Debug)]
-pub struct FavoriteData {
-	pub email: String,
-	pub project_id: uuid::Uuid,
-	pub user_id: uuid::Uuid,
-}
-
-#[derive(Deserialize, Debug)]
-pub struct FavoriteDeleteData {
-	pub user_id: uuid::Uuid,
-}
-
 #[derive(Serialize, Debug)]
 pub struct UserDTO {
 	pub id: uuid::Uuid,
@@ -521,26 +509,57 @@ pub async fn delete_user(
 }
 
 pub async fn add_favorite_project(
-	uuid_data: web::Path<String>,
-	payload: web::Json<FavoriteData>,
+	uuid_data: web::Path<(String, String)>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
 	trace!(
-		"Adding a favorite project: uuid_data = {:#?} payload = {:#?} logged_user = {:#?}",
+		"Adding a favorite project: uuid_data = {:#?} logged_user = {:#?}",
 		&uuid_data,
-		&payload,
 		&logged_user
 	);
 
-	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+	let input = uuid_data.into_inner();
+	let user_id = uuid::Uuid::parse_str(&input.0)?;
+	let project_id = uuid::Uuid::parse_str(&input.1)?;
 
-	if logged_user.isadmin == false && logged_user.uid != id {
+	if logged_user.isadmin == false && logged_user.uid != user_id {
 		return Err(ServiceError::AdminRequired);
 	}
 
 	let res = web::block(move || {
-		userfavorites_repository::add_favorite_project(id, payload.project_id.clone(), logged_user.email, &pool)
+		userfavorites_repository::add_favorite_project(user_id, project_id, logged_user.email, &pool)
+	})
+	.await;
+	match res {
+		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+pub async fn get_favorite_projects(
+	uuid_data: web::Path<String>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!(
+		"Adding a favorite project: uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&logged_user
+	);
+
+	let user_id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	if logged_user.isadmin == false && logged_user.uid != user_id {
+		return Err(ServiceError::AdminRequired);
+	}
+
+	let user = users_repository::get(user_id, &pool)?;
+	let res = web::block(move || {
+		userfavorites_repository::query_belong_to_user(&user.into(), &pool)
 	})
 	.await;
 	match res {
@@ -553,8 +572,7 @@ pub async fn add_favorite_project(
 }
 
 pub async fn delete_favorite_project(
-	uuid_data: web::Path<String>,
-	payload: web::Json<FavoriteDeleteData>,
+	uuid_data: web::Path<(String, String)>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
@@ -564,13 +582,15 @@ pub async fn delete_favorite_project(
 		&logged_user
 	);
 
-	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+	let input = uuid_data.into_inner();
+	let user_id = uuid::Uuid::parse_str(&input.0)?;
+	let project_id = uuid::Uuid::parse_str(&input.1)?;
 
-	if logged_user.isadmin == false && logged_user.uid != payload.user_id {
+	if logged_user.isadmin == false && logged_user.uid != user_id {
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || userfavorites_repository::delete_favorite_project(id, &pool)).await;
+	let res = web::block(move || userfavorites_repository::delete_favorite_project(user_id, project_id, &pool)).await;
 	match res {
 		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
 		Err(err) => match err {
