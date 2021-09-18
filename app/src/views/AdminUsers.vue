@@ -42,7 +42,7 @@
 							<th scope="col" class='text-end'>Actions</th>
 						</tr>
 					</thead>
-					<tbody>
+					<transition-group name='flip-list' tag='tbody' @before-leave='onBeforeTrLeave'>
 						<tr v-for="user in filteredUsers" :key="user.id" class='context'>
 							<td data-label='User'><div class='table-stack-mobile-cell text-nowrap'>
 								<div class='hstack gap-2'>
@@ -75,7 +75,7 @@
 								</div>
 							</div></td>
 						</tr>
-					</tbody>
+					</transition-group>
 				</table>
 			</div>
 			<div v-else>
@@ -90,6 +90,7 @@
 	import VAutoComplete from '../components/VAutoComplete.vue'
 	import VSkillBadge from '../components/VSkillBadge.vue'
 	import FormRegister from '../forms/FormRegister.vue'
+	import { onBeforeTrLeave } from '../transitions.js'
 
 	export default {
 		name: 'AdminListUsers',
@@ -121,6 +122,7 @@
 			}
 		},
 		methods: {
+			onBeforeTrLeave,
 			async getUsers() {
 				this.initialUsers = await this.$api.users.get()
 				this.initialUsers.forEach(user => {

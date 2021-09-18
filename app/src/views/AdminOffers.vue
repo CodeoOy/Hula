@@ -25,7 +25,7 @@
 							<th scope='col' class='text-end'>Actions</th>
 						</tr>
 					</thead>
-					<tbody>
+					<transition-group name='flip-list' tag='tbody' @before-leave='onBeforeTrLeave'>
 						<tr v-for='offer in filteredOffers' :key='offer.id' class='context'>
 							<td data-label='Project'><div class='table-stack-mobile-cell'>
 								<router-link :to='{ name: "project", params: { id: offer.project_id } }'>{{ offer.project_name }}</router-link>
@@ -42,7 +42,7 @@
 								</div>
 							</div></td>
 						</tr>
-					</tbody>
+					</transition-group>
 				</table>
 			</div>
 			<div v-else>
@@ -55,6 +55,7 @@
 <script>
 	import FormOffer from '../forms/FormOffer.vue'
 	import VAutoComplete from '../components/VAutoComplete.vue'
+	import { onBeforeTrLeave } from '../transitions.js'
 
 	export default {
 		name: 'AdminListOffers',
@@ -97,6 +98,8 @@
 		},
 
 		methods: {
+			onBeforeTrLeave,
+
 			addUserNames() {
 				this.offers.forEach(offer => {
 					const user = this.users.find(({ id }) => id == offer.user_id)

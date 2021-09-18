@@ -42,7 +42,7 @@
 							<th scope="col" class='text-end'>Actions</th>
 						</tr>
 					</thead>
-					<tbody>
+					<transition-group name='flip-list' tag='tbody' @before-leave='onBeforeTrLeave'>
 						<tr v-for="project in filteredProjects" :key="project.id" class='context'>
 							<td data-label='Project'>
 								<div class='table-stack-mobile-cell'>
@@ -96,7 +96,7 @@
 								</div>
 							</td>
 						</tr>
-					</tbody>
+					</transition-group>
 				</table>
 			</div>
 			<div v-else>
@@ -112,6 +112,7 @@
 	import VAutoComplete from '../components/VAutoComplete.vue'
 	import VAvatar from '../components/VAvatar.vue'
 	import VSkillBadge from '../components/VSkillBadge.vue'
+	import { onBeforeTrLeave } from '../transitions.js'
 
 	export default {
 		name: 'AdminListProjects',
@@ -155,6 +156,8 @@
 		},
 
 		methods: {
+			onBeforeTrLeave,
+
 			autoCompleteAction(value) {
 				this.autoCompletedProjects = value
 			},
