@@ -219,6 +219,7 @@ table! {
 		user_last_name -> Varchar,
 		user_is_hidden -> Bool,
 		user_load -> Int4,
+		user_favorite -> Bool,
 		user_index -> Nullable<Int4>,
 		user_years -> Nullable<Double>,
 	}

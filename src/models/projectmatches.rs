@@ -26,6 +26,7 @@ pub struct ProjectMatch {
 	pub user_last_name: String,
 	pub user_is_hidden: bool,
 	pub user_load: i32,
+	pub user_favorite: bool,
 	pub user_index: Option<i32>,
 	pub user_years: Option<f64>,
 }

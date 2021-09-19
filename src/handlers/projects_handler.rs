@@ -65,6 +65,7 @@ pub struct MatchDTO {
 	pub last_name: String,
 	pub is_all_skills: bool,
 	pub is_available: bool,
+	pub is_favorite: bool,
 }
 
 pub async fn get_all_projects(
@@ -569,6 +570,7 @@ fn query_projects_dto(
 					last_name: s.user_last_name.clone(),
 					is_all_skills: is_all_skills,
 					is_available: is_user_available,
+					is_favorite: s.user_favorite,
 				};
 				matches_vec.push(ss2);
 			}
