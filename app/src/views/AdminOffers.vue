@@ -3,12 +3,11 @@
 		<div class='card-header'>
 			<div class="d-flex justify-content-between align-items-center flex-wrap">
 				<h1 class="h3 flex-grow-1 mb-0">Offers</h1>
-				<VAutoComplete
-					:suggestions='offers'
-					:dropdown='false'
-					:filterProperties='["project_name", "user_name", "comments"]'
+				<VFilter
+					:items='offers'
+					:props='["project_name", "user_name", "comments"]'
 					placeholder='Filter offers'
-					v-on:auto-complete='onAutoComplete'
+					@filter='filterOffers'
 					class='mt-3 w-sm-auto mt-sm-0'
 				/>
 			</div>
@@ -25,7 +24,7 @@
 							<th scope='col' class='text-end'>Actions</th>
 						</tr>
 					</thead>
-					<tbody>
+					<transition-group name='flip-list' tag='tbody' @before-leave='onBeforeTrLeave'>
 						<tr v-for='offer in filteredOffers' :key='offer.id' class='context'>
 							<td data-label='Project'><div class='table-stack-mobile-cell'>
 								<router-link :to='{ name: "project", params: { id: offer.project_id } }'>{{ offer.project_name }}</router-link>
@@ -42,7 +41,7 @@
 								</div>
 							</div></td>
 						</tr>
-					</tbody>
+					</transition-group>
 				</table>
 			</div>
 			<div v-else>
@@ -54,13 +53,14 @@
 
 <script>
 	import FormOffer from '../forms/FormOffer.vue'
-	import VAutoComplete from '../components/VAutoComplete.vue'
+	import VFilter from '../components/VFilter.vue'
+	import { onBeforeTrLeave } from '../transitions.js'
 
 	export default {
 		name: 'AdminListOffers',
 
 		components: {
-			VAutoComplete,
+			VFilter,
 		},
 
 		data () {
@@ -97,6 +97,8 @@
 		},
 
 		methods: {
+			onBeforeTrLeave,
+
 			addUserNames() {
 				this.offers.forEach(offer => {
 					const user = this.users.find(({ id }) => id == offer.user_id)
@@ -117,7 +119,7 @@
 				this.addProjectNames()
 			},
 
-			onAutoComplete(value) {
+			filterOffers(value) {
 				this.filteredOffers = value
 			},
 

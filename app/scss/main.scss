@@ -221,6 +221,22 @@ $utilities: map-merge(
 	transition: transform 0.2s;
 }
 
+.flip-list-enter-active,
+.flip-list-leave-active {
+	transition: all 0.2s ease;
+}
+
+.flip-list-enter-from,
+.flip-list-leave-to {
+	opacity: 0;
+	transform: scaleY(0);
+}
+
+.flip-list-leave-from,
+.flip-list-leave-active {
+	position: absolute;
+}
+
 .gradient:not([disabled]) {
 	background-image: var(--bs-gradient);
 }
