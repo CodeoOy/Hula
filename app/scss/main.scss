@@ -103,6 +103,8 @@ $utilities: map-merge(
 	--color-scheme: #{$color-scheme};
 	--#{$variable-prefix}component-active-bg: #{$component-active-bg};
 	--avatar-palette: #{$avatar-palette};
+	--skill-badge-bg-color: #{$skill-badge-bg-color};
+	--skill-badge-text-color: #{$skill-badge-text-color};
 }
 
 // Fake a label's height
@@ -141,13 +143,13 @@ $utilities: map-merge(
 
 .badge-skill {
 	position: relative;
-	background-color: $skill-badge-bg-color;
-	color: $skill-badge-text-color;
+	background-color: var(--skill-badge-bg-color);
+	color: var(--skill-badge-text-color);
 	overflow: hidden;
 
 	&-mandatory {
-		background-color: $skill-badge-mandatory-bg-color;
-		color: $skill-badge-mandatory-text-color;
+		--skill-badge-bg-color: #{$skill-badge-mandatory-bg-color};
+		--skill-badge-text-color: #{$skill-badge-mandatory-text-color};
 	}
 
 	&::before {
@@ -169,7 +171,20 @@ $utilities: map-merge(
 	}
 }
 
-@media screen and (max-width: #{map-get($grid-breakpoints, 'md')}) {
+@include media-breakpoint-up(md) {
+	.table-lg {
+		> :not(caption) > tr > th {
+			padding-top: $table-cell-padding-y;
+			padding-bottom: $table-cell-padding-y;
+		}
+
+		> :not(caption) > * > * {
+			padding: $table-cell-padding-y-lg $table-cell-padding-x-lg;
+		}
+	}
+}
+
+@include media-breakpoint-down(md) {
 	.table-stack-mobile {
 		display: block;
 

@@ -8,7 +8,7 @@
 		</div>
 		<div class='card-body'>
 			<div v-if='categories.length'>
-				<table class="table table-striped table-stack-mobile mb-0" :class='$colorScheme.table'>
+				<table class="table table-striped table-stack-mobile mb-0 table-lg" :class='$colorScheme.table'>
 					<thead>
 						<tr>
 							<th scope="col" class='ps-3'>Category</th>
@@ -19,7 +19,7 @@
 						<tr v-for="category in categories" :key="category.id">
 							<td class='context'>
 								<div class='table-stack-mobile-cell'>
-									<div class='d-flex justify-content-between m-md-2'>
+									<div class='d-flex justify-content-between'>
 										<div>{{ category.label }}</div>
 										<div class='context-actions hstack gap-1 justify-content-end'>
 											<button class='btn btn-unstyled px-1 rounded' v-on:click="editSkill(category)"><i class="bi-plus-circle-fill"></i></button>
@@ -30,9 +30,9 @@
 								</div>
 							</td>
 							<td>
-								<div class='table-stack-mobile-cell p-0 pe-md-2'>
-									<ul class='list-group list-group-flush list-group-transparent'>
-										<li v-for="skill in filterSkills(category.id)" :key="skill" class='list-group-item d-flex justify-content-between ps-4 pe-2 px-md-0 context'>
+								<div class='table-stack-mobile-cell'>
+									<ul class='list-group list-group-flush list-group-transparent my-n2'>
+										<li v-for="skill in filterSkills(category.id)" :key="skill" class='list-group-item d-flex justify-content-between ps-4 pe-0 px-md-0 context'>
 											<div>{{ skill.label }} <small class="fw-light text-muted">({{ getSkillScopeLabel(skill.skillscope_id) }})</small></div>
 											<div class='context-actions hstack gap-1 justify-content-end'>
 												<button class='btn btn-unstyled px-1 rounded' v-on:click="editSkill(skill)"><i class="bi-pencil-fill"></i></button>

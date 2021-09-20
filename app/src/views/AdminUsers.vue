@@ -32,7 +32,7 @@
 		</div>
 		<div class='card-body'>
 			<div v-if='filteredUsers.length'>
-				<table class="table table-striped mb-0 table-stack-mobile" :class='$colorScheme.table'>
+				<table class="table table-striped mb-0 table-stack-mobile table-lg" :class='$colorScheme.table'>
 					<thead>
 						<tr>
 							<th scope="col">User</th>
