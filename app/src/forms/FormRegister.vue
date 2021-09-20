@@ -53,7 +53,7 @@
 			<div v-if='!isAdmin'>
 				<label for='password_plain' class='form-label'>Password</label>
 				<VField
-					v-model='form.password'
+					v-model='form.password_plain'
 					rules='requiredNonAdmin'
 					type='password'
 					id='password_plain'
