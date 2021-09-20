@@ -22,7 +22,6 @@ pub struct ProjectData {
 
 #[derive(Deserialize, Debug)]
 pub struct ProjectNeedData {
-	pub project_id: uuid::Uuid,
 	pub count_of_users: i32,
 	pub begin_time: chrono::NaiveDate,
 	pub end_time: Option<chrono::NaiveDate>,
@@ -32,7 +31,6 @@ pub struct ProjectNeedData {
 
 #[derive(Deserialize, Debug)]
 pub struct ProjectNeedSkillData {
-	pub projectneed_id: uuid::Uuid,
 	pub skill_id: uuid::Uuid,
 	pub skillscopelevel_id: Option<uuid::Uuid>,
 	pub min_years: Option<f64>,
@@ -159,6 +157,36 @@ pub async fn get_project_needs(
 	}
 }
 
+pub async fn get_favorites(
+	uuid_data: web::Path<String>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!(
+		"Getting favorite projects: uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&logged_user
+	);
+
+	let project_id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+
+	if logged_user.isadmin == false {
+		return Err(ServiceError::AdminRequired);
+	}
+
+	let res = web::block(move || {
+		userfavorites_repository::query_by_project(project_id, &pool)
+	})
+	.await;
+	match res {
+		Ok(favorites) => Ok(HttpResponse::Ok().json(&favorites)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
 pub async fn create_project(
 	projectdata: web::Json<ProjectData>,
 	pool: web::Data<Pool>,
@@ -194,6 +222,7 @@ pub async fn create_project(
 }
 
 pub async fn create_projectneed(
+	pid: web::Path<String>,
 	projectneeddata: web::Json<ProjectNeedData>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
@@ -204,13 +233,15 @@ pub async fn create_projectneed(
 		&logged_user
 	);
 
+	let id = uuid::Uuid::parse_str(&pid.into_inner())?;
+
 	if logged_user.isadmin == false {
 		return Err(ServiceError::AdminRequired);
 	}
 
 	let res = web::block(move || {
 		projectneeds_repository::create_projectneed(
-			projectneeddata.project_id,
+			id,
 			projectneeddata.count_of_users,
 			projectneeddata.label.clone(),
 			projectneeddata.percentage,
@@ -232,6 +263,7 @@ pub async fn create_projectneed(
 }
 
 pub async fn create_projectneedskill(
+	needid: web::Path<String>,
 	projectneedskilldata: web::Json<ProjectNeedSkillData>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
@@ -246,9 +278,11 @@ pub async fn create_projectneedskill(
 		return Err(ServiceError::AdminRequired);
 	}
 
+	let id = uuid::Uuid::parse_str(&needid.into_inner())?;
+
 	let res = web::block(move || {
 		projectneedskills_repository::create_projectneedskill(
-			projectneedskilldata.projectneed_id,
+			id,
 			projectneedskilldata.skill_id,
 			projectneedskilldata.skillscopelevel_id,
 			projectneedskilldata.min_years,
@@ -289,7 +323,6 @@ pub async fn update_projectneedskill(
 	let res = web::block(move || {
 		projectneedskills_repository::update_projectneedskill(
 			id,
-			projectneedskilldata.projectneed_id,
 			projectneedskilldata.skill_id,
 			projectneedskilldata.skillscopelevel_id,
 			projectneedskilldata.min_years,

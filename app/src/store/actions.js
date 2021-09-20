@@ -4,16 +4,53 @@ import router from '../router.js'
 
 export default {
 	async setUser(context, data) {
-		if (typeof data == 'string') data = await api.users.get({ id: data })
+		if (typeof data == 'string') {
+			try {
+				const [ user, favorites ] = await Promise.all([
+					api.users.get({ id: data }),
+					api.users.favorites.get({ id: data }),
+				])
+
+				user.favorites = favorites.map(favorite => favorite.project_id)
+				data = user
+			} catch (error) {
+				data = null
+			}
+		}
+
 		context.commit('setUser', data)
+	},
+
+	async setFavorite(context, data) {
+		const { state, ...payload } = data
+
+		if (state) {
+			const result = await api.users.favorites.save(payload)
+			if (result) context.commit('addFavorite', payload.project_id)
+		} else {
+			const result = await api.users.favorites.delete(payload)
+			if (result) context.commit('removeFavorite', payload.project_id)
+		}
+
+		return state
 	},
 
 	async setChosenProject(context, data) {
 		if (typeof data == 'string') {
-			const promises = [api.projects.get({ id: data })]
+			const promises = [
+				api.projects.get({ id: data }),
+				api.projects.favorites.get({ id: data }),
+			]
+
 			if (!context.state.skills.length) promises.push(context.dispatch('getSkills'))
 			if (!context.state.skillLevels.length) promises.push(context.dispatch('getSkillLevels'))
-			const [ project ] = await Promise.all(promises)
+
+			const [
+				project,
+				favorites,
+			] = await Promise.all(promises)
+
+			project.favorites = favorites.map(favorite => favorite.user_id)
 
 			project.needs.forEach(need => {
 				need.skills.forEach(skill => {

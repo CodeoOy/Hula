@@ -115,8 +115,12 @@ const sendJson = ({ method = 'POST', ...args } = {}) => request({
 	body: JSON.stringify(prepareBody(args.body)),
 })
 
-const create = url => body => sendJson({ url: populateUrl(url, body), method: 'POST', body })
-const update = url => body => sendJson({ url: populateUrl(url, body), method: 'PUT', body })
+const returnBoolean = promise => promise.then(() => true).catch(() => false)
+const returnObject = promise => promise.then(response => response.json()).catch(() => null)
+const returnArray = promise => promise.then(response => response.json()).catch(() => [])
+
+const create = url => body => returnObject(sendJson({ url: populateUrl(url, body), method: 'POST', body }))
+const update = url => body => returnObject(sendJson({ url: populateUrl(url, body), method: 'PUT', body }))
 
 const save = urls => {
 	if (typeof urls == 'string') urls = { create: urls.replace('/{id}', ''), update: urls }
@@ -124,17 +128,15 @@ const save = urls => {
 	// Prioritize update because it could have the same key that is used to create
 	// create /api/user/{user_id}/thing: { user_id: 'abc123', name: 'Foo' }
 	// update /api/user/thing/{id}:      { user_id: 'abc123', name: 'Bar', id: '321cba' }
-	const updateKey = (urls.update.match(/{([^}]*?)}/) || []).pop()
+	const updateKey = 'update' in urls
+		? (urls.update.match(/{([^}]*?)}/) || []).pop()
+		: null
 
 	const c = create(urls.create)
 	const u = update(urls.update)
 
 	return data => data[updateKey] ? u(data) : c(data)
 }
-
-const returnBoolean = promise => promise.then(() => true).catch(() => false)
-const returnObject = promise => promise.then(response => response.json()).catch(() => null)
-const returnArray = promise => promise.then(response => response.json()).catch(() => [])
 
 const getArray = url => data => returnArray(request({ url: populateUrl(url, data) }))
 const getObject = url => data => returnObject(request({ url: populateUrl(url, data) }))
@@ -166,11 +168,15 @@ export const api = {
 
 		save: save('/api/projects/{id}'),
 		delete: remove('/api/projects/{id}'),
+
+		favorites: {
+			get: getArray('/api/projects/{id}/favorites'),
+		},
 	},
 
 	needs: {
 		get: async (data = {}) => {
-			const needs = await getArray('/api/projectneeds/{id}')(data)
+			const needs = await getArray('/api/projects/{id}/needs')(data)
 
 			needs.forEach(need => {
 				if (need.begin_time) need.begin_time = new Date(need.begin_time)
@@ -183,13 +189,22 @@ export const api = {
 			return needs
 		},
 
-		save: save('/api/projectneeds/{id}'),
-		delete: remove('/api/projectneeds/{id}'),
+		save: save({
+			create: '/api/projects/{project_id}/needs',
+			update: '/api/projects/needs/{id}',
+		}),
+
+		delete: remove('/api/projects/needs/{id}'),
 
 		skills: {
-			get: getArray('/api/projectskills/{id}'),
-			save: save('/api/projectskills/{id}'),
-			delete: remove('/api/projectskills/{id}'),
+			get: getArray('/api/projects/needs/{id}/skills'),
+
+			save: save({
+				create: '/api/projects/needs/{projectneed_id}/skills',
+				update: '/api/projects/needs/skills/{id}',
+			}),
+
+			delete: remove('/api/projects/needs/skills/{id}'),
 		},
 	},
 
@@ -228,15 +243,15 @@ export const api = {
 
 		skills: {
 			save: save({
-				create: '/api/userskills/{user_id}',
-				update: '/api/userskills/{id}',
+				create: '/api/users/{user_id}/skills',
+				update: '/api/users/skills/{id}',
 			}),
-			delete: remove('/api/userskills/{id}'),
+			delete: remove('/api/users/skills/{id}'),
 		},
 
 		reservations: {
 			get: async (data = {}) => {
-				const reservations = await getArray('/api/userreservations/{id}')(data)
+				const reservations = await getArray('/api/users/{id}/reservations')(data)
 
 				reservations.forEach(reservation => {
 					if (reservation.begin_time) reservation.begin_time = new Date(reservation.begin_time)
@@ -247,11 +262,11 @@ export const api = {
 			},
 
 			save: save({
-				create: '/api/userreservations/{user_id}',
-				update: '/api/userreservations/{id}',
+				create: '/api/users/{user_id}/reservations',
+				update: '/api/users/reservations/{id}',
 			}),
 
-			delete: remove('/api/userreservations/{id}'),
+			delete: remove('/api/users/reservations/{id}'),
 		},
 
 		files: {
@@ -272,6 +287,16 @@ export const api = {
 			},
 
 			delete: remove('/api/users/uploads/{id}'),
+		},
+
+		favorites: {
+			get: getArray('/api/users/{id}/favorites'),
+
+			save: save({
+				create: '/api/users/{user_id}/projects/{project_id}/favorites',
+			}),
+
+			delete: remove('/api/users/{user_id}/projects/{project_id}/favorites'),
 		},
 
 		password: {

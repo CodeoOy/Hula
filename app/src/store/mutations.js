@@ -18,6 +18,27 @@ export default {
 		}
 	},
 
+	addFavorite(state, data) {
+		state.loggeduser.favorites.push(data)
+
+		if (state.chosenproject.id == data) {
+			state.chosenproject.favorites.push(state.loggeduser.id)
+		}
+	},
+
+	removeFavorite(state, data) {
+		const removeIdfromArray = (id, array) => {
+			const index = array.indexOf(id)
+			if (index > -1) array.splice(index, 1)
+		}
+
+		removeIdfromArray(data, state.loggeduser.favorites)
+
+		if (state.chosenproject.id == data) {
+			removeIdfromArray(state.loggeduser.id, state.chosenproject.favorites)
+		}
+	},
+
 	setChosenProject(state, data) {
 		state.chosenproject = data
 	},

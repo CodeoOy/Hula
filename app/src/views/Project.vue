@@ -118,7 +118,6 @@
 		data() {
 			return {
 				matches: null,
-				is_favorite: false,
 			}
 		},
 
@@ -128,11 +127,21 @@
 			},
 
 			project() {
-				return this.$store.state.chosenproject
+				const project = this.$store.state.chosenproject
+				if (project && this.matches) {
+					for (const match of Object.values(this.matches)) {
+						match.favorite = project.favorites.indexOf(match.user_id) > -1
+					}
+				}
+				return project
+			},
+
+			favorite() {
+				return this.$store.state.loggeduser.favorites.indexOf(this.project.id) > -1
 			},
 
 			favoriteClass() {
-				return this.is_favorite
+				return this.favorite
 					? ['bi-star-fill', 'text-yellow']
 					: ['bi-star']
 			}
@@ -140,7 +149,9 @@
 
 		async mounted() {
 			this.$store.dispatch('setChosenProject', this.$route.params.id)
-			if (this.$store.state.loggeduser.isadmin) this.matches = await this.$api.matches.get({ id: this.$route.params.id })
+			if (this.$store.state.loggeduser.isadmin) {
+				this.matches = await this.$api.matches.get({ id: this.$route.params.id })
+			}
 		},
 
 		methods: {
@@ -158,7 +169,11 @@
 			},
 
 			setFavorite() {
-				this.is_favorite = !this.is_favorite
+				this.$store.dispatch('setFavorite', {
+					user_id: this.$store.state.loggeduser.id,
+					project_id: this.project.id,
+					state: !this.favorite,
+				})
 			},
 
 			async editNeed(props = {}) {
