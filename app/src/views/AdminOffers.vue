@@ -32,7 +32,9 @@
 							<td data-label='User'><div class='table-stack-mobile-cell'>
 								<router-link :to='{ name: "user", params: { id: offer.user_id } }'>{{ offer.user_name }}</router-link>
 							</div></td>
-							<td class='text-center' data-label='Sold'><div class='table-stack-mobile-cell'>{{ offer.sold }}</div></td>
+							<td class='text-center' data-label='Sold'><div class='table-stack-mobile-cell'>
+									<i v-if='offer.sold' class='bi-check-lg'></i>
+							</div></td>
 							<td data-label='Comments'><div class='table-stack-mobile-cell'>{{ offer.comments }}</div></td>
 							<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 								<div class='context-actions hstack gap-1 justify-content-end'>

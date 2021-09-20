@@ -130,7 +130,7 @@
 				const project = this.$store.state.chosenproject
 				if (project && this.matches) {
 					for (const match of Object.values(this.matches)) {
-						match.favorite = project.favorites.indexOf(match.user_id) > -1
+						match.user_favorite = project.favorites.indexOf(match.user_id) > -1
 					}
 				}
 				return project

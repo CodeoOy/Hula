@@ -7,7 +7,6 @@
 					<th scope="col">Name</th>
 					<th scope="col" class='text-center'>Mandatory skills</th>
 					<th scope="col">Matched skills</th>
-					<th scope="col" class='text-center'>Tier</th>
 					<th scope="col" class='text-center'>Available</th>
 				</tr>
 			</thead>
@@ -18,9 +17,11 @@
 						<button v-on:click='showMatch(user)' class='btn btn-unstyled'>
 							{{ user.user_first_name }} {{ user.user_last_name }} 
 						</button>
-						<i v-if='user.favorite' class='bi-star-fill text-yellow ms-2 float-end'></i>
+						<i v-if='user.user_favorite' class='bi-star-fill text-yellow ms-2 float-end'></i>
 					</td>
-					<td class='text-center'>{{ user.hasMandatory }}</td>
+					<td class='text-center'>
+						<i v-if='user.hasMandatory' class='bi-check-lg'></i>
+					</td>
 					<td class='align-middle'>
 						<div class='hstack gap-2'>
 							<VSkillBadge
@@ -32,8 +33,9 @@
 							/>
 						</div>
 					</td>
-					<td class='text-center'>{{ user.tier }}</td>
-					<td class='text-center'>{{ user.isAvailable }}</td>
+					<td class='text-center'>
+						<i v-if='user.isAvailable' class='bi-check-lg'></i>
+					</td>
 				</tr>
 			</tbody>
 		</table>
