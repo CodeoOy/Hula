@@ -15,6 +15,7 @@ pub struct Invitation {
 	pub last_name: String,
 	pub expires_at: chrono::NaiveDateTime,
 	pub password_pending: bool,
+	pub reset_request_id: Option<uuid::Uuid>,
 	pub updated_by: String,
 }
 
@@ -33,6 +34,7 @@ impl Invitation {
 		first_name: T,
 		last_name: U,
 		password_pending: bool,
+		reset_request_id: Option<uuid::Uuid>,
 	) -> Self {
 		let emailstr: String = email.into();
 		Invitation {
@@ -42,6 +44,7 @@ impl Invitation {
 			first_name: first_name.into(),
 			last_name: last_name.into(),
 			password_pending: password_pending,
+			reset_request_id: reset_request_id,
 			expires_at: chrono::Local::now().naive_local() + chrono::Duration::hours(24),
 			updated_by: emailstr,
 		}

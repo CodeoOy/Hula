@@ -7,6 +7,7 @@ table! {
 		last_name -> Varchar,
 		expires_at -> Timestamp,
 		password_pending -> Bool,
+		reset_request_id -> Nullable<Uuid>,
 		updated_by -> Varchar,
 	}
 }

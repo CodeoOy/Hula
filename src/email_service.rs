@@ -29,6 +29,11 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
 
 	let base = format!("{}/app/confirm", public_url);
 
+	let reset_request_id = match invitation.reset_request_id {
+		Some(x) => Some(x.to_string()),
+		None => None
+	};
+
 	let url = Url::parse_with_params(
 		&base,
 		&[
@@ -38,6 +43,7 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
 				"password",
 				invitation.password_plain.clone().unwrap_or_else(|| "".to_string()),
 			),
+			("reset_request_id", reset_request_id.unwrap_or_default()),
 			("type", "invitation".to_string()),
 		],
 	)

@@ -12,12 +12,13 @@ pub fn create_invitation(
 	q_first_name: String,
 	q_last_name: String,
 	q_password_pending: bool,
+	q_reset_request_id: Option<uuid::Uuid>,
 	pool: &web::Data<Pool>,
 ) -> Result<Invitation, Error> {
 	use crate::schema::invitations::dsl::invitations;
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let new_invitation = Invitation::from_details(q_email, q_password, q_first_name, q_last_name, q_password_pending);
+	let new_invitation = Invitation::from_details(q_email, q_password, q_first_name, q_last_name, q_password_pending, q_reset_request_id);
 
 	let invitation = diesel::insert_into(invitations)
 		.values(&new_invitation)
