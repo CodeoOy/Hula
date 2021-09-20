@@ -322,7 +322,6 @@ pub async fn update_projectneedskill(
 	let res = web::block(move || {
 		projectneedskills_repository::update_projectneedskill(
 			id,
-			id,
 			projectneedskilldata.skill_id,
 			projectneedskilldata.skillscopelevel_id,
 			projectneedskilldata.min_years,
