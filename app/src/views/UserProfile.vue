@@ -142,7 +142,7 @@
 						<h3 class="h3 mb-0">Projects matching the user's skills</h3>
 					</div>
 					<div class='card-body'>
-						<VMatchesForUser v-if='matches.length' :matches='matches' />
+						<VMatchesForUser v-if='matches.length' :user='user' :matches='matches' />
 						<div v-else class='fs-3 fw-light text-muted text-center p-4'>No matches</div>
 					</div>
 				</div>

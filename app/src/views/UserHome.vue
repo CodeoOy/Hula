@@ -5,7 +5,7 @@
 				<h1 class="h3 mb-0">Projects matching your skills</h1>
 			</div>
 			<div class='card-body'>
-				<VMatchesForUser v-if='matches.length' :matches='matches' />
+				<VMatchesForUser v-if='matches.length' :user='user' :matches='matches' />
 				<div v-else class='fs-3 fw-light text-muted text-center p-4'>No matches</div>
 			</div>
 		</div>
@@ -32,7 +32,7 @@
 					return project.matches.some(match =>
 						match.user_id == this.user.id
 					)
-				})			
+				})
 			},
 		},
 
