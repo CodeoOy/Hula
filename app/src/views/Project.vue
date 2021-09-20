@@ -69,7 +69,9 @@
 										<tbody>
 											<tr v-for="skill in need.skills" :key="skill.id" class='context'>
 												<td data-label='Skill'><div class='table-stack-mobile-cell'>{{ skill.skill_label }}</div></td>
-												<td class='text-center' data-label='Mandatory'><div class='table-stack-mobile-cell'>{{ skill.mandatory }}</div></td>
+												<td class='text-center' data-label='Mandatory'><div class='table-stack-mobile-cell'>
+													<i v-if='skill.mandatory' class='bi-check-lg'></i>
+												</div></td>
 												<td class='text-center' data-label='Min level'><div class='table-stack-mobile-cell'>{{ skill.skillscopelevel_label }}</div></td>
 												<td class='text-center' data-label='Min years'><div class='table-stack-mobile-cell'>{{ skill.min_years }}</div></td>
 												<td class='text-center' data-label='Max years'><div class='table-stack-mobile-cell'>{{ skill.max_years }}</div></td>
