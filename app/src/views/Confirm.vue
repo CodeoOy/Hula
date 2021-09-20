@@ -68,6 +68,15 @@
 						message: 'If your account is already confirmed you can try logging in.',
 					},
 				})
+
+				if (data.reset_request_id) {
+					this.confirmed = false // Hide confirmation info in the backround
+					this.resetPassword({
+						id: data.reset_request_id,
+						email: data.email,
+						type: 'reset',
+					})
+				}
 			},
 		},
 	}
