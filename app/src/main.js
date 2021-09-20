@@ -28,4 +28,9 @@ const app = createApp(App)
 	.component('ErrorMessage', ErrorMessage)
 
 router.isReady()
+	.then(() => {
+		if (store.state.loggeduser) {
+			return store.dispatch('setUser', store.state.loggeduser.id)
+		}
+	})
 	.then(() => app.mount('#hula'))
