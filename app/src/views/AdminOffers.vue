@@ -27,15 +27,21 @@
 					<transition-group name='flip-list' tag='tbody' @before-leave='onBeforeTrLeave'>
 						<tr v-for='offer in filteredOffers' :key='offer.id' class='context'>
 							<td data-label='Project'><div class='table-stack-mobile-cell'>
-								<router-link :to='{ name: "project", params: { id: offer.project_id } }'>{{ offer.project_name }}</router-link>
+								<router-link :to='{ name: "project", params: { id: offer.project_id } }'>
+									<VHighlight :text='offer.project_name' :keywords='keywords' />
+								</router-link>
 							</div></td>
 							<td data-label='User'><div class='table-stack-mobile-cell'>
-								<router-link :to='{ name: "user", params: { id: offer.user_id } }'>{{ offer.user_name }}</router-link>
+								<router-link :to='{ name: "user", params: { id: offer.user_id } }'>
+									<VHighlight :text='offer.user_name' :keywords='keywords' />
+								</router-link>
 							</div></td>
 							<td class='text-center' data-label='Sold'><div class='table-stack-mobile-cell'>
 									<i v-if='offer.sold' class='bi-check-lg'></i>
 							</div></td>
-							<td data-label='Comments'><div class='table-stack-mobile-cell'>{{ offer.comments }}</div></td>
+							<td data-label='Comments'><div class='table-stack-mobile-cell'>
+									<VHighlight :text='offer.comments' :keywords='keywords' />
+							</div></td>
 							<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 								<div class='context-actions hstack gap-1 justify-content-end'>
 									<button class='btn btn-unstyled px-1 rounded' v-on:click='edit(offer)'><i class='bi-pencil-fill'></i></button>
@@ -56,6 +62,7 @@
 <script>
 	import FormOffer from '../forms/FormOffer.vue'
 	import VFilter from '../components/VFilter.vue'
+	import VHighlight from '../components/VHighlight.vue'
 	import { onBeforeTrLeave } from '../transitions.js'
 
 	export default {
@@ -63,13 +70,15 @@
 
 		components: {
 			VFilter,
+			VHighlight,
 		},
 
-		data () {
+		data() {
 			return {
 				filteredOffers: [],
 				users: [],
 				offers: [],
+				keywords: [],
 			}
 		},
 
@@ -78,7 +87,7 @@
 				return this.offers.length
 					? 'No offers matching the filter'
 					: 'No offers'
-			}
+			},
 		},
 
 		async activated() {
@@ -121,8 +130,9 @@
 				this.addProjectNames()
 			},
 
-			filterOffers(value) {
-				this.filteredOffers = value
+			filterOffers({ matches, keywords }) {
+				this.filteredOffers = matches
+				this.keywords = keywords
 			},
 
 			async confirmDelete(offer) {

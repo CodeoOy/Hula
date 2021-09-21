@@ -51,7 +51,7 @@
 											:lastName="user.lastname"
 											class='d-none d-md-inline-block me-2'
 										/>
-										<span>{{ user.firstname }} {{ user.lastname }}</span>
+										<VHighlight :text='`${user.firstname} ${user.lastname}`' :keywords='keywords' />
 									</router-link>
 									<i v-if='user.is_hidden' class='bi-eye-slash-fill flex-grow-1 text-end'></i>
 								</div>
@@ -64,6 +64,7 @@
 										:key='skill.id'
 										:label='skill.skill_label'
 										:percentage="skill.level_percentage"
+										:highlight='highlight(skill)'
 									/>
 								</div>
 							</div></td>
@@ -86,12 +87,21 @@
 <script>
 	import VAvatar from '../components/VAvatar.vue'
 	import VFilter from '../components/VFilter.vue'
+	import VHighlight from '../components/VHighlight.vue'
 	import VSkillBadge from '../components/VSkillBadge.vue'
 	import FormRegister from '../forms/FormRegister.vue'
 	import { onBeforeTrLeave } from '../transitions.js'
 
 	export default {
 		name: 'AdminListUsers',
+
+		components: {
+			VAvatar,
+			VFilter,
+			VHighlight,
+			VSkillBadge,
+		},
+
 		data() {
 			return {
 				users: [],
@@ -100,36 +110,51 @@
 					hidden: true,
 					employees: false,
 				},
+				keywords: [],
 			}
 		},
-		components: {
-			VAvatar,
-			VFilter,
-			VSkillBadge,
-		},
+
 		computed: {
 			filteredUsers() {
 				return this.usersByKeyword
 					.filter(user => user.is_hidden ? this.filters.hidden : true)
 					.filter(user => this.filters.employees ? user.is_employee : true)
 			},
+
 			noUsersMessage() {
 				return this.users.length
 					? 'No users matching the filter'
 					: 'No users'
-			}
+			},
+
+			highlightPattern() {
+				return new RegExp(this.keywords.join('|'))
+			},
 		},
+
+		activated() {
+			this.getUsers()
+		},
+
 		methods: {
 			onBeforeTrLeave,
+
 			async getUsers() {
 				this.users = await this.$api.users.get()
 				this.users.forEach(user => {
 					user.skillLabels = user.skills.map(skill => skill.skill_label)
 				})
 			},
-			filterUsers(value) {
-				this.usersByKeyword = value
+
+			filterUsers({ matches, keywords }) {
+				this.usersByKeyword = matches
+				this.keywords = keywords
 			},
+
+			highlight(skill) {
+				return Boolean(this.keywords.length && skill.skill_label.toUpperCase().match(this.highlightPattern))
+			},
+
 			async inviteUser() {
 				const result = await this.$modal({
 					title: 'Invite a user',
@@ -138,13 +163,11 @@
 
 				if (result) this.$store.dispatch('getProjects')
 			},
+
 			async confirmDelete(user) {
 				const success = await this.$confirm.delete('user', user)
 				if (success) this.getUsers()
 			},
 		},
-		activated() {
-			this.getUsers()
-		}
 	}
 </script>

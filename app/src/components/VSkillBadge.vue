@@ -1,7 +1,7 @@
 <template>
 	<span
 		class='badge badge-skill align-text-bottom'
-		:class='{ "badge-skill-mandatory": this.mandatory }'
+		:class='classes'
 		:style='{ "--progress": `${percentage}%` || 0 }'
 	>
 		{{ label }}
@@ -24,6 +24,19 @@
 			percentage: {
 				type: [Number, null],
 				default: 0,
+			},
+			highlight: {
+				type: Boolean,
+				default: false,
+			},
+		},
+
+		computed: {
+			classes() {
+				return {
+					'badge-skill-mandatory': this.mandatory,
+					'badge-skill-highlight': this.highlight,
+				}
 			},
 		},
 	}

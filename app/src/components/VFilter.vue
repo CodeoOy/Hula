@@ -42,15 +42,16 @@
 
 		methods: {
 			change() {
+				let words = this.selection
+					.toUpperCase()
+					.trim()
+					.replace(/ +/, ' ')
+
+				words = this.singleWords ? words.split(' ') : [words]
+
+				const props = Array.isArray(this.props) ? this.props : [this.props]
+
 				const matches = this.items.filter(item => {
-					let words = this.selection
-						.toUpperCase()
-						.trim()
-						.replace(/ +/, ' ')
-
-					words = this.singleWords ? words.split(' ') : [words]
-
-					const props = Array.isArray(this.props) ? this.props : [this.props]
 					for (let prop of props) {
 						const values = Array.isArray(item[prop]) ? item[prop] : [item[prop]]
 						for (let value of values) {
@@ -62,7 +63,7 @@
 					}
 				})
 
-				this.$emit('filter', matches)
+				this.$emit('filter', { keywords: words.filter(word => word), matches })
 			},
 		}
 	}

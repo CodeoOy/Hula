@@ -48,7 +48,7 @@
 									<div class='d-flex align-items-center'>
 										<div class='flex-grow-1'>
 											<router-link :to="{ name: 'project', params: { id: project.id }}">
-												{{ project.name }}
+												<VHighlight :text='project.name' :keywords='keywords' />
 											</router-link>
 										</div>
 										<i v-if='!project.is_active' class="bi-clock-fill ms-2"></i>
@@ -65,6 +65,7 @@
 											:label='skill.skill_label'
 											:mandatory='skill.skill_mandatory'
 											:percentage='skill.skill_percentage'
+											:highlight='highlight(skill)'
 										/>
 									</div>
 								</div>
@@ -109,6 +110,7 @@
 	import MatchContent from '../components/MatchContent.vue'
 	import FormProject from '../forms/FormProject.vue'
 	import VFilter from '../components/VFilter.vue'
+	import VHighlight from '../components/VHighlight.vue'
 	import VAvatar from '../components/VAvatar.vue'
 	import VSkillBadge from '../components/VSkillBadge.vue'
 	import { onBeforeTrLeave } from '../transitions.js'
@@ -116,7 +118,7 @@
 	export default {
 		name: 'AdminListProjects',
 
-		data () {
+		data() {
 			return {
 				projectsByKeyword: [],
 				filters: {
@@ -124,12 +126,14 @@
 					hidden: true,
 				},
 				matchSkills: {},
+				keywords: [],
 			}
 		},
 
 		components: {
 			VAvatar,
 			VFilter,
+			VHighlight,
 			VSkillBadge,
 		},
 
@@ -151,14 +155,23 @@
 				return this.projects.length
 					? 'No projects matching the filter'
 					: 'No projects'
-			}
+			},
+
+			highlightPattern() {
+				return new RegExp(this.keywords.join('|'))
+			},
 		},
 
 		methods: {
 			onBeforeTrLeave,
 
-			filterProjects(value) {
-				this.projectsByKeyword = value
+			filterProjects({ matches, keywords }) {
+				this.projectsByKeyword = matches
+				this.keywords = keywords
+			},
+
+			highlight(skill) {
+				return Boolean(this.keywords.length && skill.skill_label.toUpperCase().match(this.highlightPattern))
 			},
 
 			async newProject() {

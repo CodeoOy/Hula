@@ -104,12 +104,17 @@ $form-select-disabled-border-color: $input-disabled-border-color;
 $font-family-sans-serif: 'Overpass', sans-serif;
 $font-family-monospace: 'Overpass mono', monospace;
 
+$mark-padding: 0;
+$mark-bg: var(--bs-orange);
+$mark-text: var(--bs-white);
+
 // Hula variables
 
 $skill-badge-bg-color: var(--bs-indigo);
 $skill-badge-text-color: var(--bs-white);
 $skill-badge-mandatory-bg-color: var(--bs-pink);
 $skill-badge-mandatory-text-color: var(--bs-white);
+$skill-badge-highlight-bg-color: $mark-bg;
 
 $tier-size: 3rem;
 $tier-bg-color: $border-color;
