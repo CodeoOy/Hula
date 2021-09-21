@@ -12,10 +12,7 @@
 				required: true,
 			},
 
-			pattern: {
-				type: [RegExp, null],
-				required: true,
-			}
+			pattern: RegExp,
 		},
 
 		computed: {
