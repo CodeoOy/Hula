@@ -9,6 +9,16 @@
 </template>
 
 <script>
+	function debounce(func, timeout = 300){
+		let timer
+		return (...args) => {
+			clearTimeout(timer)
+			timer = setTimeout(() => {
+				func.apply(this, args)
+			}, timeout)
+		}
+	}
+
 	export default {
 		name: 'VFilter',
 
@@ -36,12 +46,18 @@
 
 		watch: {
 			items() {
-				this.change()
+				this.filter()
 			}
 		},
 
+		mounted() {
+			this.change = debounce(this.filter)
+		},
+
 		methods: {
-			change() {
+			filter() {
+				console.log('filtering')
+
 				let words = this.selection
 					.toUpperCase()
 					.trim()
@@ -64,7 +80,7 @@
 				})
 
 				this.$emit('filter', { keywords: words.filter(word => word), matches })
-			},
+			}
 		}
 	}
 </script>

@@ -146,7 +146,6 @@ $utilities: map-merge(
 	background-color: var(--skill-badge-bg-color);
 	color: var(--skill-badge-text-color);
 	overflow: hidden;
-	transition: transform 0.5s cubic-bezier(0.33, 2, 0.5, 1);
 
 	&-mandatory {
 		--skill-badge-bg-color: #{$skill-badge-mandatory-bg-color};
@@ -160,7 +159,6 @@ $utilities: map-merge(
 		@if ($skill-badge-highlight-text-color) {
 			--skill-badge-text-color: #{$skill-badge-highlight-text-color};
 		}
-		transform: scale(1.15);
 	}
 
 	&::before {
