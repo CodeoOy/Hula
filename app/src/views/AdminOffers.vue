@@ -44,8 +44,8 @@
 							</div></td>
 							<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 								<div class='context-actions hstack gap-1 justify-content-end'>
-									<button class='btn btn-unstyled px-1 rounded' v-on:click='edit(offer)'><i class='bi-pencil-fill'></i></button>
-									<button class='btn btn-unstyled px-1 rounded' v-on:click='confirmDelete(offer)'><i class='bi-trash-fill'></i></button>
+									<button class='btn btn-unstyled px-1 rounded' v-on:click='edit(offer)'><i class='bi-pencil-fill' title='Edit offer'></i></button>
+									<button class='btn btn-unstyled px-1 rounded' v-on:click='confirmDelete(offer)'><i class='bi-trash-fill' title='Delete offer'></i></button>
 								</div>
 							</div></td>
 						</tr>

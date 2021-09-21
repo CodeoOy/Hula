@@ -236,6 +236,10 @@ $utilities: map-merge(
 	}
 }
 
+.tooltip {
+	pointer-events: none;
+}
+
 // Custom styles
 
 // Date fields are too tall in Safari

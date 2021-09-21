@@ -51,8 +51,8 @@
 												<VHighlight :text='project.name' :pattern='highlightPattern' />
 											</router-link>
 										</div>
-										<i v-if='!project.is_active' class="bi-clock-fill ms-2"></i>
-										<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2"></i>
+										<i v-if='!project.is_active' class="bi-clock-fill ms-2" title='Inactive project'></i>
+										<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2" title='Hidden project'></i>
 									</div>
 								</div>
 							</td>
@@ -83,6 +83,7 @@
 												:firstName="match.first_name"
 												:lastName="match.last_name"
 												:favorite='match.is_favorite'
+												:title=true
 											/>
 										</button>
 									</div>
@@ -91,7 +92,7 @@
 							<td class='text-end' data-label='Actions'>
 								<div class='table-stack-mobile-cell'>
 									<div class='context-actions'>
-										<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete(project)"><i class="bi-trash-fill"></i></button>
+										<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete(project)"><i class="bi-trash-fill" title='Delete'></i></button>
 									</div>
 								</div>
 							</td>

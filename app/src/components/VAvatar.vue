@@ -1,5 +1,5 @@
 <template>
-	<div class='avatar position-relative' :style='avatarStyles'>
+	<div class='avatar position-relative' :style='avatarStyles' :title='titleText'>
 		<div class='avatar-initials' :class='initialClasses'>{{ initials }}</div>
 		<i v-if='favorite' class='bi-star-fill text-yellow position-absolute bottom-0 end-0 mb-n2 me-n1'></i>
 	</div>
@@ -26,9 +26,17 @@
 				type: Boolean,
 				default: false,
 			},
+			title: {
+				type: Boolean,
+				default: false,
+			},
 		},
 
 		computed: {
+			titleText() {
+				return this.title ? `${this.firstName} ${this.lastName}` : null
+			},
+
 			initials() {
 				return this.firstName[0] + this.lastName[0]
 			},

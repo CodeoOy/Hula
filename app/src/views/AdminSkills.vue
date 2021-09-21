@@ -22,9 +22,9 @@
 									<div class='d-flex justify-content-between'>
 										<div>{{ category.label }}</div>
 										<div class='context-actions hstack gap-1 justify-content-end'>
-											<button class='btn btn-unstyled px-1 rounded' v-on:click="editSkill(category)"><i class="bi-plus-circle-fill"></i></button>
-											<button class='btn btn-unstyled px-1 rounded' v-on:click="editCategory(category)"><i class="bi-pencil-fill"></i></button>
-											<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('skill.category', category)"><i class="bi-trash-fill"></i></button>
+											<button class='btn btn-unstyled px-1 rounded' v-on:click="editSkill(category)"><i class="bi-plus-circle-fill" title='Add skill'></i></button>
+											<button class='btn btn-unstyled px-1 rounded' v-on:click="editCategory(category)"><i class="bi-pencil-fill" title='Edit category'></i></button>
+											<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('skill.category', category)"><i class="bi-trash-fill" title='Delete category'></i></button>
 										</div>
 									</div>
 								</div>
@@ -35,8 +35,8 @@
 										<li v-for="skill in filterSkills(category.id)" :key="skill" class='list-group-item d-flex justify-content-between ps-4 pe-0 px-md-0 context'>
 											<div>{{ skill.label }} <small class="fw-light text-muted">({{ getSkillScopeLabel(skill.skillscope_id) }})</small></div>
 											<div class='context-actions hstack gap-1 justify-content-end'>
-												<button class='btn btn-unstyled px-1 rounded' v-on:click="editSkill(skill)"><i class="bi-pencil-fill"></i></button>
-												<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('skill', skill)"><i class="bi-trash-fill"></i></button>
+												<button class='btn btn-unstyled px-1 rounded' v-on:click="editSkill(skill)"><i class="bi-pencil-fill" title='Edit skill'></i></button>
+												<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('skill', skill)"><i class="bi-trash-fill" title='Delete skill'></i></button>
 											</div>
 										</li>
 									</ul>

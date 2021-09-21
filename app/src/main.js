@@ -9,8 +9,12 @@ import FlashMessage from '@smartweb/vue-flash-message'
 import router from './router.js'
 import App from './App.vue'
 import 'bootstrap'
+import { Tooltip } from 'bootstrap'
 import { Form, Field, ErrorMessage, configure } from 'vee-validate'
 import './validation.js'
+
+// Enable Bootstrap tooltips
+new Tooltip(document.body, { selector: '[title]' })
 
 configure({
 	validateOnBlur: false, // Empty required fields make the forms grow -> Forgot password link etc. will dodge the click

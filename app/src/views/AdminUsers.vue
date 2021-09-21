@@ -43,7 +43,7 @@
 					<transition-group name='flip-list' tag='tbody' @before-leave='onBeforeTrLeave'>
 						<tr v-for="user in filteredUsers" :key="user.id" class='context'>
 							<td data-label='User'><div class='table-stack-mobile-cell text-nowrap'>
-								<div class='hstack gap-2'>
+								<div class='hstack gap-2 justify-content-between'>
 									<router-link :to="{ name: 'user', params: { id: user.id}}">
 										<VAvatar
 											:id="user.id"
@@ -53,7 +53,7 @@
 										/>
 										<VHighlight :text='`${user.firstname} ${user.lastname}`' :pattern='highlightPattern' />
 									</router-link>
-									<i v-if='user.is_hidden' class='bi-eye-slash-fill flex-grow-1 text-end'></i>
+									<i v-if='user.is_hidden' class='bi-eye-slash-fill text-end' title='Hidden user'></i>
 								</div>
 								<div>{{ user.email }}</div>
 							</div></td>
@@ -70,7 +70,7 @@
 							</div></td>
 							<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 								<div class='context-actions'>
-									<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete(user)"><i class="bi-trash-fill"></i></button>
+									<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete(user)"><i class="bi-trash-fill" title='Delete'></i></button>
 								</div>
 							</div></td>
 						</tr>
