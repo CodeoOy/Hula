@@ -9,7 +9,7 @@
 </template>
 
 <script>
-	function debounce(func, timeout = 300){
+	function debounce(func, timeout = 250){
 		let timer
 		return (...args) => {
 			clearTimeout(timer)
@@ -56,30 +56,36 @@
 
 		methods: {
 			filter() {
-				console.log('filtering')
-
-				let words = this.selection
-					.toUpperCase()
+				let keywords = this.selection
 					.trim()
 					.replace(/ +/, ' ')
 
-				words = this.singleWords ? words.split(' ') : [words]
+				keywords = this.singleWords
+					? keywords.split(' ')
+					: [keywords]
 
-				const props = Array.isArray(this.props) ? this.props : [this.props]
+				keywords = keywords.filter(word => word)
 
-				const matches = this.items.filter(item => {
-					for (let prop of props) {
+				const props = Array.isArray(this.props)
+					? this.props
+					: [this.props]
+
+				const pattern = keywords.length
+					? new RegExp(keywords.map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'i')
+					: null
+
+				const matches = !keywords.length
+					? this.items
+					: this.items.filter(item => props.some(prop => {
 						const values = Array.isArray(item[prop]) ? item[prop] : [item[prop]]
-						for (let value of values) {
-							value = String(value).toUpperCase()
-							for (const word of words) {
-								if (value.includes(word)) return true
-							}
-						}
-					}
-				})
+						return values.some(value => pattern.test(value))
+					}))
 
-				this.$emit('filter', { keywords: words.filter(word => word), matches })
+				this.$emit('filter', {
+					keywords,
+					pattern,
+					matches,
+				})
 			}
 		}
 	}

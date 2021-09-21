@@ -51,7 +51,7 @@
 											:lastName="user.lastname"
 											class='d-none d-md-inline-block me-2'
 										/>
-										<VHighlight :text='`${user.firstname} ${user.lastname}`' :keywords='keywords' />
+										<VHighlight :text='`${user.firstname} ${user.lastname}`' :pattern='highlightPattern' />
 									</router-link>
 									<i v-if='user.is_hidden' class='bi-eye-slash-fill flex-grow-1 text-end'></i>
 								</div>
@@ -110,7 +110,7 @@
 					hidden: true,
 					employees: false,
 				},
-				keywords: [],
+				highlightPattern: null,
 			}
 		},
 
@@ -125,10 +125,6 @@
 				return this.users.length
 					? 'No users matching the filter'
 					: 'No users'
-			},
-
-			highlightPattern() {
-				return new RegExp(this.keywords.join('|'))
 			},
 		},
 
@@ -146,13 +142,13 @@
 				})
 			},
 
-			filterUsers({ matches, keywords }) {
+			filterUsers({ matches, pattern }) {
 				this.usersByKeyword = matches
-				this.keywords = keywords
+				this.highlightPattern = pattern
 			},
 
 			highlight(skill) {
-				return Boolean(this.keywords.length && skill.skill_label.toUpperCase().match(this.highlightPattern))
+				return Boolean(this.highlightPattern && skill.skill_label.match(this.highlightPattern))
 			},
 
 			async inviteUser() {

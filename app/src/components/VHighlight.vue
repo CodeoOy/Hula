@@ -12,20 +12,16 @@
 				required: true,
 			},
 
-			keywords: {
-				type: [String, Array],
+			pattern: {
+				type: [RegExp, null],
 				required: true,
 			}
 		},
 
 		computed: {
-			highlightPattern() {
-				return new RegExp(this.keywords.join('|'), 'gi')
-			},
-
 			highlight() {
-				return this.keywords.length
-					? this.text.replace(this.highlightPattern, '<mark>$&</mark>')
+				return this.pattern
+					? this.text.replace(this.pattern, '<mark>$&</mark>')
 					: this.text
 			},
 		},

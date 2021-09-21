@@ -28,19 +28,19 @@
 						<tr v-for='offer in filteredOffers' :key='offer.id' class='context'>
 							<td data-label='Project'><div class='table-stack-mobile-cell'>
 								<router-link :to='{ name: "project", params: { id: offer.project_id } }'>
-									<VHighlight :text='offer.project_name' :keywords='keywords' />
+									<VHighlight :text='offer.project_name' :pattern='highlightPattern' />
 								</router-link>
 							</div></td>
 							<td data-label='User'><div class='table-stack-mobile-cell'>
 								<router-link :to='{ name: "user", params: { id: offer.user_id } }'>
-									<VHighlight :text='offer.user_name' :keywords='keywords' />
+									<VHighlight :text='offer.user_name' :pattern='highlightPattern' />
 								</router-link>
 							</div></td>
 							<td class='text-center' data-label='Sold'><div class='table-stack-mobile-cell'>
 									<i v-if='offer.sold' class='bi-check-lg'></i>
 							</div></td>
 							<td data-label='Comments'><div class='table-stack-mobile-cell'>
-									<VHighlight :text='offer.comments' :keywords='keywords' />
+									<VHighlight :text='offer.comments' :pattern='highlightPattern' />
 							</div></td>
 							<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 								<div class='context-actions hstack gap-1 justify-content-end'>
@@ -78,7 +78,7 @@
 				filteredOffers: [],
 				users: [],
 				offers: [],
-				keywords: [],
+				highlightPattern: [],
 			}
 		},
 
@@ -130,9 +130,9 @@
 				this.addProjectNames()
 			},
 
-			filterOffers({ matches, keywords }) {
+			filterOffers({ matches, pattern }) {
 				this.filteredOffers = matches
-				this.keywords = keywords
+				this.highlightPattern = pattern
 			},
 
 			async confirmDelete(offer) {

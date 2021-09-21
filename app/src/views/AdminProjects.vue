@@ -48,7 +48,7 @@
 									<div class='d-flex align-items-center'>
 										<div class='flex-grow-1'>
 											<router-link :to="{ name: 'project', params: { id: project.id }}">
-												<VHighlight :text='project.name' :keywords='keywords' />
+												<VHighlight :text='project.name' :pattern='highlightPattern' />
 											</router-link>
 										</div>
 										<i v-if='!project.is_active' class="bi-clock-fill ms-2"></i>
@@ -126,7 +126,7 @@
 					hidden: true,
 				},
 				matchSkills: {},
-				keywords: [],
+				highlightPattern: null,
 			}
 		},
 
@@ -156,22 +156,18 @@
 					? 'No projects matching the filter'
 					: 'No projects'
 			},
-
-			highlightPattern() {
-				return new RegExp(this.keywords.join('|'))
-			},
 		},
 
 		methods: {
 			onBeforeTrLeave,
 
-			filterProjects({ matches, keywords }) {
+			filterProjects({ matches, pattern }) {
 				this.projectsByKeyword = matches
-				this.keywords = keywords
+				this.highlightPattern = pattern
 			},
 
 			highlight(skill) {
-				return Boolean(this.keywords.length && skill.skill_label.toUpperCase().match(this.highlightPattern))
+				return Boolean(this.highlightPattern && skill.skill_label.toUpperCase().match(this.highlightPattern))
 			},
 
 			async newProject() {
