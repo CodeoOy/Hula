@@ -1,6 +1,7 @@
 use actix_web::web;
 use diesel::prelude::*;
 use diesel::PgConnection;
+use diesel::result::Error::NotFound;
 
 use crate::models::invitations::Invitation;
 use crate::models::users::Pool;
@@ -41,4 +42,19 @@ pub fn get_by_invitation(
 		.get_result::<Invitation>(conn)?;
 
 	Ok(invitation)
+}
+
+pub fn delete_invitation(	
+	q_id: uuid::Uuid,
+	pool: &web::Data<Pool>)
+-> Result<(), Error> {
+	let conn: &PgConnection = &pool.get().unwrap();
+	use crate::schema::invitations::dsl::*;
+
+	let deleted = diesel::delete(invitations.filter(id.eq(q_id))).execute(conn)?;
+
+	if deleted > 0 {
+		return Ok(());
+	}
+	Err(NotFound)
 }

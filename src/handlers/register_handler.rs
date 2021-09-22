@@ -54,6 +54,8 @@ fn query(user_data: UserData, pool: web::Data<Pool>) -> Result<User, crate::erro
 				&pool,
 			)?;
 
+			let _ = invitations_repository::delete_invitation(invitation_id, &pool);
+
 			return Ok(user);
 		}
 	}

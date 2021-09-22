@@ -1,6 +1,7 @@
 use actix_web::web;
 use diesel::prelude::*;
 use diesel::PgConnection;
+use diesel::result::Error::NotFound;
 
 use crate::models::invitations::ResetPasswordRequest;
 use crate::models::users::Pool;
@@ -33,4 +34,19 @@ pub fn get_by_reset_request(
 		)
 		.get_result::<ResetPasswordRequest>(conn)?;
 	Ok(reset_request)
+}
+
+pub fn delete_request(	
+	q_id: uuid::Uuid,
+	pool: &web::Data<Pool>)
+-> Result<(), Error> {
+	let conn: &PgConnection = &pool.get().unwrap();
+	use crate::schema::reset_requests::dsl::*;
+
+	let deleted = diesel::delete(reset_requests.filter(id.eq(q_id))).execute(conn)?;
+
+	if deleted > 0 {
+		return Ok(());
+	}
+	Err(NotFound)
 }

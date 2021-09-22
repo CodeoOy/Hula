@@ -614,6 +614,8 @@ pub async fn update_password(
 
 	let id = id.unwrap();
 
+	let _ = reset_requests_repository::delete_request(payload.id.clone(), &pool);
+
 	let res =
 		web::block(move || users_repository::set_password(id.email.clone(), payload.password.clone(), &pool)).await;
 	match res {
