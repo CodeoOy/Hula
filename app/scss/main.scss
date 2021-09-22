@@ -102,6 +102,7 @@ $utilities: map-merge(
 :root {
 	--color-scheme: #{$color-scheme};
 	--#{$variable-prefix}component-active-bg: #{$component-active-bg};
+	--tier-size: #{$tier-size};
 	--avatar-palette: #{$avatar-palette};
 	--skill-badge-bg-color: #{$skill-badge-bg-color};
 	--skill-badge-text-color: #{$skill-badge-text-color};
@@ -340,9 +341,9 @@ $utilities: map-merge(
 
 	&-circle {
 		position: relative;
-		width: $tier-size;
-		margin: calc((#{$tier-size} - var(--bs-body-line-height) * 1rem) / -2) 0;
-		line-height: $tier-size;
+		width: var(--tier-size);
+		margin: calc((var(--tier-size) - var(--bs-body-line-height) * 1rem) / -2) 0;
+		line-height: var(--tier-size);
 		text-align: center;
 		border-radius: 50%;
 		background-color: var(--tier-bg-color);
