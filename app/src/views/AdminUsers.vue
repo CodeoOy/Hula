@@ -70,7 +70,7 @@
 							</div></td>
 							<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 								<div class='context-actions'>
-									<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete(user)"><i class="bi-trash-fill" title='Delete'></i></button>
+									<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete(user)"><i class="bi-trash-fill" title='Delete user'></i></button>
 								</div>
 							</div></td>
 						</tr>
