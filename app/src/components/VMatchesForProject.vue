@@ -7,15 +7,12 @@
 						<div class='visually-hidden'>Match order</div>
 					</th>
 					<th scope="col">Name</th>
-					<th scope="col">Skills</th>
+					<th scope="col" class='d-none d-sm-table-cell'>Skills</th>
 					<th scope="col" class='text-center'>
-						<div class='d-none d-sm-block'>Mandatory</div>
-						<i class='d-sm-none bi-tools' title='Mandatory skills'></i>
+						<span class='d-none d-sm-inline'>Mandatory skills</span>
+						<span class='d-sm-none'>Skills</span>
 					</th>
-					<th scope="col" class='text-center'>
-						<div class='d-none d-sm-block'>Available</div>
-						<i class='d-sm-none bi-clock-fill' title='Available'></i>
-					</th>
+					<th scope="col" class='text-center'>Available</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -27,7 +24,7 @@
 						</button>
 						<i v-if='user.user_favorite' class='bi-star-fill text-yellow ms-2 float-end'></i>
 					</td>
-					<td class='align-middle'>
+					<td class='d-none d-sm-table-cell align-middle'>
 						<div class='hstack gap-2 flex-wrap'>
 							<VSkillBadge
 								v-for="skill in user.skills"
@@ -38,10 +35,10 @@
 							/>
 						</div>
 					</td>
-					<td class='text-center'>
+					<td class='text-center align-middle'>
 						<i v-if='user.hasMandatory' class='bi-check-lg' title='Mandatory skills'></i>
 					</td>
-					<td class='text-center'>
+					<td class='text-center align-middle'>
 						<i v-if='user.isAvailable' class='bi-check-lg' title='Available'></i>
 					</td>
 				</tr>
