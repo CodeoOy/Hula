@@ -152,6 +152,15 @@ $utilities: map-merge(
 		--skill-badge-text-color: #{$skill-badge-mandatory-text-color};
 	}
 
+	&-highlight {
+		@if ($skill-badge-highlight-bg-color) {
+			--skill-badge-bg-color: #{$skill-badge-highlight-bg-color};
+		}
+		@if ($skill-badge-highlight-text-color) {
+			--skill-badge-text-color: #{$skill-badge-highlight-text-color};
+		}
+	}
+
 	&::before {
 		content: '';
 		position: absolute;
@@ -219,6 +228,16 @@ $utilities: map-merge(
 			box-shadow: inherit;
 		}
 	}
+}
+
+@if ($mark-text) {
+	mark, .mark {
+		color: $mark-text;
+	}
+}
+
+.tooltip {
+	pointer-events: none;
 }
 
 // Custom styles

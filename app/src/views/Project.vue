@@ -7,16 +7,16 @@
 						<h1 class="h3 mb-0 flex-grow-1">
 							{{ project.name }}
 						</h1>
-						<i v-if='project.is_hidden' class="bi-eye-slash-fill fs-3 lh-1"></i>
+						<i v-if='project.is_hidden' class="bi-eye-slash-fill fs-3 lh-1" title='Hidden project'></i>
 						<button class='btn btn-unstyled rounded' @click='setFavorite'>
-							<i :class='favoriteClass' class="fs-3 lh-1"></i>
+							<i :class='favoriteClass' class="fs-3 lh-1" title='Show interest by starring the project'></i>
 						</button>
 					</div>
 					<div class='card-body'>
 						<p v-if="project.description" class='mb-0'>{{ project.description }}</p>
 						<div v-if='isAdmin' class='context-actions hstack gap-1 justify-content-end'>
-							<button class='btn btn-unstyled px-1 rounded' v-on:click='editProject(project)'><i class='bi-pencil-fill'></i></button>
-							<button class='btn btn-unstyled px-1 rounded' v-on:click='confirmDelete("project", project)'><i class='bi-trash-fill'></i></button>
+							<button class='btn btn-unstyled px-1 rounded' v-on:click='editProject(project)'><i class='bi-pencil-fill' title='Edit project'></i></button>
+							<button class='btn btn-unstyled px-1 rounded' v-on:click='confirmDelete("project", project)'><i class='bi-trash-fill' title='Delete project'></i></button>
 						</div>
 					</div>
 				</div>
@@ -49,9 +49,9 @@
 										<div>{{ formatPositions(need.count_of_users) }} at workload of {{ need.percentage }}%</div>
 									</div>
 									<div v-if='isAdmin' class='context-actions hstack gap-1 justify-content-end'>
-										<button class='btn btn-unstyled px-1 rounded' v-on:click='editSkill({ need })'><i class='bi-plus-circle-fill'></i></button>
-										<button class='btn btn-unstyled px-1 rounded' v-on:click='editNeed(need)'><i class='bi-pencil-fill'></i></button>
-										<button class='btn btn-unstyled px-1 rounded' v-on:click='confirmDelete("need", need)'><i class='bi-trash-fill'></i></button>
+										<button class='btn btn-unstyled px-1 rounded' v-on:click='editSkill({ need })'><i class='bi-plus-circle-fill' title='Add skill'></i></button>
+										<button class='btn btn-unstyled px-1 rounded' v-on:click='editNeed(need)'><i class='bi-pencil-fill' title='Edit role'></i></button>
+										<button class='btn btn-unstyled px-1 rounded' v-on:click='confirmDelete("need", need)'><i class='bi-trash-fill' title='Delete role'></i></button>
 									</div>
 								</div>
 								<div>
@@ -77,8 +77,8 @@
 												<td class='text-center' data-label='Max years'><div class='table-stack-mobile-cell'>{{ skill.max_years }}</div></td>
 												<td v-if='isAdmin' class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 													<div class='context-actions hstack gap-1 justify-content-end'>
-														<button class='btn btn-unstyled px-1 rounded' v-on:click='editSkill({ need, skill })'><i class='bi-pencil-fill'></i></button>
-														<button class='btn btn-unstyled px-1 rounded' v-on:click='confirmDelete("need.skill", skill)'><i class='bi-trash-fill'></i></button>
+														<button class='btn btn-unstyled px-1 rounded' v-on:click='editSkill({ need, skill })'><i class='bi-pencil-fill' title='Edit skill'></i></button>
+														<button class='btn btn-unstyled px-1 rounded' v-on:click='confirmDelete("need.skill", skill)'><i class='bi-trash-fill' title='Delete skill'></i></button>
 													</div>
 												</div></td>
 											</tr>

@@ -9,6 +9,16 @@
 </template>
 
 <script>
+	function debounce(func, timeout = 250){
+		let timer
+		return (...args) => {
+			clearTimeout(timer)
+			timer = setTimeout(() => {
+				func.apply(this, args)
+			}, timeout)
+		}
+	}
+
 	export default {
 		name: 'VFilter',
 
@@ -36,34 +46,47 @@
 
 		watch: {
 			items() {
-				this.change()
+				this.filter()
 			}
 		},
 
+		mounted() {
+			this.change = debounce(this.filter)
+		},
+
 		methods: {
-			change() {
-				const matches = this.items.filter(item => {
-					let words = this.selection
-						.toUpperCase()
-						.trim()
-						.replace(/ +/, ' ')
+			filter() {
+				let keywords = this.selection
+					.trim()
+					.replace(/ +/, ' ')
 
-					words = this.singleWords ? words.split(' ') : [words]
+				keywords = this.singleWords
+					? keywords.split(' ')
+					: [keywords]
 
-					const props = Array.isArray(this.props) ? this.props : [this.props]
-					for (let prop of props) {
+				keywords = keywords.filter(word => word)
+
+				const props = Array.isArray(this.props)
+					? this.props
+					: [this.props]
+
+				const pattern = keywords.length
+					? new RegExp(keywords.map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'i')
+					: null
+
+				const matches = !keywords.length
+					? this.items
+					: this.items.filter(item => props.some(prop => {
 						const values = Array.isArray(item[prop]) ? item[prop] : [item[prop]]
-						for (let value of values) {
-							value = String(value).toUpperCase()
-							for (const word of words) {
-								if (value.includes(word)) return true
-							}
-						}
-					}
-				})
+						return values.some(value => pattern.test(value))
+					}))
 
-				this.$emit('filter', matches)
-			},
+				this.$emit('filter', {
+					keywords,
+					pattern,
+					matches,
+				})
+			}
 		}
 	}
 </script>

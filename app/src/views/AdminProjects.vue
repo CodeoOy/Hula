@@ -48,11 +48,11 @@
 									<div class='d-flex align-items-center'>
 										<div class='flex-grow-1'>
 											<router-link :to="{ name: 'project', params: { id: project.id }}">
-												{{ project.name }}
+												<VHighlight :text='project.name' :pattern='highlightPattern' />
 											</router-link>
 										</div>
-										<i v-if='!project.is_active' class="bi-clock-fill ms-2"></i>
-										<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2"></i>
+										<i v-if='!project.is_active' class="bi-clock-fill ms-2" title='Inactive project'></i>
+										<i v-if='project.is_hidden' class="bi-eye-slash-fill ms-2" title='Hidden project'></i>
 									</div>
 								</div>
 							</td>
@@ -65,6 +65,7 @@
 											:label='skill.skill_label'
 											:mandatory='skill.skill_mandatory'
 											:percentage='skill.skill_percentage'
+											:highlight='highlight(skill)'
 										/>
 									</div>
 								</div>
@@ -82,6 +83,7 @@
 												:firstName="match.first_name"
 												:lastName="match.last_name"
 												:favorite='match.is_favorite'
+												:title=true
 											/>
 										</button>
 									</div>
@@ -90,7 +92,7 @@
 							<td class='text-end' data-label='Actions'>
 								<div class='table-stack-mobile-cell'>
 									<div class='context-actions'>
-										<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete(project)"><i class="bi-trash-fill"></i></button>
+										<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete(project)"><i class="bi-trash-fill" title='Delete project'></i></button>
 									</div>
 								</div>
 							</td>
@@ -109,6 +111,7 @@
 	import MatchContent from '../components/MatchContent.vue'
 	import FormProject from '../forms/FormProject.vue'
 	import VFilter from '../components/VFilter.vue'
+	import VHighlight from '../components/VHighlight.vue'
 	import VAvatar from '../components/VAvatar.vue'
 	import VSkillBadge from '../components/VSkillBadge.vue'
 	import { onBeforeTrLeave } from '../transitions.js'
@@ -116,7 +119,7 @@
 	export default {
 		name: 'AdminListProjects',
 
-		data () {
+		data() {
 			return {
 				projectsByKeyword: [],
 				filters: {
@@ -124,12 +127,14 @@
 					hidden: true,
 				},
 				matchSkills: {},
+				highlightPattern: null,
 			}
 		},
 
 		components: {
 			VAvatar,
 			VFilter,
+			VHighlight,
 			VSkillBadge,
 		},
 
@@ -151,14 +156,19 @@
 				return this.projects.length
 					? 'No projects matching the filter'
 					: 'No projects'
-			}
+			},
 		},
 
 		methods: {
 			onBeforeTrLeave,
 
-			filterProjects(value) {
-				this.projectsByKeyword = value
+			filterProjects({ matches, pattern }) {
+				this.projectsByKeyword = matches
+				this.highlightPattern = pattern
+			},
+
+			highlight(skill) {
+				return Boolean(this.highlightPattern && skill.skill_label.toUpperCase().match(this.highlightPattern))
 			},
 
 			async newProject() {

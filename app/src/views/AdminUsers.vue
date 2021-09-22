@@ -43,7 +43,7 @@
 					<transition-group name='flip-list' tag='tbody' @before-leave='onBeforeTrLeave'>
 						<tr v-for="user in filteredUsers" :key="user.id" class='context'>
 							<td data-label='User'><div class='table-stack-mobile-cell text-nowrap'>
-								<div class='hstack gap-2'>
+								<div class='hstack gap-2 justify-content-between'>
 									<router-link :to="{ name: 'user', params: { id: user.id}}">
 										<VAvatar
 											:id="user.id"
@@ -51,9 +51,9 @@
 											:lastName="user.lastname"
 											class='d-none d-md-inline-block me-2'
 										/>
-										<span>{{ user.firstname }} {{ user.lastname }}</span>
+										<VHighlight :text='`${user.firstname} ${user.lastname}`' :pattern='highlightPattern' />
 									</router-link>
-									<i v-if='user.is_hidden' class='bi-eye-slash-fill flex-grow-1 text-end'></i>
+									<i v-if='user.is_hidden' class='bi-eye-slash-fill text-end' title='Hidden user'></i>
 								</div>
 								<div>{{ user.email }}</div>
 							</div></td>
@@ -64,12 +64,13 @@
 										:key='skill.id'
 										:label='skill.skill_label'
 										:percentage="skill.level_percentage"
+										:highlight='highlight(skill)'
 									/>
 								</div>
 							</div></td>
 							<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 								<div class='context-actions'>
-									<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete(user)"><i class="bi-trash-fill"></i></button>
+									<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete(user)"><i class="bi-trash-fill" title='Delete user'></i></button>
 								</div>
 							</div></td>
 						</tr>
@@ -86,12 +87,21 @@
 <script>
 	import VAvatar from '../components/VAvatar.vue'
 	import VFilter from '../components/VFilter.vue'
+	import VHighlight from '../components/VHighlight.vue'
 	import VSkillBadge from '../components/VSkillBadge.vue'
 	import FormRegister from '../forms/FormRegister.vue'
 	import { onBeforeTrLeave } from '../transitions.js'
 
 	export default {
 		name: 'AdminListUsers',
+
+		components: {
+			VAvatar,
+			VFilter,
+			VHighlight,
+			VSkillBadge,
+		},
+
 		data() {
 			return {
 				users: [],
@@ -100,36 +110,47 @@
 					hidden: true,
 					employees: false,
 				},
+				highlightPattern: null,
 			}
 		},
-		components: {
-			VAvatar,
-			VFilter,
-			VSkillBadge,
-		},
+
 		computed: {
 			filteredUsers() {
 				return this.usersByKeyword
 					.filter(user => user.is_hidden ? this.filters.hidden : true)
 					.filter(user => this.filters.employees ? user.is_employee : true)
 			},
+
 			noUsersMessage() {
 				return this.users.length
 					? 'No users matching the filter'
 					: 'No users'
-			}
+			},
 		},
+
+		activated() {
+			this.getUsers()
+		},
+
 		methods: {
 			onBeforeTrLeave,
+
 			async getUsers() {
 				this.users = await this.$api.users.get()
 				this.users.forEach(user => {
 					user.skillLabels = user.skills.map(skill => skill.skill_label)
 				})
 			},
-			filterUsers(value) {
-				this.usersByKeyword = value
+
+			filterUsers({ matches, pattern }) {
+				this.usersByKeyword = matches
+				this.highlightPattern = pattern
 			},
+
+			highlight(skill) {
+				return Boolean(this.highlightPattern && skill.skill_label.match(this.highlightPattern))
+			},
+
 			async inviteUser() {
 				const result = await this.$modal({
 					title: 'Invite a user',
@@ -138,13 +159,11 @@
 
 				if (result) this.$store.dispatch('getProjects')
 			},
+
 			async confirmDelete(user) {
 				const success = await this.$confirm.delete('user', user)
 				if (success) this.getUsers()
 			},
 		},
-		activated() {
-			this.getUsers()
-		}
 	}
 </script>

@@ -16,3 +16,7 @@ body {
 		background-color: rgba($nav-tabs-link-active-bg, 0.5);
 	}
 }
+
+.table-striped {
+	border-bottom: solid 0.125rem var(--bs-table-striped-bg);
+}

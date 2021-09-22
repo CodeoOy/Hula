@@ -34,9 +34,9 @@
 				<ErrorMessage name='password' class='invalid-feedback shake' />
 			</div>
 
-			<div class='mt-label d-flex gap-3 align-items-center justify-content-between'>
-				<button type='submit' :disabled='sending' class='btn btn-primary gradient order-last align-self-start'>{{ submitLabel }}</button>
-				<div class='d-flex gap-3'>
+			<div class='mt-label d-flex gap-3 align-items-center justify-content-between flex-wrap'>
+				<button type='submit' :disabled='sending' class='btn btn-primary gradient align-self-start w-100 w-sm-auto order-sm-last'>{{ submitLabel }}</button>
+				<div class='d-flex gap-3 mt-3 mt-sm-0'>
 					<div><router-link :to='{ name: "forgot-password" }'>Forgot password?</router-link></div>
 					<div class='vr' />
 					<div>No account? <router-link :to='{ name: "register" }'>Sign&nbsp;up</router-link></div>

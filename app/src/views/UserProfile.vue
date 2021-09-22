@@ -8,13 +8,13 @@
 							<h1 class="h3 mb-0 flex-grow-1">
 								{{ user.firstname }} {{ user.lastname }}
 							</h1>
-							<i v-if='user.is_hidden' class="bi-eye-slash-fill ms-3 fs-3 lh-1"></i>
+							<i v-if='user.is_hidden' class="bi-eye-slash-fill ms-3 fs-3 lh-1" title='Hidden user'></i>
 						</div>
 						<div class='card-body'>
 							<div>{{ user.email }}</div>
 							<div class='context-actions hstack gap-1 justify-content-end'>
-								<button class='btn btn-unstyled px-1 rounded' v-on:click="editUser(user)"><i class="bi-pencil-fill"></i></button>
-								<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('user', user)"><i class="bi-trash-fill"></i></button>
+								<button class='btn btn-unstyled px-1 rounded' v-on:click="editUser(user)"><i class="bi-pencil-fill" title='Edit profile'></i></button>
+								<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('user', user)"><i class="bi-trash-fill" title='Delete profile'></i></button>
 							</div>
 						</div>
 					</div>
@@ -34,7 +34,7 @@
 											<td><a :href='downloadUrl(file.id)' target='_blank' rel='noopener noreferrer'>{{ file.filename }}</a></td>
 											<td class='text-end'>
 												<div class='context-actions'>
-													<button class='btn btn-unstyled px-1 rounded' v-on:click.prevent="confirmDelete('user.file', file)"><i class="bi-trash-fill"></i></button>
+													<button class='btn btn-unstyled px-1 rounded' v-on:click.prevent="confirmDelete('user.file', file)"><i class="bi-trash-fill" title='Delete file'></i></button>
 												</div>
 											</td>
 										</tr>
@@ -80,8 +80,8 @@
 										<td class='text-center'>{{ skill.years }}</td>
 										<td class='text-end'>
 											<div class='context-actions hstack gap-1 justify-content-end'>
-												<button class='btn btn-unstyled px-1 rounded' v-on:click="editSkill(skill)"><i class="bi-pencil-fill"></i></button>
-												<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('user.skill', skill)"><i class="bi-trash-fill"></i></button>
+												<button class='btn btn-unstyled px-1 rounded' v-on:click="editSkill(skill)"><i class="bi-pencil-fill" title='Edit skill'></i></button>
+												<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('user.skill', skill)"><i class="bi-trash-fill" title='Delete skill'></i></button>
 											</div>
 										</td>
 									</tr>
@@ -127,8 +127,8 @@
 									<td class='text-center' data-label='Workload'><div class='table-stack-mobile-cell'>{{ reservation.percentage }}%</div></td>
 									<td class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 										<div class='context-actions hstack gap-1 justify-content-end'>
-											<button class='btn btn-unstyled px-1 rounded' v-on:click="editReservation(reservation)"><i class="bi-pencil-fill"></i></button>
-											<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('user.reservation', reservation)"><i class="bi-trash-fill"></i></button>
+											<button class='btn btn-unstyled px-1 rounded' v-on:click="editReservation(reservation)"><i class="bi-pencil-fill" title='Edit reservation'></i></button>
+											<button class='btn btn-unstyled px-1 rounded' v-on:click="confirmDelete('user.reservation', reservation)"><i class="bi-trash-fill" title='Delete reservation'></i></button>
 										</div>
 									</div></td>
 								</tr>

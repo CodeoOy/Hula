@@ -23,7 +23,7 @@
 				</tbody>
 			</table>
 		</div>
-		<button class='btn btn-link' v-on:click="addOffer"><i class="bi-briefcase-fill"></i></button>
+		<button class='btn btn-primary mt-label float-end' @click='addOffer'>Offer</button>
     </div>
 </template>
 

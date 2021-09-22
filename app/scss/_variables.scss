@@ -4,6 +4,8 @@ $color-scheme: 'light' !default;
 
 $input-invalid-bg: null !default;
 
+$mark-text: null !default;
+
 $table-cell-padding-y-lg: 1rem !default;
 $table-cell-padding-x-lg: 1rem !default;
 
@@ -11,6 +13,8 @@ $skill-badge-bg-color: var(--bs-secondary) !default;
 $skill-badge-text-color: var(--bs-white) !default;
 $skill-badge-mandatory-bg-color: var(--bs-primary) !default;
 $skill-badge-mandatory-text-color: var(--bs-white) !default;
+$skill-badge-highlight-bg-color: null !default;
+$skill-badge-highlight-text-color: null !default;
 
 $tier-size: 3rem !default;
 
@@ -46,7 +50,7 @@ $avatar-palette: (
 );
 
 @font-face {
-    font-family: "bootstrap-icons";
-    src: url("assets/bootstrap-icons.woff2?856008caa5eb66df68595e734e59580d") format("woff2"),
-    url("assets/bootstrap-icons.woff?856008caa5eb66df68595e734e59580d") format("woff");
+	font-family: "bootstrap-icons";
+	src: url("assets/bootstrap-icons.woff2?856008caa5eb66df68595e734e59580d") format("woff2"),
+	url("assets/bootstrap-icons.woff?856008caa5eb66df68595e734e59580d") format("woff");
 }

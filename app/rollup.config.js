@@ -4,6 +4,7 @@ import postcss from 'rollup-plugin-postcss'
 import autoprefixer from 'autoprefixer'
 import replace from '@rollup/plugin-replace'
 import copy from 'rollup-plugin-copy-assets'
+import { terser } from "rollup-plugin-terser"
 import skinner from './rollup-plugin-hula-skinner.js'
 
 const production = !process.env.ROLLUP_WATCH
@@ -22,7 +23,7 @@ export default {
 		
 		replace({
 			preventAssignment: true,
-			'process.env.NODE_ENV': JSON.stringify('development'),
+			'process.env.NODE_ENV': JSON.stringify(production ? 'production' : 'development'),
 			'__VUE_PROD_DEVTOOLS__': !production,
 			'__VUE_OPTIONS_API__': true,
 		}),
@@ -30,6 +31,8 @@ export default {
 		vue(),
 
 		skinner(),
+
+		production && terser(),
 
 		postcss({
 			extract: true,
