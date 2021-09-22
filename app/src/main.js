@@ -10,14 +10,20 @@ import router from './router.js'
 import App from './App.vue'
 import 'bootstrap'
 import { Tooltip } from 'bootstrap'
-import { Form, Field, ErrorMessage, configure } from 'vee-validate'
+import { Form, Field, ErrorMessage } from 'vee-validate'
 import './validation.js'
 
 // Enable Bootstrap tooltips
-new Tooltip(document.body, { selector: '[title]' })
+new Tooltip(document.body, {
+	selector: '[title]',
+	delay: { show: 300, hide: 0 },
+})
 
-configure({
-	validateOnBlur: false, // Empty required fields make the forms grow -> Forgot password link etc. will dodge the click
+// Close tooltips on click (otherwise they stay on top of modals)
+document.body.addEventListener('click', () => {
+	for (const el of document.querySelectorAll('.tooltip')) {
+		Tooltip.getInstance(el).hide()
+	}
 })
 
 const app = createApp(App)

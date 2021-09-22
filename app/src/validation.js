@@ -1,6 +1,10 @@
 import state from './store/state.js'
-import { defineRule } from 'vee-validate'
+import { defineRule, configure } from 'vee-validate'
 import { required, email, confirmed, min_value } from '@vee-validate/rules'
+
+configure({
+	validateOnBlur: false, // Empty required fields make the forms grow -> Forgot password link etc. will dodge the click
+})
 
 defineRule('required', required)
 defineRule('email', email)
