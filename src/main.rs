@@ -117,15 +117,14 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/users/{user_id}/projects/{project_id}/favorites")
 							.route(web::post().to(handlers::users_handler::add_favorite_project))
-							.route(web::delete().to(handlers::users_handler::delete_favorite_project))
+							.route(web::delete().to(handlers::users_handler::delete_favorite_project)),
 					)
 					.service(
 						web::resource("/users/{id}/favorites")
-						.route(web::get().to(handlers::users_handler::get_favorite_projects))
+							.route(web::get().to(handlers::users_handler::get_favorite_projects)),
 					)
 					.service(
-						web::resource("/users/{id}/skills")
-							.route(web::post().to(handlers::users_handler::add_skill))
+						web::resource("/users/{id}/skills").route(web::post().to(handlers::users_handler::add_skill)),
 					)
 					.service(
 						web::resource("/users/skills/{id}")
@@ -135,7 +134,7 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/users/{id}/reservations")
 							.route(web::post().to(handlers::users_handler::add_reservation))
-							.route(web::get().to(handlers::users_handler::get_reservations))
+							.route(web::get().to(handlers::users_handler::get_reservations)),
 					)
 					.service(
 						web::resource("/users/reservations/{id}")
@@ -213,11 +212,11 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/projects/{id}/needs")
 							.route(web::post().to(handlers::projects_handler::create_projectneed))
-							.route(web::get().to(handlers::projects_handler::get_project_needs))
+							.route(web::get().to(handlers::projects_handler::get_project_needs)),
 					)
 					.service(
 						web::resource("/projects/{id}/favorites")
-							.route(web::get().to(handlers::projects_handler::get_favorites))
+							.route(web::get().to(handlers::projects_handler::get_favorites)),
 					)
 					.service(
 						web::resource("/projects/needs/{id}")
@@ -227,7 +226,7 @@ async fn main() -> std::io::Result<()> {
 					.service(
 						web::resource("/projects/needs/{id}/skills")
 							.route(web::post().to(handlers::projects_handler::create_projectneedskill))
-							.route(web::get().to(handlers::projects_handler::get_projectneedskills))
+							.route(web::get().to(handlers::projects_handler::get_projectneedskills)),
 					)
 					.service(
 						web::resource("/projects/needs/skills/{id}")

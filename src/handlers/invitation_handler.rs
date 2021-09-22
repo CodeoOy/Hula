@@ -96,12 +96,12 @@ fn query_invitation(
 			return Err(ServiceError::Unauthorized);
 		}
 		Err(NotFound) => {
-			let mut reset_request_id :Option<uuid::Uuid> = None;
+			let mut reset_request_id: Option<uuid::Uuid> = None;
 
 			if password_pending {
 				let reset_request = reset_requests_repository::create_reset_request(eml.clone(), &pool)?;
-				reset_request_id = Some(reset_request.id); 
-			} 
+				reset_request_id = Some(reset_request.id);
+			}
 
 			let invitation = invitations_repository::create_invitation(
 				eml,

@@ -31,7 +31,7 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
 
 	let reset_request_id = match invitation.reset_request_id {
 		Some(x) => Some(x.to_string()),
-		None => None
+		None => None,
 	};
 
 	let url = Url::parse_with_params(

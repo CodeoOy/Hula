@@ -558,10 +558,7 @@ pub async fn get_favorite_projects(
 	}
 
 	let user = users_repository::get(user_id, &pool)?;
-	let res = web::block(move || {
-		userfavorites_repository::query_belong_to_user(&user.into(), &pool)
-	})
-	.await;
+	let res = web::block(move || userfavorites_repository::query_belong_to_user(&user.into(), &pool)).await;
 	match res {
 		Ok(project) => Ok(HttpResponse::Ok().json(&project)),
 		Err(err) => match err {

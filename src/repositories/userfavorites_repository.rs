@@ -16,7 +16,7 @@ pub fn query_belong_to_user(user: &User, pool: &web::Data<Pool>) -> Result<Vec<U
 }
 
 pub fn query_by_project(q_project_id: uuid::Uuid, pool: &web::Data<Pool>) -> Result<Vec<UserFavorite>, Error> {
-	use crate::schema::userfavorites::dsl::{userfavorites, project_id};
+	use crate::schema::userfavorites::dsl::{project_id, userfavorites};
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let items = userfavorites
@@ -49,18 +49,20 @@ pub fn add_favorite_project(
 	Ok(favorite)
 }
 
-pub fn delete_favorite_project(	
+pub fn delete_favorite_project(
 	q_user_id: uuid::Uuid,
 	q_project_id: uuid::Uuid,
-	pool: &web::Data<Pool>)
--> Result<(), Error> {
+	pool: &web::Data<Pool>,
+) -> Result<(), Error> {
 	let conn: &PgConnection = &pool.get().unwrap();
 	use crate::schema::userfavorites::dsl::*;
 
-	let deleted = diesel::delete(userfavorites
-		.filter(user_id.eq(q_user_id))
-		.filter(project_id.eq(q_project_id)))
-		.execute(conn)?;
+	let deleted = diesel::delete(
+		userfavorites
+			.filter(user_id.eq(q_user_id))
+			.filter(project_id.eq(q_project_id)),
+	)
+	.execute(conn)?;
 
 	if deleted > 0 {
 		return Ok(());

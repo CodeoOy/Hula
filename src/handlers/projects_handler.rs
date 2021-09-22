@@ -174,10 +174,7 @@ pub async fn get_favorites(
 		return Err(ServiceError::AdminRequired);
 	}
 
-	let res = web::block(move || {
-		userfavorites_repository::query_by_project(project_id, &pool)
-	})
-	.await;
+	let res = web::block(move || userfavorites_repository::query_by_project(project_id, &pool)).await;
 	match res {
 		Ok(favorites) => Ok(HttpResponse::Ok().json(&favorites)),
 		Err(err) => match err {
