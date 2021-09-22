@@ -32,27 +32,27 @@
 					<div class='card-body'>
 						<ul v-if='project.needs.length' class='list-group list-group-flush list-group-transparent mx-n3 my-n2'>
 							<li class='list-group-item' v-for='need in project.needs' :key='need.id'>
-								<div class='context d-flex flex-wrap justify-content-between align-items-baseline mb-3'>
-									<div>
+								<div class='context mb-3'>
+									<div class='hstack gap-3 justify-content-between'>
 										<h3 class='h5'>{{ need.label }}</h3>
-										<div>
-											<time :datetime='need.begin_time.toISOString()'>
-												{{ need.begin_time.toLocaleDateString() }}
-											</time>
-											<template v-if='need.end_time'>
-												<span>&nbsp;&mdash; </span>
-												<time :datetime='need.end_time.toISOString()'>
-													{{ need.end_time.toLocaleDateString() }}
-												</time>
-											</template>
+										<div v-if='isAdmin' class='context-actions hstack gap-1 align-items-start'>
+											<button class='btn btn-unstyled px-1 rounded' v-on:click='editSkill({ need })'><i class='bi-plus-circle-fill' title='Add skill'></i></button>
+											<button class='btn btn-unstyled px-1 rounded' v-on:click='editNeed(need)'><i class='bi-pencil-fill' title='Edit role'></i></button>
+											<button class='btn btn-unstyled px-1 rounded' v-on:click='confirmDelete("need", need)'><i class='bi-trash-fill' title='Delete role'></i></button>
 										</div>
-										<div>{{ formatPositions(need.count_of_users) }} at workload of {{ need.percentage }}%</div>
 									</div>
-									<div v-if='isAdmin' class='context-actions hstack gap-1 justify-content-end'>
-										<button class='btn btn-unstyled px-1 rounded' v-on:click='editSkill({ need })'><i class='bi-plus-circle-fill' title='Add skill'></i></button>
-										<button class='btn btn-unstyled px-1 rounded' v-on:click='editNeed(need)'><i class='bi-pencil-fill' title='Edit role'></i></button>
-										<button class='btn btn-unstyled px-1 rounded' v-on:click='confirmDelete("need", need)'><i class='bi-trash-fill' title='Delete role'></i></button>
+									<div>
+										<time :datetime='need.begin_time.toISOString()'>
+											{{ need.begin_time.toLocaleDateString() }}
+										</time>
+										<template v-if='need.end_time'>
+											<span>&nbsp;&mdash; </span>
+											<time :datetime='need.end_time.toISOString()'>
+												{{ need.end_time.toLocaleDateString() }}
+											</time>
+										</template>
 									</div>
+									<div>{{ formatPositions(need.count_of_users) }} at workload of {{ need.percentage }}%</div>
 								</div>
 								<div>
 									<table class="table table-striped mb-0 table-stack-mobile" :class='$colorScheme.table'>
@@ -61,8 +61,7 @@
 												<th scope='col'>Skill</th>
 												<th scope='col' class='text-center'>Mandatory</th>
 												<th scope='col' class='text-center'>Min level</th>
-												<th scope='col' class='text-center'>Min years</th>
-												<th scope='col' class='text-center'>Max years</th>
+												<th scope='col' class='text-center'>Years</th>
 												<th v-if='isAdmin' scope='col' class='text-end'>Actions</th>
 											</tr>
 										</thead>
@@ -70,11 +69,10 @@
 											<tr v-for="skill in need.skills" :key="skill.id" class='context'>
 												<td data-label='Skill'><div class='table-stack-mobile-cell'>{{ skill.skill_label }}</div></td>
 												<td class='text-center' data-label='Mandatory'><div class='table-stack-mobile-cell'>
-													<i v-if='skill.mandatory' class='bi-check-lg'></i>
+													<i v-if='skill.mandatory' class='bi-check-lg' title='Mandatory skill'></i>
 												</div></td>
 												<td class='text-center' data-label='Min level'><div class='table-stack-mobile-cell'>{{ skill.skillscopelevel_label }}</div></td>
-												<td class='text-center' data-label='Min years'><div class='table-stack-mobile-cell'>{{ skill.min_years }}</div></td>
-												<td class='text-center' data-label='Max years'><div class='table-stack-mobile-cell'>{{ skill.max_years }}</div></td>
+												<td class='text-center' data-label='Years'><div class='table-stack-mobile-cell'>{{ formatYears(skill) }}</div></td>
 												<td v-if='isAdmin' class='text-end' data-label='Actions'><div class='table-stack-mobile-cell'>
 													<div class='context-actions hstack gap-1 justify-content-end'>
 														<button class='btn btn-unstyled px-1 rounded' v-on:click='editSkill({ need, skill })'><i class='bi-pencil-fill' title='Edit skill'></i></button>
@@ -157,6 +155,12 @@
 		},
 
 		methods: {
+			formatYears({ min_years, max_years }) {
+				let years = min_years || 0
+				if (max_years) years+= ` — ${max_years}`
+				return years
+			},
+
 			formatPositions(nr) {
 				return `${nr} position${nr == 1 ? '' : 's'}`
 			},
