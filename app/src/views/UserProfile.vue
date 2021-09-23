@@ -152,10 +152,10 @@
 </template>
 
 <script>
-	import FormUserInfo from '../forms/FormUserInfo.vue'
-	import FormUserSkill from '../forms/FormUserSkill.vue'
-	import FormUserReservation from '../forms/FormUserReservation.vue'
-	import VMatchesForUser from '../components/VMatchesForUser.vue'
+	import FormUserInfo from '@forms/FormUserInfo.vue'
+	import FormUserSkill from '@forms/FormUserSkill.vue'
+	import FormUserReservation from '@forms/FormUserReservation.vue'
+	import VMatchesForUser from '@components/VMatchesForUser.vue'
 
 	export default {
 		name: 'UserProfile',

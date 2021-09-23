@@ -48,8 +48,8 @@
 </template>
 
 <script>
-	import MatchContent from './MatchContent.vue'
-	import VSkillBadge from './VSkillBadge.vue'
+	import MatchContent from '@components/MatchContent.vue'
+	import VSkillBadge from '@components/VSkillBadge.vue'
 
 	export default {
 		name: 'VMatchesForProject',

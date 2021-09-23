@@ -12,7 +12,7 @@
 </template>
 
 <script>
-	import FormRegister from '../forms/FormRegister.vue'
+	import FormRegister from '@forms/FormRegister.vue'
 
 	export default {
 		name: 'Register',

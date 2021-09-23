@@ -60,10 +60,10 @@
 </template>
 
 <script>
-	import FormOffer from '../forms/FormOffer.vue'
-	import VFilter from '../components/VFilter.vue'
-	import VHighlight from '../components/VHighlight.vue'
-	import { onBeforeTrLeave } from '../transitions.js'
+	import FormOffer from '@forms/FormOffer.vue'
+	import VFilter from '@components/VFilter.vue'
+	import VHighlight from '@components/VHighlight.vue'
+	import { onBeforeTrLeave } from '@root/transitions.js'
 
 	export default {
 		name: 'AdminListOffers',

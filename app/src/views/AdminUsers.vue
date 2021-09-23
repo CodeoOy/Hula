@@ -85,12 +85,12 @@
 </template>
 
 <script>
-	import VAvatar from '../components/VAvatar.vue'
-	import VFilter from '../components/VFilter.vue'
-	import VHighlight from '../components/VHighlight.vue'
-	import VSkillBadge from '../components/VSkillBadge.vue'
-	import FormRegister from '../forms/FormRegister.vue'
-	import { onBeforeTrLeave } from '../transitions.js'
+	import VAvatar from '@components/VAvatar.vue'
+	import VFilter from '@components/VFilter.vue'
+	import VHighlight from '@components/VHighlight.vue'
+	import VSkillBadge from '@components/VSkillBadge.vue'
+	import FormRegister from '@forms/FormRegister.vue'
+	import { onBeforeTrLeave } from '@root/transitions.js'
 
 	export default {
 		name: 'AdminListUsers',

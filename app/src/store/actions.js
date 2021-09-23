@@ -1,6 +1,6 @@
-import { api } from '../api.js'
+import { api } from '@root/api.js'
 
-import router from '../router.js'
+import router from '@root/router.js'
 
 export default {
 	async setUser(context, data) {

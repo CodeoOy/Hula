@@ -31,7 +31,7 @@
 </template>
 
 <script>
-	import VSkillBadge from './VSkillBadge.vue'
+	import VSkillBadge from '@components/VSkillBadge.vue'
 
 	export default {
 		name: 'VMatchesForUser',

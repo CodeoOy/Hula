@@ -1,4 +1,4 @@
-import state from './store/state.js'
+import state from '@store/state.js'
 import { defineRule, configure } from 'vee-validate'
 import { required, email, confirmed, min_value } from '@vee-validate/rules'
 

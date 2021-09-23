@@ -15,7 +15,7 @@
 </template>
 
 <script>
-	import VModal from './VModal.vue'
+	import VModal from '@components/VModal.vue'
 	
 	export default {
 		name: 'TheModal',

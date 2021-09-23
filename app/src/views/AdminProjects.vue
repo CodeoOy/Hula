@@ -108,13 +108,13 @@
 </template>
 
 <script>
-	import MatchContent from '../components/MatchContent.vue'
-	import FormProject from '../forms/FormProject.vue'
-	import VFilter from '../components/VFilter.vue'
-	import VHighlight from '../components/VHighlight.vue'
-	import VAvatar from '../components/VAvatar.vue'
-	import VSkillBadge from '../components/VSkillBadge.vue'
-	import { onBeforeTrLeave } from '../transitions.js'
+	import MatchContent from '@components/MatchContent.vue'
+	import FormProject from '@forms/FormProject.vue'
+	import VFilter from '@components/VFilter.vue'
+	import VHighlight from '@components/VHighlight.vue'
+	import VAvatar from '@components/VAvatar.vue'
+	import VSkillBadge from '@components/VSkillBadge.vue'
+	import { onBeforeTrLeave } from '@root/transitions.js'
 
 	export default {
 		name: 'AdminListProjects',

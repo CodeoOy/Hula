@@ -1,5 +1,5 @@
 import { ref, shallowRef } from 'vue'
-import TheModal from '../../components/TheModal.vue'
+import TheModal from '@components/TheModal.vue'
 import confirm from './confirm.js'
 
 export default {

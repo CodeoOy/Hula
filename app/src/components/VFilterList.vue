@@ -21,7 +21,7 @@
 </template>
 
 <script>
-	import VFilter from './VFilter.vue'
+	import VFilter from '@components/VFilter.vue'
 
 	export default {
 		name: 'VFilterList',

@@ -103,10 +103,10 @@
 </template>
 
 <script>
-	import FormProject from '../forms/FormProject.vue'
-	import FormProjectNeed from '../forms/FormProjectNeed.vue'
-	import FormProjectNeedSkill from '../forms/FormProjectNeedSkill.vue'
-	import VMatchesForProject from '../components/VMatchesForProject.vue'
+	import FormProject from '@forms/FormProject.vue'
+	import FormProjectNeed from '@forms/FormProjectNeed.vue'
+	import FormProjectNeedSkill from '@forms/FormProjectNeedSkill.vue'
+	import VMatchesForProject from '@components/VMatchesForProject.vue'
 
 	export default {
 		name: 'Project',

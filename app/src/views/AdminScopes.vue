@@ -56,8 +56,8 @@
 </template>
 
 <script>
-	import FormSkillScope from '../forms/FormSkillScope.vue'
-	import FormSkillScopeLevel from '../forms/FormSkillScopeLevel.vue'
+	import FormSkillScope from '@forms/FormSkillScope.vue'
+	import FormSkillScopeLevel from '@forms/FormSkillScopeLevel.vue'
 
 	export default {
 		name: 'AdminListSkills',

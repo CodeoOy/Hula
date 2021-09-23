@@ -1,4 +1,4 @@
-import router from '../router.js'
+import router from '@root/router.js'
 
 const ensureArray = value => {
 	if (!Array.isArray(value)) {

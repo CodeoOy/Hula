@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { navigation } from '../views/Admin.vue'
+import { navigation } from '@views/Admin.vue'
 
 export default {
 	name: 'TheHeader',

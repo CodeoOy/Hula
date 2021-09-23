@@ -13,7 +13,7 @@
 </template>
 
 <script>
-	import VMatchesForUser from '../components/VMatchesForUser.vue'
+	import VMatchesForUser from '@components/VMatchesForUser.vue'
 
 	export default {
 		name: 'HomeUser',

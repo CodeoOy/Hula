@@ -12,7 +12,7 @@
 </template>
 
 <script>
-	import FormResetPassword from '../forms/FormResetPassword.vue'
+	import FormResetPassword from '@forms/FormResetPassword.vue'
 
 	export default {
 		name: 'Confirm',

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-	import FormForgotPassword from '../forms/FormForgotPassword.vue'
+	import FormForgotPassword from '@forms/FormForgotPassword.vue'
 
 	export default {
 		name: 'ForgotPassword',

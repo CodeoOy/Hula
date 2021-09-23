@@ -54,8 +54,8 @@
 </template>
 
 <script>
-	import FormSkill from '../forms/FormSkill.vue'
-	import FormSkillCategory from '../forms/FormSkillCategory.vue'
+	import FormSkill from '@forms/FormSkill.vue'
+	import FormSkillCategory from '@forms/FormSkillCategory.vue'
 
 	export default {
 		name: 'AdminListSkills',
