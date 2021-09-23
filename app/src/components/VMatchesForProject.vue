@@ -3,7 +3,7 @@
 		<table class="table table-striped mb-0" :class='$colorScheme.table'>
 			<thead>
 				<tr>
-					<th scope="col" class='d-none d-sm-block'>
+					<th scope="col" class='d-none d-sm-table-cell'>
 						<div class='visually-hidden'>Match order</div>
 					</th>
 					<th scope="col">Name</th>

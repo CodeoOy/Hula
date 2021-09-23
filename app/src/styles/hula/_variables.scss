@@ -60,7 +60,6 @@ $text-muted: $gray-600;
 
 $link-color: $primary;
 $link-hover-color: $pink;
-$link-decoration: none;
 
 $navbar-dark-brand-color: $teal;
 $navbar-dark-brand-hover-color: $navbar-dark-brand-color;
@@ -128,3 +127,15 @@ $tier-1-text-color: $tier-text-color;
 $tier-2-row-bg-color: mix($tier-1-row-bg-color, $dark);
 $tier-2-bg-color: $teal;
 $tier-2-text-color: $tier-text-color;
+
+$avatar-palette: (
+	$blue,
+	$indigo,
+	$pink,
+	$red,
+	$orange,
+	$yellow,
+	$green,
+	$teal,
+	$cyan,
+);

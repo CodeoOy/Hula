@@ -4,6 +4,8 @@ $color-scheme: 'light' !default;
 
 $input-invalid-bg: null !default;
 
+$link-decoration: none !default;
+
 $mark-text: null !default;
 
 $table-cell-padding-y-lg: 1rem !default;
@@ -38,19 +40,6 @@ $avatar-text-colors: (
 );
 
 $avatar-palette: (
-	$blue,
-	$indigo,
-	$pink,
-	$red,
-	$orange,
-	$yellow,
-	$green,
-	$teal,
-	$cyan,
-);
-
-@font-face {
-	font-family: "bootstrap-icons";
-	src: url("assets/bootstrap-icons.woff2?856008caa5eb66df68595e734e59580d") format("woff2"),
-	url("assets/bootstrap-icons.woff?856008caa5eb66df68595e734e59580d") format("woff");
-}
+	black,
+	white,
+) !default;

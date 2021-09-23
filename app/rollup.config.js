@@ -3,9 +3,11 @@ import vue from 'rollup-plugin-vue'
 import postcss from 'rollup-plugin-postcss'
 import autoprefixer from 'autoprefixer'
 import replace from '@rollup/plugin-replace'
-import copy from 'rollup-plugin-copy-assets'
+import html from '@rollup/plugin-html'
+import copy from 'rollup-plugin-copy'
 import { terser } from "rollup-plugin-terser"
 import skinner from './rollup-plugin-hula-skinner.js'
+import htmlTemplate from './index.html.js'
 
 const production = !process.env.ROLLUP_WATCH
 
@@ -15,6 +17,7 @@ export default {
 		dir: '../public',
 		format: 'iife',
 		sourcemap: !production,
+		entryFileNames: production ? '[name]-[hash].js' : '[name].js',
 	},
 
 	plugins: [
@@ -44,10 +47,23 @@ export default {
 		}),
 
 		copy({
-			assets: [
-				'assets',
-				'index.html',
+			copyOnce: true,
+			targets: [
+				{ src: './assets/**/*', dest: '../public/assets' },
+				{ src: './src/styles/hula/assets/**/*', dest: '../public/assets' },
+				{ src: './src/styles/custom/assets/**/*', dest: '../public/assets' },
+				{ src: './node_modules/bootstrap-icons/font/fonts/*', dest: '../public/fonts' },
+			]
+		}),
+
+		html({
+			title: 'Hula',
+			publicPath: '/public',
+			meta: [
+				{ charset: 'utf-8' },
+				{ name: 'viewport', content: 'width=device-width, initial-scale=1' },
 			],
+			template: htmlTemplate,
 		}),
 	]
 }

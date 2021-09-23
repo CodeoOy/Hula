@@ -1,5 +1,5 @@
-import FormConfirm from '../forms/FormConfirm.vue'
-import { api } from '../api.js'
+import FormConfirm from '../../forms/FormConfirm.vue'
+import { api } from '../../api.js'
 
 export default modal => {
 	const confirm = ({ title, ok = 'OK', cancel = 'Cancel' } = {}) => modal({
