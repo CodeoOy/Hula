@@ -137,7 +137,7 @@
 						<div v-else class='fs-3 fw-light text-muted text-center p-4'>No reservations</div>
 					</div>
 				</div>
-				<div class="card shadow mt-4" :class='$colorScheme.card'>
+				<div v-if='$store.state.loggeduser.isadmin' class="card shadow mt-4" :class='$colorScheme.card'>
 					<div class='card-header'>
 						<h3 class="h3 mb-0">Projects matching the user's skills</h3>
 					</div>
@@ -194,21 +194,19 @@
 			},
 		},
 
-		async mounted() {
-			if (this.$store.state.loggeduser.isadmin && !this.$store.state.projects.length) {
-				this.$store.dispatch('getProjects')
-			}
-
-			await Promise.all([
-				this.getUser(),
-				this.getReservations(),
-				this.getUploads(),
-			])
+		mounted() {
+			this.getUser()
+			this.getReservations()
+			this.getUploads()
 		},
 
 		methods: {
 			async getUser() {
+				// Update matches
+				if (this.$store.state.loggeduser.isadmin) this.$store.dispatch('getProjects')
+
 				const promises = [ this.$api.users.get({ id: this.$route.params.id }) ]
+
 				if (!this.$store.state.skillLevels.length) promises.push(this.$store.dispatch('getSkillLevels'))
 
 				const [ user ] = await Promise.all(promises)

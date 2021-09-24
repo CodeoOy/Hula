@@ -39,9 +39,9 @@ export default {
 		if (typeof data == 'string') {
 			const promises = [
 				api.projects.get({ id: data }),
-				api.projects.favorites.get({ id: data }),
 			]
 
+			if (context.state.loggeduser.isadmin) promises.push(api.projects.favorites.get({ id: data }))
 			if (!context.state.skills.length) promises.push(context.dispatch('getSkills'))
 			if (!context.state.skillLevels.length) promises.push(context.dispatch('getSkillLevels'))
 
@@ -50,7 +50,7 @@ export default {
 				favorites,
 			] = await Promise.all(promises)
 
-			project.favorites = favorites.map(favorite => favorite.user_id)
+			if (favorites) project.favorites = favorites.map(favorite => favorite.user_id)
 
 			project.needs.forEach(need => {
 				need.skills.forEach(skill => {

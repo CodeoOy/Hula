@@ -147,11 +147,8 @@
 			}
 		},
 
-		async mounted() {
-			this.$store.dispatch('setChosenProject', this.$route.params.id)
-			if (this.$store.state.loggeduser.isadmin) {
-				this.matches = await this.$api.matches.get({ id: this.$route.params.id })
-			}
+		mounted() {
+			this.getProject()
 		},
 
 		methods: {
@@ -163,6 +160,13 @@
 
 			formatPositions(nr) {
 				return `${nr} position${nr == 1 ? '' : 's'}`
+			},
+
+			async getProject() {
+				this.$store.dispatch('setChosenProject', this.$route.params.id)
+				if (this.$store.state.loggeduser.isadmin) {
+					this.matches = await this.$api.matches.get({ id: this.$route.params.id })
+				}
 			},
 
 			async editProject(props = {}) {
@@ -188,7 +192,7 @@
 					component: FormProjectNeed,
 					props: { ...props, project_id: this.$route.params.id },
 				})
-				if (result) this.$store.dispatch('setChosenProject', this.$route.params.id)
+				if (result) this.getProject()
 			},
 
 			async editSkill({ need = {}, skill = {} } = {}) {
@@ -201,7 +205,7 @@
 						disabledSkills: need.skills.map(skill => skill.skill_id),
 					},
 				})
-				if (result) this.$store.dispatch('setChosenProject', this.$route.params.id)
+				if (result) this.getProject()
 			},
 
 			async confirmDelete(type, data) {
