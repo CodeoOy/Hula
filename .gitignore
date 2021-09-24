@@ -1,3 +1,5 @@
+.deploy.sh
+*.pem
 .env
 test.db
 /temp

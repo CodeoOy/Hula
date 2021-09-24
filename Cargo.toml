@@ -1,8 +1,8 @@
 [package]
-name = "poc-rust-vue"
+name = "hula"
 version = "0.1.0"
 license="MPL-2.0+/LGPL-3.0+"
-authors = ["ninjapiraatti"]
+authors = ["ninjapiraatti", "sintopek", "TummeliRuonakoski"]
 edition = "2018"
 
 [dependencies]

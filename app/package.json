@@ -22,7 +22,7 @@
 		"sass": "^1.38.2"
 	},
 	"dependencies": {
-		"@popperjs/core": "^2.9.2",
+		"@popperjs/core": "^2.10.1",
 		"@smartweb/vue-flash-message": "^1.0.0-alpha.12",
 		"@vee-validate/rules": "^4.4.7",
 		"bootstrap": "^5.1.0",
