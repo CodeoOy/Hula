@@ -4,7 +4,7 @@ This POC is made for an open source project which I will link here once it is la
 
 The web server part is essentially a direct clone of [Harry Gill's](https://gill.net.in) very good tutorial. It can be found [here.](https://gill.net.in/posts/auth-microservice-rust-actix-web1.0-diesel-complete-tutorial/) At the time of writing (2021), Rust is a relatively young language so bear in mind that newer and better techniques might be around.
 
-### Prerequisites
+## Prerequisites
 
 - [Diesel_cli](http://diesel.rs/guides/getting-started/).
 - Postgres
@@ -12,7 +12,7 @@ The web server part is essentially a direct clone of [Harry Gill's](https://gill
 - Node.js
 - Email service API key, I used sparkpost account for this
 
-### Deployment
+## Deployment
 
 1. Create a postgres database
 2. Clone this repo
@@ -35,3 +35,26 @@ PROJECT_EXPIRY_SECS=2592000
 9. From the root, setup diesel: `diesel migration run` and then `diesel setup`
 10. From the root, run `cargo run`
 11. App SHOULD be up at localhost:8086.
+
+## Customizing the User Interface
+
+The User Interface is built with [Bootstrap](https://getbootstrap.com) and can be customized with variables. The built in theme is located in the `app/src/styles/hula` directory and site specific customizations should be in `app/src/styles/custom`. The built in theme is completely ignored when `custom` exists.
+
+### Theme structure
+
+```
+app/src/styles/custom
+├── _main.scss
+├── _variables.scss
+└── assets
+    └── bg.jpg
+```
+
+**\_variables.scss**  
+Define colors and other variables for Bootstrap. `_variables.scss` is prepended to the `main.scss` and it doesn't know about any Bootstrap variables. Any default Bootstrap variables (like `$primary: lighten($blue, 10%);`) need to be copied from Bootstrap's `_variables.scss`.
+
+**\_main.scss**  
+Override default Bootstrap and Hula styles. `_main.scss` is appended to the `main.scss` and all Bootstrap variables, mixins and functions can be used.
+
+**assets directory**  
+Custom assets, like background image. Files in `assets` are copied to `public/assets`.
