@@ -63,7 +63,7 @@ pub fn update(
 	pool: &web::Data<Pool>,
 ) -> Result<User, Error> {
 	use crate::schema::users::dsl::{
-		firstname, id, is_employee, is_hidden, isadmin, lastname, main_upload_id, updated_by, users,
+		firstname, id, is_employee, is_hidden, isadmin, lastname, main_upload_id, updated_by, users, email
 	};
 	let conn: &PgConnection = &pool.get().unwrap();
 
@@ -72,10 +72,11 @@ pub fn update(
 		.set((
 			firstname.eq(q_first_name),
 			lastname.eq(q_last_name),
+			email.eq(q_email.clone()),
 			is_hidden.eq(q_user_is_hidden),
 			is_employee.eq(q_user_is_employee),
 			isadmin.eq(q_user_is_admin),
-			updated_by.eq(q_email),
+			updated_by.eq(q_email.clone()),
 			main_upload_id.eq(q_main_upload_id),
 		))
 		.get_result::<User>(conn)?;
