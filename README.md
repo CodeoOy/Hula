@@ -6,9 +6,10 @@ The web server part is essentially a direct clone of [Harry Gill's](https://gill
 
 ## Prerequisites
 
-- [Diesel_cli](http://diesel.rs/guides/getting-started/).
 - Postgres
 - Rust
+- [Diesel_cli](http://diesel.rs/guides/getting-started/)
+    * `cargo install diesel_cli --no-default-features --features postgres`
 - Node.js
 - Email service API key, I used sparkpost account for this
 
