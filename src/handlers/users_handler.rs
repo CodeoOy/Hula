@@ -136,8 +136,10 @@ pub async fn update_user(
 	);
 
 	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
-
-	if logged_user.isadmin == false && logged_user.uid != id {
+ 
+	// Note: non-admin user is not allowed to update even hers own user resource.
+	// Otherwise, the user would be able e.g. to toggle isadmin flag.
+	if !logged_user.isadmin {
 		return Err(ServiceError::AdminRequired);
 	}
 
