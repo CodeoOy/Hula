@@ -1,9 +1,21 @@
 use crate::models::users::{Pool, User};
+use crate::schema::users;
 use crate::utils::hash_password;
 use actix_web::web;
 use diesel::result::Error;
 use diesel::{prelude::*, PgConnection};
+use diesel;
+
 use Error::NotFound;
+#[derive(diesel::AsChangeset)]
+#[table_name="users"]
+struct UserPatch {
+		firstname: Option<String>,
+		lastname: Option<String>,
+		email: Option<String>,
+		is_hidden: Option<bool>,
+		updated_by: String
+}
 
 pub fn query_all(pool: &web::Data<Pool>) -> Result<Vec<User>, Error> {
 	use crate::schema::users::dsl::{firstname, lastname, users};
@@ -79,6 +91,36 @@ pub fn update(
 			updated_by.eq(q_email.clone()),
 			main_upload_id.eq(q_main_upload_id),
 		))
+		.get_result::<User>(conn)?;
+
+	Ok(user)
+}
+
+pub fn patch(
+	uuid_data: uuid::Uuid,
+	q_first_name: Option<String>,
+	q_last_name: Option<String>,
+	q_user_is_hidden: Option<bool>,
+	q_email: Option<String>,
+	q_updated_by: String,
+	pool: &web::Data<Pool>,
+) -> Result<User, Error> {
+	use crate::schema::users::dsl::{
+		users, id
+	};
+	let conn: &PgConnection = &pool.get().unwrap();
+
+	let user = diesel::update(users)
+		.filter(id.eq(uuid_data))
+		.set(
+			&UserPatch {
+				firstname: q_first_name,
+				lastname: q_last_name,
+				email: q_email,
+				updated_by: q_updated_by,
+				is_hidden: q_user_is_hidden
+			}
+		)
 		.get_result::<User>(conn)?;
 
 	Ok(user)

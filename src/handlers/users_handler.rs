@@ -24,11 +24,11 @@ pub struct QueryData {
 }
 
 #[derive(Deserialize, Debug)]
-pub struct NewUserData {
-	pub email: String,
-	pub password: String,
-	pub firstname: String,
-	pub lastname: String,
+pub struct UserPatchData {
+	pub firstname: Option<String>,
+	pub lastname: Option<String>,
+	pub email: Option<String>,
+	pub is_hidden: Option<bool>
 }
 
 #[derive(Deserialize, Debug)]
@@ -154,6 +154,48 @@ pub async fn update_user(
 			payload.email.clone(),
 			payload.main_upload_id,
 			&pool,
+		)
+	})
+	.await;
+	match res {
+		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Err(err) => match err {
+			BlockingError::Error(service_error) => Err(service_error.into()),
+			BlockingError::Canceled => Err(ServiceError::InternalServerError),
+		},
+	}
+}
+
+pub async fn patch_user(
+	uuid_data: web::Path<String>,
+	payload: web::Json<UserPatchData>,
+	pool: web::Data<Pool>,
+	logged_user: LoggedUser,
+) -> Result<HttpResponse, ServiceError> {
+	trace!(
+		"Patching a user: uuid_data = {:#?} logged_user = {:#?}",
+		&uuid_data,
+		&logged_user
+	);
+
+	let id = uuid::Uuid::parse_str(&uuid_data.into_inner())?;
+ 
+	if logged_user.isadmin == false && logged_user.uid != id {
+		return Err(ServiceError::AdminRequired);
+	}
+
+	// TODO: how to validate payload that contains extra fields?
+	// TODO: proper error (400, ...) handling
+
+	let res = web::block(move || {
+		users_repository::patch(
+			id,
+			payload.firstname.clone(),
+			payload.lastname.clone(),
+			payload.is_hidden,
+			payload.email.clone(),
+			payload.email.clone().unwrap_or(logged_user.email),
+			&pool
 		)
 	})
 	.await;
