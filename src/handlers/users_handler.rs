@@ -1,5 +1,5 @@
 use crate::errors::ServiceError;
-use crate::models::users::{LoggedUser, Pool};
+use crate::models::users::{LoggedUser, Pool, User};
 use crate::repositories::*;
 use actix_web::{error::BlockingError, web, HttpResponse};
 use log::trace;
@@ -12,7 +12,7 @@ pub struct UserQueryData {
 }
 
 #[derive(Deserialize, Debug)]
-pub struct QueryData {
+pub struct UserUpdateQueryData {
 	pub id: String,
 	pub firstname: String,
 	pub lastname: String,
@@ -67,7 +67,7 @@ pub struct UserDTO {
 	pub email: String,
 	pub firstname: String,
 	pub lastname: String,
-	pub skills: Vec<SkillDTO>,
+	pub skills: Option<Vec<SkillDTO>>,
 	pub main_upload_id: Option<uuid::Uuid>,
 }
 
@@ -125,7 +125,7 @@ pub async fn get_all(
 
 pub async fn update_user(
 	uuid_data: web::Path<String>,
-	payload: web::Json<QueryData>,
+	payload: web::Json<UserUpdateQueryData>,
 	pool: web::Data<Pool>,
 	logged_user: LoggedUser,
 ) -> Result<HttpResponse, ServiceError> {
@@ -158,7 +158,7 @@ pub async fn update_user(
 	})
 	.await;
 	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Ok(user) => Ok(HttpResponse::Ok().json(&to_user_dto(&user))),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -200,7 +200,7 @@ pub async fn patch_user(
 	})
 	.await;
 	match res {
-		Ok(user) => Ok(HttpResponse::Ok().json(&user)),
+		Ok(user) => Ok(HttpResponse::Ok().json(to_user_dto(&user))),
 		Err(err) => match err {
 			BlockingError::Error(service_error) => Err(service_error.into()),
 			BlockingError::Canceled => Err(ServiceError::InternalServerError),
@@ -508,21 +508,27 @@ fn query_one(uuid_data: String, pool: web::Data<Pool>) -> Result<UserDTO, Servic
 		};
 		skills_dto.push(skilldata);
 	}
-	let data = UserDTO {
-		id: user.id,
-		isadmin: user.isadmin,
-		is_hidden: user.is_hidden,
-		is_employee: user.is_employee,
-		email: user.email,
-		firstname: user.firstname,
-		lastname: user.lastname,
-		skills: skills_dto,
-		main_upload_id: user.main_upload_id,
-	};
+	let mut data = to_user_dto(&user);
+	data.skills = Some(skills_dto);
+	
 	if data.id.is_nil() == false {
 		return Ok(data.into());
 	}
 	Err(ServiceError::Empty)
+}
+
+fn to_user_dto(user: &User) -> UserDTO {
+	UserDTO {
+		id: user.id,
+		isadmin: user.isadmin,
+		is_hidden: user.is_hidden,
+		is_employee: user.is_employee,
+		email: user.email.clone(),
+		firstname: user.firstname.clone(),
+		lastname: user.lastname.clone(),
+		main_upload_id: user.main_upload_id,
+		skills: None
+	}
 }
 
 pub async fn delete_user(
@@ -701,17 +707,8 @@ fn query_users_dto(include_skills: bool, pool: &web::Data<Pool>) -> Result<Vec<U
 			}
 		}
 
-		let user_dto = UserDTO {
-			id: user.id.clone(),
-			isadmin: user.isadmin,
-			is_hidden: user.is_hidden,
-			is_employee: user.is_employee,
-			email: user.email.clone(),
-			firstname: user.firstname.clone(),
-			lastname: user.lastname.clone(),
-			skills: skills_vec,
-			main_upload_id: user.main_upload_id,
-		};
+		let mut user_dto = to_user_dto(user);
+		user_dto.skills = Some(skills_vec);
 		dtos.push(user_dto);
 	}
 
