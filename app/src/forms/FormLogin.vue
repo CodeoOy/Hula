@@ -38,8 +38,10 @@
 				<button type='submit' :disabled='sending' class='btn btn-primary gradient align-self-start w-100 w-sm-auto order-sm-last'>{{ submitLabel }}</button>
 				<div class='d-flex gap-3 mt-3 mt-sm-0'>
 					<div><router-link :to='{ name: "forgot-password" }'>Forgot password?</router-link></div>
+					<!-- NOTE: Registering disabled for now. New users can be added by sending invitation by admin.
 					<div class='vr' />
 					<div>No account? <router-link :to='{ name: "register" }'>Sign&nbsp;up</router-link></div>
+					-->
 				</div>
 			</div>
 		</VForm>

@@ -6,6 +6,7 @@ use serde::Deserialize;
 use crate::email_service::{send_invitation, send_reset_request};
 use crate::errors::ServiceError;
 use crate::models::invitations::{Invitation, Pool, ResetPasswordRequest};
+use crate::models::users::{LoggedUser};
 use crate::repositories::*;
 use crate::utils::hash_password;
 
@@ -26,6 +27,7 @@ pub struct ResetRequestData {
 pub async fn post_invitation(
 	invitation_data: web::Json<InvitationData>,
 	pool: web::Data<Pool>,
+	logged_user: LoggedUser
 ) -> Result<HttpResponse, ServiceError> {
 	trace!(
 		"Posting invitation: invitation_data = {} {} {}",
@@ -33,6 +35,11 @@ pub async fn post_invitation(
 		&invitation_data.first_name,
 		&invitation_data.last_name
 	);
+
+	if logged_user.isadmin == false {
+		return Err(ServiceError::AdminRequired);
+	}
+
 	let res = web::block(move || create_invitation(invitation_data.into_inner(), pool)).await;
 
 	match res {
