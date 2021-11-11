@@ -1,5 +1,5 @@
 <template>	
-	<VForm @submit='onSubmit' v-slot='{ errors }' class='vstack gap-2'>
+	<VForm @submit='onSubmit($store.state.loggeduser.isadmin)' v-slot='{ errors }' class='vstack gap-2'>
 
 		<div class='form-check' v-if='form.id'>
 			<label for='is_hidden' class='form-label'>Hidden</label>
@@ -134,10 +134,14 @@
 		},
 
 		methods: {
-			async onSubmit() {
+			async onSubmit(isadmin) {
 				this.sending = true
 
-				const user = await this.$api.users.save(this.form)
+				const save_func = isadmin ?
+					this.$api.users.save :
+					this.$api.users.patch
+
+				const user = await save_func(this.form)
 				if (user) this.$emit('success', user)
 
 				this.sending = false

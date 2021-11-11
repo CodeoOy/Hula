@@ -121,6 +121,7 @@ const returnArray = promise => promise.then(response => response.json()).catch((
 
 const create = url => body => returnObject(sendJson({ url: populateUrl(url, body), method: 'POST', body }))
 const update = url => body => returnObject(sendJson({ url: populateUrl(url, body), method: 'PUT', body }))
+const patch = url => body => returnObject(sendJson({ url: populateUrl(url, body), method: 'PATCH', body }))
 
 const save = urls => {
 	if (typeof urls == 'string') urls = { create: urls.replace('/{id}', ''), update: urls }
@@ -239,6 +240,7 @@ export const api = {
 		},
 
 		save: save('/api/users/{id}'),
+		patch: patch('/api/users/{id}'),
 		delete: remove('/api/users/{id}'),
 
 		skills: {
