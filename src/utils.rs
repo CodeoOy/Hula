@@ -3,12 +3,11 @@ use argon2::{self, Config};
 use log::error;
 
 lazy_static::lazy_static! {
-	pub static ref SECRET_KEY: String = std::env::var("SECRET_KEY").unwrap_or_else(|_| "0123".repeat(8));
+	pub static ref SECRET_KEY: String = std::env::var("SECRET_KEY").expect("SECRET_KEY must be set");
 }
 
 const SALT: &'static [u8] = b"supersecuresalt";
 
-// WARNING THIS IS ONLY FOR DEMO PLEASE DO MORE RESEARCH FOR PRODUCTION USE
 pub fn hash_password(password: &str) -> Result<String, ServiceError> {
 	let config = Config {
 		secret: SECRET_KEY.as_bytes(),
