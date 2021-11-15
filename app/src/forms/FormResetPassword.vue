@@ -5,7 +5,6 @@
 			<label for='password' class='form-label'>Password</label>
 			<VField
 				v-model='form.password'
-				rules='required'
 				type='password'
 				id='password'
 				name='password'
@@ -13,7 +12,9 @@
 				aria-label='Password'
 				class='form-control'
 				:class='{ "is-invalid": errors.password }'
+				:rules="validatePassword"
 			/>
+			<small>Required: min 8 characters, uppercase letter, lowercase letter, number</small>
 			<ErrorMessage name='password' class='invalid-feedback shake' />
 		</div>
 
@@ -33,7 +34,7 @@
 		</div>
 
 		<div class='mt-label'>
-			<button type='submit' :disabled='sending' class='btn btn-primary gradient float-end'>{{ submitLabel }}</button>
+			<button type='submit' :disabled='sending || errors.password || errors.password_confirmation' class='btn btn-primary gradient float-end'>{{ submitLabel }}</button>
 		</div>
 	</VForm>
 </template>
@@ -92,6 +93,28 @@
 				if (success) this.$emit('success', success)
 
 				this.sending = false
+			},
+			validatePassword(value) {
+				if (!value || value.length < 8) {
+					return 'Minimum length is 8'
+				}
+
+				const lowercase = new RegExp("[a-z]");
+				if (!lowercase.test(value)) {
+					return 'Lowercase letter is required';
+				}
+
+				const uppercase = new RegExp("[A-Z]");
+				if (!uppercase.test(value)) {
+					return 'Uppercase letter is required';
+				}
+
+			 	const number = new RegExp("[0-9]");
+				if (!number.test(value)) {
+					return 'Number is required';
+				}
+
+				return true;
 			}
 		}
 	}
