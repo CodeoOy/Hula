@@ -70,6 +70,10 @@ export default {
 		context.commit('setChosenProject', data)
 	},
 
+	async setCookieConsent(context, data) {
+		context.commit('setCookieConsent', data)
+	},
+
 	async getProjects(context) {
 		const data = await api.projects.get()
 		context.commit('setProjects', data)

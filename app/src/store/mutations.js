@@ -43,6 +43,15 @@ export default {
 		state.chosenproject = data
 	},
 
+	setCookieConsent(state, data) {
+		state.cookieConsent = data
+		if (data) {
+			localStorage.setItem("cookieConsent", JSON.stringify(data))
+		} else {
+			localStorage.removeItem("cookieConsent")
+		}
+	},
+
 	setProjects(state, data) {
 		state.projects = ensureArray(data)
 	},

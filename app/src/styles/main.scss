@@ -372,6 +372,26 @@ $utilities: map-merge(
 	}
 }
 
+.cookie-consent {
+	position: fixed;
+	bottom: 30px;
+	left: 5%;
+	width: 90%;
+	padding: 2%;
+	color: #fff;
+	font-size: 14px;
+	line-height: 20px;
+	z-index: 120;
+	cursor: pointer;
+	border-radius: 10px;
+	border-color: white;
+}
+
+.cookie-consent .btn {
+	min-width: 100px;
+	margin-left: 10px;
+}
+
 .shake {
 	animation: shake 1s cubic-bezier(0.75, 0, 0.25, 1);
 }
