@@ -8,7 +8,13 @@ use actix_web::http::{header, StatusCode};
 use actix_web::{get, middleware, web, App, HttpRequest, HttpResponse, HttpServer, Result};
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
+use diesel::result::Error::NotFound;
 use log::{error, info, trace};
+use rand::{thread_rng, Rng};
+use rand::distributions::Alphanumeric;
+
+use crate::schema::users::dsl::{users};
+use crate::models::users::User;
 
 mod email_service;
 mod errors;
@@ -61,6 +67,44 @@ fn initialize_db(name: &str) {
 		}
 		Err(error) => {
 			error!("Database migration error: \n {:#?}", error);
+		}
+	}
+
+	let current_users = users.first::<User>(&connection);
+	match current_users {
+		Ok(_res) => {
+			info!("Users already setup in the database, no need to create default admin user.")
+		}
+		Err(NotFound) => {
+			info!("No users found in the database, creating a default admin user...");
+			create_default_admin_user(&connection);
+		}
+		Err(error) => {
+			error!("Database error when quering users: \n {:#?}", error);
+		}
+	}	
+}
+
+fn create_default_admin_user(connection: &PgConnection) {
+	let password: String = thread_rng()
+		.sample_iter(&Alphanumeric)
+		.take(12)
+		.map(char::from)
+		.collect();
+	let default_admin = User::from_details(
+		"admin@example.com", 
+		password.clone(), 
+		"Admin",
+		"Default",
+		false,
+	true);
+	let result = diesel::insert_into(users).values(&default_admin).get_result::<User>(connection);
+	match result {
+		Ok(_res) => {
+			info!("Created default admin user {}, password `{}`", default_admin.email, password)
+		},
+		Err(error) => {
+			error!("Failed to create default admin user: \n {:#?}", error);
 		}
 	}
 }

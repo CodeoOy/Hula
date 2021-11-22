@@ -2,6 +2,7 @@ use super::super::schema::*;
 use crate::errors::ServiceError;
 use crate::models;
 use crate::repositories::*;
+use crate::utils::hash_password;
 use actix_identity::Identity;
 use actix_web::{dev::Payload, web::Data, Error, FromRequest, HttpRequest};
 use diesel::{r2d2::ConnectionManager, PgConnection};
@@ -100,16 +101,18 @@ impl User {
 		first_name: U,
 		last_name: V,
 		password_pending: bool,
+		is_admin: bool
 	) -> Self {
 		let emailstr: String = email.into();
+		let password_hashed = hash_password(&pwd.into()).unwrap();
 		User {
 			id: uuid::Uuid::new_v4(),
-			isadmin: false,
+			isadmin: is_admin,
 			is_hidden: false,
 			email: String::from(&emailstr),
 			firstname: first_name.into(),
 			lastname: last_name.into(),
-			hash: pwd.into(),
+			hash: password_hashed,
 			inserted_at: chrono::Local::now().naive_local(),
 			updated_by: emailstr,
 			is_employee: false,

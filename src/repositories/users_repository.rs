@@ -56,7 +56,7 @@ pub fn create(
 
 	let conn: &PgConnection = &pool.get().unwrap();
 
-	let new_user = User::from_details(q_email, q_password, q_first_name, q_last_name, q_password_pending);
+	let new_user = User::from_details(q_email, q_password, q_first_name, q_last_name, q_password_pending, false);
 
 	let user: User = diesel::insert_into(users).values(&new_user).get_result(conn)?;
 

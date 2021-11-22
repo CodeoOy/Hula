@@ -6,7 +6,6 @@ use crate::errors::ServiceError;
 use crate::models::invitations::Pool;
 use crate::models::users::User;
 use crate::repositories::*;
-use crate::utils::hash_password;
 
 // UserData is used to extract data from a post request by the client
 #[derive(Debug, Deserialize)]
@@ -38,16 +37,10 @@ fn query(user_data: UserData, pool: web::Data<Pool>) -> Result<User, crate::erro
 	let result = invitations_repository::get_by_invitation(invitation_id.clone(), user_data.email.clone(), &pool);
 
 	if let Ok(invitation) = result {
-		let password: String;
-		if invitation.password_pending == true {
-			password = hash_password(&user_data.password).unwrap();
-		} else {
-			password = user_data.password;
-		}
 		if invitation.expires_at > chrono::Local::now().naive_local() {
 			let user = users_repository::create(
 				invitation.email,
-				password,
+				user_data.password,
 				invitation.first_name,
 				invitation.last_name,
 				false,
