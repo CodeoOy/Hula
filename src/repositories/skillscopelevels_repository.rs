@@ -27,7 +27,7 @@ pub fn get_skill_level_by_label(q_label: String, pool: &web::Data<Pool>) -> Resu
 	let conn: &PgConnection = &pool.get().unwrap();
 
 	let item = skillscopelevels
-		.filter(label.eq(q_label))
+		.filter(label.ilike(q_label))
 		.get_result::<SkillScopeLevel>(conn)?;
 
 	Ok(item)
