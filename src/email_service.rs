@@ -9,7 +9,7 @@ static ref API_KEY: String = std::env::var("SPARKPOST_API_KEY").expect("SPARKPOS
 }
 
 pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
-	let tm = Transmission::new(API_KEY.as_str());
+	let tm = Transmission::new_eu(API_KEY.as_str());
 	let sending_email = std::env::var("SENDING_EMAIL_ADDRESS").expect("SENDING_EMAIL_ADDRESS must be set");
 	let public_url = std::env::var("PUBLIC_URL").unwrap_or_else(|_| "localhost:8086".to_string());
 
@@ -87,7 +87,7 @@ pub fn send_invitation(invitation: &Invitation) -> Result<(), ServiceError> {
 }
 
 pub fn send_reset_request(reset_request: &ResetPasswordRequest) -> Result<(), ServiceError> {
-	let tm = Transmission::new(API_KEY.as_str());
+	let tm = Transmission::new_eu(API_KEY.as_str());
 	let sending_email = std::env::var("SENDING_EMAIL_ADDRESS").expect("SENDING_EMAIL_ADDRESS must be set");
 	let public_url = std::env::var("PUBLIC_URL").unwrap_or_else(|_| "localhost:8086".to_string());
 
