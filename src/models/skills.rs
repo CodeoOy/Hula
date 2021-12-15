@@ -13,6 +13,7 @@ pub struct Skill {
 	pub skillcategory_id: uuid::Uuid,
 	pub skillscope_id: uuid::Uuid,
 	pub updated_by: String,
+	pub aliases: Vec<String>
 }
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize, Associations, PartialEq, Debug, Insertable)]

@@ -14,6 +14,7 @@
 				class='form-control'
 				:class='{ "is-invalid": errors.label }'
 			/>
+			<small>Case-insensitive name. E.g. "react" = "React" = "REACT".</small>
 			<ErrorMessage name='label' class='invalid-feedback shake' />
 		</div>
 
@@ -57,6 +58,22 @@
 			<ErrorMessage name='skillscope_id' class='invalid-feedback shake' />
 		</div>
 
+		<div>
+			<label for='aliases' class='form-label'>Aliases</label>
+			<VField
+				v-model="joinedAliases"
+				type='text'
+				id='aliases'
+				name='aliases'
+				label='Aliases'
+				aria-label='Aliases'
+				class='form-control'
+				placeholder='React, React JS, ReactJS'
+			/>
+			<small>Comma (,) separated list of aliases. E.g. "React,React JS,ReactJS".</small>
+			<ErrorMessage name='aliases' class='invalid-feedback shake' />
+		</div>
+
 		<div class='mt-label'>
 			<button type='submit' :disabled='sending' class='btn btn-primary gradient float-end'>{{ submitLabel }}</button>
 		</div>
@@ -77,7 +94,11 @@
 				required: true,
 			},
 			skillscope_id: String,
-			label: String
+			label: String,
+			aliases: {
+				type: Array,
+    		default: () => []
+			}
 		},
 
 		computed: {
@@ -92,12 +113,21 @@
 			scopes() {
 				return this.$store.state.skillScopes
 			},
+
+			joinedAliases: {
+				get() {
+					return this.form.aliases.join(",")
+				},
+				set (val) {
+					this.form.aliases = val.split(",").map(x => x.trim())
+				}
+			}
 		},
 
 		data() {
 			return {
 				sending: false,
-				form: { ...this.$props },
+				form: { ...this.$props }
 			}
 		},
 		
