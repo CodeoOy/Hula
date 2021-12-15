@@ -26,6 +26,7 @@ pub fn create_skill(
 	q_label: String,
 	q_skillcategory_id: uuid::Uuid,
 	q_skillscope_id: uuid::Uuid,
+	q_aliases: &Vec<String>,
 	q_email: String,
 	pool: &web::Data<Pool>,
 ) -> Result<Skill, Error> {
@@ -38,6 +39,7 @@ pub fn create_skill(
 		skillcategory_id: q_skillcategory_id,
 		skillscope_id: q_skillscope_id,
 		updated_by: q_email,
+		aliases: q_aliases.to_vec()
 	};
 
 	let skill = diesel::insert_into(skills)
@@ -51,6 +53,7 @@ pub fn update_skill(
 	uuid_data: uuid::Uuid,
 	q_label: String,
 	q_skillcategory_id: uuid::Uuid,
+	q_aliases: &Vec<String>,
 	q_email: String,
 	pool: &web::Data<Pool>,
 ) -> Result<Skill, Error> {
@@ -63,6 +66,7 @@ pub fn update_skill(
 			label.eq(q_label),
 			skillcategory_id.eq(q_skillcategory_id),
 			updated_by.eq(q_email.clone()),
+			aliases.eq(q_aliases)
 		))
 		.get_result::<Skill>(conn)?;
 

@@ -93,6 +93,7 @@ table! {
 		skillcategory_id -> Uuid,
 		skillscope_id -> Uuid,
 		updated_by -> Varchar,
+		aliases -> Array<Text>,
 	}
 }
 

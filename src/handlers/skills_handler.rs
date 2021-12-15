@@ -26,6 +26,7 @@ pub struct SkillData {
 	pub label: String,
 	pub skillcategory_id: uuid::Uuid,
 	pub skillscope_id: uuid::Uuid,
+	pub aliases: Vec<String>
 }
 #[derive(Deserialize, Debug)]
 pub struct CategoryData {
@@ -269,6 +270,7 @@ pub async fn create_skill(
 			skilldata.label.clone(),
 			skilldata.skillcategory_id,
 			skilldata.skillscope_id,
+			&skilldata.aliases,
 			logged_user.email,
 			&pool,
 		)
@@ -307,6 +309,7 @@ pub async fn update_skill(
 			id,
 			skilldata.label.clone(),
 			skilldata.skillcategory_id,
+			&skilldata.aliases,
 			logged_user.email,
 			&pool,
 		)
