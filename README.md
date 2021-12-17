@@ -1,8 +1,12 @@
 # Hula
 
-This POC is made for an open source project which I will link here once it is launched. Idea is to have a web server that can manipulate a Postgres database and well, do whatever web servers do. Actix was chosen for the server and Vue for the frontend.
+Web app for managing and matching of candidates to projects based on skills.
 
-The web server part is essentially a direct clone of [Harry Gill's](https://gill.net.in) very good tutorial. It can be found [here.](https://gill.net.in/posts/auth-microservice-rust-actix-web1.0-diesel-complete-tutorial/) At the time of writing (2021), Rust is a relatively young language so bear in mind that newer and better techniques might be around.
+## Techs
+
+Vue is used on the front-end.
+
+The web server (Rust + Actix) implementation is based on [Harry Gill's](https://gill.net.in) very good tutorial. It can be found [here.](https://gill.net.in/posts/auth-microservice-rust-actix-web1.0-diesel-complete-tutorial/) At the time of writing (2021), Rust is a relatively young language so bear in mind that newer and better techniques might be around.
 
 ## Prerequisites
 
@@ -11,7 +15,7 @@ The web server part is essentially a direct clone of [Harry Gill's](https://gill
 - [Diesel_cli](http://diesel.rs/guides/getting-started/)
     * `cargo install diesel_cli --no-default-features --features postgres`
 - Node.js
-- Email service API key, I used sparkpost account for this
+- Sparkpost API key
 
 ## Deployment
 
