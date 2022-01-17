@@ -94,8 +94,8 @@
 				<div class="card shadow mt-4" :class='$colorScheme.card'>
 					<div class='card-header'>
 						<div class="d-flex flex-wrap justify-content-between align-items-center">
-							<h3 class="h3 mb-0">Reservations</h3>
-							<button class="btn btn-primary gradient" v-on:click="editReservation()">Add reservation</button>
+							<h3 class="h3 mb-0">Dates not available</h3>
+							<button class="btn btn-primary gradient" v-on:click="editReservation()">Add</button>
 						</div>
 					</div>
 					<div class='card-body'>
@@ -297,7 +297,7 @@
 				props.user_id = this.user.id
 
 				const result = await this.$modal({
-					title: props.id ? `Edit reservation: ${props.description}` : 'Add reservation',
+					title: props.id ? `Edit dates not available: ${props.description}` : 'Add dates not available',
 					component: FormUserReservation,
 					props,
 				})
