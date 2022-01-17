@@ -3,6 +3,7 @@
 		<div class="card shadow" :class='$colorScheme.card'>
 			<div class='card-header'>
 				<h1 class="h3 mb-0">Projects matching your skills</h1>
+				<button class='btn btn-primary gradient float-start' v-on:click='addSkill()'>Add skills</button>
 			</div>
 			<div class='card-body'>
 				<VMatchesForUser v-if='matches.length' :user='user' :matches='matches' />
@@ -39,5 +40,11 @@
 		mounted() {
 			if (!this.$store.state.projects.length) this.$store.dispatch('getProjects')
 		},
+
+		methods: {
+				addSkill() {
+					this.$router.push({name: 'user', params: {id: this.user.id}})
+			}
+		}
 	}
 </script>
