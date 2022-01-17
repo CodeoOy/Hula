@@ -1,6 +1,10 @@
 <template>
 	<div class="container">
-		<button class='btn btn-primary mb-3 gradient float-start' v-on:click='home()'>Home</button>
+		<div class="row">
+			<div class="col">
+				<button class='btn btn-primary mr-auto gradient float-start' v-on:click='home()'>Home</button>
+			</div>
+		</div>
 		<div class="row gx-4">
 			<div class="col-md-4">
 				<div class="card shadow" :class='$colorScheme.card'>
