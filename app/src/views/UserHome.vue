@@ -3,6 +3,9 @@
 		<div class="card shadow" :class='$colorScheme.card'>
 			<div class='card-header'>
 				<h1 class="h3 mb-0">Projects matching your skills</h1>
+				<div class="alert alert-light" role="alert">
+					<small><i class="bi-info-circle-fill" title='Delay info'></i> It may take up to a minute until the projects are updated.</small>
+				</div>
 				<button class='btn btn-primary gradient float-start' v-on:click='addSkill()'>Add skills</button>
 			</div>
 			<div class='card-body'>
