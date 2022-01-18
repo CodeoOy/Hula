@@ -52,6 +52,10 @@
 				type: String,
 				required: true,
 			},
+			type: {
+				type: String,
+				required: true
+			}
 		},
 
 		data() {
@@ -66,7 +70,11 @@
 
 		computed: {
 			submitLabel() {
-				return this.sending ? 'Changing' : 'Change'
+				if (this.type === "reset") {
+					return this.sending ? 'Changing' : 'Change'
+				} else {
+					return this.sending ? 'Saving' : 'Save'
+				}
 			},
 		},
 
@@ -79,10 +87,10 @@
 				
 				const message = success ? {
 					type: 'success',
-					title: 'Password changed',
+					title: this.type === 'reset' ? 'Password changed' : 'Password saved, please log in',
 				} : {
 					type: 'error',
-					title: 'Updating password failed',
+					title: this.type === 'reset' ? 'Updating password failed' : 'Saving password failed',
 				}
 
 				this.$flashMessage.show({

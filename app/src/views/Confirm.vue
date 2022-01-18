@@ -36,7 +36,7 @@
 		methods: {
 			async resetPassword(data) {
 				await this.$modal({
-					title: 'Enter new password',
+					title: data.type === 'reset' ? 'Enter new password' : 'Enter password',
 					component: FormResetPassword,
 					props: data,
 					backdrop: 'static',
@@ -74,7 +74,7 @@
 					this.resetPassword({
 						id: data.reset_request_id,
 						email: data.email,
-						type: 'reset',
+						type: 'invitation',
 					})
 				}
 			},
